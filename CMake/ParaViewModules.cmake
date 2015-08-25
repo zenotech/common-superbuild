@@ -2,12 +2,6 @@ include(PVExternalProject)
 include(CMakeParseArguments)
 
 #------------------------------------------------------------------------------
-macro(enable_project name needed-by)
-  set (${name}_ENABLED TRUE CACHE INTERNAL "" FORCE)
-  list (APPEND ${name}_NEEDED_BY "${needed-by}")
-endmacro()
-
-#------------------------------------------------------------------------------
 function(add_external_dummy_project_internal name)
   set(arg_DEPENDS)
   get_project_depends(${name} arg)

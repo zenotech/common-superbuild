@@ -295,6 +295,20 @@ function (superbuild_process_dependencies)
 endfunction ()
 
 #------------------------------------------------------------------------------
+function (_superbuild_enable_project name needed_by)
+  set("${name}_enabled" TRUE
+    PARENT_SCOPE)
+
+  if (needed_by)
+    list(APPEND "${name}_needed_by"
+      "${needed_by}")
+    set("${name}_needed_by"
+      "${${name}_needed_by}"
+      PARENT_SCOPE)
+  endif ()
+endfunction ()
+
+#------------------------------------------------------------------------------
 # internal macro to validate project names.
 function (_superbuild_project_check_name name)
   if (NOT name MATCHES "^[a-zA-Z][a-zA-Z0-9]*$")
