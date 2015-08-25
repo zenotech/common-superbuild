@@ -89,14 +89,6 @@ macro(enable_project name needed-by)
 endmacro()
 
 #------------------------------------------------------------------------------
-# internal macro to validate project names.
-macro(project_check_name _name)
-  if( NOT "${_name}" MATCHES "^[a-zA-Z][a-zA-Z0-9]*$")
-    message(FATAL_ERROR "Invalid project name: ${_name}")
-  endif()
-endmacro()
-
-#------------------------------------------------------------------------------
 # get dependencies for a project, including optional dependencies that are
 # currently enabled. Since this macro looks at the ${mod}_ENABLED flag, it
 # cannot be used in the 'processing' pass, but the 'build' pass alone.

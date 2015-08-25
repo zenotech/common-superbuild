@@ -147,6 +147,14 @@ function (superbuild_append_flags key value)
   endif ()
 endfunction ()
 
+#------------------------------------------------------------------------------
+# internal macro to validate project names.
+function (_superbuild_project_check_name name)
+  if (NOT name MATCHES "^[a-zA-Z][a-zA-Z0-9]*$")
+    message(FATAL_ERROR "Invalid project name: ${_name}")
+  endif ()
+endfunction ()
+
 function (_superbuild_check_current_project func)
   if (NOT current_project)
     message(AUTHOR_WARNING "${func} called an incorrect stage.")
