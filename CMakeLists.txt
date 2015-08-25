@@ -26,6 +26,7 @@ endif()
 
 superbuild_cross_declare_variables()
 superbuild_osx_determine_target()
+superbuild_detect_64bit_target()
 
 set(shared_default ON)
 if (superbuild_is_cross)
@@ -47,19 +48,6 @@ list(APPEND SuperBuild_MODULE_PATH "${SuperBuild_PROJECTS_DIR}")
 list(APPEND SuperBuild_MODULE_PATH "${SuperBuild_CMAKE_DIR}")
 list(APPEND SuperBuild_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 list(INSERT CMAKE_MODULE_PATH 0 ${SuperBuild_MODULE_PATH})
-
-#-----------------------------------------------------------------------------
-# Collect information about the build platform.
-include(CheckTypeSize)
-
-if (NOT CROSS_BUILD_STAGE STREQUAL "cross")
-  check_type_size(void* VOID_PTR_SIZE BUILTIN_TYPES_ONLY)
-  if (VOID_PTR_SIZE EQUAL 8)
-    set (64bit_build TRUE)
-  else ()
-    set (64bit_build FALSE)
-  endif()
-endif()
 
 #-----------------------------------------------------------------------------
 # Setup some standard variables that control various locations and flags.
