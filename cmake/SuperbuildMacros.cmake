@@ -68,3 +68,15 @@ function (superbuild_add_project name)
         "${name}_depends_optional" ${_args_DEPENDS_OPTIONAL})
   endif ()
 endfunction ()
+
+#------------------------------------------------------------------------------
+# adds a dummy project to the build, which is a great way to setup a list
+# of dependencies as a build option. IE dummy project that turns on all
+# third party libraries
+function (superbuild_add_dummy_project _name)
+  superbuild_add_project(${_name} "${ARGN}")
+
+  set_property(GLOBAL
+    PROPERTY
+      "${_name}_is_dummy" TRUE)
+endfunction ()

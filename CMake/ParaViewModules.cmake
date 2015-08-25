@@ -2,19 +2,6 @@ include(PVExternalProject)
 include(CMakeParseArguments)
 
 #------------------------------------------------------------------------------
-# adds a dummy project to the build, which is a great way to setup a list
-# of dependencies as a build option. IE dummy project that turns on all
-# third party libraries
-macro(add_external_dummy_project _name)
-  if (build-projects)
-    add_external_project(${_name} "${ARGN}")
-  else()
-    add_external_project(${_name} "${ARGN}")
-    set_property(GLOBAL PROPERTY ${_name}_IS_DUMMY_PROJECT TRUE)
-  endif()
-endmacro()
-
-#------------------------------------------------------------------------------
 macro(process_dependencies)
   set (CM_PROJECTS_ENABLED "")
   foreach(cm-project IN LISTS CM_PROJECTS_ALL)
