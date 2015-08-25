@@ -92,6 +92,14 @@ if (NOT CROSS_BUILD_STAGE STREQUAL "HOST" AND
   superbuild_cross_prepare_target()
 endif ()
 
+include(SuperbuildRevisionMacros)
+
+# Gather version information.
+include("${CMAKE_CURRENT_LIST_DIR}/versions.cmake")
+if (COMMAND superbuild_determine_versions)
+  superbuild_determine_versions()
+endif ()
+
 include (ParaViewModules)
 
 #-----------------------------------------------------------------------------
