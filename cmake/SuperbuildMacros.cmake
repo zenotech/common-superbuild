@@ -3,7 +3,7 @@ include(CMakeParseArguments)
 
 # The external projects list separator string should be set ASAP so that
 # anything else can use it that needs it.
-set(superbuild_list_separator "-+-")
+set(_superbuild_list_separator "-+-")
 
 #------------------------------------------------------------------------------
 function (superbuild_add_project name)
@@ -436,7 +436,7 @@ function (_superbuild_add_project_internal name)
       -DCMAKE_SHARED_LINKER_FLAGS:STRING=${project_ld_flags}
       ${cmake_params}
 
-    LIST_SEPARATOR "${superbuild_list_separator}")
+    LIST_SEPARATOR "${_superbuild_list_separator}")
 
   get_property(additional_steps GLOBAL
     PROPERTY "${name}_steps")
@@ -454,7 +454,7 @@ endfunction ()
 # When passing string with ";" to add_external_project() macros, we need to
 # ensure that the -+- is replaced with the LIST_SEPARATOR.
 function (_superbuild_sanitize_lists_in_string out_var_prefix var)
-  string(REPLACE ";" "${superbuild_list_separator}" command "${${var}}")
+  string(REPLACE ";" "${_superbuild_list_separator}" command "${${var}}")
   set("${out_var_prefix}${var}" "${command}"
     PARENT_SCOPE)
 endfunction ()
