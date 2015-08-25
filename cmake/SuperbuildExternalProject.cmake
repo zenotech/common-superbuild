@@ -146,6 +146,16 @@ function (_superbuild_ExternalProject_add name)
     endif ()
   endforeach ()
 
+  option(SUPPRESS_${name}_OUTPUT "Suppress output for ${name}" OFF)
+  mark_as_advanced(SUPPRESS_${name}_OUTPUT)
+
+  if (SUPPRESS_${name}_OUTPUT)
+    # Silence the build and install steps.
+    list(APPEND args
+      LOG_BUILD   1
+      LOG_INSTALL 1)
+  endif ()
+
   # Quote args to keep empty list elements around so that we properly parse
   # empty install, configure, build, etc.
   ExternalProject_Add("${name}" "${args}")
