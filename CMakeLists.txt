@@ -101,3 +101,25 @@ foreach (project IN LISTS superbuild_projects)
 endforeach ()
 # Enable projects, etc.
 superbuild_process_dependencies()
+
+# Do any sanity checking necessary here.
+if (COMMAND superbuild_sanity_check)
+  superbuild_sanity_check()
+endif ()
+
+# Add any tests.
+if (COMMAND superbuild_add_tests)
+  # Enable testing support.
+  include(CTest)
+  configure_file(
+    "${CMAKE_CURRENT_LIST_DIR}/cmake/CTestCustom.cmake.in"
+    "${CMAKE_BINARY_DIR}/CTestCustom.cmake"
+    @ONLY)
+
+  superbuild_add_tests()
+endif ()
+
+# Add packaging.
+if (COMMAND superbuild_add_packaging)
+  superbuild_add_packaging()
+endif ()
