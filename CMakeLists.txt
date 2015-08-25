@@ -7,10 +7,6 @@ list(INSERT CMAKE_MODULE_PATH 0
 include("SuperbuildUtils")
 include("SuperbuildCrossMacros")
 
-# The external projects list separator string should be set ASAP so that
-# anything else can use it that needs it.
-set (ep_list_separator "-+-")
-
 set(platform)
 if (APPLE)
   set(platforms "apple" "apple-unix")
@@ -39,20 +35,6 @@ set(superbuild_prefix_path "${superbuild_install_location}")
 set(superbuild_download_location "${CMAKE_BINARY_DIR}/downloads"
   CACHE PATH "Location for downloaded source tarballs")
 mark_as_advanced(superbuild_download_location)
-
-if (UNIX AND NOT APPLE)
-  # I am not exactly sure about the cause of these issues and how to cleanly
-  # overcome them, however, on some linuxes when Cmake is built shared, we end
-  # if we set LD_LIBRARY_PATH to the install/lib dir, we end up with errors
-  # due to conflicts with system libz. So for now, I am making this an option.
-  # By default we will let the superbuild scripts set LD_LIBRARY_PATH. However
-  # if users get errors like: libz.so.1: no version information available, then
-  # users should turn this flag off.
-  option(PASS_LD_LIBRARY_PATH_FOR_BUILDS
-         "Pass LD_LIBRARY_PATH to build scripts."
-         ON)
-  mark_as_advanced(PASS_LD_LIBRARY_PATH_FOR_BUILDS)
-endif()
 
 superbuild_setup_flags()
 

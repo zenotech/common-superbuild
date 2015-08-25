@@ -1,4 +1,5 @@
 include("SuperbuildUtils-apple")
+include("SuperbuildUtils-unix")
 
 function (superbuild_detect_64bit_target)
   if (CROSS_BUILD_STAGE STREQUAL "cross")

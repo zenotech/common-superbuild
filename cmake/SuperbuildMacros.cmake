@@ -1,6 +1,10 @@
 include(SuperbuildExternalProject)
 include(CMakeParseArguments)
 
+# The external projects list separator string should be set ASAP so that
+# anything else can use it that needs it.
+set(superbuild_list_separator "-+-")
+
 #------------------------------------------------------------------------------
 function (superbuild_add_project name)
   _superbuild_project_check_name("${name}")
@@ -320,6 +324,125 @@ function (_superbuild_add_dummy_project_internal name)
     CONFIGURE_COMMAND ""
     BUILD_COMMAND     ""
     INSTALL_COMMAND   "")
+endfunction ()
+
+#------------------------------------------------------------------------------
+function (_superbuild_add_project_internal name)
+  set(cmake_params)
+  foreach (flag CMAKE_BUILD_TYPE
+                CMAKE_C_FLAGS_DEBUG
+                CMAKE_C_FLAGS_MINSIZEREL
+                CMAKE_C_FLAGS_RELEASE
+                CMAKE_C_FLAGS_RELWITHDEBINFO
+                CMAKE_CXX_FLAGS_DEBUG
+                CMAKE_CXX_FLAGS_MINSIZEREL
+                CMAKE_CXX_FLAGS_RELEASE
+                CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+    if (${flag})
+      list(APPEND cmake_params "-D${flag}:STRING=${${flag}}")
+    endif ()
+  endforeach ()
+
+  if (APPLE)
+    list(APPEND cmake_params
+      "-DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}"
+      "-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${CMAKE_OSX_DEPLOYMENT_TARGET}"
+      "-DCMAKE_OSX_SYSROOT:PATH=${CMAKE_OSX_SYSROOT}")
+  endif ()
+
+  # Get extra cmake args from every dependent project, if any.
+  superbuild_get_project_depends("${name}" arg)
+  foreach (dep IN LISTS arg_depends)
+    get_property(cmake_args GLOBAL
+      PROPERTY "${dep}_cmake_args")
+    list(APPEND cmake_params
+      ${cmake_args})
+  endforeach ()
+
+  # Get extra flags added using append_flags(), if any.
+  set(extra_vars
+    c_flags
+    cxx_flags
+    ldflags)
+
+  foreach (extra_var IN LISTS extra_vars)
+    set("extra_${extra_var}")
+  endforeach ()
+
+  # Scan project flags.
+  foreach (var IN LISTS extra_vars)
+    string(TOUPPER "${var}" upper_var)
+    get_property(extra_flags GLOBAL
+      PROPERTY "${name}_append_project_only_flags_cmake_${upper_var}")
+
+    list(APPEND "extra_${var}"
+      ${extra_flags})
+  endforeach ()
+
+  # Scan dependency flags.
+  foreach (dep IN LISTS arg_depends)
+    foreach (var IN LISTS extra_vars)
+      string(TOUPPER "${var}" upper_var)
+      get_property(extra_flags GLOBAL
+        PROPERTY "${dep}_append_flags_cmake_${upper_var}")
+
+      list(APPEND "extra_${var}"
+        ${extra_flags})
+    endforeach ()
+  endforeach ()
+
+  foreach (var IN LISTS extra_vars)
+    set(project_${var} "${superbuild_${var}}")
+    if (extra_${var})
+      set(project_${var} "${project_${var}} ${extra_${var}}")
+    endif ()
+  endforeach ()
+
+  set(ld_library_path_argument)
+  superbuild_unix_ld_library_path_hack(ld_library_path_argument)
+
+  get_property("${name}_revision" GLOBAL
+    PROPERTY "${name}_revision")
+
+  # ARGN needs to be quoted so that empty list items aren't removed if
+  # that happens options like INSTALL_COMMAND "" won't work
+  _superbuild_ExternalProject_add(${name} "${ARGN}"
+    PREFIX        "${name}"
+    DOWNLOAD_DIR  "${superbuild_download_location}"
+    INSTALL_DIR   "${superbuild_install_location}"
+
+    # add url/mdf/git-repo etc. specified in versions.cmake
+    ${${name}_revision}
+
+    PROCESS_ENVIRONMENT
+      LDFLAGS     "${project_ld_flags}"
+      CPPFLAGS    "${superbuild_cppflags}"
+      CXXFLAGS    "${project_cxx_flags}"
+      CFLAGS      "${project_c_flags}"
+      # disabling this since it fails when building numpy.
+      # MACOSX_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}"
+      ${ld_library_path_argument}
+      CMAKE_PREFIX_PATH "${superbuild_prefix_path}"
+    CMAKE_ARGS
+      -DCMAKE_INSTALL_PREFIX:PATH=${superbuild_prefix_path}
+      -DCMAKE_PREFIX_PATH:PATH=${superbuild_prefix_path}
+      -DCMAKE_C_FLAGS:STRING=${project_c_flags}
+      -DCMAKE_CXX_FLAGS:STRING=${project_cxx_flags}
+      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${project_ld_flags}
+      ${cmake_params}
+
+    LIST_SEPARATOR "${superbuild_list_separator}")
+
+  get_property(additional_steps GLOBAL
+    PROPERTY "${name}_steps")
+  if (additional_steps)
+    foreach (step IN LISTS additional_steps)
+      get_property(step_arguments GLOBAL
+        PROPERTY "${name}_step_${step}")
+      ExternalProject_Add_Step("${name}" "${step}"
+        "${step_arguments}")
+    endforeach ()
+  endif ()
 endfunction ()
 
 #------------------------------------------------------------------------------
