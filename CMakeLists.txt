@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 2.8.9)
 
 project(common-superbuild)
 
+list(INSERT CMAKE_MODULE_PATH 0
+  "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
 if (APPLE)
   if(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
     set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "By default, build for 64-bit Leopard")
