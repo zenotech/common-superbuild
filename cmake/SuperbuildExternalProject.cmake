@@ -149,4 +149,24 @@ function (_superbuild_ExternalProject_add name)
   # Quote args to keep empty list elements around so that we properly parse
   # empty install, configure, build, etc.
   ExternalProject_Add("${name}" "${args}")
+
+  # configure the scripts after the call ExternalProject_Add() since that sets
+  # up the directories correctly.
+  get_target_property(process_environment "sb-${name}"
+    _SB_PROCESS_ENVIRONMENT)
+  _ep_replace_location_tags("${name}" process_environment)
+
+  foreach (step configure build install)
+    if (req_${step}_command)
+      string(TOUPPER "${step}" step_upper)
+
+      set(step_command "${original_${step}_command}")
+      _ep_replace_location_tags("${name}" step_command)
+
+      configure_file(
+        "${CMAKE_CURRENT_LIST_DIR}/cmake/superbuild_handle_environment.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/sb-${name}-${step}.cmake"
+        @ONLY)
+    endif ()
+  endforeach ()
 endfunction ()
