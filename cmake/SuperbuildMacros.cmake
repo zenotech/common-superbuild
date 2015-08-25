@@ -446,6 +446,15 @@ function (_superbuild_add_project_internal name)
 endfunction ()
 
 #------------------------------------------------------------------------------
+# When passing string with ";" to add_external_project() macros, we need to
+# ensure that the -+- is replaced with the LIST_SEPARATOR.
+function (_superbuild_sanitize_lists_in_string out_var_prefix var)
+  string(REPLACE ";" "${superbuild_list_separator}" command "${${var}}")
+  set("${out_var_prefix}${var}" "${command}"
+    PARENT_SCOPE)
+endfunction ()
+
+#------------------------------------------------------------------------------
 # internal macro to validate project names.
 function (_superbuild_project_check_name name)
   if (NOT name MATCHES "^[a-zA-Z][a-zA-Z0-9]*$")
