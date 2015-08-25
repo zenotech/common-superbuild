@@ -1,18 +1,3 @@
-# Extends ExternalProject_Add(...) by adding a new option.
-#  PROCESS_ENVIRONMENT <environment variables>
-# When present the BUILD_COMMAND and CONFIGURE_COMMAND are executed as a
-# sub-process (using execute_process()) so that the sepecified environment
-# is passed on to the executed command (which does not happen by default).
-# This will be deprecated once CMake starts supporting it.
-
-include(ExternalProject)
-
-# Because of the wrapped and nested way that "make" needs to get called, it's
-# not able to utilize the top level make jobserver so it's -j level must be
-# manually controlled.
-set(PV_MAKE_NCPUS 5 CACHE STRING "Number of make jobs to use for compiling ParaView itself")
-mark_as_advanced(PV_MAKE_NCPUS)
-
 string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
   _ep_keywords_PVExternalProject_Add "${_ep_keywords_ExternalProject_Add}")
 
