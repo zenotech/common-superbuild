@@ -22,15 +22,14 @@ if (CMAKE_GENERATOR MATCHES "Makefiles")
 endif ()
 
 #------------------------------------------------------------------------------
-# Version of the function which strips PROCESS_ENVIRONMENT and CAN_USE_SYSTEM
-# arguments for ExternalProject_Add.
+# Version of the function which strips PROCESS_ENVIRONMENT arguments for
+# ExternalProject_Add.
 function (_superbuild_ep_strip_extra_arguments name)
   set(arguments)
   set(accumulate FALSE)
 
   foreach (arg IN LISTS ARGN)
-    if (arg STREQUAL "PROCESS_ENVIRONMENT" OR
-        arg STREQUAL "CAN_USE_SYSTEM")
+    if (arg STREQUAL "PROCESS_ENVIRONMENT")
       set(skip TRUE)
     elseif (arg MATCHES "${_ep_keywords_ExternalProject_Add}")
       set(skip FALSE)
@@ -98,9 +97,9 @@ function (_superbuild_ExternalProject_add name)
     return ()
   endif ()
 
-  # Add "CAN_USE_SYSTEM" and "PROCESS_ENVIRONMENT" to the list of keywords
+  # Add "PROCESS_ENVIRONMENT" to the list of keywords
   # recognized.
-  string(REPLACE ")" "|CAN_USE_SYSTEM|PROCESS_ENVIRONMENT)"
+  string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
     _ep_keywords__superbuild_ExternalProject_add "${_ep_keywords_ExternalProject_Add}")
 
   # Create a temporary target so we can query target properties.
@@ -130,11 +129,11 @@ function (_superbuild_ExternalProject_add name)
   list(APPEND args
     "${install_command}")
 
-  # now strip PROCESS_ENVIRONMENT from argments.
+  # Now strip PROCESS_ENVIRONMENT and commands from arguments.
   set(skip FALSE)
   foreach (arg IN LISTS ARGN)
     if (arg MATCHES "${_ep_keywords__superbuild_ExternalProject_add}")
-      if (arg MATCHES "^(CAN_USE_SYSTEM|PROCESS_ENVIRONMENT|BUILD_COMMAND|INSTALL_COMMAND|CONFIGURE_COMMAND)$")
+      if (arg MATCHES "^(PROCESS_ENVIRONMENT|BUILD_COMMAND|INSTALL_COMMAND|CONFIGURE_COMMAND)$")
         set(skip TRUE)
       else ()
         set(skip FALSE)
