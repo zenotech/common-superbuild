@@ -20,3 +20,26 @@ if (CMAKE_GENERATOR MATCHES "Makefiles")
     set(SUPERBUILD_PROJECT_PARALLELISM 1)
   endif ()
 endif ()
+
+#------------------------------------------------------------------------------
+# Version of the function which strips PROCESS_ENVIRONMENT and CAN_USE_SYSTEM
+# arguments for ExternalProject_Add.
+function (_superbuild_ep_strip_extra_arguments name)
+  set(arguments)
+  set(accumulate FALSE)
+
+  foreach (arg IN LISTS ARGN)
+    if (arg STREQUAL "PROCESS_ENVIRONMENT" OR
+        arg STREQUAL "CAN_USE_SYSTEM")
+      set(skip TRUE)
+    elseif (arg MATCHES "${_ep_keywords_ExternalProject_Add}")
+      set(skip FALSE)
+    endif ()
+
+    if (NOT skip)
+      list(APPEND arguments "${arg}")
+    endif ()
+  endforeach ()
+
+  ExternalProject_Add("${name}" "${arguments}")
+endfunction ()

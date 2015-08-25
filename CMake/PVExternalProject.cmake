@@ -1,29 +1,6 @@
 string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
   _ep_keywords_PVExternalProject_Add "${_ep_keywords_ExternalProject_Add}")
 
-#------------------------------------------------------------------------------
-# win32 version of the macro that simply strips the PROCESS_ENVIRONMENT and call
-# ExternalProject_Add().
-function(_PVExternalProject_Add_Win32 name)
-    set (arguments)
-    set (optional_depends)
-    set (accumulate TRUE)
-    foreach(arg IN LISTS ARGN)
-      if ("${arg}" MATCHES "^PROCESS_ENVIRONMENT$")
-        set (accumulate FALSE)
-      elseif ("${arg}" MATCHES "${_ep_keywords_ExternalProject_Add}")
-        set (accumulate TRUE)
-      endif()
-      if (accumulate)
-        list(APPEND arguments "${arg}")
-      endif()
-    endforeach()
-    ExternalProject_Add(${name} "${arguments}")
-    unset(arguments)
-    unset(optional_depends)
-    unset(accumulate)
-endfunction()
-
 function (PVExternalProject_Add name)
   if (WIN32)
      _PVExternalProject_Add_Win32(${name} "${ARGN}")
