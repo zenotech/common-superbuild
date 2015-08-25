@@ -7,22 +7,20 @@ list(INSERT CMAKE_MODULE_PATH 0
 include("SuperbuildUtils")
 include("SuperbuildCrossMacros")
 
-set (SuperBuild_CMAKE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
-set (SuperBuild_PROJECTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Projects")
-set (SuperBuild_BINARY_DIR ${ParaViewSuperBuild_BINARY_DIR})
-
 # The external projects list separator string should be set ASAP so that
 # anything else can use it that needs it.
 set (ep_list_separator "-+-")
 
-set (platform)
+set(platform)
 if (APPLE)
-  set (platform "apple" "apple-unix")
+  set(platforms "apple" "apple-unix")
 elseif (UNIX)
-  set (platform "unix" "apple-unix")
+  set(platforms "unix" "apple-unix")
 elseif (WIN32)
-  set (platform "win32")
-endif()
+  set(platforms "win32")
+else ()
+  message(FATAL_ERROR "unsupported platform")
+endif ()
 
 superbuild_cross_declare_variables()
 superbuild_osx_determine_target()
@@ -33,21 +31,6 @@ if (superbuild_is_cross)
   set(shared_default OFF)
 endif ()
 option(BUILD_SHARED_LIBS "Enable shared libraries" "${shared_default}")
-
-#-----------------------------------------------------------------------------
-# Setup CMAKE_MODULE_PATH so that platform specific configurations are processed
-# before the generic ones.
-string(TOLOWER "${CROSS_BUILD_STAGE}" lstage)
-set(SuperBuild_MODULE_PATH)
-foreach(P IN LISTS platform)
-  list(APPEND SuperBuild_MODULE_PATH "${SuperBuild_PROJECTS_DIR}/${P}/${lstage}")
-  list(APPEND SuperBuild_MODULE_PATH "${SuperBuild_PROJECTS_DIR}/${P}/")
-endforeach()
-list(APPEND SuperBuild_MODULE_PATH "${SuperBuild_PROJECTS_DIR}/common/")
-list(APPEND SuperBuild_MODULE_PATH "${SuperBuild_PROJECTS_DIR}")
-list(APPEND SuperBuild_MODULE_PATH "${SuperBuild_CMAKE_DIR}")
-list(APPEND SuperBuild_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
-list(INSERT CMAKE_MODULE_PATH 0 ${SuperBuild_MODULE_PATH})
 
 #-----------------------------------------------------------------------------
 # Setup some standard variables that control various locations and flags.
@@ -109,6 +92,25 @@ string (STRIP "${ldflags}" ldflags)
 string (STRIP "${cppflags}" cppflags)
 string (STRIP "${cxxflags}" cxxflags)
 string (STRIP "${cflags}"  cflags)
+
+#-----------------------------------------------------------------------------
+# Setup CMAKE_MODULE_PATH so that platform specific configurations are
+# processed before the generic ones.
+set(project_path)
+list(APPEND superbuild_project_roots
+  "${CMAKE_CURRENT_LIST_DIR}/projects")
+foreach (root IN LISTS superbuild_project_roots)
+  foreach (platform IN LISTS platforms)
+    list(APPEND project_path
+      "${root}/${platform}/${lstage}"
+      "${root}/${platform}")
+  endforeach ()
+  list(APPEND project_path
+    "${root}/common"
+    "${root}")
+endforeach ()
+list(INSERT CMAKE_MODULE_PATH 0
+  ${project_path})
 
 if (NOT CROSS_BUILD_STAGE STREQUAL "HOST" AND
     COMMAND superbuild_cross_prepare_target)
