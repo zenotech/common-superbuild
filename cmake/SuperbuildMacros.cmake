@@ -80,3 +80,22 @@ function (superbuild_add_dummy_project _name)
     PROPERTY
       "${_name}_is_dummy" TRUE)
 endfunction ()
+
+function (superbuild_add_extra_cmake_args)
+  if (NOT superbuild_build_phase)
+    return ()
+  endif ()
+
+  _superbuild_check_current_project("add_extra_cmake_args")
+
+  set_property(GLOBAL APPEND
+    PROPERTY
+      "${current_project}_cmake_args" ${ARGN})
+endfunction ()
+
+function (_superbuild_check_current_project func)
+  if (NOT current_project)
+    message(AUTHOR_WARNING "${func} called an incorrect stage.")
+    return ()
+  endif ()
+endfunction ()

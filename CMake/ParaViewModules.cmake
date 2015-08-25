@@ -261,18 +261,6 @@ function(add_external_project_internal name)
   endif()
 endfunction()
 
-macro(add_extra_cmake_args)
-  if (build-projects)
-    if (NOT cm-project)
-      message(AUTHOR_WARNING "add_extra_cmake_args called an incorrect stage.")
-      return()
-    endif()
-    set_property(GLOBAL APPEND PROPERTY ${cm-project}_CMAKE_ARGS ${ARGN})
-  else()
-    # nothing to do.
-  endif()
-endmacro()
-
 #------------------------------------------------------------------------------
 # in case of OpenMPI on Windows, for example, we need to pass extra compiler
 # flags when building projects that use MPI. This provides an experimental
