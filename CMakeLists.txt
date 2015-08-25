@@ -100,7 +100,7 @@ if (COMMAND superbuild_determine_versions)
   superbuild_determine_versions()
 endif ()
 
-include (ParaViewModules)
+include(SuperbuildMacros)
 
 #-----------------------------------------------------------------------------
 set (CM_PROJECTS_ALL)

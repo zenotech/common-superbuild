@@ -2,80 +2,6 @@ include(PVExternalProject)
 include(CMakeParseArguments)
 
 #------------------------------------------------------------------------------
-macro(add_external_project _name)
-  project_check_name(${_name})
-  set(cm-project ${_name})
-  set(${cm-project}_DECLARED 1)
-
-  if (build-projects)
-    set (arguments)
-    set (optional_depends)
-    set (accumulate FALSE)
-    set (project_arguments "${ARGN}") #need quotes to keep empty list items
-    foreach(arg IN LISTS project_arguments)
-      if ("${arg}" MATCHES "^DEPENDS_OPTIONAL$")
-        set (accumulate TRUE)
-      elseif ("${arg}" MATCHES "${_ep_keywords_ExternalProject_Add}")
-        set (accumulate FALSE)
-      elseif (accumulate)
-        list(APPEND optional_depends "${arg}")
-      endif()
-
-      if (NOT accumulate)
-        list(APPEND arguments "${arg}")
-      endif()
-    endforeach()
-
-    foreach (op_dep ${optional_depends})
-      if (${op_dep}_ENABLED)
-        list (APPEND arguments DEPENDS ${op_dep})
-        #message(STATUS "OPTIONAL DEPENDENCY ${cm-project}->${op_dep}")
-      endif()
-    endforeach()
-    set(${cm-project}_ARGUMENTS "${arguments}")
-
-    unset(arguments)
-    unset(optional_depends)
-    unset(accumulate)
-  else()
-    set(${cm-project}_DEPENDS "")
-    set(${cm-project}_ARGUMENTS "")
-    set(${cm-project}_NEEDED_BY "")
-    set(${cm-project}_DEPENDS_ANY "")
-    set(${cm-project}_DEPENDS_OPTIONAL "")
-    set(${cm-project}_CAN_USE_SYSTEM 0)
-    set (doing "")
-
-    set (project_arguments "${ARGN}") #need quotes to keep empty list items
-    foreach(arg IN LISTS project_arguments)
-      if ("${arg}" MATCHES "^DEPENDS$")
-        set (doing "DEPENDS")
-      elseif ("${arg}" MATCHES "^DEPENDS_OPTIONAL$")
-        set (doing "DEPENDS_OPTIONAL")
-      elseif ("${arg}" MATCHES "${_ep_keywords_ExternalProject_Add}")
-        set (doing "")
-      elseif (doing STREQUAL "DEPENDS")
-        list(APPEND ${cm-project}_DEPENDS "${arg}")
-      elseif (doing STREQUAL "DEPENDS_OPTIONAL")
-        list(APPEND ${cm-project}_DEPENDS_OPTIONAL "${arg}")
-      endif()
-
-    endforeach()
-
-    option(ENABLE_${cm-project} "Request to build project ${cm-project}" OFF)
-    set_property(CACHE ENABLE_${cm-project} PROPERTY TYPE BOOL)
-    list(APPEND CM_PROJECTS_ALL "${cm-project}")
-
-    if (USE_SYSTEM_${cm-project})
-      set(${cm-project}_DEPENDS "")
-      set(${cm-project}_DEPENDS_OPTIONAL "")
-    endif()
-    set(${cm-project}_DEPENDS_ANY
-      ${${cm-project}_DEPENDS} ${${cm-project}_DEPENDS_OPTIONAL})
-  endif()
-endmacro()
-
-#------------------------------------------------------------------------------
 # adds a dummy project to the build, which is a great way to setup a list
 # of dependencies as a build option. IE dummy project that turns on all
 # third party libraries
@@ -85,22 +11,6 @@ macro(add_external_dummy_project _name)
   else()
     add_external_project(${_name} "${ARGN}")
     set_property(GLOBAL PROPERTY ${_name}_IS_DUMMY_PROJECT TRUE)
-  endif()
-endmacro()
-
-#------------------------------------------------------------------------------
-# similar to add_external_project, except provides the user with an option to
-# use-system installation of the project.
-macro(add_external_project_or_use_system _name)
-  if (build-projects)
-    add_external_project(${_name} "${ARGN}")
-  else()
-    add_external_project(${_name} "${ARGN}")
-    set(${_name}_CAN_USE_SYSTEM 1)
-
-    # add an option an hide it by default. We'll expose it to the user if needed.
-    option(USE_SYSTEM_${_name} "Use system ${_name}" OFF)
-    set_property(CACHE USE_SYSTEM_${_name} PROPERTY TYPE INTERNAL)
   endif()
 endmacro()
 
