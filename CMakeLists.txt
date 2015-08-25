@@ -4,45 +4,7 @@ project(common-superbuild)
 
 list(INSERT CMAKE_MODULE_PATH 0
   "${CMAKE_CURRENT_LIST_DIR}/cmake")
-
-if (APPLE)
-  if(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
-    set(CMAKE_OSX_ARCHITECTURES "x86_64" CACHE STRING "By default, build for 64-bit Leopard")
-  endif()
-
-  if (CMAKE_OSX_SDK)
-    if (NOT CMAKE_OSX_SYSROOT)
-      execute_process(
-        COMMAND xcodebuild
-                -sdk ${CMAKE_OSX_SDK}
-                -version Path
-        OUTPUT_VARIABLE
-                CMAKE_OSX_SYSROOT
-        RESULT_VARIABLE
-                res
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
-      if (res)
-        message(FATAL_ERROR "Cannot determine SDK path for SDK: ${CMAKE_OSX_SDK}")
-      endif ()
-    endif ()
-    if (NOT CMAKE_OSX_DEPLOYMENT_TARGET)
-      execute_process(
-        COMMAND xcodebuild
-                -sdk ${CMAKE_OSX_SDK}
-                -version SDKVersion
-        OUTPUT_VARIABLE
-                CMAKE_OSX_DEPLOYMENT_TARGET
-        RESULT_VARIABLE
-                res
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
-      if (res)
-        message(FATAL_ERROR "Cannot determine SDK version for SDK: ${CMAKE_OSX_SDK}")
-      endif ()
-    endif ()
-  else ()
-    message(FATAL_ERROR "Ensure that CMAKE_OSX_SDK is set correctly")
-  endif ()
-endif()
+include("SuperbuildUtils")
 
 set (SuperBuild_CMAKE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 set (SuperBuild_PROJECTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Projects")
@@ -60,6 +22,8 @@ elseif (UNIX)
 elseif (WIN32)
   set (platform "win32")
 endif()
+
+superbuild_osx_determine_target()
 
 #-----------------------------------------------------------------------------
 # Cross compilation
@@ -119,7 +83,6 @@ if (NOT CROSS_BUILD_STAGE STREQUAL "CROSS")
     set (64bit_build FALSE)
   endif()
 endif()
-
 
 #-----------------------------------------------------------------------------
 # Setup some standard variables that control various locations and flags.
