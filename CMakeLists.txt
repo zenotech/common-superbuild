@@ -34,26 +34,11 @@ option(BUILD_SHARED_LIBS "Enable shared libraries" "${shared_default}")
 
 #-----------------------------------------------------------------------------
 # Setup some standard variables that control various locations and flags.
-set (install_location "${CMAKE_CURRENT_BINARY_DIR}/install")
-set (download_location "${CMAKE_CURRENT_BINARY_DIR}/downloads"
-     CACHE PATH "Location where source tar-balls are (to be) downloaded.")
-mark_as_advanced(download_location)
-
-if (WIN32)
-  set (ldflags)
-  set (cppflags)
-  set (cxxflags)
-  set (ld_library_path)
-else ()
-  # FIXME: currently, if any of these are empty, we have build issues on Unix.
-  set (ldflags "$ENV{LDFLAGS} -L${install_location}/lib")
-  if (NOT CROSS_BUILD_STAGE STREQUAL "CROSS")
-    set (cppflags "$ENV{CPPFLAGS} -fPIC")
-    set (cxxflags "$ENV{CXXFLAGS} -fPIC")
-    set (cflags "$ENV{CFLAGS} -fPIC")
-  endif()
-  set (ld_library_path "${install_location}/lib:$ENV{LD_LIBRARY_PATH}")
-endif()
+set(superbuild_install_location "${CMAKE_BINARY_DIR}/install")
+set(superbuild_prefix_path "${superbuild_install_location}")
+set(superbuild_download_location "${CMAKE_BINARY_DIR}/downloads"
+  CACHE PATH "Location for downloaded source tarballs")
+mark_as_advanced(superbuild_download_location)
 
 #-----------------------------------------------------------------------------
 # Make sure install/lib directories exist by creating them
@@ -75,23 +60,17 @@ if (UNIX AND NOT APPLE)
   mark_as_advanced(PASS_LD_LIBRARY_PATH_FOR_BUILDS)
 endif()
 
-if (APPLE)
-  set (cflags "${cflags} -arch x86_64 -mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET} --sysroot=${CMAKE_OSX_SYSROOT} ")
-  set (cppflags "${cppflags} -arch x86_64 -mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET} --sysroot=${CMAKE_OSX_SYSROOT} ")
-  set (cxxflags "${cxxflags} -arch x86_64 -mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET} --sysroot=${CMAKE_OSX_SYSROOT} ")
-endif()
-set (prefix_path "${install_location}")
+superbuild_setup_flags()
 
 # merge in default/user-specified CMake flags.
-set (ldflags "${CMAKE_SHARED_LINKER_FLAGS} ${ldflags}")
-set (cppflags "${CMAKE_CXX_FLAGS} ${cppflags}")
-set (cxxflags "${CMAKE_CXX_FLAGS} ${cxxflags}")
-set (cflags "${CMAKE_C_FLAGS} ${cflags}")
+set(superbuild_ldflags "${CMAKE_SHARED_LINKER_FLAGS} ${superbuild_ldflags}")
+set(superbuild_cpp_flags "${CMAKE_CXX_FLAGS} ${superbuild_cpp_flags}")
+set(superbuild_cxx_flags "${CMAKE_CXX_FLAGS} ${superbuild_cxx_flags}")
+set(superbuild_c_flags "${CMAKE_C_FLAGS} ${superbuild_c_flags}")
 
-string (STRIP "${ldflags}" ldflags)
-string (STRIP "${cppflags}" cppflags)
-string (STRIP "${cxxflags}" cxxflags)
-string (STRIP "${cflags}"  cflags)
+foreach (var ldflags cpp_flags cxx_flags c_flags)
+  string(STRIP "${superbuild_${var}}" "superbuild_${var}")
+endforeach ()
 
 #-----------------------------------------------------------------------------
 # Setup CMAKE_MODULE_PATH so that platform specific configurations are

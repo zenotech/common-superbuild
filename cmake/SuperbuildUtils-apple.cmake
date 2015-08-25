@@ -39,3 +39,18 @@ function (superbuild_osx_determine_target)
     message(FATAL_ERROR "Ensure that CMAKE_OSX_SDK is set correctly")
   endif ()
 endfunction ()
+
+function (superbuild_osx_add_version_flags)
+  if (NOT APPLE)
+    return ()
+  endif ()
+
+  set(osx_flags
+    "-arch ${CMAKE_OSX_ARCHITECTURES} -mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET} --sysroot=${CMAKE_OSX_SYSROOT}")
+
+  foreach (var cxx_flags c_flags)
+    set("superbuild_${var}"
+      "${superbuild_${var}} ${osx_flags}"
+      PARENT_SCOPE)
+  endforeach ()
+endfunction ()
