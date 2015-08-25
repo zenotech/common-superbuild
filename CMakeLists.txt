@@ -40,12 +40,6 @@ set(superbuild_download_location "${CMAKE_BINARY_DIR}/downloads"
   CACHE PATH "Location for downloaded source tarballs")
 mark_as_advanced(superbuild_download_location)
 
-#-----------------------------------------------------------------------------
-# Make sure install/lib directories exist by creating them
-# Windows doesn't like it if that directory does not exist even if it is empty
-file(MAKE_DIRECTORY "${install_location}/lib")
-
-
 if (UNIX AND NOT APPLE)
   # I am not exactly sure about the cause of these issues and how to cleanly
   # overcome them, however, on some linuxes when Cmake is built shared, we end
@@ -71,6 +65,8 @@ set(superbuild_c_flags "${CMAKE_C_FLAGS} ${superbuild_c_flags}")
 foreach (var ldflags cpp_flags cxx_flags c_flags)
   string(STRIP "${superbuild_${var}}" "superbuild_${var}")
 endforeach ()
+
+superbuild_prepare_build_tree()
 
 #-----------------------------------------------------------------------------
 # Setup CMAKE_MODULE_PATH so that platform specific configurations are
