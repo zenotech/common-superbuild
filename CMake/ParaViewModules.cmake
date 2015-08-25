@@ -262,47 +262,6 @@ function(add_external_project_internal name)
 endfunction()
 
 #------------------------------------------------------------------------------
-# in case of OpenMPI on Windows, for example, we need to pass extra compiler
-# flags when building projects that use MPI. This provides an experimental
-# mechanism for the same.
-# There are two kinds for flags, flag to use to build to the project itself, or
-# those to use to build any dependencies. The default is latter. For former,
-# pass in an optional argument PROJECT_ONLY.
-function(append_flags key value)
-  if (NOT "x${key}" STREQUAL "xCMAKE_CXX_FLAGS" AND
-      NOT "x${key}" STREQUAL "xCMAKE_C_FLAGS" AND
-      NOT "x${key}" STREQUAL "xLDFLAGS")
-    message(AUTHOR_WARNING
-      "Currently, only CMAKE_CXX_FLAGS, CMAKE_C_FLAGS, and LDFLAGS are supported.")
-  endif()
-  set (project_only FALSE)
-  foreach (arg IN LISTS ARGN)
-    if ("${arg}" STREQUAL "PROJECT_ONLY")
-      set (project_only TRUE)
-    else()
-      message(AUTHOR_WARNING "Unknown argument to append_flags(), ${arg}.")
-    endif()
-  endforeach()
-
-  if (build-projects)
-    if (NOT cm-project)
-      message(AUTHOR_WARNING "add_extra_cmake_args called an incorrect stage.")
-      return()
-    endif()
-    if (project_only)
-      set_property(GLOBAL APPEND PROPERTY
-        ${cm-project}_APPEND_PROJECT_ONLY_FLAGS_${key} "${value}")
-    else ()
-      set_property(GLOBAL APPEND PROPERTY
-        ${cm-project}_APPEND_FLAGS_${key} "${value}")
-    endif()
-  else()
-    # nothing to do.
-  endif()
-endfunction()
-#------------------------------------------------------------------------------
-
-#------------------------------------------------------------------------------
 # When passing string with ";" to add_external_project() macros, we need to
 # ensure that the -+- is replaced with the LIST_SEPARATOR.
 macro(sanitize_lists_in_string out_var_prefix var)

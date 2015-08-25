@@ -109,6 +109,44 @@ function (superbuild_project_add_step name)
       "${current_project}_step_${name}" ${ARGN})
 endfunction ()
 
+#------------------------------------------------------------------------------
+# In case of OpenMPI on Windows, for example, we need to pass extra compiler
+# flags when building projects that use MPI. This provides an experimental
+# mechanism for the same.
+# There are two kinds of flags, those to use to build to the project itself, or
+# those to use to build any dependencies. The default is the latter. For former,
+# pass in an optional argument PROJECT_ONLY.
+function (superbuild_append_flags key value)
+  if (NOT "x${key}" STREQUAL "xCMAKE_CXX_FLAGS" AND
+      NOT "x${key}" STREQUAL "xCMAKE_C_FLAGS" AND
+      NOT "x${key}" STREQUAL "xLDFLAGS")
+    message(AUTHOR_WARNING
+      "Currently, only CMAKE_CXX_FLAGS, CMAKE_C_FLAGS, and LDFLAGS are supported.")
+  endif ()
+
+  set(project_only FALSE)
+  foreach (arg IN LISTS ARGN)
+    if (arg STREQUAL "PROJECT_ONLY")
+      set(project_only TRUE)
+    else ()
+      message(AUTHOR_WARNING "Unknown argument to append_flags(), ${arg}.")
+    endif ()
+  endforeach ()
+
+  if (build-projects)
+    _superbuild_check_current_project("append_flags")
+
+    set(property "${current_project}_append_flags_${key}")
+    if (project_only)
+      set(property "${current_project}_append_project_only_flags_${key}")
+    endif ()
+
+    set_property(GLOBAL APPEND
+      PROPERTY
+        "${property}" "${value}")
+  endif ()
+endfunction ()
+
 function (_superbuild_check_current_project func)
   if (NOT current_project)
     message(AUTHOR_WARNING "${func} called an incorrect stage.")
