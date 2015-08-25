@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 2.8.9)
 
 project(common-superbuild)
 
+if (CMAKE_SOURCE_DIR STREQUAL common-superbuild_SOURCE_DIR)
+  message(FATAL_ERROR
+    "This project is not meant to be run directly, but instead used via "
+    "add_subdirectory.")
+endif ()
+
 list(INSERT CMAKE_MODULE_PATH 0
   "${CMAKE_CURRENT_LIST_DIR}/cmake")
 include("SuperbuildUtils")
