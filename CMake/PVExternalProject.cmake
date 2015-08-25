@@ -2,25 +2,6 @@ string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
   _ep_keywords_PVExternalProject_Add "${_ep_keywords_ExternalProject_Add}")
 
 function (PVExternalProject_Add name)
-  if (WIN32)
-     _PVExternalProject_Add_Win32(${name} "${ARGN}")
-    return()
-  endif()
-
-  # process arguments are detect USE_ENVIRONMENT, BUILD_COMMAND and
-  # CONFIGURE_COMMAND.
-
-  # just create a temporary target so we can set target properties.
-  add_custom_target(pv-${name})
-  _ep_parse_arguments(PVExternalProject_Add pv-${name} _EP_ "${ARGN}")
-
-  get_property(has_process_environment TARGET pv-${name}
-    PROPERTY _EP_PROCESS_ENVIRONMENT SET)
-  if (NOT has_process_environment)
-    ExternalProject_Add(${name} "${ARGN}")
-    return()
-  endif()
-
   set (new_argn)
 
   #check for configure command
