@@ -284,7 +284,7 @@ function (superbuild_process_dependencies)
       PROPERTY "${project}_is_dummy")
     if (can_use_system AND USE_SYSTEM_${project})
       _superbuild_add_dummy_project_internal("${project}")
-      include("${project}.use.system")
+      include("${project}.system")
     elseif (is_dummy)
       # This project isn't built, just used as a graph node to represent a
       # group of dependencies.
