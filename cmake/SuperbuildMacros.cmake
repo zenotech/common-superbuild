@@ -148,6 +148,46 @@ function (superbuild_append_flags key value)
 endfunction ()
 
 #------------------------------------------------------------------------------
+# Get dependencies for a project, including optional dependencies that are
+# currently enabled. Since this macro looks at the ${mod}_enabled flag, it
+# cannot be used in the 'processing' pass, but the 'build' pass alone.
+function (superbuild_get_project_depends name prefix)
+  if (NOT superbuild_build_phase)
+    message(AUTHOR_WARNING "get_project_depends can only be used in build pass")
+  endif ()
+
+  if (${prefix}_${_name}_done)
+    return ()
+  endif ()
+  set(${prefix}_${_name}_done TRUE)
+
+  # Get regular dependencies.
+  foreach (dep IN LISTS "${name}_depends")
+    if (NOT ${prefix}_${dep}_done)
+      list(APPEND "${prefix}_depends"
+        "${dep}")
+      superbuild_get_project_depends("${dep}" "${prefix}")
+    endif ()
+  endforeach ()
+
+  # Get enabled optional dependencies.
+  foreach (dep IN LISTS "${name}_depends_optional")
+    if (${dep}_enabled AND NOT ${prefix}_${dep}_done)
+      list(APPEND "${prefix}_depends"
+        "${dep}")
+      superbuild_get_project_depends("${dep}" "${prefix}")
+    endif ()
+  endforeach ()
+
+  if (${prefix}_depends)
+    list(REMOVE_DUPLICATES "${prefix}_depends")
+  endif ()
+  set("${prefix}_depends"
+    "${${prefix}_depends}"
+    PARENT_SCOPE)
+endfunction ()
+
+#------------------------------------------------------------------------------
 # internal macro to validate project names.
 function (_superbuild_project_check_name name)
   if (NOT name MATCHES "^[a-zA-Z][a-zA-Z0-9]*$")
