@@ -309,6 +309,20 @@ function (_superbuild_enable_project name needed_by)
 endfunction ()
 
 #------------------------------------------------------------------------------
+function (_superbuild_add_dummy_project_internal name)
+  superbuild_get_project_depends("${name}" arg)
+
+  ExternalProject_Add("${name}"
+    DEPENDS           ${arg_depends}
+    DOWNLOAD_COMMAND  ""
+    SOURCE_DIR        ""
+    UPDATE_COMMAND    ""
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND     ""
+    INSTALL_COMMAND   "")
+endfunction ()
+
+#------------------------------------------------------------------------------
 # internal macro to validate project names.
 function (_superbuild_project_check_name name)
   if (NOT name MATCHES "^[a-zA-Z][a-zA-Z0-9]*$")

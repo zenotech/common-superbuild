@@ -2,21 +2,6 @@ include(PVExternalProject)
 include(CMakeParseArguments)
 
 #------------------------------------------------------------------------------
-function(add_external_dummy_project_internal name)
-  set(arg_DEPENDS)
-  get_project_depends(${name} arg)
-  ExternalProject_Add(${name}
-  DEPENDS ${arg_DEPENDS}
-  DOWNLOAD_COMMAND ""
-  SOURCE_DIR ""
-  UPDATE_COMMAND ""
-  CONFIGURE_COMMAND ""
-  BUILD_COMMAND ""
-  INSTALL_COMMAND ""
-  )
-endfunction()
-
-#------------------------------------------------------------------------------
 function(add_external_project_internal name)
   set (cmake_params)
   foreach (flag CMAKE_BUILD_TYPE
