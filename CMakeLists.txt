@@ -87,10 +87,11 @@ endif ()
 include(SuperbuildRevisionMacros)
 
 # Gather version information.
-include("${CMAKE_CURRENT_LIST_DIR}/versions.cmake")
-if (COMMAND superbuild_determine_versions)
-  superbuild_determine_versions()
-endif ()
+list(APPEND superbuild_version_files
+  "${CMAKE_CURRENT_LIST_DIR}/versions.cmake")
+foreach (version_file IN LISTS superbuild_version_files)
+  include("${version_file}")
+endforeach ()
 
 include(SuperbuildMacros)
 
