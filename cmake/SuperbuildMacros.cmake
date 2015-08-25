@@ -188,6 +188,113 @@ function (superbuild_get_project_depends name prefix)
 endfunction ()
 
 #------------------------------------------------------------------------------
+function (superbuild_process_dependencies)
+  set (enabled_projects)
+
+  get_property(all_projects GLOBAL
+    PROPERTY superbuild_projects)
+  foreach(project IN LISTS all_projects)
+    get_property("${project}_depends" GLOBAL
+      PROPERTY "${project}_depends")
+    get_property("${project}_depends_optional" GLOBAL
+      PROPERTY "${project}_depends_optional")
+    set("${project}_depends_all"
+      "${${project}_depends}"
+      "${${project}_depends_optional}")
+
+    if (ENABLE_${project})
+      list(APPEND enabled_projects "${project}")
+    endif ()
+
+    set("${project}_needed_by")
+  endforeach ()
+  if (NOT enabled_projects)
+    message(FATAL_ERROR "No projects enabled!")
+  endif ()
+  list(SORT enabled_projects) # Deterministic order.
+
+  # Order list to satisfy dependencies.
+  # First only use the non-optional dependencies.
+  include(TopologicalSort)
+  topological_sort(enabled_projects "" _depends)
+
+  # Now generate a project order using both, optional and non-optional
+  # dependencies.
+  set(ordered_projects "${enabled_projects}")
+  topological_sort(enabled_projects "" _depends_all)
+
+  # Update enabled_projects to be in the correct order taking into
+  # consideration optional dependencies.
+  set(new_order)
+  foreach (project IN LISTS ordered_projects)
+    list(FIND enabled_projects "${project}" found)
+    if (found GREATER -1)
+      list(APPEND new_order "${project}")
+    endif ()
+  endforeach ()
+  set (enabled_projects ${new_order})
+
+  # build information about what project needs what.
+  foreach (project IN LISTS enabled_projects)
+    _superbuild_enable_project("${project}" "")
+    foreach (dep IN LISTS "${project}_depends")
+      _superbuild_enable_project("${dep}" "${project}")
+    endforeach ()
+  endforeach ()
+
+  foreach (project IN LISTS enabled_projects)
+    if (ENABLE_${project})
+      message(STATUS "Enabling ${project} as requested.")
+    else ()
+      list(SORT "${project}_needed_by")
+      list(REMOVE_DUPLICATES "${project}_needed_by")
+
+      string(REPLACE ";" ", " required_by "${${project}_needed_by}")
+      message(STATUS "Enabling ${project} for: ${required_by}")
+      set_property(CACHE "ENABLE_${project}" PROPERTY TYPE INTERNAL)
+    endif ()
+  endforeach ()
+
+  string(REPLACE ";" ", " enabled "${enabled_projects}")
+  message(STATUS "Building projects: ${enabled}")
+
+  set(superbuild_build_phase TRUE)
+  foreach (project IN LISTS enabled_projects)
+    get_property(can_use_system GLOBAL
+      PROPERTY "${project}_system" SET)
+    if (can_use_system)
+      # For every enabled project that can use system, expose the option to the
+      # user.
+      cmake_dependent_option("USE_SYSTEM_${project}" "" OFF
+        "${project}_enabled" OFF)
+    endif ()
+
+    set(current_project "${project}")
+
+    get_property(is_dummy GLOBAL
+      PROPERTY "${project}_is_dummy")
+    if (can_use_system AND USE_SYSTEM_${project})
+      _superbuild_add_dummy_project_internal("${project}")
+      include("${project}.use.system")
+    elseif (is_dummy)
+      # This project isn't built, just used as a graph node to represent a
+      # group of dependencies.
+      include("${project}")
+      _superbuild_add_dummy_project_internal("${project}")
+    else ()
+      include("${project}")
+      _superbuild_add_project_internal("${project}" "${${project}_arguments}")
+    endif ()
+  endforeach ()
+
+  foreach (project IN LISTS all_projects)
+    set("${project}_enabled"
+      "${${project}_enabled}"
+      PARENT_SCOPE)
+  endforeach ()
+endfunction ()
+
+#------------------------------------------------------------------------------
 # internal macro to validate project names.
 function (_superbuild_project_check_name name)
   if (NOT name MATCHES "^[a-zA-Z][a-zA-Z0-9]*$")
