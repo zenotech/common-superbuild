@@ -6,6 +6,10 @@ if (CMAKE_SOURCE_DIR STREQUAL common-superbuild_SOURCE_DIR)
   message(FATAL_ERROR
     "This project is not meant to be run directly, but instead used via "
     "add_subdirectory.")
+elseif (NOT COMMAND superbuild_find_projects)
+  message(FATAL_ERROR
+    "The superbuild_find_projects function is not implemented; no projects "
+    "can be enabled.")
 endif ()
 
 list(INSERT CMAKE_MODULE_PATH 0
