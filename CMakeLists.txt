@@ -5,6 +5,7 @@ project(common-superbuild)
 list(INSERT CMAKE_MODULE_PATH 0
   "${CMAKE_CURRENT_LIST_DIR}/cmake")
 include("SuperbuildUtils")
+include("SuperbuildCrossMacros")
 
 set (SuperBuild_CMAKE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 set (SuperBuild_PROJECTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Projects")
@@ -23,20 +24,14 @@ elseif (WIN32)
   set (platform "win32")
 endif()
 
+superbuild_cross_declare_variables()
 superbuild_osx_determine_target()
 
-#-----------------------------------------------------------------------------
-# Cross compilation
-set (CROSS_BUILD_STAGE "HOST" CACHE STRING
-  "Cross compilation stage: either HOST(ie no crosscompile)|TOOLS|CROSS")
-set_property(CACHE CROSS_BUILD_STAGE PROPERTY STRINGS
-   "HOST" "TOOLS" "CROSS")
-if(CROSS_BUILD_STAGE STREQUAL "HOST")
-  # Default to shared libs
-  set(BUILD_SHARED_LIBS ON  CACHE BOOL "Enable shared libraries")
-else()
-  set(BUILD_SHARED_LIBS OFF CACHE BOOL "Enable shared libraries")
-endif()
+set(shared_default ON)
+if (superbuild_is_cross)
+  set(shared_default OFF)
+endif ()
+option(BUILD_SHARED_LIBS "Enable shared libraries" "${shared_default}")
 
 #-----------------------------------------------------------------------------
 # Setup CMAKE_MODULE_PATH so that platform specific configurations are processed
@@ -54,28 +49,10 @@ list(APPEND SuperBuild_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 list(INSERT CMAKE_MODULE_PATH 0 ${SuperBuild_MODULE_PATH})
 
 #-----------------------------------------------------------------------------
-if (NOT CROSS_BUILD_STAGE STREQUAL "HOST")
-  include(CrossCompilationMacros)
-
-  #ask user to say what machine they are compiling onto
-  #so we can get the right environment settings
-  query_target_machine()
-
-  if (CROSS_BUILD_STAGE STREQUAL "CROSS")
-    #configure the platform dependent settings
-    #64bit_build, static_only, mpi search path
-    do_cross_platform_settings()
-
-    #find location of hosttools or host build to get compilation tools from
-    find_hosttools()
-  endif()
-endif()
-
-#-----------------------------------------------------------------------------
 # Collect information about the build platform.
 include(CheckTypeSize)
 
-if (NOT CROSS_BUILD_STAGE STREQUAL "CROSS")
+if (NOT CROSS_BUILD_STAGE STREQUAL "cross")
   check_type_size(void* VOID_PTR_SIZE BUILTIN_TYPES_ONLY)
   if (VOID_PTR_SIZE EQUAL 8)
     set (64bit_build TRUE)
@@ -144,6 +121,11 @@ string (STRIP "${ldflags}" ldflags)
 string (STRIP "${cppflags}" cppflags)
 string (STRIP "${cxxflags}" cxxflags)
 string (STRIP "${cflags}"  cflags)
+
+if (NOT CROSS_BUILD_STAGE STREQUAL "HOST" AND
+    COMMAND superbuild_cross_prepare_target)
+  superbuild_cross_prepare_target()
+endif ()
 
 include (ParaViewModules)
 
