@@ -2,24 +2,6 @@ string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
   _ep_keywords_PVExternalProject_Add "${_ep_keywords_ExternalProject_Add}")
 
 function (PVExternalProject_Add name)
-  # now strip PROCESS_ENVIRONMENT from argments.
-  set (skip TRUE)
-  foreach(arg IN LISTS ARGN)
-    if (arg MATCHES "${_ep_keywords_PVExternalProject_Add}")
-      if (arg MATCHES "^(PROCESS_ENVIRONMENT|BUILD_COMMAND|INSTALL_COMMAND|CONFIGURE_COMMAND)$")
-        set (skip FALSE)
-      else()
-        set (skip TRUE)
-      endif ()
-    endif()
-    if (skip)
-      list(APPEND new_argn ${arg})
-    endif()
-  endforeach()
-  #new_argn has to be quoted to keep empty list elements around
-  #so that we properly parse empty install, configure, build,  etc
-  ExternalProject_Add(${name} "${new_argn}")
-
   # configure the scripts after the call ExternalProject_Add() since that sets
   # up the directories correctly.
   get_target_property(process_environment pv-${name}

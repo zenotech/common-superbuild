@@ -129,4 +129,24 @@ function (_superbuild_ExternalProject_add name)
   endif ()
   list(APPEND args
     "${install_command}")
+
+  # now strip PROCESS_ENVIRONMENT from argments.
+  set(skip FALSE)
+  foreach (arg IN LISTS ARGN)
+    if (arg MATCHES "${_ep_keywords__superbuild_ExternalProject_add}")
+      if (arg MATCHES "^(CAN_USE_SYSTEM|PROCESS_ENVIRONMENT|BUILD_COMMAND|INSTALL_COMMAND|CONFIGURE_COMMAND)$")
+        set(skip TRUE)
+      else ()
+        set(skip FALSE)
+      endif ()
+    endif ()
+    if (NOT skip)
+      list(APPEND args
+        "${arg}")
+    endif ()
+  endforeach ()
+
+  # Quote args to keep empty list elements around so that we properly parse
+  # empty install, configure, build, etc.
+  ExternalProject_Add("${name}" "${args}")
 endfunction ()
