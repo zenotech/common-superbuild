@@ -84,7 +84,14 @@ endif ()
 
 include(SuperbuildMacros)
 
-#-----------------------------------------------------------------------------
-set (CM_PROJECTS_ALL)
+superbuild_find_projects(superbuild_projects)
+if (NOT superbuild_projects)
+  message(FATAL_ERROR "No projects are configured!")
+endif ()
 
-process_dependencies()
+# Discover the projects.
+foreach (project IN LISTS superbuild_projects)
+  include("${project}")
+endforeach ()
+# Enable projects, etc.
+superbuild_process_dependencies()
