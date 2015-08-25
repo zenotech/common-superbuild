@@ -302,20 +302,6 @@ function(append_flags key value)
 endfunction()
 #------------------------------------------------------------------------------
 
-
-macro(add_external_project_step name)
-  if (build-projects)
-    if (NOT cm-project)
-      message(AUTHOR_WARNING "add_external_project_step called an incorrect stage.")
-      return()
-    endif()
-    set_property(GLOBAL APPEND PROPERTY ${cm-project}_STEPS "${name}")
-    set_property(GLOBAL APPEND PROPERTY ${cm-project}-STEP-${name} ${ARGN})
-  else()
-    # nothing to do.
-  endif()
-endmacro()
-
 #------------------------------------------------------------------------------
 # When passing string with ";" to add_external_project() macros, we need to
 # ensure that the -+- is replaced with the LIST_SEPARATOR.

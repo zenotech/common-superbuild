@@ -93,6 +93,22 @@ function (superbuild_add_extra_cmake_args)
       "${current_project}_cmake_args" ${ARGN})
 endfunction ()
 
+#------------------------------------------------------------------------------
+function (superbuild_project_add_step name)
+  if (NOT superbuild_build_phase)
+    return ()
+  endif ()
+
+  _superbuild_check_current_project("add_external_project_step")
+
+  set_property(GLOBAL APPEND
+    PROPERTY
+      "${current_project}_steps" "${name}")
+  set_property(GLOBAL
+    PROPERTY
+      "${current_project}_step_${name}" ${ARGN})
+endfunction ()
+
 function (_superbuild_check_current_project func)
   if (NOT current_project)
     message(AUTHOR_WARNING "${func} called an incorrect stage.")
