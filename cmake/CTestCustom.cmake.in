@@ -21,3 +21,8 @@ list(APPEND CTEST_CUSTOM_ERROR_EXCEPTION
   # again from numpy, skip configtest errors.
   "_configtest"
 )
+
+set(extra_ctestcustom "@extra_ctest_custom_args@")
+if (extra_ctestcustom)
+  include("${extra_ctestcustom}")
+endif ()
