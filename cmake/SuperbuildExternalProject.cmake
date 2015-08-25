@@ -44,6 +44,52 @@ function (_superbuild_ep_strip_extra_arguments name)
   ExternalProject_Add("${name}" "${arguments}")
 endfunction ()
 
+function (_superbuild_ep_wrap_command var target command_name require)
+  get_property(has_command TARGET "${target}"
+    PROPERTY "_SB_${command_name}_COMMAND" SET)
+  set("has_${var}"
+    "${has_command}"
+    PARENT_SCOPE)
+
+  if (has_command OR command_name STREQUAL "BUILD" OR require)
+    get_property(command TARGET "${target}"
+      PROPERTY "_SB_${command_name}_COMMAND")
+
+    if (NOT has_command)
+      # Get the ExternalProject-generated command.
+      _ep_get_build_command("${target}" "${command_name}" command)
+      # Replace $(MAKE) usage.
+      set(submake_regex "^\\$\\(MAKE\\)")
+      if (command MATCHES "${submake_regex}")
+        string(REGEX REPLACE "${submake_regex}" "${CMAKE_MAKE_PROGRAM} -j${SUPERBUILD_PROJECT_PARALLELISM}" command "${command}")
+      endif ()
+      set(has_command 1)
+    endif ()
+
+    if (command)
+      string(TOLOWER "${command_name}" step)
+      set(new_command
+        "${CMAKE_COMMAND}" -P
+        "${CMAKE_CURRENT_BINARY_DIR}/${target}-${step}.cmake")
+    else ()
+      set(has_command 0)
+    endif ()
+
+    set("original_${var}"
+      "${command}"
+      PARENT_SCOPE)
+    set("${var}"
+      "${command_name}_COMMAND" "${new_command}"
+      PARENT_SCOPE)
+  else ()
+    set("${var}" PARENT_SCOPE)
+  endif ()
+
+  set("req_${var}"
+    "${has_command}"
+    PARENT_SCOPE)
+endfunction ()
+
 function (_superbuild_ExternalProject_add name)
   if (WIN32)
     # Environment variable setting unsupported here.
@@ -67,4 +113,20 @@ function (_superbuild_ExternalProject_add name)
     _superbuild_ep_strip_extra_arguments(${name} "${ARGN}")
     return ()
   endif ()
+
+  set(args)
+  _superbuild_ep_wrap_command(configure_command "sb-${name}" CONFIGURE  FALSE)
+  _superbuild_ep_wrap_command(build_command     "sb-${name}" BUILD      FALSE)
+  _superbuild_ep_wrap_command(install_command   "sb-${name}" INSTALL    TRUE)
+
+  if (req_configure_command)
+    list(APPEND args
+      "${configure_command}")
+  endif ()
+  if (req_build_command)
+    list(APPEND args
+      "${build_command}")
+  endif ()
+  list(APPEND args
+    "${install_command}")
 endfunction ()
