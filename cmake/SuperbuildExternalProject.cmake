@@ -12,18 +12,21 @@ else ()
   include(ExternalProject)
 endif ()
 
-if (CMAKE_GENERATOR MATCHES "Makefiles")
-  # Because of the wrapped and nested way that "make" needs to get called, it's
-  # not able to utilize the top level make jobserver so it's -j level must be
-  # manually controlled.
-  set(SUPERBUILD_PROJECT_PARALLELISM 5
-    CACHE STRING "Number of jobs to use when compiling subprojects")
-  mark_as_advanced(SUPERBUILD_PROJECT_PARALLELISM)
+# Because of the wrapped and nested way that "make" needs to get called, it's
+# not able to utilize the top level make jobserver so it's -j level must be
+# manually controlled.
+set(SUPERBUILD_PROJECT_PARALLELISM 5
+  CACHE STRING "Number of jobs to use when compiling subprojects")
+mark_as_advanced(SUPERBUILD_PROJECT_PARALLELISM)
 
-  # Parallelism isn't support for cross builds or toolchain builds.
-  if (superbuild_is_cross)
-    set(SUPERBUILD_PROJECT_PARALLELISM 1)
-  endif ()
+# Parallelism isn't support for cross builds or toolchain builds.
+if (superbuild_is_cross)
+  set(SUPERBUILD_PROJECT_PARALLELISM 1)
+endif ()
+
+set(superbuild_make_program "make")
+if (CMAKE_GENERATOR MATCHES "Makefiles")
+  set(superbuild_make_program "${CMAKE_MAKE_PROGRAM}")
 endif ()
 
 #------------------------------------------------------------------------------
@@ -68,7 +71,7 @@ function (_superbuild_ep_wrap_command var target command_name require)
     # Replace $(MAKE) usage.
     set(submake_regex "^\\$\\(MAKE\\)")
     if (command MATCHES "${submake_regex}")
-      string(REGEX REPLACE "${submake_regex}" "${CMAKE_MAKE_PROGRAM} -j${SUPERBUILD_PROJECT_PARALLELISM}" command "${command}")
+      string(REGEX REPLACE "${submake_regex}" "${superbuild_make_program} -j${SUPERBUILD_PROJECT_PARALLELISM}" command "${command}")
     endif ()
 
     if (command)
