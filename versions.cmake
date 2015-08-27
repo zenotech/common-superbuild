@@ -63,3 +63,7 @@ endif()
 superbuild_set_revision(freetype
   URL     "http://paraview.org/files/dependencies/freetype-2.4.8.tar.gz"
   URL_MD5 5d82aaa9a4abc0ebbd592783208d9c76)
+
+superbuild_set_revision(mpi
+  URL     "http://paraview.org/files/dependencies/mpich2-1.4.1p1.tar.gz"
+  URL_MD5 b470666749bcb4a0449a072a18e2c204)
