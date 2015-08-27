@@ -28,6 +28,8 @@ macro (ignore_project_errors project)
   project_ignore_regexes(CTEST_CUSTOM_ERROR_EXCEPTION "${project}")
 endmacro ()
 
+ignore_project_warnings(szip)
+
 set(extra_ctestcustom "@extra_ctest_custom_args@")
 if (extra_ctestcustom)
   include("${extra_ctestcustom}")
