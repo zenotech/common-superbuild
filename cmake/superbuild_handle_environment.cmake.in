@@ -18,7 +18,8 @@ foreach (arg IN LISTS environment)
   endif ()
 endforeach()
 
-execute_process(COMMAND ${command}
+execute_process(
+  COMMAND ${command}
   RESULT_VARIABLE rv)
 
 if (rv)
