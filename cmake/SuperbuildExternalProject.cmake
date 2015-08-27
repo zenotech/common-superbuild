@@ -29,6 +29,10 @@ if (CMAKE_GENERATOR MATCHES "Makefiles")
   set(superbuild_make_program "${CMAKE_MAKE_PROGRAM}")
 endif ()
 
+# Add "PROCESS_ENVIRONMENT" to the list of keywords recognized.
+string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
+  _ep_keywords__superbuild_ExternalProject_add "${_ep_keywords_ExternalProject_Add}")
+
 #------------------------------------------------------------------------------
 # Version of the function which strips PROCESS_ENVIRONMENT arguments for
 # ExternalProject_Add.
@@ -105,11 +109,6 @@ function (_superbuild_ExternalProject_add name)
     _superbuild_ep_strip_extra_arguments("${name}" "${ARGN}")
     return ()
   endif ()
-
-  # Add "PROCESS_ENVIRONMENT" to the list of keywords
-  # recognized.
-  string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
-    _ep_keywords__superbuild_ExternalProject_add "${_ep_keywords_ExternalProject_Add}")
 
   # Create a temporary target so we can query target properties.
   add_custom_target("sb-${name}")

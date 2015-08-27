@@ -9,8 +9,9 @@ set(_superbuild_list_separator "-+-")
 function (superbuild_add_project name)
   _superbuild_project_check_name("${name}")
 
-  set(can_use_system)
+  set(can_use_system FALSE)
   set(default OFF)
+  set(allow_developer_mode FALSE)
   set(depends)
   set(optional_depends)
 
@@ -24,6 +25,9 @@ function (superbuild_add_project name)
       set(grab)
     elseif (arg STREQUAL "DEFAULT_ON")
       set(default ON)
+      set(grab)
+    elseif (arg STREQUAL "DEVELOPER_MODE")
+      set(allow_developer_mode TRUE)
       set(grab)
     elseif (arg STREQUAL "DEPENDS")
       set(grab depends)
@@ -77,6 +81,12 @@ function (superbuild_add_project name)
         set(depends)
         set(depends_optional)
       endif ()
+    endif ()
+
+    if (allow_developer_mode)
+      set_property(GLOBAL
+        PROPERTY
+          "${name}_developer_mode" TRUE)
     endif ()
 
     set_property(GLOBAL
@@ -262,12 +272,12 @@ function (superbuild_process_dependencies)
   endforeach ()
 
   foreach (project IN LISTS enabled_projects)
+    list(SORT "${project}_needed_by")
+    list(REMOVE_DUPLICATES "${project}_needed_by")
+
     if (ENABLE_${project})
       message(STATUS "Enabling ${project} as requested.")
     else ()
-      list(SORT "${project}_needed_by")
-      list(REMOVE_DUPLICATES "${project}_needed_by")
-
       string(REPLACE ";" ", " required_by "${${project}_needed_by}")
       message(STATUS "Enabling ${project} for: ${required_by}")
       set_property(CACHE "ENABLE_${project}" PROPERTY TYPE INTERNAL)
@@ -286,6 +296,14 @@ function (superbuild_process_dependencies)
       # user.
       cmake_dependent_option("USE_SYSTEM_${project}" "" OFF
         "${project}_enabled" OFF)
+
+    get_property(allow_developer_mode GLOBAL
+      PROPERTY "${project}_developer_mode" SET)
+    if (allow_developer_mode)
+      # For every enabled project that can be used in developer mode, expose
+      # the option to the user.
+      cmake_dependent_option("DEVELOPER_MODE_${project}" "" OFF
+        "${project}_enabled" OFF)
     endif ()
 
     set(current_project "${project}")
@@ -295,6 +313,13 @@ function (superbuild_process_dependencies)
     if (can_use_system AND USE_SYSTEM_${project})
       _superbuild_add_dummy_project_internal("${project}")
       include("${project}.system")
+    elseif (allow_developer_mode AND DEVELOPER_MODE_${project})
+      if (${project}_needed_by)
+        message(FATAL_ERROR "${name} allows a developer mode, but is required by another project.")
+      endif ()
+
+      include("${project}")
+      _superbuild_write_developer_mode_cache("${project}" "${${project}_arguments}")
     elseif (is_dummy)
       # This project isn't built, just used as a graph node to represent a
       # group of dependencies.
@@ -358,21 +383,11 @@ function (_superbuild_add_project_internal name)
     endif ()
   endforeach ()
 
-  if (APPLE)
-    list(APPEND cmake_params
-      "-DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}"
-      "-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${CMAKE_OSX_DEPLOYMENT_TARGET}"
-      "-DCMAKE_OSX_SYSROOT:PATH=${CMAKE_OSX_SYSROOT}")
-  endif ()
-
-  # Get extra cmake args from every dependent project, if any.
-  superbuild_get_project_depends("${name}" arg)
-  foreach (dep IN LISTS arg_depends)
-    get_property(cmake_args GLOBAL
-      PROPERTY "${dep}_cmake_args")
-    list(APPEND cmake_params
-      ${cmake_args})
-  endforeach ()
+  superbuild_osx_pass_version_flags(apple_flags)
+  _superbuild_fetch_cmake_args("${name}" cmake_dep_args)
+  list(APPEND cmake_params
+    ${apple_flags}
+    ${cmake_dep_args})
 
   # Get extra flags added using superbuild_append_flags(), if any.
   set(extra_vars
@@ -461,6 +476,59 @@ function (_superbuild_add_project_internal name)
         "${step_arguments}")
     endforeach ()
   endif ()
+endfunction ()
+
+function (_superbuild_write_developer_mode_cache name)
+  set(cmake_args
+    "-DCMAKE_PREFIX_PATH:PATH=${superbuild_prefix_path}")
+  if (CMAKE_BUILD_TYPE)
+    list(APPEND cmake_args
+      "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}")
+  endif ()
+
+  superbuild_osx_pass_version_flags(apple_args)
+  _superbuild_fetch_cmake_args("${name}" cmake_dep_args)
+  list(APPEND cmake_args
+    ${apple_args}
+    ${cmake_dep_args})
+
+  set(skip TRUE)
+  foreach (arg IN LISTS ARGN)
+    if (arg STREQUAL "CMAKE_ARGS")
+      set(skip FALSE)
+    elseif (arg MATCHES _ep_keywords__superbuild_ExternalProject_add)
+      set(skip TRUE)
+    elseif (NOT skip)
+      list(APPEND cmake_args
+        "${arg}")
+    endif ()
+  endforeach ()
+
+  _superbuild_add_dummy_project_internal("${name}")
+
+  set(cache_file "${CMAKE_BINARY_DIR}/${name}-developer-config.cmake")
+  if (COMMAND _ep_command_line_to_initial_cache)
+    # Upstream ExternalProject changed its argument parsing. Since these are
+    # internal functions, go with the flow.
+    _ep_command_line_to_initial_cache(cmake_args "${cmake_args}" 0)
+  endif ()
+  _ep_write_initial_cache(${name} "${cache_file}" "${cmake_args}")
+endfunction ()
+
+function (_superbuild_fetch_cmake_args name var)
+  # Get extra cmake args from every dependent project, if any.
+  superbuild_get_project_depends("${name}" arg)
+  set(cmake_params)
+  foreach (dep IN LISTS arg_depends)
+    get_property(cmake_args GLOBAL
+      PROPERTY "${dep}_cmake_args")
+    list(APPEND cmake_params
+      ${cmake_args})
+  endforeach ()
+
+  set("${var}"
+    ${cmake_params}
+    PARENT_SCOPE)
 endfunction ()
 
 #------------------------------------------------------------------------------

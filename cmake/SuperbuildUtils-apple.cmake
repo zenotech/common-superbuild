@@ -54,3 +54,16 @@ function (superbuild_osx_add_version_flags)
       PARENT_SCOPE)
   endforeach ()
 endfunction ()
+
+function (superbuild_osx_pass_version_flags var)
+  if (NOT APPLE)
+    return ()
+  endif ()
+
+  set("${var}"
+    -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
+    -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${CMAKE_OSX_DEPLOYMENT_TARGET}
+    -DCMAKE_OSX_SYSROOT:STRING=${CMAKE_OSX_SYSROOT}
+    -DCMAKE_OSX_SDK:STRING=${CMAKE_OSX_SDK}
+    PARENT_SCOPE)
+endfunction ()
