@@ -10,6 +10,11 @@
 
 include(CMakeDependentOption)
 
+# NOTE: if updating bzip2 version, fix patch in bzip2.cmake
+superbuild_set_revision(bzip2
+  URL     "http://www.paraview.org/files/dependencies/bzip2-1.0.6.tar.gz"
+  URL_MD5 00b516f4704d4a7cb50a1d97e6e8e15b)
+
 # NOTE: if updating zlib version, fix patch in zlib.cmake
 superbuild_set_revision(zlib
   URL     "http://www.paraview.org/files/dependencies/zlib-1.2.7.tar.gz"
