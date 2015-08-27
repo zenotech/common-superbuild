@@ -69,7 +69,7 @@ function (superbuild_add_project name)
       PROPERTY
         superbuild_projects "${name}")
 
-    if (_args_CAN_USE_SYSTEM)
+    if (can_use_system)
       set_property(GLOBAL
         PROPERTY
           "${name}_system" TRUE)
