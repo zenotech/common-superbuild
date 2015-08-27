@@ -48,7 +48,7 @@ function (superbuild_add_project name)
     endforeach ()
     set("${name}_arguments"
       DEPENDS ${depends}
-      "${arguments}"
+      "${ep_arguments}"
       PARENT_SCOPE)
   else ()
     option("ENABLE_${name}" "Request to build project ${name}" "${default}")
