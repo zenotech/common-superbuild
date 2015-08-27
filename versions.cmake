@@ -59,3 +59,7 @@ else()
     URL     "http://paraview.org/files/dependencies/Python-2.7.2.tgz"
     URL_MD5 0ddfe265f1b3d0a8c2459f5bf66894c7)
 endif()
+
+superbuild_set_revision(freetype
+  URL     "http://paraview.org/files/dependencies/freetype-2.4.8.tar.gz"
+  URL_MD5 5d82aaa9a4abc0ebbd592783208d9c76)
