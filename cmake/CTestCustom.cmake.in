@@ -1,26 +1,32 @@
-# Regular expression for warning exception during build process
-list(APPEND CTEST_CUSTOM_WARNING_EXCEPTION
-  # ignore all warnings when CTEST_CUSTOM_MAXIMUM_NUMBER_OF_WARNINGS doesnt'
-  # have any effect.
-  ".*"
-  "[w|W]arning"
-  "WARNING"
-  "CMake Warning"
-)
+function (ignore_project_warnings variable project)
+  set(exceptions)
+  list(APPEND exceptions
+    "${project}/src/${project}"
+    "${project}\\\\src\\\\${project}")
+  string(TOLOWER "${project}" lower_project)
+  if ((APPLE OR WIN32) AND (NOT lower_project STREQUAL project))
+    if (WIN32)
+      list(APPEND exceptions
+        "${lower_project}\\\\src\\\\${lower_project}")
+    else ()
+      list(APPEND exceptions
+        "${lower_project}/src/${lower_project}")
+    endif ()
+  endif ()
 
-# Regular expression for warning exception during build process
-# Regular expression for error exceptions during build process
-list(APPEND CTEST_CUSTOM_ERROR_EXCEPTION
-  # skip numpy configure errors on Windows.
-  # these are warnings about Atlas/Blas not found.
-  "system_info.py.*UserWarning:"
-  # "Unknown distribution option: 'test_suite'"
-  # "Unknown distribution option: 'define_macros'"
-  "dist.py.*UserWarning:"
+  set("${variable}"
+    ${${variable}}
+    ${exceptions}
+    PARENT_SCOPE)
+endfunction ()
 
-  # again from numpy, skip configtest errors.
-  "_configtest"
-)
+macro (ignore_project_warnings project)
+  project_ignore_regexes(CTEST_CUSTOM_WARNING_EXCEPTION "${project}")
+endmacro ()
+
+macro (ignore_project_errors project)
+  project_ignore_regexes(CTEST_CUSTOM_ERROR_EXCEPTION "${project}")
+endmacro ()
 
 set(extra_ctestcustom "@extra_ctest_custom_args@")
 if (extra_ctestcustom)
