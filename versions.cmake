@@ -72,6 +72,10 @@ superbuild_set_revision(libxml2
   URL     "http://paraview.org/files/dependencies/libxml2-2.7.8.tar.gz"
   URL_MD5 8127a65e8c3b08856093099b52599c86)
 
+superbuild_set_revision(numpy
+  URL     "http://paraview.org/files/dependencies/numpy-1.8.1+cmake+static.tar.bz2"
+  URL_MD5 1974dbb4bfa1509e492791a8cd225774)
+
 superbuild_set_revision(mpi
   URL     "http://paraview.org/files/dependencies/mpich2-1.4.1p1.tar.gz"
   URL_MD5 b470666749bcb4a0449a072a18e2c204)
