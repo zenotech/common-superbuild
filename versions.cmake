@@ -84,6 +84,10 @@ superbuild_set_revision(mpi
   URL     "http://paraview.org/files/dependencies/mpich2-1.4.1p1.tar.gz"
   URL_MD5 b470666749bcb4a0449a072a18e2c204)
 
+superbuild_set_revision(lapack
+  URL     "http://paraview.org/files/dependencies/lapack-3.4.2.tgz"
+  URL_MD5 61bf1a8a4469d4bdb7604f5897179478)
+
 superbuild_set_revision(netcdf
   URL     "http://www.paraview.org/files/dependencies/netcdf-4.3.2.modified.tar.gz"
   URL_MD5 1841196c2bfcf10246966eecf92ad0ec)
