@@ -31,3 +31,7 @@ superbuild_set_revision(szip
 superbuild_set_revision(hdf5
   URL     "http://www.paraview.org/files/dependencies/hdf5-1.8.13.tar.gz"
   URL_MD5 c03426e9e77d7766944654280b467289)
+
+superbuild_set_revision(boost
+  URL     "http://www.computationalmodelbuilder.org/files/dependencies/boost_1_56_0.tar.gz"
+  URL_MD5 8c54705c424513fa2be0042696a3a162)
