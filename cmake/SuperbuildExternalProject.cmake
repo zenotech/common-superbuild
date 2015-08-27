@@ -62,12 +62,13 @@ function (_superbuild_ep_wrap_command var target command_name require)
     if (NOT has_command)
       # Get the ExternalProject-generated command.
       _ep_get_build_command("${target}" "${command_name}" command)
-      # Replace $(MAKE) usage.
-      set(submake_regex "^\\$\\(MAKE\\)")
-      if (command MATCHES "${submake_regex}")
-        string(REGEX REPLACE "${submake_regex}" "${CMAKE_MAKE_PROGRAM} -j${SUPERBUILD_PROJECT_PARALLELISM}" command "${command}")
-      endif ()
       set(has_command 1)
+    endif ()
+
+    # Replace $(MAKE) usage.
+    set(submake_regex "^\\$\\(MAKE\\)")
+    if (command MATCHES "${submake_regex}")
+      string(REGEX REPLACE "${submake_regex}" "${CMAKE_MAKE_PROGRAM} -j${SUPERBUILD_PROJECT_PARALLELISM}" command "${command}")
     endif ()
 
     if (command)
