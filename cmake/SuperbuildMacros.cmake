@@ -46,6 +46,16 @@ function (superbuild_add_project name)
           DEPENDS "${op_dep}")
       endif ()
     endforeach ()
+
+    get_property(all_projects GLOBAL
+      PROPERTY superbuild_projects)
+    foreach (dep IN LISTS depends optional_depends)
+      list(FIND all_projects "${dep}" idx)
+      if (idx EQUAL -1)
+        message(FATAL_ERROR "Dependency for ${name} not found: ${dep}")
+      endif ()
+    endforeach ()
+
     set("${name}_arguments"
       DEPENDS ${depends}
       "${ep_arguments}"
