@@ -21,10 +21,10 @@ function (superbuild_find_projects var)
     PARENT_SCOPE)
 endfunction ()
 
+include(qt.functions)
+
 function (superbuild_sanity_check)
-  if (qt4_enabled AND qt5_enabled)
-    message(FATAL_ERROR "qt4 and qt5 cannot be enabled at the same time.")
-  endif ()
+  superbuild_qt_sanity_check()
 endfunction ()
 
 set(qt_install_location ""
