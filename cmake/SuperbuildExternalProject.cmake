@@ -5,7 +5,12 @@
 # is passed on to the executed command (which does not happen by default).
 # This will be deprecated once CMake starts supporting it.
 
-include(ExternalProject)
+if (CMAKE_VERSION VERSION_LESS "3.4")
+  # Needed for fixes.
+  include("${CMAKE_CURRENT_LIST_DIR}/patches/ExternalProject.cmake")
+else ()
+  include(ExternalProject)
+endif ()
 
 if (CMAKE_GENERATOR MATCHES "Makefiles")
   # Because of the wrapped and nested way that "make" needs to get called, it's
