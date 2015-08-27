@@ -64,7 +64,7 @@ function (superbuild_add_project name)
     option("ENABLE_${name}" "Request to build project ${name}" "${default}")
     # Set the TYPE because it is overrided to INTERNAL if it is required by
     # dependencies later.
-    set_property(CACHE "ENABLE_${project}" PROPERTY TYPE BOOL)
+    set_property(CACHE "ENABLE_${name}" PROPERTY TYPE BOOL)
     set_property(GLOBAL APPEND
       PROPERTY
         superbuild_projects "${name}")
