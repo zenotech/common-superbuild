@@ -122,16 +122,16 @@ function (_superbuild_ExternalProject_add name)
     return ()
   endif ()
 
-  set(args)
   _superbuild_ep_wrap_command(configure_command "sb-${name}" CONFIGURE  FALSE)
   _superbuild_ep_wrap_command(build_command     "sb-${name}" BUILD      FALSE)
   _superbuild_ep_wrap_command(install_command   "sb-${name}" INSTALL    TRUE)
 
-  if (req_configure_command)
+  set(args)
+  if (has_configure_command OR req_configure_command)
     list(APPEND args
       "${configure_command}")
   endif ()
-  if (req_build_command)
+  if (has_build_command OR req_build_command)
     list(APPEND args
       "${build_command}")
   endif ()
