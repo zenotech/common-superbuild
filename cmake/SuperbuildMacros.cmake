@@ -105,7 +105,7 @@ function (superbuild_add_extra_cmake_args)
     return ()
   endif ()
 
-  _superbuild_check_current_project("add_extra_cmake_args")
+  _superbuild_check_current_project("superbuild_add_extra_cmake_args")
 
   set_property(GLOBAL APPEND
     PROPERTY
@@ -118,7 +118,7 @@ function (superbuild_project_add_step name)
     return ()
   endif ()
 
-  _superbuild_check_current_project("add_external_project_step")
+  _superbuild_check_current_project("superbuild_project_add_step")
 
   set_property(GLOBAL APPEND
     PROPERTY
@@ -148,12 +148,12 @@ function (superbuild_append_flags key value)
     if (arg STREQUAL "PROJECT_ONLY")
       set(project_only TRUE)
     else ()
-      message(AUTHOR_WARNING "Unknown argument to append_flags(), ${arg}.")
+      message(AUTHOR_WARNING "Unknown argument to superbuild_append_flags(), ${arg}.")
     endif ()
   endforeach ()
 
   if (build-projects)
-    _superbuild_check_current_project("append_flags")
+    _superbuild_check_current_project("superbuild_append_flags")
 
     set(property "${current_project}_append_flags_${key}")
     if (project_only)
@@ -374,7 +374,7 @@ function (_superbuild_add_project_internal name)
       ${cmake_args})
   endforeach ()
 
-  # Get extra flags added using append_flags(), if any.
+  # Get extra flags added using superbuild_append_flags(), if any.
   set(extra_vars
     c_flags
     cxx_flags
