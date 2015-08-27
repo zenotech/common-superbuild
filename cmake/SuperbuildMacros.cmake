@@ -408,6 +408,9 @@ function (_superbuild_add_project_internal name)
 
   get_property("${name}_revision" GLOBAL
     PROPERTY "${name}_revision")
+  if (NOT ${name}_revision)
+    message(FATAL_ERROR "Missing revision information for ${name}.")
+  endif ()
 
   # ARGN needs to be quoted so that empty list items aren't removed if
   # that happens options like INSTALL_COMMAND "" won't work
