@@ -117,6 +117,14 @@ endif ()
 # Add packaging.
 if (COMMAND superbuild_add_packaging)
   superbuild_add_packaging()
+
+  get_property(superbuild_package_projects GLOBAL
+    PROPERTY superbuild_package_projects)
+  foreach (project IN LISTS superbuild_package_projects)
+    if (${project}_enabled)
+      include(${project}.bundle)
+    endif ()
+  endforeach ()
 endif ()
 
 # Add any tests.
