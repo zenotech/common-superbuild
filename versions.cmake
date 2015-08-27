@@ -76,6 +76,16 @@ superbuild_set_revision(qt4
   URL     "http://paraview.org/files/dependencies/qt-everywhere-opensource-src-4.8.6.tar.gz"
   URL_MD5 2edbe4d6c2eff33ef91732602f3518eb)
 
+if (WIN32)
+  superbuild_set_revision(qt5
+    URL "http://download.qt.io/official_releases/qt/5.4/5.4.1/single/qt-everywhere-opensource-src-5.4.1.zip"
+    URL_MD5 57b25c68982237abb9e18b347034e005)
+else ()
+  superbuild_set_revision(qt5
+    URL "http://download.qt.io/official_releases/qt/5.4/5.4.1/single/qt-everywhere-opensource-src-5.4.1.tar.gz"
+    URL_MD5 90f3fbce38ed16e5dc2cd0909ae86ca4)
+endif ()
+
 superbuild_set_revision(numpy
   URL     "http://paraview.org/files/dependencies/numpy-1.8.1+cmake+static.tar.bz2"
   URL_MD5 1974dbb4bfa1509e492791a8cd225774)
