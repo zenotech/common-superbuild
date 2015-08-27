@@ -76,6 +76,10 @@ superbuild_set_revision(numpy
   URL     "http://paraview.org/files/dependencies/numpy-1.8.1+cmake+static.tar.bz2"
   URL_MD5 1974dbb4bfa1509e492791a8cd225774)
 
+superbuild_set_revision(matplotlib
+  URL     "http://paraview.org/files/dependencies/matplotlib-1.1.1_notests.tar.gz"
+  URL_MD5 30ee59119599331bf1f3b6e838fee9a8)
+
 superbuild_set_revision(mpi
   URL     "http://paraview.org/files/dependencies/mpich2-1.4.1p1.tar.gz"
   URL_MD5 b470666749bcb4a0449a072a18e2c204)
