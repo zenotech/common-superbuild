@@ -40,7 +40,9 @@ option(BUILD_SHARED_LIBS "Enable shared libraries" "${shared_default}")
 
 #-----------------------------------------------------------------------------
 # Setup some standard variables that control various locations and flags.
-set(superbuild_install_location "${CMAKE_BINARY_DIR}/install")
+if (NOT superbuild_install_location)
+  set(superbuild_install_location "${CMAKE_BINARY_DIR}/install")
+endif ()
 set(superbuild_prefix_path "${superbuild_install_location}")
 set(superbuild_download_location "${CMAKE_BINARY_DIR}/downloads"
   CACHE PATH "Location for downloaded source tarballs")
