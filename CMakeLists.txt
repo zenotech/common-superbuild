@@ -114,6 +114,11 @@ if (COMMAND superbuild_sanity_check)
   superbuild_sanity_check()
 endif ()
 
+# Add packaging.
+if (COMMAND superbuild_add_packaging)
+  superbuild_add_packaging()
+endif ()
+
 # Add any tests.
 if (COMMAND superbuild_add_tests)
   # Enable testing support.
@@ -124,9 +129,5 @@ if (COMMAND superbuild_add_tests)
     @ONLY)
 
   superbuild_add_tests()
-endif ()
 
-# Add packaging.
-if (COMMAND superbuild_add_packaging)
-  superbuild_add_packaging()
 endif ()
