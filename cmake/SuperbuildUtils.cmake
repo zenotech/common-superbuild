@@ -12,10 +12,10 @@ function (superbuild_detect_64bit_target)
   check_type_size(void* void_ptr_size
     BUILTIN_TYPES_ONLY)
   if (void_ptr_size EQUAL 8)
-    set(64bit_build TRUE
+    set(superbuild_is_64bit TRUE
       PARENT_SCOPE)
   else ()
-    set(64bit_build FALSE
+    set(superbuild_is_64bit FALSE
       PARENT_SCOPE)
   endif ()
 endfunction ()
