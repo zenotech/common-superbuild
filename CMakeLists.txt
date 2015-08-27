@@ -138,4 +138,25 @@ if (COMMAND superbuild_add_tests)
 
   superbuild_add_tests()
 
+  get_property(superbuild_test_projects GLOBAL
+    PROPERTY superbuild_test_projects)
+  foreach (project IN LISTS superbuild_test_projects)
+    cmake_dependent_option("TEST_${project}" "Run ${project} test from the superbuild" ON
+      "${project}_enabled;TARGET ${project};NOT DEVELOPER_MODE_${project}" OFF)
+    if (TEST_${project})
+      set(binary_dir "<BINARY_DIR>")
+      _ep_replace_location_tags("${project}" binary_dir)
+      list(APPEND superbuild_extra_ctest_dirs
+        "${binary_dir}")
+    endif ()
+  endforeach ()
+
+  configure_file(
+    "${CMAKE_CURRENT_LIST_DIR}/cmake/superbuild_testing_trampoline.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/superbuild_testing_trampoline.cmake"
+    @ONLY)
+  set_property(
+    DIRECTORY "${CMAKE_CURRENT_LIST_DIR}"
+    PROPERTY
+      TEST_INCLUDE_FILE "${CMAKE_CURRENT_BINARY_DIR}/superbuild_testing_trampoline.cmake")
 endif ()
