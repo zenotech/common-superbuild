@@ -8,9 +8,10 @@ list(APPEND qt4_extra_options
   -I <INSTALL_DIR>/include/fontconfig)
 list(APPEND qt4_extra_arguments
   # Fix Qt build failure with GCC 4.1.
-  "${CMAKE_COMMAND}" -E copy_if_different
-    "${CMAKE_CURRENT_LIST_DIR}/patches/qt4.src.3rdparty.webkit.Source.WebKit.pri"
-    <SOURCE_DIR>/src/3rdparty/webkit/Source/WebKit.pri)
+  PATCH_COMMAND
+    "${CMAKE_COMMAND}" -E copy_if_different
+      "${CMAKE_CURRENT_LIST_DIR}/patches/qt4.src.3rdparty.webkit.Source.WebKit.pri"
+      <SOURCE_DIR>/src/3rdparty/webkit/Source/WebKit.pri)
 
 include(qt4.common)
 
