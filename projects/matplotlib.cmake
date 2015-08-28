@@ -17,7 +17,6 @@ superbuild_add_project(matplotlib
   CONFIGURE_COMMAND
     "${matplotlib_cmake_command}"
       "-DPATCHES_DIR:PATH=${CMAKE_CURRENT_LIST_DIR}/patches/"
-      "-DPATCH_OUTPUT_DIR:PATH=${CMAKE_BINARY_DIR}"
       "-DSOURCE_DIR:PATH=<SOURCE_DIR>"
       "-DINSTALL_DIR:PATH=<INSTALL_DIR>"
       -P "${CMAKE_CURRENT_LIST_DIR}/scripts/matplotlib.patch.cmake"
