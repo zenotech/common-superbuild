@@ -15,7 +15,7 @@ endfunction ()
 # selections. Currently advanced options are added for GIT_REPOSITORY,
 # GIT_TAG, URL, URL_HASH, URL_MD5, and SOURCE_DIR.
 #------------------------------------------------------------------------------
-function (superbuild_add_customizable_revision name)
+function (superbuild_set_customizable_revision name)
   set(keys
     GIT_REPOSITORY GIT_TAG
     URL URL_HASH URL_MD5
@@ -36,12 +36,12 @@ function (superbuild_add_customizable_revision name)
     endif ()
   endforeach ()
 
-  superbuild_add_revision("${name}"
+  superbuild_set_revision("${name}"
     ${customized_args}
     ${_args_UNPARSED_ARGUMENTS})
 endfunction ()
 
-function (superbuild_add_external_source name git_repo git_tag tarball_url tarball_md5)
+function (superbuild_set_external_source name git_repo git_tag tarball_url tarball_md5)
   option("${name}_FROM_GIT" "If enabled, fetch sources from GIT" ON)
   cmake_dependent_option("${name}_FROM_SOURCE_DIR" "Use an existing source directory" OFF
     "NOT ${name}_FROM_GIT" OFF)
@@ -60,6 +60,6 @@ function (superbuild_add_external_source name git_repo git_tag tarball_url tarba
       URL_MD5 "${tarball_md5}")
   endif ()
 
-  superbuild_add_customizable_revision("${name}"
+  superbuild_set_customizable_revision("${name}"
     ${args})
 endfunction ()
