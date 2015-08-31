@@ -10,7 +10,7 @@ function (superbuild_add_project name)
   _superbuild_project_check_name("${name}")
 
   set(can_use_system FALSE)
-  set(default OFF)
+  set(default "${_superbuild_default_${name}}")
   set(allow_developer_mode FALSE)
   set(depends)
   set(optional_depends)
