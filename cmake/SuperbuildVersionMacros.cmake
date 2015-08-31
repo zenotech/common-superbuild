@@ -97,6 +97,13 @@ function (superbuild_set_version_variables project default)
     PARENT_SCOPE)
   set("${project}_version_patch_extra" "${${project}_VERSION_PATCH_EXTRA}"
     PARENT_SCOPE)
+  if (${project}_version_patch_extra)
+    set("${project}_version_suffix" "-${${project}_version_patch_extra}"
+      PARENT_SCOPE)
+  else ()
+    set("${project}_version_suffix" ""
+      PARENT_SCOPE)
+  endif ()
   set("${project}_version_full" "${${project}_VERSION_FULL}"
     PARENT_SCOPE)
   set("${project}_version_is_release" "${${project}_VERSION_IS_RELEASE}"
