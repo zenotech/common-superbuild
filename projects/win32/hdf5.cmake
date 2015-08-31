@@ -18,11 +18,11 @@ superbuild_add_extra_cmake_args(
 # that the old definition is undef-ed before redefining it.
 if (NOT superbuild_is_64bit)
   superbuild_project_add_step(hdf5-patch-fix-h5public
-   COMMAND  "${CMAKE_COMMAND}" -E copy_if_different
-            "${CMAKE_CURRENT_LIST_DIR}/patches/hdf5.src.H5public.h"
-            <SOURCE_DIR>/src/H5public.h
-   DEPENDEES update
-   DEPENDERS patch)
+    COMMAND   "${CMAKE_COMMAND}" -E copy_if_different
+              "${CMAKE_CURRENT_LIST_DIR}/patches/hdf5.src.H5public.h"
+              <SOURCE_DIR>/src/H5public.h
+    DEPENDEES update
+    DEPENDERS patch)
 endif ()
 
 if (MSVC)
