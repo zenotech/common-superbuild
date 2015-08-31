@@ -4,7 +4,6 @@ project(standalone-qt)
 
 function (superbuild_find_projects var)
   set(projects
-    fontconfig
     freetype
     png
     qt4
