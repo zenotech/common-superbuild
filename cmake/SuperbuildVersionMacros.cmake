@@ -53,7 +53,7 @@ function (superbuild_detect_version_git var source_dir)
   endif ()
 
   if (result AND ARGC GREATER 2)
-    set(output "${ARGV3}")
+    set(output "${ARGV2}")
   endif ()
 
   if (output MATCHES "([0-9]+)\\.([0-9]+)\\.([0-9]+)-?(.*)")
