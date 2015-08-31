@@ -56,9 +56,11 @@ superbuild_add_project(qt5
       -skip qtwebchannel
       -skip qtwebengine
       -skip qtwebkit
+      -skip qtwebkit-examples
       -skip qtwebsockets
 
       -nomake examples
+      -nomake tests
 
       -no-dbus
       -no-openssl
