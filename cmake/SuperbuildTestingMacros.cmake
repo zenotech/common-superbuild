@@ -1,75 +1,19 @@
-function (_extract_process input)
-  execute_process(${ARGN}
-    RESULT_VARIABLE res
-    OUTPUT_VARIABLE out
-    ERROR_VARIABLE  out)
-  if (res)
-    message(FATAL_ERROR "Failed to extract ${input}:\n${out}")
-  endif ()
-endfunction ()
+set(_superbuild_cmake_dir "${CMAKE_CURRENT_LIST_DIR}/cmake")
+set(_ZIP_test_glob "*.zip")
+set(_NSIS_test_glob "*.exe")
+set(_DragNDrop_test_glob "*.dmg")
+set(_TGZ_test_glob "*.tar.gz")
 
-function (_extract_with_cmake output input)
-  _extract_process("${input}"
-    COMMAND "${CMAKE_COMMAND}" -E tar
-            xf "${input}"
-    WORKING_DIRECTORY "${output}")
-endfunction ()
-
-function (_detect_tarbomb var dir)
-  file(GLOB contents "${dir}/*")
-
-  if (NOT IS_DIRECTORY "${contents}")
-    set(contents "${dir}")
-  endif ()
-
-  set("${var}"
-    "${contents}"
-    PARENT_SCOPE)
-endfunction ()
-
-function (_extract_dmg output mount input)
-  _extract_process("${input}"
-    COMMAND /bin/sh -c
-            "yes | hdiutil attach -mountpoint '${mount}' '${input}'")
-  file(GLOB apps "${mount}/*.app")
-  foreach (app IN LISTS apps)
-    _extract_process("${app}"
-      COMMAND "${CMAKE_COMMAND}" -E copy_directory
-              "${app}"
-              "${output}/${app}/")
-  endforeach ()
-  _extract_process("${input} (detach)"
-    COMMAND hdiutil
-            detach
-            "${mount}")
-endfunction ()
-
-function (extract_binary dir glob output)
-  file(REMOVE_RECURSE "${output}")
-  file(MAKE_DIRECTORY "${output}")
-
-  file(GLOB file "${dir}/${glob}")
-  if (NOT file)
-    message(FATAL_ERROR "Failed to locate package: ${dir}/${glob}.")
-  elseif (NOT EXIST "${file}")
-    message(FATAL_ERROR "Ambiguous glob: ${dir}/${glob}:\n${file}.")
-  endif ()
-
-  set(output_dir "${dir}/__workdir")
-  file(MAKE_DIRECTORY "${output_dir}")
-
-  message("Using package: ${file}")
-  get_filename_component(file_ext "${file}" EXT)
-  if (file_ext MATCHES "(\\.|=)(7z|tar\\.bz2|tar\\.gz|tar\\.xz|tbz2|tgz|txz|zip)$")
-    _extract_with_cmake("${output_dir}" "${file}")
-    _detect_tarbomb(output_dir "${output_dir}")
-  elseif (file_ext MATCHES "\\.dmg$")
-    _extract_dmg("${output_dir}" "${dir}/__mount" "${file}")
-  endif ()
-
-  get_filename_component(templocation "${dir}/../__Package__" ABSOLUTE)
-  file(RENAME "${output_dir}" "${templocation}")
-  file(REMOVE_RECURSE "${output}")
-  file(RENAME "${templocation}" "${output}")
-  message("Package available under '${output}'")
+function (superbuild_add_extract_test generator output)
+  add_test(
+    NAME    "extract-${generator}"
+    COMMAND "${CMAKE_COMMAND}"
+            -Dtest_dir:PATH=${CMAKE_BINARY_DIR}
+            -Dbinary_glob:STRING=${_${generator}_test_glob}
+            -Doutput_dir:PATH=${output}
+            -P "${_superbuild_cmake_dir}/superbuild_testing_extract_binary.cmake")
+  set_tests_properties("prepare-${name}-${generator}"
+    PROPERTIES
+      DEPENDS "cpack-${generator}"
+      ${ARGN})
 endfunction ()

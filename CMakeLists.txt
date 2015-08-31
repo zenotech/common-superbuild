@@ -145,6 +145,8 @@ if (BUILD_TESTING)
     "${CMAKE_BINARY_DIR}/CTestCustom.cmake"
     @ONLY)
 
+  include(SuperbuildPackageMacros)
+
   superbuild_add_tests()
 
   get_property(superbuild_test_projects GLOBAL
