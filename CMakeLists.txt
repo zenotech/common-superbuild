@@ -125,6 +125,11 @@ if (COMMAND superbuild_add_packaging)
       include(${project}.bundle)
     endif ()
   endforeach ()
+
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "bin")
+  include(InstallRequiredSystemLibraries)
+
+  include(CPack)
 endif ()
 
 # Add any tests.
