@@ -53,12 +53,31 @@ function (superbuild_add_project name)
 
     get_property(all_projects GLOBAL
       PROPERTY superbuild_projects)
-    foreach (dep IN LISTS depends optional_depends)
+    set(missing_deps)
+    set(missing_deps_optional)
+    foreach (dep IN LISTS depends)
       list(FIND all_projects "${dep}" idx)
       if (idx EQUAL -1)
-        message(FATAL_ERROR "Dependency for ${name} not found: ${dep}")
+        list(APPEND missing_deps
+          "${dep}")
       endif ()
     endforeach ()
+    foreach (dep IN LISTS optional_depends)
+      list(FIND all_projects "${dep}" idx)
+      if (idx EQUAL -1)
+        list(APPEND missing_deps_optional
+          "${dep}")
+      endif ()
+    endforeach ()
+
+    if (missing_deps_optional)
+      string(REPLACE ";" ", " missing_deps_optional "${missing_deps_optional}")
+      message(AUTHOR_WARNING "Optional dependencies for ${name} not found: ${missing_deps_optional}")
+    endif ()
+    if (missing_deps)
+      string(REPLACE ";" ", " missing_deps "${missing_deps}")
+      message(FATAL_ERROR "Dependencies for ${name} not found: ${missing_deps}")
+    endif ()
 
     set("${name}_arguments"
       DEPENDS ${depends}
