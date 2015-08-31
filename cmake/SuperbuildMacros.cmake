@@ -296,6 +296,7 @@ function (superbuild_process_dependencies)
       # user.
       cmake_dependent_option("USE_SYSTEM_${project}" "" OFF
         "${project}_enabled" OFF)
+    endif ()
 
     get_property(allow_developer_mode GLOBAL
       PROPERTY "${project}_developer_mode" SET)
