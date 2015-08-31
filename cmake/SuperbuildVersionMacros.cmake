@@ -85,7 +85,7 @@ function (superbuild_set_version_variables project default)
   if (${project}_FROM_SOURCE_DIR)
     set(source_dir "${${project}_SOURCE_DIR}")
   endif ()
-  superbuild_detect_version_git("${project} "${source_dir}" "${default}")
+  superbuild_detect_version_git("${project}" "${source_dir}" "${default}")
 
   set("${project}_version" "${${project}_VERSION}"
     PARENT_SCOPE)
