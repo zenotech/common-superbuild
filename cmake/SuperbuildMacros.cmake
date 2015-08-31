@@ -235,7 +235,7 @@ function (superbuild_process_dependencies)
       list(APPEND enabled_projects "${project}")
     endif ()
 
-    set("${project}_needed_by")
+    set("${project}_needed_by" "")
   endforeach ()
   if (NOT enabled_projects)
     message(FATAL_ERROR "No projects enabled!")
