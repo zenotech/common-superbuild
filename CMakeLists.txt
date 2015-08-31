@@ -128,7 +128,9 @@ if (COMMAND superbuild_add_packaging)
 endif ()
 
 # Add any tests.
-if (COMMAND superbuild_add_tests)
+cmake_dependent_option(BUILD_TESTING "Build testing" OFF
+  "COMMAND superbuild_add_tests" OFF)
+if (BUILD_TESTING)
   # Enable testing support.
   include(CTest)
   configure_file(
