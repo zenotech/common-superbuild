@@ -30,7 +30,7 @@ endmacro ()
 
 ignore_project_warnings(szip)
 
-set(extra_ctestcustom "@extra_ctest_custom_args@")
-if (extra_ctestcustom)
-  include("${extra_ctestcustom}")
-endif ()
+set(extra_ctest_custom_files "@extra_ctest_custom_files@")
+foreach (extra_ctest_custom_file IN LISTS extra_ctest_custom_files)
+  include("${extra_ctest_custom_file}")
+endforeach ()
