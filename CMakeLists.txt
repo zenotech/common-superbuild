@@ -66,6 +66,7 @@ superbuild_prepare_build_tree()
 # Setup CMAKE_MODULE_PATH so that platform specific configurations are
 # processed before the generic ones.
 set(project_path)
+string(TOLOWER "${CROSS_BUILD_STAGE}" lstage)
 list(APPEND superbuild_project_roots
   "${CMAKE_CURRENT_LIST_DIR}/projects")
 foreach (root IN LISTS superbuild_project_roots)
