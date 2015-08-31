@@ -32,9 +32,9 @@ function (superbuild_find_projects var)
     PARENT_SCOPE)
 endfunction ()
 
-include(qt.functions)
-
 function (superbuild_sanity_check)
+  include(qt.functions)
+
   superbuild_qt_sanity_check()
 endfunction ()
 
