@@ -46,7 +46,7 @@ function (superbuild_add_project name)
   if (superbuild_build_phase)
     foreach (op_dep IN LISTS optional_depends)
       if (${op_dep}_enabled)
-        list(APPEND arguments
+        list(APPEND ep_arguments
           DEPENDS "${op_dep}")
       endif ()
     endforeach ()
