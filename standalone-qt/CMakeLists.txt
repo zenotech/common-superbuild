@@ -5,6 +5,7 @@ project(standalone-qt)
 function (superbuild_find_projects var)
   set(projects
     freetype
+    libxml2
     png
     qt4
     qt5
