@@ -247,8 +247,8 @@ function (superbuild_process_dependencies)
     get_property("${project}_depends_optional" GLOBAL
       PROPERTY "${project}_depends_optional")
     set("${project}_depends_all"
-      "${${project}_depends}"
-      "${${project}_depends_optional}")
+      ${${project}_depends}
+      ${${project}_depends_optional})
 
     if (ENABLE_${project})
       list(APPEND enabled_projects "${project}")
