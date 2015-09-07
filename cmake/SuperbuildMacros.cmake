@@ -269,7 +269,7 @@ function (superbuild_process_dependencies)
   # Now generate a project order using both, optional and non-optional
   # dependencies.
   set(ordered_projects "${enabled_projects}")
-  topological_sort(enabled_projects "" _depends_all)
+  topological_sort(ordered_projects "" _depends_all)
 
   # Update enabled_projects to be in the correct order taking into
   # consideration optional dependencies.
@@ -280,7 +280,7 @@ function (superbuild_process_dependencies)
       list(APPEND new_order "${project}")
     endif ()
   endforeach ()
-  set (enabled_projects ${new_order})
+  set(enabled_projects ${new_order})
 
   # build information about what project needs what.
   foreach (project IN LISTS enabled_projects)
