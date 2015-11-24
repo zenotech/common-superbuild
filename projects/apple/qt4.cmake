@@ -1,7 +1,7 @@
 # Set the platform to be clang if on apple and not gcc
 # This doesn't work on 10.5 (leopard) 10.6 (snow leopard) toolchain, however.
 # So, we check for that.
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND
     CMAKE_OSX_DEPLOYMENT_TARGET AND
     CMAKE_OSX_DEPLOYMENT_TARGET VERSION_GREATER "10.6")
   list(APPEND qt4_extra_options
