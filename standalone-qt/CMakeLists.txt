@@ -11,7 +11,7 @@ function (superbuild_find_projects var)
     qt5
     zlib)
 
-  if (UNIX)
+  if (UNIX AND NOT APPLE)
     list(APPEND projects
       fontconfig)
   endif ()
