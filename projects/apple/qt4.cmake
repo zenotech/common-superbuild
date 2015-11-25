@@ -1,3 +1,5 @@
+set(qt4_extra_options)
+
 # Set the platform to be clang if on apple and not gcc
 # This doesn't work on 10.5 (leopard) 10.6 (snow leopard) toolchain, however.
 # So, we check for that.
