@@ -1,3 +1,5 @@
+set(boost_extra_options)
+
 # 8.0 and below unsupported anyways.
 if (MSVC90)
   set(msvc_ver 9.0)
