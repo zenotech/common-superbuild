@@ -29,7 +29,6 @@ else ()
 endif ()
 
 superbuild_cross_declare_variables()
-superbuild_osx_determine_target()
 superbuild_detect_64bit_target()
 
 set(shared_default ON)

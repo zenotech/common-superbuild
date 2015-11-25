@@ -9,9 +9,17 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND
 endif ()
 
 list(APPEND qt4_extra_options
-  -sdk ${CMAKE_OSX_SYSROOT}
-  -arch ${CMAKE_OSX_ARCHITECTURES}
   -qt-libpng)
+
+if (CMAKE_OSX_SYSROOT)
+  list(APPEND qt4_extra_options
+    -sdk "${CMAKE_OSX_SYSROOT}")
+endif ()
+
+if (CMAKE_OSX_ARCHITECTURES)
+  list(APPEND qt4_extra_options
+    -arch "${CMAKE_OSX_ARCHITECTURES}")
+endif ()
 
 include(qt4.common)
 
