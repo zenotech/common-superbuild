@@ -24,10 +24,6 @@ endif ()
 if (MSVC)
   # hdf5 has a bug with MSVC compiler where it doesn't realize its using MSVC
   # compiler when using nmake or ninja generators. This patch fixes that.
-  superbuild_project_add_step(hdf5-patch-fix_msvc
-    COMMAND   "${CMAKE_COMMAND}" -E copy_if_different
-              "${CMAKE_CURRENT_LIST_DIR}/patches/hdf5.config.cmake.ConfigureChecks.cmake"
-              <SOURCE_DIR>/config/cmake/ConfigureChecks.cmake
-    DEPENDEES update
-    DEPENDERS patch)
+  superbuild_apply_patch(hdf5 msvc-non-vs-generator
+    "Fix MSVC detection with Makefiles and Ninja generators")
 endif ()

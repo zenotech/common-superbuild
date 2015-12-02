@@ -1,0 +1,156 @@
+diff -Nr -U5 hdf5-1.8.13/config/cmake/ConfigureChecks.cmake hdf5-1.8.13.msvc-non-vs-generator/config/cmake/ConfigureChecks.cmake
+--- hdf5-1.8.13/config/cmake/ConfigureChecks.cmake	2014-05-05 22:13:20.000000000 -0400
++++ hdf5-1.8.13.msvc-non-vs-generator/config/cmake/ConfigureChecks.cmake	2015-12-02 12:07:49.341946972 -0500
+@@ -27,17 +27,17 @@
+   endif ()
+   set (H5_AC_APPLE_UNIVERSAL_BUILD 0)
+ endif (APPLE)
+ 
+ # Check for Darwin (not just Apple - we also want to catch OpenDarwin)
+-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
+-    set (H5_HAVE_DARWIN 1) 
++if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
++    set (H5_HAVE_DARWIN 1)
+ endif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+ 
+ # Check for Solaris
+-if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS") 
+-    set (H5_HAVE_SOLARIS 1) 
++if (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
++    set (H5_HAVE_SOLARIS 1)
+ endif (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
+ 
+ #-----------------------------------------------------------------------------
+ # Option to Clear File Buffers before write --enable-clear-file-buffers
+ #-----------------------------------------------------------------------------
+@@ -126,15 +126,10 @@
+ # WINDOWS Hard code Values
+ # ----------------------------------------------------------------------
+ 
+ set (WINDOWS)
+ if (WIN32)
+-  if (MINGW)
+-    set (H5_HAVE_MINGW 1)
+-    set (WINDOWS 1) # MinGW tries to imitate Windows
+-    set (CMAKE_REQUIRED_FLAGS "-DWIN32_LEAN_AND_MEAN=1 -DNOGDI=1")
+-  endif (MINGW)
+   set (H5_HAVE_WIN32_API 1)
+   set (CMAKE_REQUIRED_LIBRARIES "ws2_32.lib;wsock32.lib")
+   if (NOT UNIX AND NOT CYGWIN AND NOT MINGW)
+     set (WINDOWS 1)
+     set (CMAKE_REQUIRED_FLAGS "/DWIN32_LEAN_AND_MEAN=1 /DNOGDI=1")
+@@ -173,13 +168,11 @@
+   set (H5_HAVE_SYS_TYPES_H 1)
+   set (H5_HAVE_LIBM 1)
+   set (H5_HAVE_STRDUP 1)
+   set (H5_HAVE_SYSTEM 1)
+   set (H5_HAVE_LONGJMP 1)
+-  if (NOT MINGW)
+-    set (H5_HAVE_GETHOSTNAME 1)
+-  endif (NOT MINGW)
++  set (H5_HAVE_GETHOSTNAME 1)
+   if (NOT UNIX AND NOT CYGWIN AND NOT MINGW)
+     set (H5_HAVE_GETCONSOLESCREENBUFFERINFO 1)
+   endif (NOT UNIX AND NOT CYGWIN AND NOT MINGW)
+   set (H5_HAVE_FUNCTION 1)
+   set (H5_GETTIMEOFDAY_GIVES_TZ 1)
+@@ -439,11 +432,11 @@
+   # correctly.
+   # POSIX feature information can be found in the gcc manual at:
+   # http://www.gnu.org/s/libc/manual/html_node/Feature-Test-Macros.html
+   set (HDF5_EXTRA_C_FLAGS -D_POSIX_C_SOURCE=199506L)
+   set (HDF5_EXTRA_FLAGS -D_BSD_SOURCE)
+-  
++
+   option (HDF5_ENABLE_LARGE_FILE "Enable support for large (64-bit) files on Linux." ON)
+   if (HDF5_ENABLE_LARGE_FILE)
+     set (msg "Performing TEST_LFS_WORKS")
+     TRY_RUN (TEST_LFS_WORKS_RUN   TEST_LFS_WORKS_COMPILE
+         ${HDF5_BINARY_DIR}/CMake
+@@ -819,11 +812,11 @@
+     if (LARGEFILE)
+       set (CMAKE_REQUIRED_DEFINITIONS
+           "${CURRENT_TEST_DEFINITIONS} -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE"
+       )
+     endif (LARGEFILE)
+-    set (MACRO_CHECK_FUNCTION_DEFINITIONS 
++    set (MACRO_CHECK_FUNCTION_DEFINITIONS
+       "-DHAVE_IOEO ${CMAKE_REQUIRED_FLAGS}")
+     if (CMAKE_REQUIRED_LIBRARIES)
+       set (CHECK_C_SOURCE_COMPILES_ADD_LIBRARIES
+         "-DLINK_LIBRARIES:STRING=${CMAKE_REQUIRED_LIBRARIES}")
+     else (CMAKE_REQUIRED_LIBRARIES)
+@@ -851,11 +844,11 @@
+     endif (NOT HAVE_IOEO_COMPILED)
+     # if the return value was 0 then it worked
+     if ("${HAVE_IOEO_EXITCODE}" EQUAL 0)
+       set (H5_HAVE_IOEO 1 CACHE INTERNAL "Test InitOnceExecuteOnce")
+       message (STATUS "Performing Test InitOnceExecuteOnce - Success")
+-      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log 
++      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
+         "Performing C SOURCE FILE Test InitOnceExecuteOnce succeded with the following output:\n"
+         "${OUTPUT}\n"
+         "Return value: ${HAVE_IOEO}\n")
+     else ("${HAVE_IOEO_EXITCODE}" EQUAL 0)
+       if (CMAKE_CROSSCOMPILING AND "${HAVE_IOEO_EXITCODE}" MATCHES  "FAILED_TO_RUN")
+@@ -863,11 +856,11 @@
+       else (CMAKE_CROSSCOMPILING AND "${HAVE_IOEO_EXITCODE}" MATCHES  "FAILED_TO_RUN")
+         set (H5_HAVE_IOEO "" CACHE INTERNAL "Test InitOnceExecuteOnce")
+       endif (CMAKE_CROSSCOMPILING AND "${HAVE_IOEO_EXITCODE}" MATCHES  "FAILED_TO_RUN")
+ 
+       message (STATUS "Performing Test InitOnceExecuteOnce - Failed")
+-      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log 
++      file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+         "Performing InitOnceExecuteOnce Test  failed with the following output:\n"
+         "${OUTPUT}\n"
+         "Return value: ${HAVE_IOEO_EXITCODE}\n")
+     endif ("${HAVE_IOEO_EXITCODE}" EQUAL 0)
+   endif ("${H5_HAVE_IOEO}" MATCHES "^${H5_HAVE_IOEO}$")
+@@ -1112,27 +1105,27 @@
+ # than the maximal integer value).
+ #
+ H5ConversionTests (H5_FP_TO_INTEGER_OVERFLOW_WORKS  "Checking IF overflows normally converting floating-point to integer values")
+ # ----------------------------------------------------------------------
+ # Set the flag to indicate that the machine is using a special algorithm to convert
+-# 'long double' to '(unsigned) long' values.  (This flag should only be set for 
+-# the IBM Power6 Linux.  When the bit sequence of long double is 
+-# 0x4351ccf385ebc8a0bfcc2a3c3d855620, the converted value of (unsigned)long 
++# 'long double' to '(unsigned) long' values.  (This flag should only be set for
++# the IBM Power6 Linux.  When the bit sequence of long double is
++# 0x4351ccf385ebc8a0bfcc2a3c3d855620, the converted value of (unsigned)long
+ # is 0x004733ce17af227f, not the same as the library's conversion to 0x004733ce17af2282.
+ # The machine's conversion gets the correct value.  We define the macro and disable
+ # this kind of test until we figure out what algorithm they use.
+ #
+ if (H5_LDOUBLE_TO_LONG_SPECIAL MATCHES ^H5_LDOUBLE_TO_LONG_SPECIAL$)
+   set (H5_LDOUBLE_TO_LONG_SPECIAL 0 CACHE INTERNAL "Define if your system converts long double to (unsigned) long values with special algorithm")
+   message (STATUS "Checking IF your system converts long double to (unsigned) long values with special algorithm... no")
+ endif (H5_LDOUBLE_TO_LONG_SPECIAL MATCHES ^H5_LDOUBLE_TO_LONG_SPECIAL$)
+ # ----------------------------------------------------------------------
+ # Set the flag to indicate that the machine is using a special algorithm
+-# to convert some values of '(unsigned) long' to 'long double' values.  
+-# (This flag should be off for all machines, except for IBM Power6 Linux, 
+-# when the bit sequences are 003fff..., 007fff..., 00ffff..., 01ffff..., 
+-# ..., 7fffff..., the compiler uses a unknown algorithm.  We define a 
++# to convert some values of '(unsigned) long' to 'long double' values.
++# (This flag should be off for all machines, except for IBM Power6 Linux,
++# when the bit sequences are 003fff..., 007fff..., 00ffff..., 01ffff...,
++# ..., 7fffff..., the compiler uses a unknown algorithm.  We define a
+ # macro and skip the test for now until we know about the algorithm.
+ #
+ if (H5_LONG_TO_LDOUBLE_SPECIAL MATCHES ^H5_LONG_TO_LDOUBLE_SPECIAL$)
+   set (H5_LONG_TO_LDOUBLE_SPECIAL 0 CACHE INTERNAL "Define if your system can convert (unsigned) long to long double values with special algorithm")
+   message (STATUS "Checking IF your system can convert (unsigned) long to long double values with special algorithm... no")
+@@ -1176,11 +1169,11 @@
+   set (H5_CYGWIN_ULLONG_TO_LDOUBLE_ROUND_PROBLEM 1)
+ endif (CYGWIN)
+ 
+ # -----------------------------------------------------------------------
+ # wrapper script variables
+-# 
++#
+ set (prefix ${CMAKE_INSTALL_PREFIX})
+ set (exec_prefix "\${prefix}")
+ set (libdir "${exec_prefix}/lib")
+ set (includedir "\${prefix}/include")
+ set (host_os ${CMAKE_HOST_SYSTEM_NAME})
