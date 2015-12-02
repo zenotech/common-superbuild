@@ -111,3 +111,19 @@ superbuild_set_revision(lapack
 superbuild_set_revision(netcdf
   URL     "http://www.paraview.org/files/dependencies/netcdf-4.3.2.modified.tar.gz"
   URL_MD5 1841196c2bfcf10246966eecf92ad0ec)
+
+set(tbb_ver "44_20150728oss")
+if (WIN32)
+  set(tbb_file "tbb${tbb_ver}_win.zip")
+  set(tbb_md5 "e7bbf293cdb5a50ca81347c80168956d")
+elseif (APPLE)
+  set(tbb_file "tbb${tbb_ver}_osx.tgz")
+  set(tbb_md5 "a767d7a8b375e6b054e44e2317d806b8")
+else ()
+  set(tbb_file "tbb${tbb_ver}_lin_0.tgz")
+  set(tbb_md5 "ab5df80a65adf423b14637a1f35814b2")
+endif ()
+
+superbuild_set_revision(tbb
+  URL     "http://www.paraview.org/files/dependencies/${tbb_file}"
+  URL_MD5 "${tbb_md5}")

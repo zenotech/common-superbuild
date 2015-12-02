@@ -17,6 +17,7 @@ function (superbuild_find_projects var)
     qt4
     qt5
     szip
+    tbb
     zlib)
 
   if (NOT WIN32)
