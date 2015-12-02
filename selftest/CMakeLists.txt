@@ -6,7 +6,6 @@ function (superbuild_find_projects var)
   set(projects
     boost
     bzip2
-    fontconfig
     freetype
     hdf5
     lapack
@@ -25,6 +24,11 @@ function (superbuild_find_projects var)
       ffmpeg
       mpi
       libxml2)
+  endif ()
+
+  if (UNIX AND NOT APPLE)
+    list(APPEND projects
+      fontconfig)
   endif ()
 
   set("${var}"
