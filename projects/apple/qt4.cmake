@@ -29,11 +29,7 @@ include(qt4.common)
 superbuild_apply_patch(qt4 corewlan-new-osx
   "Fix corewlan to be able to detect newer OS X SDK versions")
 
-# Patch for modal dialog errors on 10.9 and up
-# See https://bugreports.qt-project.org/browse/QTBUG-37699?focusedCommentId=251106#comment-251106
-superbuild_project_add_step(qt4-patch-modal-dialogs
-  COMMAND "${CMAKE_COMMAND}" -E copy_if_different
-          "${CMAKE_CURRENT_LIST_DIR}/patches/qt4.src.gui.kernel.qeventdispatcher_mac.mm"
-          <SOURCE_DIR>/src/gui/kernel/qeventdispatcher_mac.mm
-  DEPENDEES configure
-  DEPENDERS build)
+# Patch for modal dialog errors on 10.9 and up See
+# https://bugreports.qt-project.org/browse/QTBUG-37699?focusedCommentId=251106#comment-251106
+superbuild_apply_patch(qt4 osx-10.9-modal-dialogs
+  "Fix modal dialog state management for 10.9 and up")
