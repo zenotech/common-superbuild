@@ -17,7 +17,6 @@ function (superbuild_add_project name)
 
   set(ep_arguments)
   set(grab)
-  set(skip FALSE)
 
   foreach (arg IN LISTS ARGN)
     if (arg STREQUAL "CAN_USE_SYSTEM")
