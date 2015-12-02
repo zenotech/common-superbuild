@@ -1,0 +1,17 @@
+diff -Nr -U5 hdf5-1.8.13/src/H5public.h hdf5-1.8.13.fix-ssize_t-redefine/src/H5public.h
+--- hdf5-1.8.13/src/H5public.h	2014-05-05 22:15:36.000000000 -0400
++++ hdf5-1.8.13.fix-ssize_t-redefine/src/H5public.h	2015-12-02 12:06:03.888798657 -0500
+@@ -147,10 +147,13 @@
+ /* Define the ssize_t type if it not is defined */
+ #if H5_SIZEOF_SSIZE_T==0
+ /* Undefine this size, we will re-define it in one of the sections below */
+ #undef H5_SIZEOF_SSIZE_T
+ #if H5_SIZEOF_SIZE_T==H5_SIZEOF_INT
++#ifdef _WIN32
++#undef ssize_t
++#endif
+ typedef int ssize_t;
+ #       define H5_SIZEOF_SSIZE_T H5_SIZEOF_INT
+ #elif H5_SIZEOF_SIZE_T==H5_SIZEOF_LONG
+ typedef long ssize_t;
+ #       define H5_SIZEOF_SSIZE_T H5_SIZEOF_LONG

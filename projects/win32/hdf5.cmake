@@ -14,15 +14,11 @@ superbuild_add_extra_cmake_args(
   -DHDF5_HL_LIB:FILEPATH=${install_location}/lib/hdf5_hl.lib
   -DHDF5_INCLUDE_DIR:FILEPATH=${install_location}/include)
 
-# On 32-bit Windows, H5public.h ends up redefining ssize_t. This patch ensures
-# that the old definition is undef-ed before redefining it.
 if (NOT superbuild_is_64bit)
-  superbuild_project_add_step(hdf5-patch-fix-h5public
-    COMMAND   "${CMAKE_COMMAND}" -E copy_if_different
-              "${CMAKE_CURRENT_LIST_DIR}/patches/hdf5.src.H5public.h"
-              <SOURCE_DIR>/src/H5public.h
-    DEPENDEES update
-    DEPENDERS patch)
+  # On 32-bit Windows, H5public.h ends up redefining ssize_t. This patch ensures
+  # that the old definition is undef-ed before redefining it.
+  superbuild_apply_patch(hdf5 fix-ssize_t-redefine
+    "Fix ssize_t redefinition on 32-bit Windows")
 endif ()
 
 if (MSVC)
