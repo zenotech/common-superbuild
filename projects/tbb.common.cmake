@@ -5,7 +5,7 @@ if (NOT tbb_libsuffix)
   endif ()
 endif ()
 
-add_external_project_or_use_system(tbb
+superbuild_add_project(tbb
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
   INSTALL_COMMAND
@@ -19,9 +19,8 @@ add_external_project_or_use_system(tbb
       ${tbb_install_args}
       -P "${CMAKE_CURRENT_LIST_DIR}/scripts/tbb.install.cmake")
 
-add_extra_cmake_args(
+superbuild_add_extra_cmake_args(
   -DTBB_INCLUDE_DIRS:PATH=<INSTALL_DIR>/include
   -DTBB_LIBRARIES:PATH=<INSTALL_DIR>/lib/libtbb${tbb_libsuffix}
   -DTBB_MALLOC_INCLUDE_DIRS:PATH=<INSTALL_DIR>/include
-  -DTBB_MALLOC_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libtbb_malloc${tbb_libsuffix}
-)
+  -DTBB_MALLOC_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libtbb_malloc${tbb_libsuffix})
