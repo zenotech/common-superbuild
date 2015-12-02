@@ -1,6 +1,15 @@
 include("SuperbuildUtils-apple")
 include("SuperbuildUtils-unix")
 
+if (NOT CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_BUILD_TYPE "Release"
+    CACHE STRING "The build mode")
+  mark_as_advanced(CMAKE_BUILD_TYPE)
+  set_property(CACHE CMAKE_BUILD_TYPE
+    PROPERTY
+      STRINGS "Release;RelWithDebInfo;Debug")
+endif ()
+
 function (superbuild_detect_64bit_target)
   if (CROSS_BUILD_STAGE STREQUAL "cross")
     return ()
