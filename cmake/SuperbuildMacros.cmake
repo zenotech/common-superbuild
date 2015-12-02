@@ -129,6 +129,20 @@ function (superbuild_add_dummy_project _name)
       "${_name}_is_dummy" TRUE)
 endfunction ()
 
+function (superbuild_apply_patch _name _patch _comment)
+  find_package(Git QUIET REQUIRED)
+
+  superbuild_project_add_step("${_name}-patch-${_patch}"
+    COMMAND   "${GIT_EXECUTABLE}"
+              apply
+              -p1
+              "${CMAKE_CURRENT_LIST_DIR}/patches/${_name}-${_patch}.patch"
+    DEPENDEES update
+    DEPENDERS patch
+    COMMENT   "${_comment}"
+    WORKING_DIRECTORY <SOURCE_DIR>)
+endfunction ()
+
 function (superbuild_add_extra_cmake_args)
   if (NOT superbuild_build_phase)
     return ()
