@@ -65,6 +65,7 @@ superbuild_add_project(qt4
       -no-script
       -no-scripttools
       -no-webkit
+      -stl
       -xmlpatterns
 
       -nomake demos
