@@ -72,9 +72,15 @@ superbuild_set_revision(libxml2
   URL     "http://paraview.org/files/dependencies/libxml2-2.7.8.tar.gz"
   URL_MD5 8127a65e8c3b08856093099b52599c86)
 
-superbuild_set_revision(qt4
-  URL     "http://paraview.org/files/dependencies/qt-everywhere-opensource-src-4.8.6.tar.gz"
-  URL_MD5 2edbe4d6c2eff33ef91732602f3518eb)
+if (WIN32)
+  superbuild_set_revision(qt4
+    URL     "http://paraview.org/files/dependencies/qt-everywhere-opensource-src-4.8.4.tar.gz"
+    URL_MD5 89c5ecba180cae74c66260ac732dc5cb)
+else ()
+  superbuild_set_revision(qt4
+    URL     "http://paraview.org/files/dependencies/qt-everywhere-opensource-src-4.8.6.tar.gz"
+    URL_MD5 2edbe4d6c2eff33ef91732602f3518eb)
+endif ()
 
 if (WIN32)
   superbuild_set_revision(qt5
