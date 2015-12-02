@@ -33,7 +33,7 @@ function (superbuild_add_project name)
       set(grab depends)
     elseif (arg STREQUAL "DEPENDS_OPTIONAL")
       set(grab optional_depends)
-    elseif (arg MATCHES _ep_keywords_ExternalProject_Add)
+    elseif (arg MATCHES "${_ep_keywords_ExternalProject_Add}")
       set(grab ep_arguments)
       list(APPEND ep_arguments
         "${arg}")
