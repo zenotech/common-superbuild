@@ -1,3 +1,4 @@
+set(boost_options)
 if (BUILD_SHARED_LIBS)
   list(APPEND boost_options
     link=shared)
@@ -6,7 +7,7 @@ else ()
     link=static)
 endif ()
 
-set(boost_options
+list(APPEND boost_options
   --prefix=<INSTALL_DIR>)
 
 if (WIN32)
