@@ -6,14 +6,11 @@ list(APPEND qt4_extra_options
   -system-libpng
   -I <INSTALL_DIR>/include/freetype2
   -I <INSTALL_DIR>/include/fontconfig)
-list(APPEND qt4_extra_arguments
-  # Fix Qt build failure with GCC 4.1.
-  PATCH_COMMAND
-    "${CMAKE_COMMAND}" -E copy_if_different
-      "${CMAKE_CURRENT_LIST_DIR}/patches/qt4.src.3rdparty.webkit.Source.WebKit.pri"
-      <SOURCE_DIR>/src/3rdparty/webkit/Source/WebKit.pri)
 
 include(qt4.common)
+
+superbuild_apply_patch(qt4 webkit-gcc-4.1
+  "Remove -Werror from WebKit build")
 
 if (NOT superbuild_is_64bit)
   # On 32-bit builds, we are incorrectly ending with QT_POINTER_SIZE chosen as
