@@ -6,6 +6,7 @@ if (NOT tbb_libsuffix)
 endif ()
 
 superbuild_add_project(tbb
+  CAN_USE_SYSTEM
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
   INSTALL_COMMAND
