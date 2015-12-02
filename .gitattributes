@@ -1,1 +1,1 @@
-patches/*.patch     whitespace=-blank-at-eol,-text
+*.patch     whitespace=-blank-at-eol -text
