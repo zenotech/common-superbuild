@@ -25,13 +25,9 @@ endif ()
 
 include(qt4.common)
 
-# corewlan .pro file needs to be patched to find
-superbuild_project_add_step(qt4-patch-corewlan
-  COMMAND "${CMAKE_COMMAND}" -E copy_if_different
-          "${CMAKE_CURRENT_LIST_DIR}/patches/qt4.src.plugins.bearer.corewlan.corewlan.pro"
-          <SOURCE_DIR>/src/plugins/bearer/corewlan/corewlan.pro
-  DEPENDEES configure
-  DEPENDERS build)
+# corewlan .pro file needs to be patched to find newer OS X versions.
+superbuild_apply_patch(qt4 corewlan-new-osx
+  "Fix corewlan to be able to detect newer OS X SDK versions")
 
 # Patch for modal dialog errors on 10.9 and up
 # See https://bugreports.qt-project.org/browse/QTBUG-37699?focusedCommentId=251106#comment-251106
