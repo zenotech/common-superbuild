@@ -19,10 +19,6 @@ if (NOT superbuild_is_64bit)
   # On 32-bit builds, we are incorrectly ending with QT_POINTER_SIZE chosen as
   # 8 (instead of 4) with GCC4.1 toolchain on old debians. This patch overcomes
   # that.
-  superbuild_project_add_step(qt4-patch-configure
-    COMMAND "${CMAKE_COMMAND}" -E copy_if_different
-            "${CMAKE_CURRENT_LIST_DIR}/patches/qt4.configure"
-            <SOURCE_DIR>/configure
-    DEPENDEES update
-    DEPENDERS patch)
+  superbuild_apply_patch(qt4 qt-pointer-size
+    "Fix GCC 4.1 configure check failure")
 endif ()
