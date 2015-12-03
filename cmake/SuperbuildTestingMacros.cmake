@@ -1,10 +1,11 @@
 set(_superbuild_cmake_dir "${CMAKE_CURRENT_LIST_DIR}/cmake")
-set(_ZIP_test_glob "*.zip")
-set(_NSIS_test_glob "*.exe")
-set(_DragNDrop_test_glob "*.dmg")
-set(_TGZ_test_glob "*.tar.gz")
 
 function (superbuild_add_extract_test generator output)
+  set(_ZIP_test_glob "*.zip")
+  set(_NSIS_test_glob "*.exe")
+  set(_DragNDrop_test_glob "*.dmg")
+  set(_TGZ_test_glob "*.tar.gz")
+
   add_test(
     NAME    "extract-${generator}"
     COMMAND "${CMAKE_COMMAND}"
