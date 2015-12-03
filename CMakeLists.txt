@@ -122,6 +122,14 @@ endif ()
 if (COMMAND superbuild_add_packaging)
   superbuild_add_packaging()
 
+  file(RELATIVE_PATH superbuild_relative_dir
+    "${CMAKE_BINARY_DIR}"
+    "${CMAKE_CURRENT_BINARY_DIR}")
+  configure_file(
+    "${CMAKE_CURRENT_LIST_DIR}/cmake/CTestTestfile.cmake.in"
+    "${CMAKE_BINARY_DIR}/CTestTestfile.cmake"
+    @ONLY)
+
   include(SuperbuildPackageMacros)
 
   get_property(superbuild_package_projects GLOBAL
