@@ -1,4 +1,4 @@
-set(_superbuild_cmake_dir "${CMAKE_CURRENT_LIST_DIR}/cmake")
+set(_superbuild_cmake_dir "${CMAKE_CURRENT_LIST_DIR}")
 
 function (superbuild_add_extract_test generator output)
   set(_ZIP_test_glob "*.zip")
