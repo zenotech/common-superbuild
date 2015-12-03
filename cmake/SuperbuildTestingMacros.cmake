@@ -12,7 +12,7 @@ function (superbuild_add_extract_test generator output)
             -Dbinary_glob:STRING=${_${generator}_test_glob}
             -Doutput_dir:PATH=${output}
             -P "${_superbuild_cmake_dir}/superbuild_testing_extract_binary.cmake")
-  set_tests_properties("prepare-${name}-${generator}"
+  set_tests_properties("extract-${generator}"
     PROPERTIES
       DEPENDS "cpack-${generator}"
       ${ARGN})
