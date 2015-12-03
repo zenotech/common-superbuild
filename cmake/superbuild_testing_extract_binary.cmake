@@ -51,7 +51,7 @@ function (extract_binary dir glob output)
   file(GLOB file "${dir}/${glob}")
   if (NOT file)
     message(FATAL_ERROR "Failed to locate package: ${dir}/${glob}.")
-  elseif (NOT EXIST "${file}")
+  elseif (NOT EXISTS "${file}")
     message(FATAL_ERROR "Ambiguous glob: ${dir}/${glob}:\n${file}.")
   endif ()
 
