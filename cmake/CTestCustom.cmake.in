@@ -1,4 +1,4 @@
-function (ignore_project_warnings variable project)
+function (project_ignore_regexes variable project)
   set(exceptions)
   list(APPEND exceptions
     "${project}/src/${project}"
