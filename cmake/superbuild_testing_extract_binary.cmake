@@ -74,4 +74,4 @@ function (extract_binary dir glob output)
   message("Package available under '${output}'")
 endfunction ()
 
-extract_binary_dir("${test_dir}" "${binary_glob}" "${output_dir}")
+extract_binary("${test_dir}" "${binary_glob}" "${output_dir}")
