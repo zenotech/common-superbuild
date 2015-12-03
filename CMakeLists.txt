@@ -95,6 +95,10 @@ foreach (version_file IN LISTS superbuild_version_files)
   include("${version_file}")
 endforeach ()
 
+if (COMMAND superbuild_setup_variables)
+  superbuild_setup_variables()
+endif ()
+
 include(SuperbuildMacros)
 
 superbuild_find_projects(superbuild_projects)
