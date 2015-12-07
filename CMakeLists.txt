@@ -120,9 +120,9 @@ endif ()
 
 # Add packaging.
 if (COMMAND superbuild_add_packaging)
-  superbuild_add_packaging()
-
   include(SuperbuildPackageMacros)
+
+  superbuild_add_packaging()
 
   get_property(superbuild_package_projects GLOBAL
     PROPERTY superbuild_package_projects)
