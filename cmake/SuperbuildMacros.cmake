@@ -335,6 +335,8 @@ function (superbuild_process_dependencies)
     if (allow_developer_mode)
       # For every enabled project that can be used in developer mode, expose
       # the option to the user.
+      # TODO: Make DEVELOPER_MODE a single option with the *value* being the
+      # project to build as a developer mode.
       cmake_dependent_option("DEVELOPER_MODE_${project}" "" OFF
         "${project}_enabled" OFF)
     endif ()
