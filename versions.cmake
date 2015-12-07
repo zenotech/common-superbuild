@@ -65,7 +65,7 @@ superbuild_set_revision(freetype
   URL_MD5 5d82aaa9a4abc0ebbd592783208d9c76)
 
 superbuild_set_revision(fontconfig
-  URL "http://paraview.org/files/dependencies/fontconfig-2.8.0.tar.gz"
+  URL     "http://paraview.org/files/dependencies/fontconfig-2.8.0.tar.gz"
   URL_MD5 77e15a92006ddc2adbb06f840d591c0e)
 
 superbuild_set_revision(libxml2
@@ -73,24 +73,28 @@ superbuild_set_revision(libxml2
   URL_MD5 8127a65e8c3b08856093099b52599c86)
 
 if (WIN32)
-  superbuild_set_revision(qt4
-    URL     "http://paraview.org/files/dependencies/qt-everywhere-opensource-src-4.8.4.tar.gz"
-    URL_MD5 89c5ecba180cae74c66260ac732dc5cb)
+  set(qt4_ver "4.8.4")
+  set(qt4_md5 "89c5ecba180cae74c66260ac732dc5cb")
 else ()
-  superbuild_set_revision(qt4
-    URL     "http://paraview.org/files/dependencies/qt-everywhere-opensource-src-4.8.6.tar.gz"
-    URL_MD5 2edbe4d6c2eff33ef91732602f3518eb)
+  set(qt4_ver "4.8.6")
+  set(qt4_md5 "2edbe4d6c2eff33ef91732602f3518eb")
 endif ()
+superbuild_set_revision(qt4
+  URL     "http://paraview.org/files/dependencies/qt-everywhere-opensource-src-${qt4_ver}.tar.gz"
+  URL_MD5 "${qt4_md5}")
 
+set(qt5_ver_series "5.4")
+set(qt5_ver "${qt5_version_series}.1")
 if (WIN32)
-  superbuild_set_revision(qt5
-    URL "http://download.qt.io/official_releases/qt/5.4/5.4.1/single/qt-everywhere-opensource-src-5.4.1.zip"
-    URL_MD5 57b25c68982237abb9e18b347034e005)
+  set(qt5_ext "zip")
+  set(qt5_md5 "57b25c68982237abb9e18b347034e005")
 else ()
-  superbuild_set_revision(qt5
-    URL "http://download.qt.io/official_releases/qt/5.4/5.4.1/single/qt-everywhere-opensource-src-5.4.1.tar.gz"
-    URL_MD5 90f3fbce38ed16e5dc2cd0909ae86ca4)
+  set(qt5_ext "tar.gz")
+  set(qt5_md5 "90f3fbce38ed16e5dc2cd0909ae86ca4")
 endif ()
+superbuild_set_revision(qt5
+  URL     "http://download.qt.io/official_releases/qt/${qt5_ver_series}/${qt5_ver}/single/qt-everywhere-opensource-src-${qt5_ver}.${qt5_ext}"
+  URL_MD5 "${qt5_md5}")
 
 superbuild_set_revision(numpy
   URL     "http://paraview.org/files/dependencies/numpy-1.8.1+cmake+static.tar.bz2"
