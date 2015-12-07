@@ -15,7 +15,6 @@ superbuild_set_revision(bzip2
   URL     "http://www.paraview.org/files/dependencies/bzip2-1.0.6.tar.gz"
   URL_MD5 00b516f4704d4a7cb50a1d97e6e8e15b)
 
-# NOTE: if updating zlib version, fix patch in zlib.cmake
 superbuild_set_revision(zlib
   URL     "http://www.paraview.org/files/dependencies/zlib-1.2.7.tar.gz"
   URL_MD5 60df6a37c56e7c1366cca812414f7b85)
@@ -112,6 +111,8 @@ superbuild_set_revision(lapack
   URL     "http://paraview.org/files/dependencies/lapack-3.4.2.tgz"
   URL_MD5 61bf1a8a4469d4bdb7604f5897179478)
 
+# TODO: split into netcdf and netcdfcpp
+# TODO: use a patch
 superbuild_set_revision(netcdf
   URL     "http://www.paraview.org/files/dependencies/netcdf-4.3.2.modified.tar.gz"
   URL_MD5 1841196c2bfcf10246966eecf92ad0ec)
