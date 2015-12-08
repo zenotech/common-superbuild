@@ -319,6 +319,8 @@ function (superbuild_process_dependencies)
   string(REPLACE ";" ", " enabled "${enabled_projects}")
   message(STATUS "Building projects: ${enabled}")
 
+  set(system_projects)
+
   set(superbuild_build_phase TRUE)
   foreach (project IN LISTS enabled_projects)
     get_property(can_use_system GLOBAL
@@ -346,6 +348,8 @@ function (superbuild_process_dependencies)
     get_property(is_dummy GLOBAL
       PROPERTY "${project}_is_dummy")
     if (can_use_system AND USE_SYSTEM_${project})
+      list(APPEND system_projects
+        "${project}")
       _superbuild_add_dummy_project_internal("${project}")
       include("${project}.system")
     elseif (allow_developer_mode AND DEVELOPER_MODE_${project})
@@ -371,6 +375,12 @@ function (superbuild_process_dependencies)
       "${${project}_enabled}"
       PARENT_SCOPE)
   endforeach ()
+  set(enabled_projects
+    "${enabled_projects}"
+    PARENT_SCOPE)
+  set(system_projects
+    "${system_projects}"
+    PARENT_SCOPE)
 endfunction ()
 
 #------------------------------------------------------------------------------
