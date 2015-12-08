@@ -1,4 +1,5 @@
 include("${CMAKE_CURRENT_LIST_DIR}/../python.cmake")
 
-set(USE_SYSTEM_python TRUE
-  CACHE BOOL "" FORCE)
+set_property(CACHE USE_SYSTEM_python
+  PROPERTY
+    VALUE TRUE)
