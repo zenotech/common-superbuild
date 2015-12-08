@@ -18,10 +18,13 @@ function (superbuild_add_extra_package_test name generator)
             -P "${_superbuild_packaging_cmake_dir}/superbuild_package_test.cmake"
     WORKING_DIRECTORY "${cpack_working_dir}")
 
+  set_tests_properties("cpack-${name}-${generator}"
+    PROPERTIES
+      RESOURCE_LOCK cpack)
+
   if (ARGN)
     set_tests_properties("cpack-${name}-${generator}"
       PROPERTIES
-        RESOURCE_LOCK cpack
         ${ARGN})
   endif ()
 endfunction ()
@@ -34,10 +37,13 @@ function (superbuild_add_package_test generator)
             -G "${generator}"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
 
+  set_tests_properties("cpack-${generator}"
+    PROPERTIES
+      RESOURCE_LOCK cpack)
+
   if (ARGN)
     set_tests_properties("cpack-${generator}"
       PROPERTIES
-        RESOURCE_LOCK cpack
         ${ARGN})
   endif ()
 endfunction ()
