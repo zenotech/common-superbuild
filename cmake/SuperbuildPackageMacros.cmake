@@ -20,13 +20,8 @@ function (superbuild_add_extra_package_test name generator)
 
   set_tests_properties("cpack-${name}-${generator}"
     PROPERTIES
-      RESOURCE_LOCK cpack)
-
-  if (ARGN)
-    set_tests_properties("cpack-${name}-${generator}"
-      PROPERTIES
-        ${ARGN})
-  endif ()
+      RESOURCE_LOCK cpack
+      ${ARGN})
 endfunction ()
 
 function (superbuild_add_package_test generator)
@@ -39,11 +34,6 @@ function (superbuild_add_package_test generator)
 
   set_tests_properties("cpack-${generator}"
     PROPERTIES
-      RESOURCE_LOCK cpack)
-
-  if (ARGN)
-    set_tests_properties("cpack-${generator}"
-      PROPERTIES
-        ${ARGN})
-  endif ()
+      RESOURCE_LOCK cpack
+      ${ARGN})
 endfunction ()
