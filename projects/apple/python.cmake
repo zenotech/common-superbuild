@@ -1,5 +1,1 @@
-include("${CMAKE_CURRENT_LIST_DIR}/../python.cmake")
-
-set_property(CACHE USE_SYSTEM_python
-  PROPERTY
-    VALUE TRUE)
+message(FATAL_ERROR "The system Python must be used on OS X")
