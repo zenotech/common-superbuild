@@ -32,6 +32,8 @@ endforeach ()
 set(ENV{PYTHONPATH} "${pythonpath}")
 message("PYTHONPATH: ${pythonpath}")
 
+file(TO_NATIVE_PATH "${INSTALL_PREFIX}" INSTALL_PREFIX)
+
 execute_process(
   COMMAND "${PYTHON_EXECUTABLE}"
           setup.py
