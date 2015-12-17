@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.0)
+
+project("cpack-@name@" NONE)
+
+set(CMAKE_MODULE_PATH "@CMAKE_MODULE_PATH@")
+set(CMAKE_INSTALL_PREFIX "@CMAKE_INSTALL_PREFIX@")
+set(superbuild_fixup_bundle "@superbuild_fixup_bundle@")
+set(superbuild_install_location "@superbuild_install_location@")
+set(enabled_projects "@enabled_projects@")
+foreach (project IN LISTS enabled_projects)
+  set("${project}_enabled" TRUE)
+endforeach ()
+set(system_projects "@system_projects@")
+foreach (project IN LISTS system_projects)
+  set("USE_SYSTEM_${project}" TRUE)
+endforeach ()
+
+include("@name@.bundle")
+
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "bin")
+include(InstallRequiredSystemLibraries)
+
+include(CPack)
