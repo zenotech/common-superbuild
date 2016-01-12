@@ -129,7 +129,11 @@ function (superbuild_add_dummy_project _name)
 endfunction ()
 
 function (superbuild_apply_patch _name _patch _comment)
-  find_package(Git QUIET REQUIRED)
+  find_package(Git QUIET)
+  if (NOT GIT_FOUND)
+    mark_as_advanced(CLEAR GIT_EXECUTABLE)
+    message(FATAL_ERROR "Could not find git executable.  Please set GIT_EXECUTABLE.")
+  endif()
 
   superbuild_project_add_step("${_name}-patch-${_patch}"
     COMMAND   "${GIT_EXECUTABLE}"
