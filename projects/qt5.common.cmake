@@ -1,6 +1,4 @@
 if (WIN32)
-  list(APPEND qt5_depends
-    python)
   list(APPEND qt5_options
     -qt-zlib)
 else ()

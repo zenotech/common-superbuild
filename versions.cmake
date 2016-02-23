@@ -83,7 +83,7 @@ superbuild_set_revision(qt4
   URL_MD5 "${qt4_md5}")
 
 set(qt5_ver_series "5.4")
-set(qt5_ver "${qt5_version_series}.1")
+set(qt5_ver "${qt5_ver_series}.1")
 if (WIN32)
   set(qt5_ext "zip")
   set(qt5_md5 "57b25c68982237abb9e18b347034e005")

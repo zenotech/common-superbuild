@@ -5,11 +5,15 @@ project(standalone-qt)
 function (superbuild_find_projects var)
   set(projects
     freetype
-    libxml2
     png
     qt4
     qt5
     zlib)
+
+  if (UNIX)
+    list(APPEND projects
+      libxml2)
+  endif()
 
   if (UNIX AND NOT APPLE)
     list(APPEND projects
