@@ -1,3 +1,9 @@
+set(netcdf_libdir)
+if (UNIX AND NOT APPLE)
+  set(netcdf_libdir
+    -DCMAKE_INSTALL_LIBDIR:BOOL=lib)
+endif ()
+
 superbuild_add_project(netcdf
   DEPENDS hdf5 zlib
 
@@ -6,4 +12,5 @@ superbuild_add_project(netcdf
     -DBUILD_TESTING:BOOL=FALSE
     -DBUILD_UTILITIES:BOOL=FALSE
     -DUSE_SZIP:BOOL=OFF
-    -DENABLE_DAP:BOOL=OFF)
+    -DENABLE_DAP:BOOL=OFF
+    ${netcdf_libdir})
