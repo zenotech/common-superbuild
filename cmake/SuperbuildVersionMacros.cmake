@@ -80,32 +80,37 @@ function (superbuild_detect_version_git var source_dir)
   endif ()
 endfunction ()
 
-function (superbuild_set_version_variables project default)
+macro (_superbuild_set_up variable value)
+  set("${variable}" "${value}"
+    PARENT_SCOPE)
+  set("${variable}" "${value}")
+endmacro ()
+
+function (superbuild_set_version_variables project default include_file)
   set(source_dir "")
   if (${project}_FROM_SOURCE_DIR)
     set(source_dir "${${project}_SOURCE_DIR}")
   endif ()
   superbuild_detect_version_git("${project}" "${source_dir}" "${default}")
 
-  set("${project}_version" "${${project}_VERSION}"
-    PARENT_SCOPE)
-  set("${project}_version_major" "${${project}_VERSION_MAJOR}"
-    PARENT_SCOPE)
-  set("${project}_version_minor" "${${project}_VERSION_MINOR}"
-    PARENT_SCOPE)
-  set("${project}_version_patch" "${${project}_VERSION_PATCH}"
-    PARENT_SCOPE)
-  set("${project}_version_patch_extra" "${${project}_VERSION_PATCH_EXTRA}"
-    PARENT_SCOPE)
+  _superbuild_set_up("${project}_version" "${${project}_VERSION}")
+  _superbuild_set_up("${project}_version_major" "${${project}_VERSION_MAJOR}")
+  _superbuild_set_up("${project}_version_minor" "${${project}_VERSION_MINOR}")
+  _superbuild_set_up("${project}_version_patch" "${${project}_VERSION_PATCH}")
+  _superbuild_set_up("${project}_version_patch_extra" "${${project}_VERSION_PATCH_EXTRA}")
   if (${project}_version_patch_extra)
-    set("${project}_version_suffix" "-${${project}_version_patch_extra}"
-      PARENT_SCOPE)
+    _superbuild_set_up("${project}_version_suffix" "-${${project}_version_patch_extra}")
   else ()
-    set("${project}_version_suffix" ""
-      PARENT_SCOPE)
+    _superbuild_set_up("${project}_version_suffix" "")
   endif ()
-  set("${project}_version_full" "${${project}_VERSION_FULL}"
-    PARENT_SCOPE)
-  set("${project}_version_is_release" "${${project}_VERSION_IS_RELEASE}"
-    PARENT_SCOPE)
+  _superbuild_set_up("${project}_version_full" "${${project}_VERSION_FULL}")
+  _superbuild_set_up("${project}_version_is_release" "${${project}_VERSION_IS_RELEASE}")
+
+  if (include_file)
+    file(WRITE "${_superbuild_module_gen_dir}/${include_file}" "")
+    foreach (variable IN ITEMS "" _major _minor _patch _patch_extra _suffix _full _is_release)
+      file(APPEND "${_superbuild_module_gen_dir}/${include_file}"
+        "set(\"${project}_version${variable}\" \"${${project}_version${variable}}\")\n")
+    endforeach ()
+  endif ()
 endfunction ()
