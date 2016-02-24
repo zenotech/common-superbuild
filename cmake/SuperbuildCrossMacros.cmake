@@ -25,29 +25,17 @@ function (_superbuild_cross_target_machine)
     CACHE STRING "Platform to cross compile for, either generic|bgp_xlc|bgq_xlc|bgq_gnu|xk7_gnu")
   set_property(CACHE cross_target PROPERTY STRINGS
     "generic" "bgp_xlc" "bgq_xlc" "bgq_gnu" "xk7_gnu")
-
-  set(CROSS_BUILD_SITE ""
-    CACHE STRING "Specify Site to load appropriate configuration defaults, if available.")
 endfunction ()
 
 #=============================================================================
 # Includes an optionally site-specific file from the cross-compiling directory.
 function (_superbuild_cross_include_file var name)
-  # Copy toolchains
-  string(TOLOWER "${CROSS_BUILD_SITE}" lsite)
-
   set(site_file
-    "crosscompile/${cross_target}/${name}.${lsite}.cmake")
+    "crosscompile/${cross_target}/${name}.cmake")
   include("${site_file}" OPTIONAL
     RESULT_VARIABLE res)
   if (NOT res)
-    set(site_file
-      "crosscompile/${cross_target}/${name}.cmake")
-    include("${site_file}" OPTIONAL
-      RESULT_VARIABLE res)
-    if (NOT res)
-      set(site_file)
-    endif ()
+    set(site_file)
   endif ()
 
   set("${var}"
@@ -60,19 +48,8 @@ endfunction ()
 # From the ${cross_target} directory into the build tree.
 #
 function (_superbuild_cross_platform_settings)
-  # Copy toolchains
-  string(TOLOWER "${CROSS_BUILD_SITE}" lsite)
-
   set(site_toolchain
-    "${CMAKE_CURRENT_LIST_DIR}/crosscompile/${cross_target}/ToolChain.${lsite}.cmake.in")
-  if (NOT EXISTS "${site_toolchain}")
-    set(site_toolchain
-      "${CMAKE_CURRENT_LIST_DIR}/crosscompile/${cross_target}/ToolChain.cmake.in")
-  endif ()
-
-  set(superbuild_cross_toolchain
-    "${CMAKE_BINARY_DIR}/crosscompile/ToolChain.cmake"
-    PARENT_SCOPE)
+    "${CMAKE_CURRENT_LIST_DIR}/crosscompile/${cross_target}/ToolChain.cmake.in")
   set(superbuild_cross_toolchain
     "${CMAKE_BINARY_DIR}/crosscompile/ToolChain.cmake")
 
