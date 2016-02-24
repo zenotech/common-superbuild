@@ -7,4 +7,4 @@ endif ()
 include(boost.common)
 
 superbuild_apply_patch(boost osx-rpath
-    "Remove @rpath from the install name of Boost's libraries")
+  "Remove @rpath from the install name of Boost's libraries")
