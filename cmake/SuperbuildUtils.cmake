@@ -63,4 +63,9 @@ macro (superbuild_prepare_build_tree)
     # empty.
     file(MAKE_DIRECTORY "${superbuild_install_location}/lib")
   endif ()
+
+  set(_superbuild_module_gen_dir "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/cmake")
+  file(MAKE_DIRECTORY "${_superbuild_module_gen_dir}")
+  list(APPEND CMAKE_MODULE_PATH
+    "${_superbuild_module_gen_dir}")
 endmacro ()
