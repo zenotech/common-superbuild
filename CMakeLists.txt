@@ -126,16 +126,22 @@ if (COMMAND superbuild_add_packaging)
 
   get_property(superbuild_package_projects GLOBAL
     PROPERTY superbuild_package_projects)
-  foreach (project IN LISTS superbuild_package_projects)
-    if (${project}_enabled)
-      include(${project}.bundle)
+  if (superbuild_package_projects)
+    set(packaged_projects FALSE)
+    foreach (project IN LISTS superbuild_package_projects)
+      if (${project}_enabled)
+        include(${project}.bundle)
+        set(packaged_projects TRUE)
+      endif ()
+    endforeach ()
+
+    if (packaged_projects)
+      set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "bin")
+      include(InstallRequiredSystemLibraries)
+
+      include(CPack)
     endif ()
-  endforeach ()
-
-  set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "bin")
-  include(InstallRequiredSystemLibraries)
-
-  include(CPack)
+  endif ()
 endif ()
 
 # Add any tests.
