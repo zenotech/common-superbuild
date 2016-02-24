@@ -16,6 +16,7 @@ foreach (project IN LISTS system_projects)
   set("USE_SYSTEM_${project}" TRUE)
 endforeach ()
 
+include(SuperbuildInstallMacros)
 include("@name@.bundle")
 
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "bin")
