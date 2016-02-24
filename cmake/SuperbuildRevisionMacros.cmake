@@ -4,9 +4,15 @@ include(CMakeParseArguments)
 # Macro to be used to register versions for any module. This makes it easier to
 # consolidate versions for all modules in a single file, if needed.
 function (superbuild_set_revision name)
-  set_property(GLOBAL
+  get_property(have_revision GLOBAL
     PROPERTY
-      "${name}_revision" "${ARGN}")
+      "${name}_revision" SET)
+
+  if (NOT have_revision)
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_revision" "${ARGN}")
+  endif ()
 endfunction ()
 
 #------------------------------------------------------------------------------
