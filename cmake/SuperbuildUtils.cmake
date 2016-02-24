@@ -57,10 +57,10 @@ function (superbuild_setup_flags)
   endforeach ()
 endfunction ()
 
-function (superbuild_prepare_build_tree)
+macro (superbuild_prepare_build_tree)
   if (WIN32)
     # Windows doesn't like it if that directory does not exist even if it is
     # empty.
     file(MAKE_DIRECTORY "${superbuild_install_location}/lib")
   endif ()
-endfunction ()
+endmacro ()
