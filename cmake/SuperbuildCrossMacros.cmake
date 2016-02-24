@@ -49,9 +49,9 @@ endfunction ()
 #
 function (_superbuild_cross_platform_settings)
   set(site_toolchain
-    "${CMAKE_CURRENT_LIST_DIR}/crosscompile/${cross_target}/ToolChain.cmake.in")
+    "${CMAKE_CURRENT_LIST_DIR}/crosscompile/${cross_target}/toolchain.cmake.in")
   set(superbuild_cross_toolchain
-    "${CMAKE_BINARY_DIR}/crosscompile/ToolChain.cmake")
+    "${CMAKE_BINARY_DIR}/crosscompile/toolchain.cmake")
 
   configure_file(
     "${site_toolchain}"
