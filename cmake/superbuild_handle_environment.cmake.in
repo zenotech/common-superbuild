@@ -1,4 +1,5 @@
 set(environment "@process_environment@")
+set(list_separator "@_superbuild_list_separator@")
 set(command @step_command@)
 
 set(key)
@@ -17,6 +18,8 @@ foreach (arg IN LISTS environment)
     set(key)
   endif ()
 endforeach()
+
+string(REPLACE "${list_separator}" "\;" command "${command}")
 
 execute_process(
   COMMAND ${command}
