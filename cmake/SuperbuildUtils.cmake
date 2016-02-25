@@ -44,9 +44,9 @@ function (superbuild_setup_flags)
     return ()
   endif ()
 
-  set(superbuild_cpp_flags "$ENV{CPPFLAGS}")
-  set(superbuild_cxx_flags "$ENV{CXXFLAGS} -fPIC")
-  set(superbuild_c_flags "$ENV{CFLAGS} -fPIC")
+  set(superbuild_cpp_flags "$ENV{CPPFLAGS} ${superbuild_extra_cpp_flags}")
+  set(superbuild_cxx_flags "$ENV{CXXFLAGS} -fPIC ${superbuild_extra_cxx_flags}")
+  set(superbuild_c_flags "$ENV{CFLAGS} -fPIC ${superbuild_extra_c_flags}")
 
   superbuild_osx_add_version_flags()
 
