@@ -50,7 +50,7 @@ function (superbuild_setup_flags)
 
   superbuild_osx_add_version_flags()
 
-  foreach (var cpp_flags cxx_flags c_flags)
+  foreach (var IN ITEMS cpp_flags cxx_flags c_flags)
     set("superbuild_${var}"
       "${superbuild_${var}}"
       PARENT_SCOPE)
