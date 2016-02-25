@@ -5,7 +5,8 @@
 # is passed on to the executed command (which does not happen by default).
 # This will be deprecated once CMake starts supporting it.
 
-if (CMAKE_VERSION VERSION_LESS "3.4")
+if (CMAKE_VERSION VERSION_LESS "3.4"
+    OR TRUE) # Patches exist which aren't upstreamed yet.
   # Needed for fixes.
   include("${CMAKE_CURRENT_LIST_DIR}/patches/ExternalProject.cmake")
 else ()
