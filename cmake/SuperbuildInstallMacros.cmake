@@ -39,11 +39,11 @@ function (superbuild_unix_install_program name paths)
     COMPONENT   superbuild)
 endfunction ()
 
-function (superbuild_unix_install_plugin name destination paths subdir)
+function (superbuild_unix_install_plugin name destination paths subdir dest_subdir)
   _superbuild_unix_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
 
   install(
     FILES       "${superbuild_install_location}/lib/${subdir}${name}"
-    DESTINATION "lib/${subdir}"
+    DESTINATION "lib/${dest_subdir}"
     COMPONENT   superbuild)
 endfunction ()
