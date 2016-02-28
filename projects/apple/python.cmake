@@ -1,1 +1,2 @@
-message(FATAL_ERROR "The system Python must be used on OS X")
+superbuild_add_project(python
+  MUST_USE_SYSTEM)
