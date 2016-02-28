@@ -10,6 +10,7 @@ function (superbuild_add_project name)
   _superbuild_project_check_name("${name}")
 
   set(can_use_system FALSE)
+  set(must_use_system FALSE)
   set(default "${_superbuild_default_${name}}")
   set(allow_developer_mode FALSE)
   set(depends)
@@ -21,6 +22,9 @@ function (superbuild_add_project name)
   foreach (arg IN LISTS ARGN)
     if (arg STREQUAL "CAN_USE_SYSTEM")
       set(can_use_system TRUE)
+      set(grab)
+    elseif (arg STREQUAL "MUST_USE_SYSTEM")
+      set(must_use_system TRUE)
       set(grab)
     elseif (arg STREQUAL "DEFAULT_ON")
       set(default ON)
@@ -99,6 +103,14 @@ function (superbuild_add_project name)
         set(depends)
         set(depends_optional)
       endif ()
+    endif ()
+
+    if (must_use_system)
+      set_property(GLOBAL
+        PROPERTY
+          "${name}_system_force" TRUE)
+      set(depends)
+      set(depends_optional)
     endif ()
 
     if (allow_developer_mode)
@@ -334,6 +346,12 @@ function (superbuild_process_dependencies)
       # user.
       cmake_dependent_option("USE_SYSTEM_${project}" "" OFF
         "${project}_enabled" OFF)
+    endif ()
+    get_property(must_use_system GLOBAL
+      PROPERTY "${project}_system_force" SET)
+    if (must_use_system)
+      set(can_use_system TRUE)
+      set(USE_SYSTEM_${project} TRUE)
     endif ()
 
     get_property(allow_developer_mode GLOBAL
