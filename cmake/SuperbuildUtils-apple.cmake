@@ -13,6 +13,20 @@ function (superbuild_osx_add_version_flags)
       "-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
   endif ()
   if (CMAKE_OSX_SYSROOT)
+    if (NOT IS_DIRECTORY "${CMAKE_OSX_SYSROOT}")
+      execute_process(
+        COMMAND xcodebuild
+                -version
+                -sdk "${CMAKE_OSX_SYSROOT}"
+                Path
+        RESULT_VARIABLE res
+        OUTPUT_VARIABLE osx_sysroot
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+      if (res)
+        message(FATAL_ERROR "${CMAKE_OSX_SYSROOT} is not a valid SDK.")
+      endif ()
+      set(CMAKE_OSX_SYSROOT "${osx_sysroot}")
+    endif ()
     list(APPEND osx_flags
       "--sysroot=${CMAKE_OSX_SYSROOT}")
   endif ()
