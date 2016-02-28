@@ -1,6 +1,12 @@
 find_package(PythonLibs   2.6 REQUIRED)
 find_package(PythonInterp 2.6 REQUIRED)
 
+if (NOT PYTHON_VERSION_STRING STREQUAL PYTHONLIBS_VERSION_STRING)
+  message(FATAL_ERROR
+    "Python interpreter version (${PYTHON_VERSION_STRING}) does "
+    "not match the library version (${PYTHONLIBS_VERSION_STRING})")
+endif ()
+
 # This will add PYTHON_LIBRARY, PYTHON_EXECUTABLE, PYTHON_INCLUDE_DIR
 # variables. User can set/override these to change the Python being used.
 superbuild_add_extra_cmake_args(
