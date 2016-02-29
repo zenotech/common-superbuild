@@ -1,271 +1,369 @@
 #!/usr/bin/env python
 
-
-#App="$1" # argument is the application to fixup
-#LibrariesPrefix="Contents/Libraries"
-#echo ""
-#echo "Fixing up $App"
-#echo "All required frameworks/libraries will be placed under $App/$LibrariesPrefix"
-#echo ""
-#echo "----------------------------"
-#echo "Locating all executables and dylibs already in the package ... "
-#
-## the sed-call removes the : Mach-O.. suffix that "file" generates
-#executables=`find $App | xargs file | grep -i "Mach-O.*executable" | sed "s/:.*//" | sort`
-#
-#echo "----------------------------"
-#echo "Found following executables:"
-#for i in $executables; do
-#  echo $i
-#done
-#
-## for each executable, find any external library.
-#
-#
-#libraries=`find $App | xargs file | grep -i "Mach-O.*shared library" | sed "s/:.*//" | sort`
-#
-## command to find all external libraries referrenced in package:
-## find paraview.app | xargs file | grep "Mach-O" | sed "s/:.*//" | xargs otool -l | grep " name" | sort | uniq | sed "s/name\ //" | grep -v "@executable"
-#
-## find non-system libs
-## find paraview.app | xargs file | grep "Mach-O" | sed "s/:.*//" | xargs otool -l | grep " name" | sort | uniq | sed "s/name\ //" | grep -v "@executable" | grep -v "/System/" | grep -v "/usr/lib/"
-
-import commands
-import sys
 import os.path
 import re
 import shutil
+import subprocess
+
+
+class Pipeline(object):
+    def __init__(self, *commands):
+        if not commands:
+            raise RuntimeError('Pipeline: at least one command must be given')
+
+        self._commands = commands
+
+    def __call__(self):
+        last_input = open('/dev/null', 'r')
+
+        for command_args in self._commands:
+            command = subprocess.Popen(command_args, stdin=last_input, stdout=subprocess.PIPE)
+            last_input.close()
+            last_input = command.stdout
+
+        stdout, _ = command.communicate()
+        return stdout
+
+
+# XXX(fixme): use a metaclass to keep memoize path -> Library instance?
+#class LibraryMeta(type):
+#    def __init__(self, name, bases, dict):
+#        super(LibraryMeta, self).__init__(name, bases, dict)
+
 
 class Library(object):
-  def __init__(self):
-    # This is the actual path to a physical file
-    self.RealPath = None
+    def __init__(self, path, id, parent=None, symlinks=None):
+        # This is the actual path to a physical file
+        self._real_path = path
 
-    # This is the id for shared library.
-    self.Id = None
+        # This is the id for shared library.
+        self._id = id
 
-    # These are names for symbolic links to this file.
-    self.SymLinks = []
+        self._parent = parent
 
-    self.__depencies = None
-    pass
+        # These are names for symbolic links to this file.
+        if symlinks is None:
+            self._symlinks = []
+        else:
+            self._symlinks = symlinks
 
-  def __hash__(self):
-    return self.RealPath.__hash__()
+        self._framework_info = None
+        self._executable_path = None
+        self._dependencies = None
+        self._rpaths = None
 
-  def __eq__(self, other):
-    return self.RealPath == other.RealPath
+    def __hash__(self):
+        return self.path.__hash__()
 
-  def __repr__(self):
-    return "Library(%s : %s)" % (self.Id, self.RealPath)
+    def __eq__(self, other):
+        return self.path == other.path
 
-  def dependencies(self, exepath):
-    if self.__depencies:
-      return self.__depencies
-    collection = set()
-    for dep in _getdependencies(self.RealPath):
-      collection.add(Library.createFromReference(dep, exepath))
-    self.__depencies = collection
-    return self.__depencies
+    def __repr__(self):
+        return 'Library(%s : %s)' % (self.id, self.path)
 
-  def copyToApp(self, app, fakeCopy=False):
-    if _isframework(self.RealPath):
-      m = re.match(r'(.*)/(\w+\.framework)/(.*)', self.RealPath)
-      # FIXME: this could be optimized to only copy the particular version.
-      if not fakeCopy:
-        print "Copying %s/%s ==> %s" % (m.group(1), m.group(2), ".../Contents/Frameworks/")
-        dirdest = os.path.join(os.path.join(app, "Contents/Frameworks/"), m.group(2))
-        filedest = os.path.join(dirdest, m.group(3))
-        shutil.copytree(os.path.join(m.group(1), m.group(2)), dirdest, symlinks=True)
-      self.Id = "@executable_path/../Frameworks/%s" % (os.path.join(m.group(2), m.group(3)))
-      #print self.Id, dirdest, filedest
-      if not fakeCopy:
-        commands.getoutput('install_name_tool -id "%s" %s' % (self.Id, filedest))
+    @property
+    def path(self):
+        return self._real_path
+
+    @property
+    def name(self):
+        return os.path.basename(self.path)
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def symlinks(self):
+        return self._symlinks
+
+    @property
+    def executable_path(self):
+        if self._parent is not None:
+            return self._parent.executable_path
+        return self._executable_path
+
+    @property
+    def loader_path(self):
+        return os.path.dirname(self.path)
+
+    @property
+    def is_framework(self):
+        return self.path.count('.framework')
+
+    @property
+    def framework_info(self):
+        if self._framework_info is None:
+            if not self.is_framework:
+                self._framework_info = (None, None, None)
+            else:
+                name = None
+                library = []
+
+                path = self.path
+                while path:
+                    path, component = os.path.split(path)
+                    if component.endswith('.framework'):
+                        name = component
+                        break
+                    library.append(component)
+
+                if name is None:
+                    raise RuntimeError('%s is not a framework?' % self.path)
+
+                self._framework_info = (
+                        os.path.join(path),
+                        name,
+                        os.path.join(reversed(library)),
+                    )
+        return self._framework_info
+
+    @property
+    def framework_path(self):
+        return self.framework_info[0]
+
+    @property
+    def framework_name(self):
+        return self.framework_info[1]
+
+    @property
+    def framework_library(self):
+        return self.framework_info[2]
+
+    @property
+    def rpaths(self):
+        if self._rpaths is None:
+            rpaths = []
+            if self._parent is not None:
+                rpaths.extend(self._parent.rpaths)
+            # TODO(rpath): discover rpaths
+            # TODO(rpath): add rpaths
+            self._rpaths = rpaths
+        return self._rpaths
+
+    @staticmethod
+    def _get_dependencies(path):
+        pipe = Pipeline([[
+                'otool',
+                '-L',
+                path,
+            ], [
+                'sed',
+                '-n'
+                '-e', '/compatibility version/s/ (compatibility.*)//p',
+            ]])
+        return pipe().split()
+
+    @property
+    def dependencies(self):
+        if self._dependencies is None:
+            collection = set()
+            for dep in self._get_dependencies(self.path):
+                deplib = Library.create_from_reference(dep, self)
+                if deplib is not None:
+                    collection.add(deplib)
+            self._dependencies = collection
+        return self._dependencies
+
+    # XXX(rewrite)
+    @staticmethod
+    def _find_library(ref):
+        name = os.path.basename(ref)
+        for loc in SearchLocations:
+            output = commands.getoutput('find "%s" -name "%s"' % (loc, name)).strip()
+            if output:
+                return output
+        return ref
+
+    @classmethod
+    def create_from_reference(cls, ref, loader):
+        paths = [ref]
+        if ref.startswith('@executable_path'):
+            # If the loader does not have an executable path, it is a plugin
+            # and we trust the executable which loads the plugin to provide
+            # this library instead.
+            if loader.executable_path is None:
+                return None
+            paths.append(ref.replace('@executable_path', loader.executable_path))
+        elif ref.startswith('@loader_path'):
+            paths.append(ref.replace('@loader_path', loader.loader_path))
+        elif ref.startswith('@rpath'):
+            for rpath in loader.rpaths:
+                paths.append(ref.replace('@rpath', rpath))
+        for path in paths:
+            if os.path.exists(path):
+                return cls.create_from_path(path, parent=loader)
+        raise RuntimeError('Unable to find the %s library from %s' % (ref, loader))
+
+    @staticmethod
+    def _get_id(lib):
+        pipe = Pipeline([[
+                'otool',
+                '-D',
+                lib,
+            ]])
+        return pipe().split('\n')[1]
+
+    @classmethod
+    def create_from_path(cls, path, parent=None):
+        if not os.path.exists(path):
+            raise RuntimeError('%s does not exist' % path)
+
+        realpath = os.path.realpath(path)
+        dirname = os.path.dirname(realpath)
+        symlinks = Pipeline([[
+                'find',
+                '-L',
+                dirname,
+                '-samefile', realpath,
+            ]])
+
+        symlinks = set(symlinks().split())
+        try:
+            symlinks.remove(realpath)
+        except ValueError:
+            pass
+
+        symlink_bases = []
+        for symlink in symlinks:
+            symlink_dir, symlink_base = os.path.split(symlink)
+            if not symlink_dir == dirname:
+                continue
+            symlink_bases.append(symlink_base)
+
+        return Library(realpath, self._get_id(path), parent=parent, symlinks=symlink_bases)
+
+
+class Executable(Library):
+    def __init__(self, path):
+        super(Executable, self).__init__(self, path, None)
+
+        self._executable_path = os.path.dirname(path)
+
+    @property
+    def bundle_location(self):
+        return 'Contents/MacOS'
+
+
+class Plugin(Library):
+    def __init__(self, path):
+        super(Plugin, self).__init__(self, path, None)
+
+    @property
+    def bundle_location(self):
+        return 'Contents/Plugins'
+
+
+#class Framework?
+
+
+def copy_library(destination, library, dry_run=False):
+    if library.is_framework:
+        print 'Copying %s ==> Contents/Frameworks' % library.framework_path
+        app_dest = os.path.join(destination, 'Contents', 'Frameworks', library.framework_name)
+        if not dry_run:
+            # FIXME: this could be optimized to only copy the particular version.
+            shutil.copytree(library.framework_path, app_dest, symlinks=True)
+            new_id = '@executable_path/../Frameworks/%s' % library.framework_name
+            install_name_tool = Pipeline([[
+                    'install_name_tool',
+                    '-id', new_id,
+                    os.path.join(app_dest, library.framework_library),
+                ]])
+            install_name_tool()
     else:
-      if not fakeCopy:
-        print "Copying %s ==> %s" % (self.RealPath, ".../Contents/Libraries/%s" % os.path.basename(self.RealPath))
-        shutil.copy(self.RealPath, os.path.join(app, "Contents/Libraries"))
-      self.Id = "@executable_path/../Libraries/%s" % os.path.basename(self.RealPath)
-      if not fakeCopy:
-        commands.getoutput('install_name_tool -id "%s" %s' % (self.Id,
-                            os.path.join(app, "Contents/Libraries/%s" % os.path.basename(self.RealPath))))
+        print 'Copying %s ==> Contents/Libraries' % library.path
+        app_dest = os.path.join(destination, 'Contents', 'Libraries')
+        if not dry_run:
+            shutil.copy(library.path, app_dest)
+            new_id = '@executable_path/../Libraries/%s' % library.name
+            install_name_tool = Pipeline([[
+                    'install_name_tool',
+                    '-id', new_id,
+                    os.path.join(app_dest, library.name),
+                ]])
+            install_name_tool()
 
-      # Create symlinks for this copied file in the install location
-      # as were present in the source dir.
-      destdir = os.path.join(app, "Contents/Libraries")
-      # sourcefile is the file we copied already into the app bundle. We need to create symlink
-      # to it itself in the app bundle.
-      sourcefile = os.path.basename(self.RealPath)
-      for symlink in self.SymLinks:
-        print "Creating Symlink %s ==> .../Contents/Libraries/%s" % (symlink, os.path.basename(self.RealPath))
-        if not fakeCopy:
-          commands.getoutput("ln -s %s %s" % (sourcefile, os.path.join(destdir, symlink)))
-
-  @classmethod
-  def createFromReference(cls, ref, exepath):
-    path = ref.replace("@executable_path", exepath)
-    if not os.path.exists(path):
-      path = _find(ref)
-    return cls.createFromPath(path)
-
-  @classmethod
-  def createFromPath(cls, path):
-    if not os.path.exists(path):
-      raise RuntimeError, "%s is not a filename" % path
-    lib = Library()
-    lib.RealPath = os.path.realpath(path)
-    lib.Id = _getid(path)
-    # locate all symlinks to this file in the containing directory. These are used when copying.
-    # We ensure that we copy all symlinks too.
-    dirname = os.path.dirname(lib.RealPath)
-    symlinks = commands.getoutput("find -L %s -samefile %s" % (dirname, lib.RealPath))
-    symlinks = symlinks.split()
-    try:
-      symlinks.remove(lib.RealPath)
-    except ValueError:
-      pass
-    linknames = []
-    for link in symlinks:
-      linkname = os.path.basename(link)
-      linknames.append(linkname)
-    lib.SymLinks = linknames
-    return lib
+        for symlink in library.symlinks:
+            print 'Creating symlink to Contents/Libraries/%s ==> %s' % (library.name, symlink)
+            if not dry_run:
+                ln = Pipeline([[
+                        'ln',
+                        '-s',
+                        library.name,
+                        os.path.join(app_dest, symlink),
+                    ]])
+                ln()
 
 
-def _getid(lib):
-  """Returns the id for the library"""
-  val = commands.getoutput("otool -D %s" % lib)
-  m = re.match(r"[^:]+:\s*([^\s]+)", val)
-  if m:
-    return m.group(1)
-  raise RuntimeError, "Could not determine id for %s" % lib
+def _create_arg_parser():
+    import argparse
 
-def _getdependencies(path):
-  val = commands.getoutput('otool -l %s| grep " name" | sort | uniq | sed "s/name\ //" | sed "s/(offset.*)//"' % path)
-  return val.split()
+    parser = argparse.ArgumentParser(description='Install an OS X application into a bundle')
+    parser.add_argument('-b', '--bundle', metavar='BUNDLE', type=str, required=True,
+                        help='the name of the application (including .app extension)')
+    parser.add_argument('-d', '--destination', metavar='DEST', type=str, required=True,
+                        help='the directory to create the bundle underneath')
+    parser.add_argument('-i', '--include', metavar='REGEX', type=str, action='append',
+                        help='regular expression to include in the bundle (before exclusions)')
+    parser.add_argument('-e', '--exclude', metavar='REGEX', type=str, action='append',
+                        help='regular expression to exclude from the bundle')
+    parser.add_argument('-s', '--search', metavar='PATH', type=str, action='append',
+                        help='add a directory to search for dependent libraries')
+    parser.add_argument('-n', '--dry-run', type=bool, action='store_true',
+                        help='do not actually copy files')
+    parser.add_argument('-t', '--type', metavar='TYPE', type=str,
+                        choices=('executable', 'plugin'),
+                        help='the type of binary to package')
+    parser.add_argument('binary', metavar='BINARY', nargs=1, required=True,
+                        help='the binary to package')
 
-def isexcluded(id):
-  # we don't consider the libgfortran or libquadmath a system library since
-  # it will rarely be on the installed machine
-  if re.match(r".*libgfortran.*", id) or re.match(r".*libquadmath.*", id):
+    return parser
+
+
+def is_excluded(path, includes, excludes):
+    for include in includes:
+        if include.match(path):
+            return False
+    for exclude in excludes:
+        if exclude.match(path):
+            return True
+    if path.startswith('/System/Library'):
+        return True
+    if path.startswith('/usr/lib'):
+        return True
+    if path.startswith('/usr/local/lib'):
+        return False
     return False
-  if re.match(r"^/System/Library", id):
-    return True
-  if re.match(r"^/usr/lib", id):
-    return True
-  if re.match(r"^/usr/local", id):
-    return True
-  if re.match(r"^libz.1.dylib", id):
-    return True
-  return False
-
-def _isframework(path):
-  if re.match(".*\.framework.*", path):
-    return True
-
-def _find(ref):
-  name = os.path.basename(ref)
-  for loc in SearchLocations:
-    output = commands.getoutput('find "%s" -name "%s"' % (loc, name)).strip()
-    if output:
-      return output
-  return ref
-
-SearchLocations = []
-if __name__ == "__main__":
-  App = sys.argv[1]
-  SearchLocations = [sys.argv[2]]
-  if len(sys.argv) > 3:
-    QtPluginsDir = sys.argv[3]
-  else:
-    QtPluginsDir = None
-  LibrariesPrefix = "Contents/Libraries"
-
-  print "------------------------------------------------------------"
-  print "Fixing up ",App
-  print "All required frameworks/libraries will be placed under %s/%s" % (App, LibrariesPrefix)
-  print ""
-
-  executables = commands.getoutput('find %s -type f| xargs file | grep -i "Mach-O.*executable" | sed "s/:.*//" | cut -d\\  -f1 | sort' % App)
-  executables = executables.split()
-  print "------------------------------------------------------------"
-  print "Found executables : "
-  for exe in executables:
-    print "    %s/%s" % (os.path.basename(App) ,os.path.relpath(exe, App))
-  print ""
 
 
-  # Find libraries inside the package already.
-  libraries = commands.getoutput('find %s -type f | xargs file | grep -i "Mach-O.*shared library" | sed "s/:.*//" | cut -d\\  -f1 | sort' % App)
-  libraries = libraries.split()
-  print "Found %d libraries within the package." % len(libraries)
+def main(args):
+    parser = _create_arg_parser()
+    opts = args.parse_args(args)
 
-  # Find external libraries. Any libraries referred to with @.* relative paths are treated as already in the package.
-  # ITS NOT THIS SCRIPT'S JOB TO FIX BROKEN INSTALL RULES.
+    if opts.type == 'executable':
+        main_exe = Executable(opts.binary)
+    elif opts.type == 'plugin':
+        main_exe = Plugin(opts.binary)
 
-  external_libraries = commands.getoutput(
-    'find %s | xargs file | grep "Mach-O" | sed "s/:.*//" | cut -d\\  -f1 | xargs otool -l | grep " name" | sort | uniq | sed "s/name\ //" | grep -v "@" | sed "s/ (offset.*)//"' % App)
+    includes = map(re.compile, opts.include)
+    excludes = map(re.compile, opts.exclude)
+    bundle_dest = os.path.join(opts.destination, opts.bundle)
 
-  mLibraries = set()
-  for lib in external_libraries.split():
-    if not isexcluded(lib):
-      print "Processing ", lib
-      mLibraries.add(Library.createFromReference(lib, "%s/Contents/MacOS/foo" % App))
+    deps = main_exe.dependencies
+    handled = set()
+    while deps:
+        dep = deps.pop(0)
+        handled.add(dep.path)
 
-  print "Found %d direct external dependencies." % len(mLibraries)
+        if not is_excluded(dep.path, includes, excludes):
+            copy_library(bundle_dest, dry_run=opts.dry_run)
 
-  def recursive_dependency_scan(base, to_scan):
-    dependencies = set()
-    for lib in to_scan:
-      dependencies.update(lib.dependencies("%s/Contents/MacOS" % App))
-    dependencies -= base
-    # Now we have the list of non-packaged dependencies.
-    dependencies_to_package = set()
-    for dep in dependencies:
-      if not isexcluded(dep.RealPath):
-        dependencies_to_package.add(dep)
-    if len(dependencies_to_package) > 0:
-      new_base = base | dependencies_to_package
-      dependencies_to_package |= recursive_dependency_scan(new_base, dependencies_to_package)
-      return dependencies_to_package
-    return dependencies_to_package
-
-  indirect_mLibraries = recursive_dependency_scan(mLibraries, mLibraries)
-  print "Found %d indirect external dependencies." % (len(indirect_mLibraries))
-  print ""
-  mLibraries.update(indirect_mLibraries)
-
-  print "------------------------------------------------------------"
-  install_name_tool_command = []
-  for dep in mLibraries:
-    old_id = dep.Id
-    dep.copyToApp(App)
-    new_id = dep.Id
-    install_name_tool_command += ["-change", '"%s"' % old_id, '"%s"' % new_id]
-  print ""
-
-  install_name_tool_command = " ".join(install_name_tool_command)
-
-  # If Qt Plugins dir is specified, copies those in right now.
-  # We need to fix paths on those too.
-  # Currently, we are not including plugins in the external dependency search.
-  if QtPluginsDir:
-    print "------------------------------------------------------------"
-    print "Copying Qt plugins "
-    print "  %s ==> .../Contents/Plugins" % QtPluginsDir
-    commands.getoutput('cp -R "%s/" "%s/Contents/Plugins"' % (QtPluginsDir, App))
-
-  print "------------------------------------------------------------"
-  print "Running 'install_name_tool' to fix paths to copied files."
-  print ""
-  # Run the command for all libraries and executables.
-  # The --separator for file allows helps use locate the file name accurately.
-  binaries_to_fix = commands.getoutput('find %s -type f | xargs file --separator ":--:" | grep -i ":--:.*Mach-O" | sed "s/:.*//" | cut -d\\  -f1 | sort | uniq ' % App).split()
+    print 'Copying %s ==> %s' % (main_exe.path, main_exe.bundle_location)
+    if not opts.dry_run:
+        shutil.copy(main_exe.path, os.path.join(bundle_dest, main_exe.bundle_location))
 
 
-  result = ""
-  for dep in binaries_to_fix:
-    commands.getoutput('chmod u+w "%s"' % dep)
-  #  print "Fixing '%s'" % dep
-    commands.getoutput('install_name_tool %s "%s"' % (install_name_tool_command, dep))
-    commands.getoutput('chmod a-w "%s"' % dep)
+if __name__ == '__main__':
+    import sys
+    main(sys.argv[1:])
