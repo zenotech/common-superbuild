@@ -74,6 +74,14 @@ class Library(object):
         self._installed_id = installed_id
 
     @property
+    def dependent_reference(self):
+        # Refer to libraries the same way that the library which is loading it
+        # references it.
+        if self.parent is None:
+            raise RuntimeError('Unable to get a reference')
+        return self.parent.dependent_reference
+
+    @property
     def symlinks(self):
         if self._symlinks is None:
             realpath = os.path.realpath(self.path)
@@ -294,7 +302,7 @@ class Executable(Library):
 
     @property
     def dependent_reference(self):
-        return '@executable_path'
+        return '@executable_path/..'
 
 
 class Plugin(Library):
@@ -307,7 +315,7 @@ class Plugin(Library):
 
     @property
     def dependent_reference(self):
-        return '@loader_path'
+        return '@loader_path/..'
 
 
 class Module(Library):
@@ -343,7 +351,7 @@ class Framework(Library):
 
     @property
     def dependent_reference(self):
-        return '@loader_path'
+        return '@loader_path/..' # FIXME: ???
 
 
 def copy_library(destination, library, dry_run=False):
@@ -356,7 +364,8 @@ def copy_library(destination, library, dry_run=False):
         destination = os.path.join(app_dest, library.framework_name)
 
         if not dry_run:
-            # FIXME: this could be optimized to only copy the particular version.
+            # TODO: This could be optimized to only copy the particular
+            # version.
             if os.path.exists(destination):
                 shutil.rmtree(destination)
             _os_makedirs(app_dest)
@@ -366,6 +375,8 @@ def copy_library(destination, library, dry_run=False):
 
         app_dest = os.path.join(destination, 'Contents', 'Libraries')
         binary = os.path.join(app_dest, library.name)
+        # FIXME(plugins, frameworks): fix the installed id of the library based
+        # on what drags it in.
         library.set_installed_id(os.path.join('@executable_path', '..', 'Libraries', library.name))
         destination = app_dest
 
