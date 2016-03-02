@@ -61,6 +61,7 @@ function (superbuild_apple_create_app destination name binary)
   cmake_parse_arguments(_create_app "${options}" "" "${multivalues}" ${ARGN})
 
   set(fixup_bundle_arguments)
+
   if (_create_app_CLEAN)
     set(fixup_bundle_arguments
       "${fixup_bundle_arguments} --clean")
@@ -92,6 +93,7 @@ function (superbuild_apple_create_app destination name binary)
               --bundle      \"${name}\"
               --destination \"${destination}\"
               ${fixup_bundle_arguments}
+              --manifest    \"${CMAKE_BINARY_DIR}/${name}.manifest\"
               --type        executable
               \"${binary}\"
       RESULT_VARIABLE res

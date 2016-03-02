@@ -1,5 +1,6 @@
 #!/usr/bin/env python2.7
 
+import json
 import os
 import os.path
 import re
@@ -269,6 +270,17 @@ class Library(object):
 
         return cls.__cache[path]
 
+    @classmethod
+    def create_from_manifest(cls, path, installed_id):
+        if path in cls.__cache:
+            raise RuntimeError('There is already a library for %s' % path)
+
+        library = Library(path)
+        library.set_installed_id(installed_id)
+
+        cls.__cache[path] = library
+        return cls.__cache[path]
+
 
 class Executable(Library):
     def __init__(self, path, **kwargs):
@@ -397,6 +409,8 @@ def _create_arg_parser():
                         help='do not actually copy files')
     parser.add_argument('-c', '--clean', action='store_true',
                         help='clear out the bundle destination before starting')
+    parser.add_argument('-m', '--manifest', metavar='PATH', type=str, required=True,
+                        help='manifest for the application bundle')
     parser.add_argument('-t', '--type', metavar='TYPE', type=str,
                         choices=('executable', 'plugin'),
                         help='the type of binary to package')
@@ -406,11 +420,15 @@ def _create_arg_parser():
     return parser
 
 
-def _install_binary(binary, is_excluded, bundle_dest, installed, dry_run=False):
+def _install_binary(binary, is_excluded, bundle_dest, installed, manifest, dry_run=False):
     # Start looking at our main executable's dependencies.
     deps = binary.dependencies.values()
     while deps:
         dep = deps.pop(0)
+
+        # Ignore dependencies which the bundle already provides.
+        if dep.path in manifest:
+            continue
 
         # Ignore dependencies we don't care about.
         if is_excluded(dep.path):
@@ -459,6 +477,15 @@ def _fix_installed_binaries(installed, dry_run=False):
             install_name_tool()
 
 
+def _update_manifest(manifest, installed, path):
+    for input_path, binary_info in installed.items():
+        binary, _ = binary_info
+        manifest[input_path] = binary.installed_id
+
+    with open(path, 'w+') as fout:
+        json.dump(manifest, fout)
+
+
 def main(args):
     parser = _create_arg_parser()
     opts = parser.parse_args(args)
@@ -499,14 +526,28 @@ def main(args):
             return False
         return False
 
+    if opts.clean:
+        # A new bundle does not have a manifest.
+        manifest = {}
+    else:
+        with open(opts.manifest, 'r') as fin:
+            manifest = json.load(fin)
+
+        # Seed the cache with manifest entries.
+        for path, installed_id in manifest.items():
+            Library.create_from_manifest(path, installed_id)
+
     installed = {}
-    _install_binary(main_exe, is_excluded, bundle_dest, installed, dry_run=opts.dry_run)
+    _install_binary(main_exe, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run)
 
     for plugin in opts.plugins:
         plugin_bin = Plugin(plugin, search_paths=opts.search)
-        _install_binary(plugin_bin, is_excluded, bundle_dest, installed, dry_run=opts.dry_run)
+        _install_binary(plugin_bin, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run)
 
     _fix_installed_binaries(installed, dry_run=opts.dry_run)
+
+    if not opts.dry_run:
+        _update_manifest(manifest, installed, opts.manifest)
 
 
 if __name__ == '__main__':
