@@ -15,7 +15,7 @@ function (superbuild_add_extra_package_test name generator)
             -Dcpack_generator=${generator}
             -Doutput_directory=${CMAKE_BINARY_DIR}
             -Dworking_directory=${cpack_working_dir}
-            -P "${_superbuild_packaging_cmake_dir}/superbuild_package_test.cmake"
+            -P "${_superbuild_packaging_cmake_dir}/scripts/package_test.cmake"
     WORKING_DIRECTORY "${cpack_working_dir}")
 
   set_tests_properties("cpack-${name}-${generator}"
