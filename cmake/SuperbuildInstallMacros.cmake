@@ -104,3 +104,34 @@ function (superbuild_apple_create_app destination name binary)
     endif ()"
     COMPONENT superbuild)
 endfunction ()
+
+function (superbuild_apple_install_python destination name)
+  set(multivalues
+    SEARCH_DIRECTORIES
+    MODULE_DIRECTORIES
+    MODULES)
+  cmake_parse_arguments(_install_python "" "" "${multivalues}" ${ARGN})
+
+  set(fixup_bundle_arguments)
+
+  foreach (search_directory IN LISTS _install_python_SEARCH_DIRECTORIES)
+    list(APPEND fixup_bundle_arguments
+      --search "${search_directory}")
+  endforeach ()
+
+  install(CODE
+    "include(\"${_superbuild_install_cmake_dir}/scripts/fixup_python.apple.cmake\")
+    set(python_modules \"${_install_python_MODULES}\")
+    set(module_directories \"${_install_python_MODULE_DIRECTORIES}\")
+
+    set(fixup_bundle_arguments \"${fixup_bundle_arguments}\")
+    set(bundle_destination \"${destination}\")
+    set(bundle_name \"${name}\")
+    set(bundle_manifest \"${CMAKE_BINARY_DIR}/${name}.manifest\")
+
+    foreach (python_module IN LISTS python_modules)
+      superbuild_apple_install_python_module(\"\${bundle_destination}/\${bundle_name}\"
+        \"\${python_module}\" \"\${module_directories}\" \"Contents/Python\")
+    endforeach ()"
+    COMPONENT superbuild)
+endfunction ()

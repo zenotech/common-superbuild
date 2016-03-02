@@ -310,6 +310,27 @@ class Plugin(Library):
         return '@loader_path'
 
 
+class Module(Library):
+    def __init__(self, path, bundle_location, **kwargs):
+        super(Module, self).__init__(path, None, **kwargs)
+
+        self._bundle_location = bundle_location
+
+        parent_parts = ['..'] * self.bundle_location.count('/')
+        self._dependent_references = os.path.join('@loader_path', *parent_parts)
+
+    @property
+    def bundle_location(self):
+        return self._bundle_location
+
+    @property
+    def dependent_reference(self):
+        return '@executable_path/..'
+        # XXX(modules): is this right? should modules ever not be loaded by
+        # their owning application?
+        #return self._dependent_references
+
+
 class Framework(Library):
     def __init__(self, path, **kwargs):
         super(Framework, self).__init__(path, None, **kwargs)
@@ -409,6 +430,8 @@ def _create_arg_parser():
                         help='do not actually copy files')
     parser.add_argument('-c', '--clean', action='store_true',
                         help='clear out the bundle destination before starting')
+    parser.add_argument('-l', '--location', metavar='PATH', type=str,
+                        help='where to place a module within the bundle')
     parser.add_argument('-m', '--manifest', metavar='PATH', type=str, required=True,
                         help='manifest for the application bundle')
     parser.add_argument('-t', '--type', metavar='TYPE', type=str,
@@ -494,6 +517,11 @@ def main(args):
         main_exe = Executable(opts.binary, search_paths=opts.search)
     elif opts.type == 'plugin':
         main_exe = Plugin(opts.binary, search_paths=opts.search)
+    elif opts.type == 'module':
+        if opts.location is None:
+            raise RuntimeError('Modules require a location')
+
+        main_exe = Module(opts.binary, opts.location, search_paths=opts.search)
     elif opts.type == 'framework':
         main_exe = Framework(opts.binary, search_paths=opts.search)
 
