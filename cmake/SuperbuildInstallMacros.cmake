@@ -11,7 +11,7 @@ function (_superbuild_unix_install_executable name destination paths)
               \"-Dtarget_path:PATH=${destination}\"
               \"-Dextra_paths:STRING=${paths}\"
               \"-DCMAKE_INSTALL_PREFIX:STRING=\${CMAKE_INSTALL_PREFIX}\"
-              -P \"${_superbuild_install_cmake_dir}/superbuild_unix_install_dependencies.cmake\"
+              -P \"${_superbuild_install_cmake_dir}/scripts/install_dependencies.unix.cmake\"
       RESULT_VARIABLE res
       ERROR_VARIABLE  err)
 
