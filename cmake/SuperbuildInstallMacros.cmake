@@ -16,7 +16,7 @@ function (_superbuild_unix_install_executable name destination paths)
       ERROR_VARIABLE  err)
 
     if (res)
-      message(FATAL_ERROR \"Failed to install ${name}:\n${err}\")
+      message(FATAL_ERROR \"Failed to install ${name}:\n\${err}\")
     endif ()"
     COMPONENT superbuild)
 endfunction ()
@@ -89,7 +89,7 @@ function (superbuild_apple_create_app destination name binary)
   install(CODE
     "execute_process(
       COMMAND \"${_superbuild_install_cmake_dir}/scripts/fixup_bundle.apple.py\"
-              --bundle      \"${name\"
+              --bundle      \"${name}\"
               --destination \"${destination}\"
               ${fixup_bundle_arguments}
               --type        executable
@@ -98,8 +98,7 @@ function (superbuild_apple_create_app destination name binary)
       ERROR_VARIABLE  err)
 
     if (res)
-      message(FATAL_ERROR \"Failed to install ${name}:\n${err}\")
+      message(FATAL_ERROR \"Failed to install ${name}:\n\${err}\")
     endif ()"
-    "
     COMPONENT superbuild)
 endfunction ()
