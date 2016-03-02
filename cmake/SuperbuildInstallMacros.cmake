@@ -50,7 +50,7 @@ function (superbuild_unix_install_plugin name destination paths subdir dest_subd
     COMPONENT   superbuild)
 endfunction ()
 
-function (superbuild_apple_create_app name binary)
+function (superbuild_apple_create_app destination name binary)
   set(options
     CLEAN)
   set(multivalues
@@ -90,7 +90,7 @@ function (superbuild_apple_create_app name binary)
     "execute_process(
       COMMAND \"${_superbuild_install_cmake_dir}/scripts/fixup_bundle.apple.py\"
               --bundle      \"${name\"
-              --destination \"\$CMAKE_INSTALL_PREFIX}\"
+              --destination \"${destination}\"
               ${fixup_bundle_arguments}
               --type        executable
               \"${binary}\"
