@@ -325,7 +325,7 @@ class Module(Library):
         self._bundle_location = bundle_location
 
         parent_parts = ['..'] * self.bundle_location.count('/')
-        self._dependent_references = os.path.join('@loader_path', *parent_parts)
+        self._dependent_reference = os.path.join('@loader_path', *parent_parts)
 
     @property
     def bundle_location(self):
@@ -336,7 +336,7 @@ class Module(Library):
         return '@executable_path/..'
         # XXX(modules): is this right? should modules ever not be loaded by
         # their owning application?
-        #return self._dependent_references
+        #return self._dependent_reference
 
 
 class Framework(Library):
