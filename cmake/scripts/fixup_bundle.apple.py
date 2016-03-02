@@ -446,7 +446,7 @@ def _create_arg_parser():
     parser.add_argument('-m', '--manifest', metavar='PATH', type=str, required=True,
                         help='manifest for the application bundle')
     parser.add_argument('-t', '--type', metavar='TYPE', type=str, required=True,
-                        choices=('executable', 'plugin'),
+                        choices=('executable', 'plugin', 'module'),
                         help='the type of binary to package')
     parser.add_argument('binary', metavar='BINARY', type=str,
                         help='the binary to package')
