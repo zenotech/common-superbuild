@@ -51,5 +51,3 @@ function (superbuild_osx_pass_version_flags var)
     -DCMAKE_OSX_SDK:STRING=${CMAKE_OSX_SDK}
     PARENT_SCOPE)
 endfunction ()
-
-set(superbuild_fixup_bundle "${CMAKE_CURRENT_LIST_DIR}/scripts/fixup_bundle.py")
