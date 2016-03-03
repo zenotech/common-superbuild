@@ -621,3 +621,31 @@ function (_superbuild_check_current_project func)
     return ()
   endif ()
 endfunction ()
+
+macro (superbuild_add_project_python _name)
+  if (WIN32)
+    set(_superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
+  else ()
+    set(_superbuild_python_path <INSTALL_DIR>/lib/python2.7/site-packages)
+  endif ()
+
+  superbuild_add_project("${_name}"
+    BUILD_IN_SOURCE 1
+    DEPENDS python ${ARGN}
+    CONFIGURE_COMMAND
+      ""
+    BUILD_COMMAND
+      "${PYTHON_EXECUTABLE}"
+        setup.py
+        build
+    INSTALL_COMMAND
+      "${PYTHON_EXECUTABLE}"
+        setup.py
+        install
+        --skip-build
+        --single-version-externally-managed
+        --root=<INSTALL_DIR>
+        --prefix=
+    PROCESS_ENVIRONMENT
+      PYTHONPATH ${_superbuild_python_path})
+endmacro ()
