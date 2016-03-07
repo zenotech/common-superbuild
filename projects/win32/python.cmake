@@ -6,3 +6,6 @@ superbuild_add_project(python
     "${CMAKE_COMMAND}"
       "-Dinstall_dir:PATH=<INSTALL_DIR>"
       -P "${CMAKE_CURRENT_LIST_DIR}/scripts/python.install.cmake")
+
+set(superbuild_python_executable "${superbuild_install_location}/bin/python"
+  CACHE INTERNAL "")
