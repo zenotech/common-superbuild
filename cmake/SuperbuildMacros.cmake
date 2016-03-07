@@ -635,11 +635,11 @@ macro (superbuild_add_project_python _name)
     CONFIGURE_COMMAND
       ""
     BUILD_COMMAND
-      "${PYTHON_EXECUTABLE}"
+      "${superbuild_python_executable}"
         setup.py
         build
     INSTALL_COMMAND
-      "${PYTHON_EXECUTABLE}"
+      "${superbuild_python_executable}"
         setup.py
         install
         --skip-build
