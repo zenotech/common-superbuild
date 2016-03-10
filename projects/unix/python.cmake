@@ -17,7 +17,7 @@ superbuild_add_project(python
   INSTALL_COMMAND
     make install)
 
-if (NOT CROSS_BUILD_STAGE STREQUAL "CROSS")
+if (NOT CMAKE_CROSSCOMPILING)
   # Pass the -rpath flag when building python to avoid issues running the
   # executable we built.
   superbuild_append_flags(

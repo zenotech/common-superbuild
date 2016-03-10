@@ -11,7 +11,7 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
 endif ()
 
 function (superbuild_detect_64bit_target)
-  if (CROSS_BUILD_STAGE STREQUAL "cross")
+  if (CMAKE_CROSSCOMPILING)
     return ()
   endif ()
 
@@ -40,7 +40,7 @@ function (superbuild_setup_flags)
   set(superbuild_ld_library_path "${superbuild_install_location}/lib:$ENV{LD_LIBRARY_PATH}"
     PARENT_SCOPE)
 
-  if (CROSS_BUILD_STAGE STREQUAL "cross")
+  if (CMAKE_CROSSCOMPILING)
     return ()
   endif ()
 

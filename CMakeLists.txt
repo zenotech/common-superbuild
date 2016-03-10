@@ -28,11 +28,10 @@ else ()
   message(FATAL_ERROR "unsupported platform")
 endif ()
 
-superbuild_cross_declare_variables()
 superbuild_detect_64bit_target()
 
 set(shared_default ON)
-if (superbuild_is_cross)
+if (CMAKE_CROSSCOMPILING)
   set(shared_default OFF)
 endif ()
 option(BUILD_SHARED_LIBS "Enable shared libraries" "${shared_default}")
@@ -65,13 +64,11 @@ superbuild_prepare_build_tree()
 # Setup CMAKE_MODULE_PATH so that platform specific configurations are
 # processed before the generic ones.
 set(project_path)
-string(TOLOWER "${CROSS_BUILD_STAGE}" lstage)
 list(APPEND superbuild_project_roots
   "${CMAKE_CURRENT_LIST_DIR}/projects")
 foreach (root IN LISTS superbuild_project_roots)
   foreach (platform IN LISTS platforms)
     list(APPEND project_path
-      "${root}/${platform}/${lstage}"
       "${root}/${platform}")
   endforeach ()
   list(APPEND project_path
@@ -81,7 +78,7 @@ endforeach ()
 list(INSERT CMAKE_MODULE_PATH 0
   ${project_path})
 
-if (NOT CROSS_BUILD_STAGE STREQUAL "HOST" AND
+if (CMAKE_CROSSCOMPILING AND
     COMMAND superbuild_cross_prepare_target)
   superbuild_cross_prepare_target()
 endif ()

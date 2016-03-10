@@ -1,19 +1,5 @@
-function (superbuild_cross_declare_variables)
-  set(CROSS_BUILD_STAGE "host"
-    CACHE STRING "Cross compilation stage: one of HOST (i.e., native), TOOLS, or CROSS")
-  mark_as_advanced(CROSS_BUILD_STAGE)
-  set_property(CACHE CROSS_BUILD_STAGE
-    PROPERTY
-      STRINGS "HOST" "TOOLS" "CROSS")
-
-  if (NOT CROSS_BUILD_STAGE STREQUAL "HOST")
-    set(superbuild_is_cross TRUE
-      PARENT_SCOPE)
-  endif ()
-endfunction ()
-
 function (superbuild_cross_determine_target)
-  if (NOT superbuild_is_cross)
+  if (NOT CMAKE_CROSSCOMPILING)
     return ()
   endif ()
 
@@ -21,14 +7,12 @@ function (superbuild_cross_determine_target)
   # right environment settings.
   _superbuild_cross_target_machine()
 
-  if (CROSS_BUILD_STAGE STREQUAL "CROSS")
-    # Configure the platform dependent settings 64bit_build, static_only, mpi
-    # search path.
-    _superbuild_cross_platform_settings()
+  # Configure the platform dependent settings 64bit_build, static_only, mpi
+  # search path.
+  _superbuild_cross_platform_settings()
 
-    if (COMMAND superbuild_cross_prepare)
-      superbuild_cross_prepare()
-    endif ()
+  if (COMMAND superbuild_cross_prepare)
+    superbuild_cross_prepare()
   endif ()
 endfunction ()
 

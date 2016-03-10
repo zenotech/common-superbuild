@@ -49,7 +49,7 @@ if (WIN32)
       URL     "http://www.computationalmodelbuilder.org/files/dependencies/python+deps-x32.tar.bz2"
       URL_MD5 df1438352768caecf929d7bc2bdf841c)
   endif ()
-elseif (CROSS_BUILD_STAGE STREQUAL "CROSS")
+elseif (CMAKE_CROSSCOMPILING)
   superbuild_set_revision(python
     URL     "http://www.paraview.org/files/dependencies/Python-2.7.3.tgz"
     URL_MD5 2cf641732ac23b18d139be077bd906cd)
