@@ -1,0 +1,40 @@
+From 417d6fded833f95ed9cb3f61331c9b79c4b7fbcb Mon Sep 17 00:00:00 2001
+From: "David C. Lonie" <david.lonie@kitware.com>
+Date: Thu, 3 Dec 2015 15:31:40 -0500
+Subject: [PATCH 1/1] Notify when using the VTK modified netcdf API.
+
+VTK's third party netcdf is not consistent with upstream, as some
+methods take 'size_t*' instead of 'long*' parameters.
+
+Previously we worked around this by checking if system netcdf was being
+used, but the ParaView superbuild installs a netcdf with the same
+modifications as the 'system' version.
+
+This patch adds a new define to the modified headers, and the same define
+is added to the PVSB netcdf package so we'll know when we're using the
+modified version of the library.
+---
+ IO/NetCDF/vtkMPASReader.cxx                 | 8 +++++---
+ ThirdParty/netcdf/vtknetcdf/cxx/netcdfcpp.h | 6 ++++++
+ 2 files changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/cxx/netcdfcpp.h b/cxx/netcdfcpp.h
+index f3e9f19..0db228d 100644
+--- a/cxx/netcdfcpp.h
++++ b/cxx/netcdfcpp.h
+@@ -10,6 +10,12 @@
+ #ifndef NETCDF_HH
+ #define NETCDF_HH
+ 
++// We've changed the API from upstream in VTK commits 6223f230 and
++// 64cb89e3 to use size_t* instead of long* for (some) overloads of
++// methods like NcVar::get. This define signals users of this header
++// that they should use size_t for these methods.
++#define VTK_NETCDF_USE_SIZE_T
++
+ #include "ncvalues.h"          // arrays that know their element type
+ 
+ typedef const char* NcToken;    // names for netCDF objects
+-- 
+2.7.2
+
