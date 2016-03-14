@@ -307,6 +307,15 @@ class Executable(Library):
         return '@executable_path/..'
 
 
+class Utility(Executable):
+    def __init__(self, path, **kwargs):
+        super(Utility, self).__init__(path, None, **kwargs)
+
+    @property
+    def bundle_location(self):
+        return 'Contents/bin'
+
+
 class Plugin(Library):
     def __init__(self, path, **kwargs):
         super(Plugin, self).__init__(path, None, **kwargs)
@@ -448,7 +457,7 @@ def _create_arg_parser():
     parser.add_argument('-m', '--manifest', metavar='PATH', type=str, required=True,
                         help='manifest for the application bundle')
     parser.add_argument('-t', '--type', metavar='TYPE', type=str, required=True,
-                        choices=('executable', 'plugin', 'module'),
+                        choices=('executable', 'utility', 'plugin', 'module'),
                         help='the type of binary to package')
     parser.add_argument('binary', metavar='BINARY', type=str,
                         help='the binary to package')
@@ -528,6 +537,8 @@ def main(args):
 
     if opts.type == 'executable':
         main_exe = Executable(opts.binary, search_paths=opts.search)
+    elif opts.type == 'utility':
+        main_exe = Utility(opts.binary, search_paths=opts.search)
     elif opts.type == 'plugin':
         main_exe = Plugin(opts.binary, search_paths=opts.search)
     elif opts.type == 'module':
