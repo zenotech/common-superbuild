@@ -194,9 +194,11 @@ class Library(object):
                     # provide this library instead.
                     if self.executable_path is None:
                         continue
-                    resolved_rpaths.append(ref.replace('@executable_path', self.executable_path))
+                    resolved_rpaths.append(rpath.replace('@executable_path', self.executable_path))
                 elif rpath.startswith('@loader_path'):
-                    resolved_rpaths.append(ref.replace('@loader_path', self.loader_path))
+                    resolved_rpaths.append(rpath.replace('@loader_path', self.loader_path))
+                elif rpath:
+                    resolved_rpaths.append(rpath)
 
             self._rpaths = resolved_rpaths
         return self._rpaths
