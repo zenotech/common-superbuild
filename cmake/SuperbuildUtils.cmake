@@ -2,8 +2,12 @@ include("SuperbuildUtils-apple")
 include("SuperbuildUtils-unix")
 
 if (NOT CMAKE_CONFIGURATION_TYPES)
+  set(_superbuild_build_type_force)
+  if (NOT CMAKE_BUILD_TYPE)
+    set(_superbuild_build_type_force FORCE)
+  endif ()
   set(CMAKE_BUILD_TYPE "Release"
-    CACHE STRING "The build mode")
+    CACHE STRING "The build mode" ${_superbuild_build_type_force})
   mark_as_advanced(CMAKE_BUILD_TYPE)
   set_property(CACHE CMAKE_BUILD_TYPE
     PROPERTY
