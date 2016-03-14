@@ -1,5 +1,5 @@
-find_package(PythonLibs   2.6 REQUIRED)
-find_package(PythonInterp 2.6 REQUIRED)
+find_package(PythonLibs   2.7 REQUIRED)
+find_package(PythonInterp 2.7 REQUIRED)
 
 if (NOT PYTHON_VERSION_STRING STREQUAL PYTHONLIBS_VERSION_STRING)
   message(FATAL_ERROR
