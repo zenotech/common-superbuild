@@ -105,6 +105,48 @@ function (superbuild_apple_create_app destination name binary)
     COMPONENT superbuild)
 endfunction ()
 
+function (superbuild_apple_install_utility destination name binary)
+  set(multivalues
+    INCLUDE_REGEXES
+    EXCLUDE_REGEXES
+    SEARCH_DIRECTORIES)
+  cmake_parse_arguments(_install_utility "" "" "${multivalues}" ${ARGN})
+
+  set(fixup_bundle_arguments)
+
+  foreach (include_regex IN LISTS _install_utility_INCLUDE_REGEXES)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --include \"${include_regex}\"")
+  endforeach ()
+
+  foreach (exclude_regex IN LISTS _install_utility_EXCLUDE_REGEXES)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
+  endforeach ()
+
+  foreach (search_directory IN LISTS _install_utility_SEARCH_DIRECTORIES)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --search \"${search_directory}\"")
+  endforeach ()
+
+  install(CODE
+    "execute_process(
+      COMMAND \"${_superbuild_install_cmake_dir}/scripts/fixup_bundle.apple.py\"
+              --bundle      \"${name}\"
+              --destination \"${destination}\"
+              ${fixup_bundle_arguments}
+              --manifest    \"${CMAKE_BINARY_DIR}/${name}.manifest\"
+              --type        utility
+              \"${binary}\"
+      RESULT_VARIABLE res
+      ERROR_VARIABLE  err)
+
+    if (res)
+      message(FATAL_ERROR \"Failed to install ${name}:\n\${err}\")
+    endif ()"
+    COMPONENT superbuild)
+endfunction ()
+
 function (superbuild_apple_install_python destination name)
   set(multivalues
     SEARCH_DIRECTORIES
