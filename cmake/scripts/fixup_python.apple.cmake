@@ -3,10 +3,9 @@ set(_superbuild_install_cmake_scripts_dir "${CMAKE_CURRENT_LIST_DIR}")
 function (superbuild_apple_install_python_module destination module search_paths location)
   foreach (search_path IN LISTS search_paths)
     if (EXISTS "${search_path}/${module}.py")
-      install(
+      file(INSTALL
         FILES       "${search_path}/${module}.py"
-        DESTINATION "${destination}/${location}"
-        COMPONENT   superbuild)
+        DESTINATION "${destination}/${location}")
     elseif (EXISTS "${search_path}/${module}.so")
       execute_process(
         COMMAND "${_superbuild_install_cmake_scripts_dir}/fixup_bundle.apple.py"
