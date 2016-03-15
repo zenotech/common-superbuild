@@ -55,7 +55,7 @@ function (superbuild_unix_install_plugin name destination paths dest_subdir)
     if (EXISTS "${superbuild_install_location}/lib/${path}/${name}")
       install(
         FILES       "${superbuild_install_location}/lib/${path}/${name}"
-        DESTINATION "lib/${dest_sudir}"
+        DESTINATION "lib/${dest_subdir}"
         COMPONENT   superbuild)
       break ()
     endif ()
