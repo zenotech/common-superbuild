@@ -59,7 +59,7 @@ foreach (link IN LISTS prerequisites)
   endif ()
 endforeach ()
 
-file(
-  INSTALL     ${resolved_prerequisites}
+file(INSTALL
+  FILES       ${resolved_prerequisites}
   DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${target_path}"
   USE_SOURCE_PERMISSIONS)
