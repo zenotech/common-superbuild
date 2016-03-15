@@ -23,7 +23,9 @@ class Pipeline(object):
             last_input.close()
             last_input = command.stdout
 
-        stdout, _ = command.communicate()
+        stdout, stderr = command.communicate()
+        if command.returncode:
+            raise RuntimeError('failed to execute pipeline:\n%s' % stderr)
         return stdout
 
 
