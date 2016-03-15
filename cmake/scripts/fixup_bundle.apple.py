@@ -311,7 +311,7 @@ class Executable(Library):
 
 class Utility(Executable):
     def __init__(self, path, **kwargs):
-        super(Utility, self).__init__(path, None, **kwargs)
+        super(Utility, self).__init__(path, **kwargs)
 
     @property
     def bundle_location(self):
