@@ -29,6 +29,13 @@ function (superbuild_apple_install_python_module destination module search_paths
         superbuild_apple_install_python_module("${destination}"
           "${submodule_name}" "${search_path}/${module}" "${location}/${module}")
       endforeach ()
+      file(GLOB packages "${search_path}/${module}/*/__init__.py")
+      foreach (subpackage IN LISTS packages)
+        get_filename_component(subpackage "${subpackage}" DIRECTORY)
+        get_filename_component(subpackage_name "${subpackage}" NAME)
+        superbuild_apple_install_python_module("${destination}"
+          "${subpackage_name}" "${search_path}/${module}" "${location}/${module}")
+      endforeach ()
     endif ()
   endforeach ()
 endfunction ()
