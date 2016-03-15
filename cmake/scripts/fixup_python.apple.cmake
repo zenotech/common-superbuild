@@ -26,7 +26,7 @@ function (superbuild_apple_install_python_module destination module search_paths
       file(GLOB modules "${search_path}/${module}/*.py" "${search_path}/${module}/*.so")
       foreach (submodule IN LISTS modules)
         get_filename_component(submodule_name "${submodule}" NAME_WE)
-        superbuild_apple_install_python_module("${destination}/${module}"
+        superbuild_apple_install_python_module("${destination}"
           "${submodule_name}" "${search_path}/${module}" "${location}/${module}")
       endforeach ()
     endif ()
