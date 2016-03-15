@@ -50,13 +50,18 @@ function (superbuild_unix_install_utility name destination paths)
     COMPONENT   superbuild)
 endfunction ()
 
-function (superbuild_unix_install_plugin name destination paths subdir dest_subdir)
-  _superbuild_unix_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
+function (superbuild_unix_install_plugin name destination paths dest_subdir)
+  foreach (path IN LISTS paths)
+    if (EXISTS "${superbuild_install_location}/lib/${path}/${name}")
+      install(
+        FILES       "${superbuild_install_location}/lib/${path}/${name}"
+        DESTINATION "lib/${dest_sudir}"
+        COMPONENT   superbuild)
+      break ()
+    endif ()
+  endforeach ()
 
-  install(
-    FILES       "${superbuild_install_location}/lib/${subdir}${name}"
-    DESTINATION "lib/${dest_subdir}"
-    COMPONENT   superbuild)
+  _superbuild_unix_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
 endfunction ()
 
 function (superbuild_apple_create_app destination name binary)
