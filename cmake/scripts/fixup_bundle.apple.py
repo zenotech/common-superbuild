@@ -412,6 +412,12 @@ def copy_library(destination, library, dry_run=False):
                 ln()
 
     if not dry_run:
+        chmod = Pipeline([
+                'chmod',
+                'u+w',
+                binary,
+            ])
+        chmod()
         install_name_tool = Pipeline([
                 'install_name_tool',
                 '-id', library.installed_id,
