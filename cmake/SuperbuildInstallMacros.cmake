@@ -45,7 +45,7 @@ function (superbuild_unix_install_utility name destination paths)
   _superbuild_unix_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
 
   install(
-    FILES       "${superbuild_install_location}/bin/${name}"
+    PROGRAMS    "${superbuild_install_location}/bin/${name}"
     DESTINATION "bin"
     COMPONENT   superbuild)
 endfunction ()
