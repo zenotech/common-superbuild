@@ -41,6 +41,15 @@ function (superbuild_unix_install_program name paths)
     COMPONENT   superbuild)
 endfunction ()
 
+function (superbuild_unix_install_utility name destination paths)
+  _superbuild_unix_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
+
+  install(
+    FILES       "${superbuild_install_location}/bin/${name}"
+    DESTINATION "bin"
+    COMPONENT   superbuild)
+endfunction ()
+
 function (superbuild_unix_install_plugin name destination paths subdir dest_subdir)
   _superbuild_unix_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
 
