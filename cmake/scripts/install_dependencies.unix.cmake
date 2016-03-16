@@ -1,8 +1,13 @@
 set(library_paths
   "${superbuild_install_location}/lib")
 foreach (extra_path IN LISTS extra_paths)
-  list(APPEND library_paths
-    "${superbuild_install_location}/lib/${extra_path}")
+  if (IS_ABSOLUTE "${extra_path}")
+    list(APPEND library_paths
+      "${extra_path}")
+  else ()
+    list(APPEND library_paths
+      "${superbuild_install_location}/lib/${extra_path}")
+  endif ()
 endforeach ()
 
 find_file(executable
