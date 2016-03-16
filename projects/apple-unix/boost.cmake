@@ -6,5 +6,15 @@ endif ()
 
 include(boost.common)
 
-superbuild_apply_patch(boost osx-rpath
-  "Remove @rpath from the install name of Boost's libraries")
+if (APPLE)
+  superbuild_apply_patch(boost osx-rpath
+    "Remove @rpath from the install name of Boost's libraries")
+
+  superbuild_project_add_step(fix-install-names
+    COMMAND   "${CMAKE_COMMAND}"
+              "-Dlibdir:PATH=<INSTALL_DIR>/lib"
+              -P "${CMAKE_CURRENT_LIST_DIR}/scripts/boost.fix-install-names.cmake"
+    DEPENDEES install
+    COMMENT   ""
+    WORKING_DIRECTORY <INSTALL_DIR>/lib)
+endif ()
