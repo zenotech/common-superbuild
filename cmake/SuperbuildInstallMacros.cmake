@@ -64,6 +64,29 @@ function (superbuild_unix_install_plugin name destination paths dest_subdir)
   _superbuild_unix_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
 endfunction ()
 
+function (superbuild_unix_install_python destination target_path)
+  set(multivalues
+    SEARCH_DIRECTORIES
+    MODULE_DIRECTORIES
+    MODULES)
+  cmake_parse_arguments(_install_python "" "" "${multivalues}" "${ARGN}")
+
+  install(CODE
+    "include(\"${_superbuild_install_cmake_dir}/scripts/fixup_python.unix.cmake\")
+    set(python_modules \"${_install_python_MODULES}\")
+    set(module_directories \"${_install_python_MODULE_DIRECTORIES}\")
+    set(search_directories \"${_install_python_SEARCH_DIRECTORIES}\")
+
+    set(superbuild_install_location \"${superbuild_install_location}\")
+    set(target_path \"${target_path}\")
+
+    foreach (python_module IN LISTS python_modules)
+      superbuild_unix_install_python_module(\"\${CMAKE_INSTALL_PREFIX}\"
+        \"\${python_module}\" \"\${module_directories}\" \"lib/python2.7/site-packages\")
+    endforeach ()"
+    COMPONENT superbuild)
+endfunction ()
+
 function (superbuild_apple_create_app destination name binary)
   set(options
     CLEAN)
