@@ -1,5 +1,6 @@
 set(qt4_EXTRA_CONFIGURATION_OPTIONS ""
   CACHE STRING "Extra arguments to be passed to Qt4 when configuring.")
+mark_as_advanced(qt4_EXTRA_CONFIGURATION_OPTIONS)
 
 # See https://bugreports.qt.io/browse/QTBUG-5774 and the links available there.
 cmake_dependent_option(qt4_WORK_AROUND_BROKEN_ASSISTANT_BUILD "Work around a build issue in Qt. Use this if you see linker errors with QtHelp and QCLucene." OFF

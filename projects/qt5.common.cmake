@@ -12,6 +12,7 @@ endif ()
 
 set(qt5_EXTRA_CONFIGURATION_OPTIONS ""
     CACHE STRING "Extra arguments to be passed to Qt when configuring.")
+mark_as_advanced(qt5_EXTRA_CONFIGURATION_OPTIONS)
 
 set(qt5_configure_ext)
 if (WIN32)
