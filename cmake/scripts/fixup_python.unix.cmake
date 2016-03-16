@@ -11,7 +11,7 @@ function (superbuild_unix_install_python_module destination module search_paths 
         COMMAND "${CMAKE_COMMAND}"
                 "-Dexecutable_name:PATH=${module}.so"
                 "-Dsuperbuild_install_location:PATH=${superbuild_install_location}"
-                "-Dtarget_path:PATH=cmb-${target_path}"
+                "-Dtarget_path:PATH=${target_path}"
                 "-Dextra_paths:STRING=${search_path};${search_directories}"
                 "-DCMAKE_INSTALL_PREFIX:STRING=${CMAKE_INSTALL_PREFIX}"
                 -P "${_superbuild_install_cmake_scripts_dir}/install_dependencies.unix.cmake"
