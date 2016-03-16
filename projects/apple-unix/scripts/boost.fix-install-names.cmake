@@ -27,7 +27,6 @@ foreach (boost_library IN LISTS boost_libraries)
   # Extract out the Boost libraries.
   string(REGEX MATCHALL "\tlibboost_[^.]*\\.dylib" linked_libraries "${out}")
   string(REPLACE "\t" "" linked_libraries "${linked_libraries}")
-  message("${boost_library}: -->${linked_libraries}<--")
   set(args)
   foreach (linked_library IN LISTS linked_libraries)
     list(APPEND args
