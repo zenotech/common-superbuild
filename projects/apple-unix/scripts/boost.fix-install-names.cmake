@@ -4,7 +4,7 @@ foreach (boost_library IN LISTS boost_libraries)
   # Fix the ID of the library to be a full path.
   execute_process(
     COMMAND install_name_tool
-            -id "${libdir}/${boost_library}"
+            -id "${boost_library}"
             "${boost_library}"
     RESULT_VARIABLE res)
 
