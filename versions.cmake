@@ -40,7 +40,7 @@ superbuild_set_revision(png
   URL_MD5 49c6e05be5fa88ed815945d7ca7d4aa9)
 
 if (WIN32)
-  if (64bit_build)
+  if (superbuild_is_64bit)
     superbuild_set_revision(python
       URL     "http://www.computationalmodelbuilder.org/files/dependencies/python+deps.tar.bz2"
       URL_MD5 0b0ceb15fee34dae011f90570888c429)
