@@ -1,0 +1,16 @@
+diff -Nr -U5 szip-2.1/config/cmake/SZIP-config.cmake.install.in szip-2.1.add-filename-component/config/cmake/SZIP-config.cmake.install.in
+--- szip-2.1/config/cmake/SZIP-config.cmake.install.in	2011-06-29 14:48:16.000000000 -0400
++++ szip-2.1.add-filename-component/config/cmake/SZIP-config.cmake.install.in	2015-12-02 12:15:18.067343715 -0500
+@@ -5,11 +5,11 @@
+ GET_FILENAME_COMPONENT (SELF_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+ GET_FILENAME_COMPONENT(_IMPORT_PREFIX "${SELF_DIR}" PATH)
+ GET_FILENAME_COMPONENT(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
+ GET_FILENAME_COMPONENT(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
+ 
+-GET_FILENAME_COMPONENT (SZIP_INCLUDE_DIRS "${_IMPORT_PREFIX}/include")
++GET_FILENAME_COMPONENT (SZIP_INCLUDE_DIRS "${_IMPORT_PREFIX}/include" PATH)
+ 
+ #-----------------------------------------------------------------------------
+ # Version Strings
+ #-----------------------------------------------------------------------------
+ SET (SZIP_VERSION_STRING @SZIP_VERSION_STRING@)
