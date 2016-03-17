@@ -47,3 +47,6 @@ superbuild_add_project(boost
   DEPENDS zlib
   "${boost_build_commands}"
   ${boost_extra_arguments})
+
+superbuild_add_extra_cmake_args(
+  -DBOOST_ROOT:PATH=<INSTALL_DIR>)
