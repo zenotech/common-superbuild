@@ -45,5 +45,5 @@ superbuild_add_project(boost
   CAN_USE_SYSTEM
   BUILD_IN_SOURCE 1
   DEPENDS zlib
-  ${boost_build_commands}
+  "${boost_build_commands}"
   ${boost_extra_arguments})
