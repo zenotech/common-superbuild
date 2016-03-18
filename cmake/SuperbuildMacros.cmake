@@ -642,8 +642,13 @@ endfunction ()
 macro (superbuild_add_project_python _name)
   if (WIN32)
     set(_superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
+    set(_superbuild_python_args
+      "--prefix=bin")
   else ()
     set(_superbuild_python_path <INSTALL_DIR>/lib/python2.7/site-packages)
+    set(_superbuild_python_args
+      "--single-version-externally-managed"
+      "--prefix=")
   endif ()
 
   superbuild_add_project("${_name}"
@@ -660,9 +665,8 @@ macro (superbuild_add_project_python _name)
         setup.py
         install
         --skip-build
-        --single-version-externally-managed
         --root=<INSTALL_DIR>
-        --prefix=
+        ${_superbuild_python_args}
     PROCESS_ENVIRONMENT
       PYTHONPATH ${_superbuild_python_path})
 endmacro ()
