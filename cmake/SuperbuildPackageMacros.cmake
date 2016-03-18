@@ -1,6 +1,12 @@
 set(_superbuild_packaging_cmake_dir "${CMAKE_CURRENT_LIST_DIR}")
 
 function (superbuild_add_extra_package_test name generator)
+  set(superbuild_extra_variables)
+  foreach (variable IN LISTS superbuild_export_variables)
+    set(superbuild_extra_variables
+      "${superbuild_extra_variables}set(\"${variable}\" \"${${variable}}\")\n")
+  endforeach ()
+
   set(cpack_working_dir "${CMAKE_BINARY_DIR}/cpack/${name}/${generator}")
   configure_file(
     "${_superbuild_packaging_cmake_dir}/superbuild_package_cmakelists.cmake.in"

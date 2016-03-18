@@ -14,7 +14,7 @@ set(system_projects "@system_projects@")
 foreach (project IN LISTS system_projects)
   set("USE_SYSTEM_${project}" TRUE)
 endforeach ()
-
+@superbuild_extra_variables@
 include(SuperbuildInstallMacros)
 include("@name@.bundle")
 
