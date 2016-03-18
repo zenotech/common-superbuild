@@ -288,16 +288,16 @@ endfunction ()
 function (superbuild_windows_install_plugin name paths)
   set(bin_var "bin")
   foreach (path IN LISTS bin_var paths)
-    if (EXISTS "${superbuild_install_location}/${path}/${name}")
+    if (EXISTS "${superbuild_install_location}/${path}/${name}.dll")
       install(
-        FILES       "${superbuild_install_location}/${path}/${name}"
+        FILES       "${superbuild_install_location}/${path}/${name}.dll"
         DESTINATION "bin"
         COMPONENT   superbuild)
       break ()
     endif ()
   endforeach ()
 
-  _superbuild_windows_install_executable("${name}" "${paths}" ${ARGN})
+  _superbuild_windows_install_executable("${name}.dll" "${paths}" ${ARGN})
 endfunction ()
 
 function (superbuild_windows_install_python destination)
