@@ -20,4 +20,12 @@ endif ()
 list(APPEND boost_extra_options
   --toolset=msvc-${msvc_ver})
 
+if (superbuild_is_64bit)
+  list(APPEND boost_extra_options
+    address-model=64)
+else ()
+  list(APPEND boost_extra_options
+    address-model=32)
+endif ()
+
 include(boost.common)
