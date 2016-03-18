@@ -257,3 +257,67 @@ function (superbuild_apple_install_python destination name)
     endforeach ()"
     COMPONENT superbuild)
 endfunction ()
+
+function (_superbuild_windows_install_executable name paths)
+  install(CODE
+    "execute_process(
+      COMMAND \"${CMAKE_COMMAND}\"
+              \"-Dexecutable_name:PATH=${name}\"
+              \"-Dsuperbuild_install_location:PATH=${superbuild_install_location}\"
+              \"-Dextra_paths:STRING=${paths}\"
+              \"-DCMAKE_INSTALL_PREFIX:STRING=\${CMAKE_INSTALL_PREFIX}\"
+              -P \"${_superbuild_install_cmake_dir}/scripts/install_dependencies.windows.cmake\"
+      RESULT_VARIABLE res
+      ERROR_VARIABLE  err)
+
+    if (res)
+      message(FATAL_ERROR \"Failed to install ${name}:\n\${err}\")
+    endif ()"
+    COMPONENT superbuild)
+endfunction ()
+
+function (superbuild_windows_install_program name paths)
+  _superbuild_windows_install_executable("${name}.exe" "${paths}" ${ARGN})
+
+  install(
+    PROGRAMS    "${superbuild_install_location}/bin/${name}.exe"
+    DESTINATION "bin"
+    COMPONENT   superbuild)
+endfunction ()
+
+function (superbuild_windows_install_plugin name paths)
+  set(bin_var "bin")
+  foreach (path IN LISTS bin_var paths)
+    if (EXISTS "${superbuild_install_location}/${path}/${name}")
+      install(
+        FILES       "${superbuild_install_location}/${path}/${name}"
+        DESTINATION "bin"
+        COMPONENT   superbuild)
+      break ()
+    endif ()
+  endforeach ()
+
+  _superbuild_windows_install_executable("${name}" "${paths}" ${ARGN})
+endfunction ()
+
+function (superbuild_windows_install_python destination)
+  set(multivalues
+    SEARCH_DIRECTORIES
+    MODULE_DIRECTORIES
+    MODULES)
+  cmake_parse_arguments(_install_python "" "" "${multivalues}" "${ARGN}")
+
+  install(CODE
+    "include(\"${_superbuild_install_cmake_dir}/scripts/fixup_python.windows.cmake\")
+    set(python_modules \"${_install_python_MODULES}\")
+    set(module_directories \"${_install_python_MODULE_DIRECTORIES}\")
+    set(search_directories \"${_install_python_SEARCH_DIRECTORIES}\")
+
+    set(superbuild_install_location \"${superbuild_install_location}\")
+
+    foreach (python_module IN LISTS python_modules)
+      superbuild_windows_install_python_module(\"\${CMAKE_INSTALL_PREFIX}\"
+        \"\${python_module}\" \"\${module_directories}\" \"bin/Lib/site-packages\")
+    endforeach ()"
+    COMPONENT superbuild)
+endfunction ()
