@@ -301,11 +301,18 @@ function (superbuild_windows_install_plugin name paths)
 endfunction ()
 
 function (superbuild_windows_install_python destination)
+  set(singlevalues
+    DESTINATION)
   set(multivalues
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
-  cmake_parse_arguments(_install_python "" "" "${multivalues}" "${ARGN}")
+  cmake_parse_arguments(_install_python "" "${singlevalues}" "${multivalues}" "${ARGN}")
+
+  if (NOT _install_python_DESTINATION)
+    set(_install_python_DESTINATION
+      "bin/Lib/site-packages")
+  endif ()
 
   install(CODE
     "include(\"${_superbuild_install_cmake_dir}/scripts/fixup_python.windows.cmake\")
@@ -317,7 +324,7 @@ function (superbuild_windows_install_python destination)
 
     foreach (python_module IN LISTS python_modules)
       superbuild_windows_install_python_module(\"\${CMAKE_INSTALL_PREFIX}\"
-        \"\${python_module}\" \"\${module_directories}\" \"bin/Lib/site-packages\")
+        \"\${python_module}\" \"\${module_directories}\" \"${_install_python_DESTINATION}\")
     endforeach ()"
     COMPONENT superbuild)
 endfunction ()
