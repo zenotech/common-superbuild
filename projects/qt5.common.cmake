@@ -47,18 +47,14 @@ superbuild_add_project(qt5
       -L <INSTALL_DIR>/lib
 
       -skip qtconnectivity
-      -skip qtdeclarative
       -skip qtlocation
       -skip qtmultimedia
-      -skip qtquick1
       -skip qtsensors
       -skip qtserialport
       -skip qtsvg
       -skip qtwayland
       -skip qtwebchannel
       -skip qtwebengine
-      -skip qtwebkit
-      -skip qtwebkit-examples
       -skip qtwebsockets
 
       -nomake examples
