@@ -13,6 +13,7 @@ function (superbuild_add_project name)
   set(must_use_system FALSE)
   set(default "${_superbuild_default_${name}}")
   set(allow_developer_mode FALSE)
+  set(debuggable FALSE)
   set(depends)
   set(optional_depends)
 
@@ -31,6 +32,9 @@ function (superbuild_add_project name)
       set(grab)
     elseif (arg STREQUAL "DEVELOPER_MODE")
       set(allow_developer_mode TRUE)
+      set(grab)
+    elseif (arg STREQUAL "DEBUGGABLE")
+      set(debuggable TRUE)
       set(grab)
     elseif (arg STREQUAL "DEPENDS")
       set(grab depends)
@@ -117,6 +121,12 @@ function (superbuild_add_project name)
       set_property(GLOBAL
         PROPERTY
           "${name}_developer_mode" TRUE)
+    endif ()
+
+    if (debuggable)
+      set_property(GLOBAL
+        PROPERTY
+          "${name}_debuggable" TRUE)
     endif ()
 
     set_property(GLOBAL
@@ -398,6 +408,26 @@ function (superbuild_process_dependencies)
         "${project}_enabled" OFF)
     endif ()
 
+    get_property(debuggable GLOBAL
+      PROPERTY "${project}_debuggable" SET)
+    if (WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+      # Release and RelWithDebInfo is not mixable with Debug builds, so just
+      # don't support it.
+      set(debuggable FALSE)
+    endif ()
+    if (debuggable)
+      set("CMAKE_BUILD_TYPE_${project}" "<same>"
+        CACHE STRING "The build type for the ${project} project.")
+      set_property(CACHE "CMAKE_BUILD_TYPE_${project}"
+        PROPERTY
+          STRINGS "<same>;Release;RelWithDebInfo")
+      if (NOT WIN32)
+        set_property(CACHE "CMAKE_BUILD_TYPE_${project}" APPEND
+          PROPERTY
+            STRINGS "Debug")
+      endif ()
+    endif ()
+
     set(current_project "${project}")
 
     get_property(is_dummy GLOBAL
@@ -469,8 +499,7 @@ endfunction ()
 #------------------------------------------------------------------------------
 function (_superbuild_add_project_internal name)
   set(cmake_params)
-  foreach (flag CMAKE_BUILD_TYPE
-                CMAKE_C_FLAGS_DEBUG
+  foreach (flag CMAKE_C_FLAGS_DEBUG
                 CMAKE_C_FLAGS_MINSIZEREL
                 CMAKE_C_FLAGS_RELEASE
                 CMAKE_C_FLAGS_RELWITHDEBINFO
@@ -482,6 +511,12 @@ function (_superbuild_add_project_internal name)
       list(APPEND cmake_params "-D${flag}:STRING=${${flag}}")
     endif ()
   endforeach ()
+
+  if (debuggable AND NOT CMAKE_BUILD_TYPE_${name} STREQUAL "<same>")
+    list(APPEND cmake_params "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE_${name}}")
+  else ()
+    list(APPEND cmake_params "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}")
+  endif ()
 
   superbuild_osx_pass_version_flags(apple_flags)
   _superbuild_fetch_cmake_args("${name}" cmake_dep_args)
@@ -581,7 +616,10 @@ endfunction ()
 function (_superbuild_write_developer_mode_cache name)
   set(cmake_args
     "-DCMAKE_PREFIX_PATH:PATH=${superbuild_prefix_path}")
-  if (CMAKE_BUILD_TYPE)
+  if (debuggable)
+    list(APPEND cmake_args
+      "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE_${name}}")
+  else ()
     list(APPEND cmake_args
       "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}")
   endif ()
