@@ -163,6 +163,7 @@ function (superbuild_apply_patch _name _patch _comment)
             --is-inside-work-tree
     RESULT_VARIABLE res
     OUTPUT_VARIABLE out
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIRECTORY}"
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   if (res)
     message(FATAL_ERROR "Failed to determine if the build tree is inside of a git repository.")
