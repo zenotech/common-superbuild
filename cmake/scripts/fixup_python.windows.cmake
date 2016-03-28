@@ -12,6 +12,7 @@ function (superbuild_windows_install_python_module destination module search_pat
                 "-Dexecutable_name:PATH=${module}.pyd"
                 "-Dsuperbuild_install_location:PATH=${superbuild_install_location}"
                 "-Dextra_paths:STRING=${search_path};${search_directories}"
+                "-Ddestination:PATH=${destination}/${location}"
                 "-DCMAKE_INSTALL_PREFIX:STRING=${CMAKE_INSTALL_PREFIX}"
                 -P "${_superbuild_install_cmake_scripts_dir}/install_dependencies.windows.cmake"
         RESULT_VARIABLE res

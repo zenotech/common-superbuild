@@ -265,6 +265,7 @@ function (_superbuild_windows_install_executable name paths)
               \"-Dexecutable_name:PATH=${name}\"
               \"-Dsuperbuild_install_location:PATH=${superbuild_install_location}\"
               \"-Dextra_paths:STRING=${paths}\"
+              \"-Ddestination:STRING=\${CMAKE_INSTALL_PREFIX}/bin\"
               \"-DCMAKE_INSTALL_PREFIX:STRING=\${CMAKE_INSTALL_PREFIX}\"
               -P \"${_superbuild_install_cmake_dir}/scripts/install_dependencies.windows.cmake\"
       RESULT_VARIABLE res

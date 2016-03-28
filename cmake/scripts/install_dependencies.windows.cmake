@@ -57,7 +57,7 @@ foreach (link IN LISTS prerequisites)
 
     file(INSTALL
       FILES       "${resolved_link}"
-      DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"
+      DESTINATION "${destination}"
       TYPE        PROGRAM
       RENAME      "${resolved_name}")
   else ()
@@ -68,5 +68,5 @@ endforeach ()
 
 file(INSTALL
   FILES       ${resolved_prerequisites}
-  DESTINATION "${CMAKE_INSTALL_PREFIX}/bin"
+  DESTINATION "${destination}"
   USE_SOURCE_PERMISSIONS)
