@@ -627,7 +627,7 @@ endfunction ()
 function (_superbuild_write_developer_mode_cache name)
   set(cmake_args
     "-DCMAKE_PREFIX_PATH:PATH=${superbuild_prefix_path}")
-  if (debuggable)
+  if (debuggable AND NOT CMAKE_BUILD_TYPE_${name} STREQUAL "<same>")
     list(APPEND cmake_args
       "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE_${name}}")
   else ()
