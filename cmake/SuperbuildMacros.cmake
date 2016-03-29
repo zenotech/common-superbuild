@@ -440,7 +440,7 @@ function (superbuild_process_dependencies)
       _superbuild_add_dummy_project_internal("${project}")
       include("${project}.system")
     elseif (allow_developer_mode AND DEVELOPER_MODE_${project})
-      list(requiring_packages)
+      set(requiring_packages)
       foreach (dep IN LISTS ${project}_needed_by)
         # Verify all dependencies are in DEVELOPER_MODE.
         if (NOT DEVELOPER_MODE_${dep})
