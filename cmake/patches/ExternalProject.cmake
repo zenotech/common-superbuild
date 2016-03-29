@@ -1526,6 +1526,9 @@ function(ExternalProject_Add_Step name step)
     set(command ${CMAKE_COMMAND} -E echo_append)
   endif()
 
+  # XXX(common): Pulled as of upstream commit
+  # 623dcc85a447b9ce0f09cffa8cd296cd8a51ad9d, but we support CMake older than
+  # 3.2.0, so hide the BYPRODUCTS if CMake doesn't support it.
   set(__cmake_ep_byproducts)
   if (NOT CMAKE_VERSION VERSION_LESS "3.2.0")
     list(APPEND __cmake_ep_byproducts
