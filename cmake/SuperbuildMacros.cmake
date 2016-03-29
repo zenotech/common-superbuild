@@ -440,8 +440,18 @@ function (superbuild_process_dependencies)
       _superbuild_add_dummy_project_internal("${project}")
       include("${project}.system")
     elseif (allow_developer_mode AND DEVELOPER_MODE_${project})
-      if (${project}_needed_by)
-        message(FATAL_ERROR "${name} allows a developer mode, but is required by another project.")
+
+      set(can_be_in_dev_mode ON)
+      foreach( dep IN LISTS ${project}_needed_by)
+
+        #verify all dependencies are in DEVELOPER_MODE
+        if(NOT ${DEVELOPER_MODE_${dep}})
+          set(can_be_in_dev_mode OFF)
+        endif()
+      endforeach()
+
+      if (NOT can_be_in_dev_mode)
+        message(FATAL_ERROR "${project} allows a developer mode, but is required by projects (${${project}_needed_by}).")
       endif ()
 
       include("${project}")
