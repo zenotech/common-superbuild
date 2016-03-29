@@ -499,6 +499,7 @@ function (_superbuild_add_dummy_project_internal name)
 
   ExternalProject_Add("${name}"
     DEPENDS           ${arg_depends}
+    INSTALL_DIR       "${superbuild_install_location}"
     DOWNLOAD_COMMAND  ""
     SOURCE_DIR        ""
     UPDATE_COMMAND    ""
