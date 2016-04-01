@@ -20,11 +20,6 @@ set(SUPERBUILD_PROJECT_PARALLELISM 5
   CACHE STRING "Number of jobs to use when compiling subprojects")
 mark_as_advanced(SUPERBUILD_PROJECT_PARALLELISM)
 
-# Parallelism isn't support for cross builds.
-if (CMAKE_CROSSCOMPILING)
-  set(SUPERBUILD_PROJECT_PARALLELISM 1)
-endif ()
-
 set(superbuild_make_program "make")
 if (CMAKE_GENERATOR MATCHES "Makefiles")
   set(superbuild_make_program "${CMAKE_MAKE_PROGRAM}")
