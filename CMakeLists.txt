@@ -30,11 +30,7 @@ endif ()
 
 superbuild_detect_64bit_target()
 
-set(shared_default ON)
-if (CMAKE_CROSSCOMPILING)
-  set(shared_default OFF)
-endif ()
-option(BUILD_SHARED_LIBS "Enable shared libraries" "${shared_default}")
+option(BUILD_SHARED_LIBS "Enable shared libraries" ON)
 
 #-----------------------------------------------------------------------------
 # Setup some standard variables that control various locations and flags.
