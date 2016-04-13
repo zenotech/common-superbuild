@@ -23,8 +23,8 @@ set(qt5_build_commands
   BUILD_COMMAND   $(MAKE)
   INSTALL_COMMAND make install)
 if (WIN32)
-  if ((NOT "${CMAKE_GENERATOR}" MATCHES "^NMake.*$") OR
-      (NOT "${CMAKE_GENERATOR}" MATCHES "^Visual Studio.*$"))
+  if ((NOT CMAKE_GENERATOR MATCHES "^NMake.*$") OR
+      (NOT CMAKE_GENERATOR MATCHES "^Visual Studio.*$"))
     find_program(NMAKE_PATH nmake)
   endif ()
 
