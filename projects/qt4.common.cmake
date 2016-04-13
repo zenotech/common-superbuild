@@ -22,8 +22,8 @@ endif ()
 
 set(qt4_configure_ext)
 if (WIN32)
-  if ((NOT "${CMAKE_GENERATOR}" MATCHES "^NMake.*$") OR
-      (NOT "${CMAKE_GENERATOR}" MATCHES "^Visual Studio.*$"))
+  if ((NOT CMAKE_GENERATOR MATCHES "^NMake.*$") OR
+      (NOT CMAKE_GENERATOR MATCHES "^Visual Studio.*$"))
     find_program(NMAKE_PATH nmake)
   endif ()
 
