@@ -1,7 +1,7 @@
 diff -Nr -U5 bzip2-1.0.6/CMakeLists.txt bzip2-1.0.6.cmake/CMakeLists.txt
 --- bzip2-1.0.6/CMakeLists.txt	1969-12-31 19:00:00.000000000 -0500
 +++ bzip2-1.0.6.cmake/CMakeLists.txt	2015-12-02 11:56:08.777042304 -0500
-@@ -0,0 +1,63 @@
+@@ -0,0 +1,67 @@
 +cmake_minimum_required(VERSION 2.8.8)
 +
 +project(bzip2 C)
@@ -25,6 +25,10 @@ diff -Nr -U5 bzip2-1.0.6/CMakeLists.txt bzip2-1.0.6.cmake/CMakeLists.txt
 +
 +add_library(bz2
 +    ${bz2_srcs})
++set_target_properties(bz2
++  PROPERTIES
++    VERSION   1.0.6
++    SOVERSION 1.0)
 +add_executable(bzip2
 +    bzip2.c)
 +target_link_libraries(bzip2
