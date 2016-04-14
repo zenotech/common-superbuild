@@ -1,4 +1,4 @@
-if (64bit_build)
+if (superbuild_is_64bit)
   set(tbb_archdir intel64)
 else ()
   set(tbb_archdir ia32)
