@@ -258,14 +258,14 @@ function (superbuild_apple_install_python destination name)
     COMPONENT superbuild)
 endfunction ()
 
-function (_superbuild_windows_install_executable name paths)
+function (_superbuild_windows_install_executable name destination paths)
   install(CODE
     "execute_process(
       COMMAND \"${CMAKE_COMMAND}\"
               \"-Dexecutable_name:PATH=${name}\"
               \"-Dsuperbuild_install_location:PATH=${superbuild_install_location}\"
               \"-Dextra_paths:STRING=${paths}\"
-              \"-Ddestination:STRING=\${CMAKE_INSTALL_PREFIX}/bin\"
+              \"-Ddestination:STRING=\${CMAKE_INSTALL_PREFIX}/${destination}\"
               \"-DCMAKE_INSTALL_PREFIX:STRING=\${CMAKE_INSTALL_PREFIX}\"
               -P \"${_superbuild_install_cmake_dir}/scripts/install_dependencies.windows.cmake\"
       RESULT_VARIABLE res
@@ -278,7 +278,7 @@ function (_superbuild_windows_install_executable name paths)
 endfunction ()
 
 function (superbuild_windows_install_program name paths)
-  _superbuild_windows_install_executable("${name}.exe" "${paths}" ${ARGN})
+  _superbuild_windows_install_executable("${name}.exe" "bin" "${paths}" ${ARGN})
 
   install(
     PROGRAMS    "${superbuild_install_location}/bin/${name}.exe"
@@ -286,7 +286,7 @@ function (superbuild_windows_install_program name paths)
     COMPONENT   superbuild)
 endfunction ()
 
-function (superbuild_windows_install_plugin name paths)
+function (superbuild_windows_install_plugin name destination paths)
   set(bin_var "bin")
   foreach (path IN LISTS bin_var paths)
     if (EXISTS "${superbuild_install_location}/${path}/${name}")
@@ -298,7 +298,7 @@ function (superbuild_windows_install_plugin name paths)
     endif ()
   endforeach ()
 
-  _superbuild_windows_install_executable("${name}" "${paths}" ${ARGN})
+  _superbuild_windows_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
 endfunction ()
 
 function (superbuild_windows_install_python destination)
