@@ -45,6 +45,11 @@ foreach (link IN LISTS prerequisites)
     PATHS ${library_paths}
     NO_DEFAULT_PATH)
 
+  if (NOT full_path)
+    string(REPLACE ";" ", " paths "${library_paths}")
+    message(FATAL_ERROR "Failed to find the ${linkname} library. Searched paths: ${paths}.")
+  endif ()
+
   message(STATUS "Resolving ${linkname} to path ${full_path}...")
 
   if (IS_SYMLINK "${full_path}")
