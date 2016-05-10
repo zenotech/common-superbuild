@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.0)
 
-project("cpack-@name@" NONE)
+#We need to explicitly state so form of language support.
+#That is how CMake detects what compilers are being used, and
+#therefore what InstallRequiredSystemLibraries should properly do.
+#If we state NONE for languages we will fail to install any of the
+#system libraries
+project("cpack-@name@")
 
+set(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@")
 set(CMAKE_MODULE_PATH "@CMAKE_MODULE_PATH@")
 set(CMAKE_INSTALL_PREFIX "@CMAKE_INSTALL_PREFIX@")
 set(superbuild_source_directory "@CMAKE_SOURCE_DIR@")
