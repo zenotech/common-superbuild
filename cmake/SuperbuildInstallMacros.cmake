@@ -292,7 +292,7 @@ function (superbuild_windows_install_plugin name destination paths)
     if (EXISTS "${superbuild_install_location}/${path}/${name}")
       install(
         FILES       "${superbuild_install_location}/${path}/${name}"
-        DESTINATION "bin"
+        DESTINATION "${destination}"
         COMPONENT   superbuild)
       break ()
     endif ()
