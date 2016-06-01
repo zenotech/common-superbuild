@@ -93,8 +93,8 @@ function (superbuild_add_project name)
       message(FATAL_ERROR "Dependencies for ${name} not found: ${missing_deps}")
     endif ()
 
+    list(APPEND ep_arguments DEPENDS ${depends})
     set("${name}_arguments"
-      DEPENDS ${depends}
       "${ep_arguments}"
       PARENT_SCOPE)
   else ()
