@@ -276,6 +276,18 @@ function (superbuild_append_flags key value)
   endif ()
 endfunction ()
 
+function (superbuild_add_path)
+  if (NOT superbuild_build_phase)
+    return ()
+  endif ()
+
+  _superbuild_check_current_project("superbuild_add_path")
+
+  set_property(GLOBAL APPEND
+    PROPERTY
+      "${current_project}_path" ${ARGN})
+endfunction ()
+
 #------------------------------------------------------------------------------
 # Get dependencies for a project, including optional dependencies that are
 # currently enabled. Since this macro looks at the ${mod}_enabled flag, it
@@ -551,6 +563,7 @@ function (_superbuild_add_project_internal name)
   foreach (extra_var IN LISTS extra_vars)
     set("extra_${extra_var}")
   endforeach ()
+  set(extra_paths)
 
   # Scan project flags.
   foreach (var IN LISTS extra_vars)
@@ -572,6 +585,11 @@ function (_superbuild_add_project_internal name)
       list(APPEND "extra_${var}"
         ${extra_flags})
     endforeach ()
+
+    get_property(dep_paths GLOBAL
+      PROPERTY "${dep}_path")
+    list(APPEND extra_paths
+      "${dep_paths}")
   endforeach ()
 
   foreach (var IN LISTS extra_vars)
@@ -602,9 +620,22 @@ function (_superbuild_add_project_internal name)
     #  MACOSX_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}")
   endif ()
 
+  list(INSERT extra_paths 0
+    "${superbuild_install_location}/bin")
+  list(REMOVE_DUPLICATES extra_paths)
+
   if (WIN32)
+    string(REPLACE ";" "${_superbuild_list_separator}" extra_paths "${extra_paths}")
+  else ()
+    string(REPLACE ";" ":" extra_paths "${extra_paths}")
+  endif ()
+  list(APPEND build_env
+    PATH "${extra_paths}")
+
+  if (WIN32)
+    # No special environment to set.
   elseif (APPLE)
-    # No path to set.
+    # No special environment to set.
   elseif (UNIX)
     set(ld_library_path_argument)
     superbuild_unix_ld_library_path_hack(ld_library_path_argument)
