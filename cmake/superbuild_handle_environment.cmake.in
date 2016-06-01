@@ -2,22 +2,36 @@ set(environment "@process_environment@")
 set(list_separator "@_superbuild_list_separator@")
 set(command @step_command@)
 
+set(env_separator ":")
+set(prepend_envvars
+  PATH)
+if (WIN32)
+  set(env_separator ";")
+elseif (APPLE)
+  list(APPEND prepend_envvars
+    DYLD_LIBRARY_PATH)
+elseif (UNIX)
+  list(APPEND prepend_envvars
+    LD_LIBRARY_PATH)
+endif ()
+
 set(key)
 foreach (arg IN LISTS environment)
   if (NOT key)
     set(key "${arg}")
   else ()
-    # message ("setting ${key}=${arg}")
-    if (key STREQUAL "LD_LIBRARY_PATH")
-      # append LD_LIBRARY_PATH to existing LD_LIBRARY_PATH.
-      set("ENV{${key}}" "${arg}:$ENV{${key}}")
-      message("LD_LIBRARY_PATH = $ENV{LD_LIBRARY_PATH}")
+    list(FIND prepend_envvars "${key}" index)
+    if (index EQUAL "-1")
+      set(value "${arg}")
     else ()
-      set("ENV{${key}}" "${arg}")
+      set(value "${arg}${env_separator}$ENV{${key}}")
     endif ()
-    set(key)
+    string(REPLACE "${list_separator}" ";" value "${value}")
+    set("ENV{${key}}" "${value}")
+
+    unset(key)
   endif ()
-endforeach()
+endforeach ()
 
 string(REPLACE "${list_separator}" "\;" command "${command}")
 
