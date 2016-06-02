@@ -265,9 +265,9 @@ function (superbuild_append_flags key value)
   if (build-projects)
     _superbuild_check_current_project("superbuild_append_flags")
 
-    set(property "${current_project}_append_flags_${key}")
+    set(property "${current_project}_append_flags_cmake_${key}")
     if (project_only)
-      set(property "${current_project}_append_project_only_flags_${key}")
+      set(property "${current_project}_append_project_only_flags_cmake_${key}")
     endif ()
 
     set_property(GLOBAL APPEND
