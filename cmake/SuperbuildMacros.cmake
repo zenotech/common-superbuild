@@ -580,6 +580,7 @@ function (_superbuild_add_project_internal name)
   endforeach ()
 
   # Scan dependency flags.
+  superbuild_get_project_depends("${name}" arg)
   foreach (dep IN LISTS arg_depends)
     foreach (var IN LISTS extra_vars)
       string(TOUPPER "${var}" upper_var)
