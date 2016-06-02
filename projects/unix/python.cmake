@@ -21,7 +21,7 @@ if (NOT CMAKE_CROSSCOMPILING)
   # Pass the -rpath flag when building python to avoid issues running the
   # executable we built.
   superbuild_append_flags(
-    LD_FLAGS "-Wl,-rpath,${superbuild_install_location}/lib"
+    ld_flags "-Wl,-rpath,${superbuild_install_location}/lib"
     PROJECT_ONLY)
 endif ()
 
