@@ -761,7 +761,7 @@ endfunction ()
 
 function (_superbuild_check_current_project func)
   if (NOT current_project)
-    message(AUTHOR_WARNING "${func} called an incorrect stage.")
+    message(AUTHOR_WARNING "${func} called at an incorrect stage.")
     return ()
   endif ()
 endfunction ()
