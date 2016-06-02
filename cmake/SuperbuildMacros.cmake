@@ -248,9 +248,9 @@ endfunction ()
 function (superbuild_append_flags key value)
   if (NOT "x${key}" STREQUAL "xCMAKE_CXX_FLAGS" AND
       NOT "x${key}" STREQUAL "xCMAKE_C_FLAGS" AND
-      NOT "x${key}" STREQUAL "xLDFLAGS")
+      NOT "x${key}" STREQUAL "xLD_FLAGS")
     message(AUTHOR_WARNING
-      "Currently, only CMAKE_CXX_FLAGS, CMAKE_C_FLAGS, and LDFLAGS are supported.")
+      "Currently, only CMAKE_CXX_FLAGS, CMAKE_C_FLAGS, and LD_FLAGS are supported.")
   endif ()
 
   set(project_only FALSE)
@@ -558,7 +558,7 @@ function (_superbuild_add_project_internal name)
   set(extra_vars
     c_flags
     cxx_flags
-    ldflags)
+    ld_flags)
 
   foreach (extra_var IN LISTS extra_vars)
     set("extra_${extra_var}")

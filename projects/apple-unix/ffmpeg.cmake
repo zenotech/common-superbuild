@@ -21,7 +21,7 @@ superbuild_add_project(ffmpeg
       ${ffmpeg_shared_args}
       --cc=${CMAKE_C_COMPILER}
       \"--extra-cflags=${superbuild_cflags}\"
-      \"--extra-ldflags=${superbuild_ldflags}\"
+      \"--extra-ldflags=${superbuild_ld_flags}\"
       ${extra_commands}"
   BUILD_COMMAND
     $(MAKE)
