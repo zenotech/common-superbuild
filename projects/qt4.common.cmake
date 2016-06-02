@@ -46,6 +46,7 @@ endif ()
 superbuild_add_project(qt4
   CAN_USE_SYSTEM
   DEPENDS zlib ${qt4_extra_depends}
+  DEPENDS_OPTIONAL cxx11
   ${qt4_extra_arguments}
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure${qt4_configure_ext}
