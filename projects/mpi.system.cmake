@@ -3,19 +3,19 @@ find_package(MPI REQUIRED)
 # We need to sanitize lists to replace ';' with ${ep_list_separator}. This
 # ensures that the arguments are passed correctly through a
 # add_external_project() call.
-_superbuild_sanitize_lists_in_string(SB_ MPIEXEC_MAX_NUMPROCS)
-_superbuild_sanitize_lists_in_string(SB_ MPIEXEC_NUMPROC_FLAG)
-_superbuild_sanitize_lists_in_string(SB_ MPIEXEC_POSTFLAGS)
-_superbuild_sanitize_lists_in_string(SB_ MPIEXEC_PREFLAGS)
-_superbuild_sanitize_lists_in_string(SB_ MPI_CXX_COMPILE_FLAGS)
-_superbuild_sanitize_lists_in_string(SB_ MPI_CXX_INCLUDE_PATH)
-_superbuild_sanitize_lists_in_string(SB_ MPI_CXX_LIBRARIES)
-_superbuild_sanitize_lists_in_string(SB_ MPI_CXX_LINK_FLAGS)
-_superbuild_sanitize_lists_in_string(SB_ MPI_C_COMPILE_FLAGS)
-_superbuild_sanitize_lists_in_string(SB_ MPI_C_INCLUDE_PATH)
-_superbuild_sanitize_lists_in_string(SB_ MPI_C_LIBRARIES)
-_superbuild_sanitize_lists_in_string(SB_ MPI_C_LINK_FLAGS)
-_superbuild_sanitize_lists_in_string(SB_ MPI_EXTRA_LIBRARY)
+superbuild_sanitize_lists_in_string(SB_ MPIEXEC_MAX_NUMPROCS)
+superbuild_sanitize_lists_in_string(SB_ MPIEXEC_NUMPROC_FLAG)
+superbuild_sanitize_lists_in_string(SB_ MPIEXEC_POSTFLAGS)
+superbuild_sanitize_lists_in_string(SB_ MPIEXEC_PREFLAGS)
+superbuild_sanitize_lists_in_string(SB_ MPI_CXX_COMPILE_FLAGS)
+superbuild_sanitize_lists_in_string(SB_ MPI_CXX_INCLUDE_PATH)
+superbuild_sanitize_lists_in_string(SB_ MPI_CXX_LIBRARIES)
+superbuild_sanitize_lists_in_string(SB_ MPI_CXX_LINK_FLAGS)
+superbuild_sanitize_lists_in_string(SB_ MPI_C_COMPILE_FLAGS)
+superbuild_sanitize_lists_in_string(SB_ MPI_C_INCLUDE_PATH)
+superbuild_sanitize_lists_in_string(SB_ MPI_C_LIBRARIES)
+superbuild_sanitize_lists_in_string(SB_ MPI_C_LINK_FLAGS)
+superbuild_sanitize_lists_in_string(SB_ MPI_EXTRA_LIBRARY)
 
 superbuild_add_extra_cmake_args(
   -DMPIEXEC:FILEPATH=${MPIEXEC}

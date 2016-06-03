@@ -771,7 +771,7 @@ endfunction ()
 #------------------------------------------------------------------------------
 # When passing string with ";" to add_external_project() macros, we need to
 # ensure that the -+- is replaced with the LIST_SEPARATOR.
-function (_superbuild_sanitize_lists_in_string out_var_prefix var)
+function (superbuild_sanitize_lists_in_string out_var_prefix var)
   string(REPLACE ";" "${_superbuild_list_separator}" command "${${var}}")
   set("${out_var_prefix}${var}" "${command}"
     PARENT_SCOPE)
