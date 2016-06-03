@@ -1,4 +1,4 @@
-function (project_ignore_regexes variable project)
+function (_project_ignore_regexes variable project)
   set(exceptions)
   list(APPEND exceptions
     "${project}/src"
@@ -21,11 +21,11 @@ function (project_ignore_regexes variable project)
 endfunction ()
 
 macro (ignore_project_warnings project)
-  project_ignore_regexes(CTEST_CUSTOM_WARNING_EXCEPTION "${project}")
+  _project_ignore_regexes(CTEST_CUSTOM_WARNING_EXCEPTION "${project}")
 endmacro ()
 
 macro (ignore_project_errors project)
-  project_ignore_regexes(CTEST_CUSTOM_ERROR_EXCEPTION "${project}")
+  _project_ignore_regexes(CTEST_CUSTOM_ERROR_EXCEPTION "${project}")
 endmacro ()
 
 ignore_project_warnings(szip)

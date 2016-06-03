@@ -298,7 +298,7 @@ endfunction ()
 # Get dependencies for a project, including optional dependencies that are
 # currently enabled. Since this macro looks at the ${mod}_enabled flag, it
 # cannot be used in the 'processing' pass, but the 'build' pass alone.
-function (superbuild_get_project_depends name prefix)
+function (_superbuild_get_project_depends name prefix)
   if (NOT superbuild_build_phase)
     message(AUTHOR_WARNING "get_project_depends can only be used in build pass")
   endif ()
@@ -313,7 +313,7 @@ function (superbuild_get_project_depends name prefix)
     if (NOT ${prefix}_${dep}_done)
       list(APPEND "${prefix}_depends"
         "${dep}")
-      superbuild_get_project_depends("${dep}" "${prefix}")
+      _superbuild_get_project_depends("${dep}" "${prefix}")
     endif ()
   endforeach ()
 
@@ -322,7 +322,7 @@ function (superbuild_get_project_depends name prefix)
     if (${dep}_enabled AND NOT ${prefix}_${dep}_done)
       list(APPEND "${prefix}_depends"
         "${dep}")
-      superbuild_get_project_depends("${dep}" "${prefix}")
+      _superbuild_get_project_depends("${dep}" "${prefix}")
     endif ()
   endforeach ()
 
@@ -524,7 +524,7 @@ endfunction ()
 
 #------------------------------------------------------------------------------
 function (_superbuild_add_dummy_project_internal name)
-  superbuild_get_project_depends("${name}" arg)
+  _superbuild_get_project_depends("${name}" arg)
 
   ExternalProject_Add("${name}"
     DEPENDS           ${arg_depends}
@@ -754,7 +754,7 @@ endfunction ()
 
 function (_superbuild_fetch_cmake_args name var)
   # Get extra cmake args from every dependent project, if any.
-  superbuild_get_project_depends("${name}" arg)
+  _superbuild_get_project_depends("${name}" arg)
   set(cmake_params)
   foreach (dep IN LISTS arg_depends)
     get_property(cmake_args GLOBAL
