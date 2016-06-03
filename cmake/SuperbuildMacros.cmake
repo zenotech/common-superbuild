@@ -200,23 +200,6 @@ function (superbuild_apply_patch _name _patch _comment)
     WORKING_DIRECTORY <SOURCE_DIR>)
 endfunction ()
 
-function (superbuild_commit_patch _name _patch _comment)
-  find_package(Git QUIET)
-  if (NOT GIT_FOUND)
-    mark_as_advanced(CLEAR GIT_EXECUTABLE)
-    message(FATAL_ERROR "Could not find git executable.  Please set GIT_EXECUTABLE.")
-  endif()
-
-  superbuild_project_add_step("${_name}-patch-${_patch}"
-    COMMAND   "${GIT_EXECUTABLE}"
-              am
-              "${CMAKE_CURRENT_LIST_DIR}/patches/${_name}-${_patch}.patch"
-    DEPENDEES update
-    DEPENDERS patch
-    COMMENT   "${_comment}"
-    WORKING_DIRECTORY <SOURCE_DIR>)
-endfunction ()
-
 function (superbuild_add_extra_cmake_args)
   if (NOT superbuild_build_phase)
     return ()
