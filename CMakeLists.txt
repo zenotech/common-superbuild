@@ -58,7 +58,7 @@ set(superbuild_cpp_flags "${CMAKE_CXX_FLAGS} ${superbuild_cpp_flags}")
 set(superbuild_cxx_flags "${CMAKE_CXX_FLAGS} ${superbuild_cxx_flags}")
 set(superbuild_c_flags "${CMAKE_C_FLAGS} ${superbuild_c_flags}")
 
-foreach (var ld_flags cpp_flags cxx_flags c_flags)
+foreach (var IN ITEMS ld_flags cpp_flags cxx_flags c_flags)
   string(STRIP "${superbuild_${var}}" "superbuild_${var}")
 endforeach ()
 

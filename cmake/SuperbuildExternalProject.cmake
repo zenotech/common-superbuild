@@ -176,7 +176,7 @@ function (_superbuild_ExternalProject_add name)
     _EP_PROCESS_ENVIRONMENT)
   _ep_replace_location_tags("${name}" process_environment)
 
-  foreach (step configure build install)
+  foreach (step IN ITEMS configure build install)
     if (req_${step}_command)
       string(TOUPPER "${step}" step_upper)
 
