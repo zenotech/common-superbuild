@@ -8,10 +8,9 @@ function (_project_ignore_regexes variable project)
     if (WIN32)
       list(APPEND exceptions
         "${lower_project}\\\\src")
-    else ()
-      list(APPEND exceptions
-        "${lower_project}/src")
     endif ()
+    list(APPEND exceptions
+      "${lower_project}/src")
   endif ()
 
   set("${variable}"
