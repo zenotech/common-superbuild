@@ -634,7 +634,7 @@ endfunction ()
 function (_superbuild_add_dummy_project_internal name)
   _superbuild_get_project_depends("${name}" arg)
 
-  ExternalProject_Add("${name}"
+  ExternalProject_add("${name}"
     DEPENDS           ${arg_depends}
     INSTALL_DIR       "${superbuild_install_location}"
     DOWNLOAD_COMMAND  ""
@@ -818,7 +818,7 @@ function (_superbuild_add_project_internal name)
     foreach (step IN LISTS additional_steps)
       get_property(step_arguments GLOBAL
         PROPERTY "${name}_step_${step}")
-      ExternalProject_Add_Step("${name}" "${step}"
+      ExternalProject_add_step("${name}" "${step}"
         "${step_arguments}")
     endforeach ()
   endif ()

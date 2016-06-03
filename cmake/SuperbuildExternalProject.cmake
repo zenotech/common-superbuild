@@ -32,7 +32,7 @@ string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
   _ep_keywords__superbuild_ExternalProject_add "${_ep_keywords_ExternalProject_Add}")
 
 # Version of the function which strips PROCESS_ENVIRONMENT arguments for
-# ExternalProject_Add.
+# ExternalProject_add.
 function (_superbuild_ep_strip_extra_arguments name)
   set(arguments)
   set(accumulate FALSE)
@@ -49,7 +49,7 @@ function (_superbuild_ep_strip_extra_arguments name)
     endif ()
   endforeach ()
 
-  ExternalProject_Add("${name}" "${arguments}")
+  ExternalProject_add("${name}" "${arguments}")
 endfunction ()
 
 function (_superbuild_ep_wrap_command var target command_name)
@@ -165,9 +165,9 @@ function (_superbuild_ExternalProject_add name)
 
   # Quote args to keep empty list elements around so that we properly parse
   # empty install, configure, build, etc.
-  ExternalProject_Add("${name}" "${args}")
+  ExternalProject_add("${name}" "${args}")
 
-  # Configure the scripts after the call ExternalProject_Add() since that sets
+  # Configure the scripts after the call ExternalProject_add() since that sets
   # up the directories correctly.
   get_target_property(process_environment "sb-${name}"
     _EP_PROCESS_ENVIRONMENT)
