@@ -86,7 +86,7 @@ function (superbuild_set_external_source name git_repo git_tag tarball_url tarba
       GIT_TAG        "${git_tag}")
   elseif (${name}_FROM_SOURCE_DIR)
     set(args
-      SOURCE_DIR "source-${name}")
+      SOURCE_DIR "${CMAKE_SOURCE_DIR}/source-${name}")
   else ()
     set(args
       URL     "${tarball_url}"
