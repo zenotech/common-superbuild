@@ -1,3 +1,7 @@
+# WARNING: Magic happening here.
+#
+# We are overriding the built-in ``subdirs`` functionality because it doesn't
+# handle this use case well.
 function (subdirs subdir)
   if (implicit_root)
     set(old_implicit_root "${implicit_root}")

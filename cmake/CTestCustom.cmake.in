@@ -1,3 +1,5 @@
+# INTERNAL
+# Sets up CTest's variables to ignore messages from a project.
 function (_project_ignore_regexes variable project)
   set(exceptions)
   list(APPEND exceptions
@@ -19,16 +21,28 @@ function (_project_ignore_regexes variable project)
     PARENT_SCOPE)
 endfunction ()
 
+# Ignore warnings from a project.
+#
+# Usage:
+#
+#   ignore_project_warnings(<name>)
 macro (ignore_project_warnings project)
   _project_ignore_regexes(CTEST_CUSTOM_WARNING_EXCEPTION "${project}")
 endmacro ()
 
+# Ignore errors from a project.
+#
+# Usage:
+#
+#   ignore_project_errors(<name>)
 macro (ignore_project_errors project)
   _project_ignore_regexes(CTEST_CUSTOM_ERROR_EXCEPTION "${project}")
 endmacro ()
 
+# szip is very noisy.
 ignore_project_warnings(szip)
 
+# Include project-specified files.
 set(extra_ctest_custom_files "@superbuild_ctest_custom_files@")
 foreach (extra_ctest_custom_file IN LISTS extra_ctest_custom_files)
   include("${extra_ctest_custom_file}")

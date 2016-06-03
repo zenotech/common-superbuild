@@ -1,9 +1,5 @@
-# Extends ExternalProject_Add(...) by adding a new option.
-#  PROCESS_ENVIRONMENT <environment variables>
-# When present the BUILD_COMMAND and CONFIGURE_COMMAND are executed as a
-# sub-process (using execute_process()) so that the sepecified environment
-# is passed on to the executed command (which does not happen by default).
-# This will be deprecated once CMake starts supporting it.
+# This file implements the logic to inject environment variables into the build
+# steps of projects. It is quite messy.
 
 if (CMAKE_VERSION VERSION_LESS "3.4"
     OR TRUE) # Patches exist which aren't upstreamed yet.
@@ -35,7 +31,6 @@ endif ()
 string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
   _ep_keywords__superbuild_ExternalProject_add "${_ep_keywords_ExternalProject_Add}")
 
-#------------------------------------------------------------------------------
 # Version of the function which strips PROCESS_ENVIRONMENT arguments for
 # ExternalProject_Add.
 function (_superbuild_ep_strip_extra_arguments name)
@@ -156,6 +151,8 @@ function (_superbuild_ExternalProject_add name)
     set(suppress_default "${_superbuild_suppress_${name}_output}")
   endif ()
 
+  # Add option to dump the output to a file. This keeps it hidden from CTest if
+  # it just cannot be silenced.
   option("SUPPRESS_${name}_OUTPUT" "Suppress output for ${name}" "${suppress_default}")
   mark_as_advanced("SUPPRESS_${name}_OUTPUT")
 
@@ -170,7 +167,7 @@ function (_superbuild_ExternalProject_add name)
   # empty install, configure, build, etc.
   ExternalProject_Add("${name}" "${args}")
 
-  # configure the scripts after the call ExternalProject_Add() since that sets
+  # Configure the scripts after the call ExternalProject_Add() since that sets
   # up the directories correctly.
   get_target_property(process_environment "sb-${name}"
     _EP_PROCESS_ENVIRONMENT)
