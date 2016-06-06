@@ -4,6 +4,27 @@ set_property(GLOBAL PROPERTY
 
 include(CMakeParseArguments)
 
+# TODO: The functions in this file should be grouped and made OS-agnostic.
+#       Keyword arguments should be used more and be uniform across all
+#       platforms.
+
+# =======================================================================
+# Linux
+# =======================================================================
+
+# INTERNAL
+# Install a binary and its required libraries to a location.
+#
+# _superbuild_unix_install_binary(
+#   LIBDIR <libdir>
+#   BINARY <path>
+#   TYPE <module|executable>
+#   [CLEAN]
+#   [DESTINATION <destination>]
+#   [LOCATION <location>]
+#   [INCLUDE_REGEXES <include-regex>...]
+#   [EXCLUDE_REGEXES <exclude-regex>...]
+#   [SEARCH_DIRECTORIES <search-directory>...])
 function (_superbuild_unix_install_binary)
   set(options
     CLEAN)
@@ -113,6 +134,29 @@ function (_superbuild_unix_install_module path subdir libdir)
     ${ARGN})
 endfunction ()
 
+# Install a "forward executable" from the installation tree to the package.
+#
+# Usage:
+#
+#   superbuild_unix_install_program_fwd(<name> <library-paths>
+#     [INCLUDE_REGEXES <include-regex>...]
+#     [EXCLUDE_REGEXES <exclude-regex>...]
+#     [SEARCH_DIRECTORIES <search-directory>...])
+#
+# Note that this installs a program which was created using the KWSys forward
+# executable mechanisms. For "regular" binaries, see
+# ``superbuild_unix_install_program``.
+#
+# Installs a binary named ``<name>`` to the package. The ``<library-paths>`` is
+# a list of directories to search for the real binary and its libraries.
+# Relative paths are taken to be relative to the install directory. The
+# libraries are installed to the subdirectory the actual executable is found
+# in.
+#
+# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
+# include or exclude found paths from being installed to the package. They are
+# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
+# to search for dependent libraries.
 function (superbuild_unix_install_program_fwd name paths)
   set(found FALSE)
   foreach (path IN LISTS paths)
@@ -130,10 +174,43 @@ function (superbuild_unix_install_program_fwd name paths)
   _superbuild_unix_install_executable("${superbuild_install_location}/bin/${name}" "lib")
 endfunction ()
 
+# Install a program from the installation tree to the package.
+#
+# Usage:
+#
+#   superbuild_unix_install_program(<path> <libdir>
+#     [INCLUDE_REGEXES <include-regex>...]
+#     [EXCLUDE_REGEXES <exclude-regex>...]
+#     [SEARCH_DIRECTORIES <search-directory>...])
+#
+# Installs a program ``<name>`` into ``bin/`` and its dependent libraies into
+# ``<libdir>``.
+#
+# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
+# include or exclude found paths from being installed to the package. They are
+# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
+# to search for dependent libraries.
 function (superbuild_unix_install_program name libdir)
   _superbuild_unix_install_executable("${name}" "${libdir}" ${ARGN})
 endfunction ()
 
+# Install a plugin to the package.
+#
+# Usage:
+#
+#   superbuild_unix_install_plugin(<filename> <libdir> <search-paths>
+#     [INCLUDE_REGEXES <include-regex>...]
+#     [EXCLUDE_REGEXES <exclude-regex>...]
+#     [SEARCH_DIRECTORIES <search-directory>...])
+#
+# Install a plugin from ``<filename>`` to the package. The file is searched for
+# in ``<search-paths>`` under the superbuild's install tree. Required libraries
+# are installed to ``<libdir>``.
+#
+# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
+# include or exclude found paths from being installed to the package. They are
+# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
+# to search for dependent libraries.
 function (superbuild_unix_install_plugin name libdir paths)
   set(found FALSE)
   foreach (path IN LISTS paths)
@@ -150,6 +227,32 @@ function (superbuild_unix_install_plugin name libdir paths)
   endif ()
 endfunction ()
 
+# Install Python modules to the package.
+#
+# Usage:
+#
+#   superbuild_unix_install_python(
+#     MODULES <module>...
+#     LIBDIR <libdir>
+#     MODULE_DIRECTORIES <module-path>...
+#     [MODULE_DESTINATION <destination>]
+#     [INCLUDE_REGEXES <include-regex>...]
+#     [EXCLUDE_REGEXES <exclude-regex>...]
+#     [SEARCH_DIRECTORIES <library-path>...])
+#
+# Installs Python modules or packages named ``<name>`` into the package. The
+# ``LIBDIR`` argument is used to place dependent libraries into the correct
+# subdirectory of the package. Libraries are searched for in
+# ``<library-paths>`` and relative paths are taken to be relative to the
+# superbuild's install directory. The modules are searched for in the
+# ``<module-paths>``. Modules are installed into the proper location
+# (``lib/python2.7/site-packages``) within the package, but may be placed
+# inside of a different directory by using the ``MODULE_DESTINATION`` argument.
+#
+# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
+# include or exclude found paths from being installed to the package. They are
+# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
+# to search for dependent libraries.
 function (superbuild_unix_install_python)
   set(values
     MODULE_DESTINATION
@@ -204,6 +307,41 @@ function (superbuild_unix_install_python)
     COMPONENT superbuild)
 endfunction ()
 
+# =======================================================================
+# OS X
+# =======================================================================
+
+# Create an application bundle.
+#
+# Usage:
+#
+#   superbuild_apple_create_app(<destination> <name> <binary>
+#     [INCLUDE_REGEXES <regex>...]
+#     [EXCLUDE_REGEXES <regex>...]
+#     [SEARCH_DIRECTORIES <library-path>...]
+#     [PLUGINS <plugin>...]
+#     [FAKE_PLUGIN_PATHS] [CLEAN])
+#
+# Creates a ``<name>.app`` bundle. The bundle is placed in ``<destination>``
+# with ``<binary>`` (full path) as a main executable for the bundle (under the
+# ``MacOS/`` directory). Libraries are searched for and placed into the bundle
+# from the ``<library-paths>`` specified. Library IDs and link paths are
+# rewritten to use ``@executable_path`` or ``@loader_path`` as necessary.
+#
+# To exclude libraries from the bundle, use Python regular expressions as
+# arguments to the ``EXCLUDE_REGEXES`` keyword. To include any
+# otherwise-excluded libraries, use ``INCLUDE_REGEXES``. System libraries and
+# frameworks are excluded by default.
+#
+# The ``CLEAN`` argument starts a new bundle, otherwise the bundle is left
+# as-is (and is expected to have been created by this call).
+#
+# Plugins may be listed under the ``PLUGINS`` keyword and will be installed to
+# the ``Plugins/`` directory in the bundle. These are full paths to the plugin
+# binaries. If ``FAKE_PLUGIN_PATHS`` is given, the plugin is treated as its
+# own ``@executable_path`` which is useful when packaging plugins which may be
+# used for multiple applications and may require additional libraries
+# depending on the application.
 function (superbuild_apple_create_app destination name binary)
   set(options
     CLEAN
@@ -265,6 +403,23 @@ function (superbuild_apple_create_app destination name binary)
     COMPONENT superbuild)
 endfunction ()
 
+# Add a utility executable to a bundle.
+#
+# Usage:
+#
+#   superbuild_apple_install_utility(<destination> <name> <binary>
+#     [INCLUDE_REGEXES <regex>...]
+#     [EXCLUDE_REGEXES <regex>...]
+#     [SEARCH_DIRECTORIES <library-path>...])
+#
+# Adds a binary to the ``bin/`` path of the bundle. Required libraries are
+# installed and fixed up.
+#
+# Must match an existing call to ``superbuild_apple_create_app(<destination>
+# <name>)``.
+#
+# See ``superbuild_apple_create_app`` for the documentation for
+# ``INCLUDE_REGEXES``, ``EXCLUDE_REGEXES``, and ``SEARCH_DIRECTORIES``.
 function (superbuild_apple_install_utility destination name binary)
   set(multivalues
     INCLUDE_REGEXES
@@ -307,6 +462,24 @@ function (superbuild_apple_install_utility destination name binary)
     COMPONENT superbuild)
 endfunction ()
 
+# Add a module library to a bundle.
+#
+# Usage:
+#
+#   superbuild_apple_install_module(<destination> <name> <binary> <location>
+#     [INCLUDE_REGEXES <regex>...]
+#     [EXCLUDE_REGEXES <regex>...]
+#     [SEARCH_DIRECTORIES <library-path>...])
+#
+# Adds a library to the ``<location>`` path of the bundle. Required libraries are
+# installed and fixed up using ``@loader_path``. Use this to install things
+# such as compiled language modules and the like.
+#
+# Must match an existing call to ``superbuild_apple_create_app(<destination>
+# <name>)``.
+#
+# See ``superbuild_apple_create_app`` for the documentation for
+# ``INCLUDE_REGEXES``, ``EXCLUDE_REGEXES``, and ``SEARCH_DIRECTORIES``.
 function (superbuild_apple_install_module destination name binary location)
   set(multivalues
     INCLUDE_REGEXES
@@ -350,6 +523,21 @@ function (superbuild_apple_install_module destination name binary location)
     COMPONENT superbuild)
 endfunction ()
 
+# Add Python modules or packages to a bundle.
+#
+# Usage:
+#
+#   superbuild_apple_install_python(<destination> <name>
+#     MODULES <module>...
+#     MODULE_DIRECTORIES <module-path>...
+#     [SEARCH_DIRECTORIES <library-path>...])
+#
+# Adds Python modules or packages ``<modules>`` to the bundle. Required
+# libraries are searched for in the ``<library-paths>`` and placed next to the
+# module which requires it.
+#
+# See ``superbuild_unix_install_python`` for the documentation for
+# ``MODULES`` and ``MODULE_DIRECTORIES``.
 function (superbuild_apple_install_python destination name)
   set(multivalues
     SEARCH_DIRECTORIES
@@ -381,6 +569,12 @@ function (superbuild_apple_install_python destination name)
     COMPONENT superbuild)
 endfunction ()
 
+# =======================================================================
+# Windows
+# =======================================================================
+
+# INTERNAL
+# Install a binary and its required libraries to a location.
 function (_superbuild_windows_install_executable name destination paths)
   install(CODE
     "execute_process(
@@ -400,6 +594,16 @@ function (_superbuild_windows_install_executable name destination paths)
     COMPONENT superbuild)
 endfunction ()
 
+# Install a program to the package.
+#
+# Usage:
+#
+#   superbuild_windows_install_program(<name> <library-paths>)
+#
+# Installs a binary named ``<name>`` to the package. The ``<library-paths>`` is
+# a list of directories to search for libraries. Relative paths are taken to be
+# relative to the install's root directory. The libraries are installed to the
+# ``bin/`` directory.
 function (superbuild_windows_install_program name paths)
   _superbuild_windows_install_executable("${name}.exe" "bin" "${paths}" ${ARGN})
 
@@ -409,6 +613,16 @@ function (superbuild_windows_install_program name paths)
     COMPONENT   superbuild)
 endfunction ()
 
+# Install a plugin to the package.
+#
+# Usage:
+#
+#   superbuild_windows_install_plugin(<name> <destination> <library-paths>)
+#
+# Installs a binary named ``<name>`` to the package. The ``<library-paths>`` is
+# a list of directories to search for libraries. Relative paths are taken to be
+# relative to the install's root directory. The required libraries are
+# installed beside the plugin.
 function (superbuild_windows_install_plugin name destination paths)
   set(bin_var "bin")
   foreach (path IN LISTS bin_var paths)
@@ -424,6 +638,23 @@ function (superbuild_windows_install_plugin name destination paths)
   _superbuild_windows_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
 endfunction ()
 
+# Add Python modules or packages to the package.
+#
+# Usage:
+#
+#   superbuild_windows_install_python(
+#     [DESTINATION <destination>]
+#     MODULES <module>...
+#     [NAMESPACE <namespace>]
+#     MODULE_DIRECTORIES <module-path>...
+#     [SEARCH_DIRECTORIES <library-path>...])
+#
+# Installs Python modules or packages named ``<name>`` into the package. By
+# default, modules are installed underneath the ``bin/Lib/site-packages``
+# directory, which should be in the default ``sys.path``.
+#
+# See ``superbuild_unix_install_python`` for the documentation for
+# ``MODULES``, ``NAMESPACE``, and ``MODULE_DIRECTORIES``.
 function (superbuild_windows_install_python)
   set(singlevalues
     NAMESPACE
