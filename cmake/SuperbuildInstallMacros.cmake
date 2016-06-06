@@ -424,7 +424,7 @@ function (superbuild_windows_install_plugin name destination paths)
   _superbuild_windows_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
 endfunction ()
 
-function (superbuild_windows_install_python destination)
+function (superbuild_windows_install_python)
   set(singlevalues
     NAMESPACE
     DESTINATION)
