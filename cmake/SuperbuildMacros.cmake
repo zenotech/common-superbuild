@@ -565,6 +565,8 @@ function (_superbuild_add_project_internal name)
   endforeach ()
   set(extra_paths)
 
+  superbuild_get_project_depends("${name}" arg)
+
   # Scan project flags.
   foreach (var IN LISTS extra_vars)
     string(TOUPPER "${var}" upper_var)
