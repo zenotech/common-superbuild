@@ -77,7 +77,7 @@ function (_superbuild_ep_wrap_command var target command_name)
   # Replace $(MAKE) usage.
   set(submake_regex "^\\$\\(MAKE\\)")
   if (command MATCHES "${submake_regex}")
-    string(REGEX REPLACE "${submake_regex}" "${superbuild_make_program} -j${SUPERBUILD_PROJECT_PARALLELISM}" command "${command}")
+    string(REGEX REPLACE "${submake_regex}" "${superbuild_make_program};-j${SUPERBUILD_PROJECT_PARALLELISM}" command "${command}")
   endif ()
 
   if (command)
