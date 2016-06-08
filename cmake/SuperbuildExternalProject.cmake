@@ -53,13 +53,13 @@ endfunction ()
 
 function (_superbuild_ep_wrap_command var target command_name)
   get_property(has_command TARGET "${target}"
-    PROPERTY "_SB_${command_name}_COMMAND" SET)
+    PROPERTY "_EP_${command_name}_COMMAND" SET)
   set("has_${var}"
     "${has_command}"
     PARENT_SCOPE)
 
   get_property(command TARGET "${target}"
-    PROPERTY "_SB_${command_name}_COMMAND")
+    PROPERTY "_EP_${command_name}_COMMAND")
 
   if (NOT has_command)
     # Get the ExternalProject-generated command.
@@ -114,10 +114,10 @@ function (_superbuild_ExternalProject_add name)
 
   # Create a temporary target so we can query target properties.
   add_custom_target("sb-${name}")
-  _ep_parse_arguments(_superbuild_ExternalProject_add "sb-${name}" _SB_ "${ARGN}")
+  _ep_parse_arguments(_superbuild_ExternalProject_add "sb-${name}" _EP_ "${ARGN}")
 
   get_property(has_process_environment TARGET "sb-${name}"
-    PROPERTY _SB_PROCESS_ENVIRONMENT SET)
+    PROPERTY _EP_PROCESS_ENVIRONMENT SET)
   if (NOT has_process_environment)
     _superbuild_ep_strip_extra_arguments(${name} "${ARGN}")
     return ()
@@ -172,7 +172,7 @@ function (_superbuild_ExternalProject_add name)
   # configure the scripts after the call ExternalProject_Add() since that sets
   # up the directories correctly.
   get_target_property(process_environment "sb-${name}"
-    _SB_PROCESS_ENVIRONMENT)
+    _EP_PROCESS_ENVIRONMENT)
   _ep_replace_location_tags("${name}" process_environment)
 
   foreach (step configure build install)
