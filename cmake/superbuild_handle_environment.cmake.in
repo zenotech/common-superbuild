@@ -1,6 +1,6 @@
 set(environment "@process_environment@")
 set(list_separator "@_superbuild_list_separator@")
-set(command @step_command@)
+set(command "@step_command@")
 
 set(env_separator ":")
 set(prepend_envvars
