@@ -6,8 +6,13 @@ set(qt4_extra_options)
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND
     CMAKE_OSX_DEPLOYMENT_TARGET AND
     CMAKE_OSX_DEPLOYMENT_TARGET VERSION_GREATER "10.6")
-  list(APPEND qt4_extra_options
-    -platform unsupported/macx-clang)
+  if (cxx11_enabled)
+    list(APPEND qt4_extra_options
+      -platform unsupported/macx-clang-libc++)
+  else ()
+    list(APPEND qt4_extra_options
+      -platform unsupported/macx-clang)
+  endif ()
 endif ()
 
 list(APPEND qt4_extra_options

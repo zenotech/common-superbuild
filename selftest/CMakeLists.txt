@@ -6,6 +6,7 @@ function (superbuild_find_projects var)
   set(projects
     boost
     bzip2
+    cxx11
     freetype
     hdf5
     lapack

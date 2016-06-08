@@ -45,12 +45,12 @@ mark_as_advanced(superbuild_download_location)
 superbuild_setup_flags()
 
 # merge in default/user-specified CMake flags.
-set(superbuild_ldflags "${CMAKE_SHARED_LINKER_FLAGS} ${superbuild_ldflags}")
+set(superbuild_ld_flags "${CMAKE_SHARED_LINKER_FLAGS} ${superbuild_ld_flags}")
 set(superbuild_cpp_flags "${CMAKE_CXX_FLAGS} ${superbuild_cpp_flags}")
 set(superbuild_cxx_flags "${CMAKE_CXX_FLAGS} ${superbuild_cxx_flags}")
 set(superbuild_c_flags "${CMAKE_C_FLAGS} ${superbuild_c_flags}")
 
-foreach (var ldflags cpp_flags cxx_flags c_flags)
+foreach (var ld_flags cpp_flags cxx_flags c_flags)
   string(STRIP "${superbuild_${var}}" "superbuild_${var}")
 endforeach ()
 

@@ -39,7 +39,7 @@ function (superbuild_setup_flags)
   endif ()
 
   # FIXME: currently, if any of these are empty, we have build issues on Unix.
-  set(superbuild_ldflags "$ENV{LDFLAGS} -L${superbuild_install_location}/lib"
+  set(superbuild_ld_flags "$ENV{LDFLAGS} -L${superbuild_install_location}/lib"
     PARENT_SCOPE)
   set(superbuild_ld_library_path "${superbuild_install_location}/lib:$ENV{LD_LIBRARY_PATH}"
     PARENT_SCOPE)

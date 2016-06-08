@@ -246,11 +246,19 @@ endfunction ()
 # those to use to build any dependencies. The default is the latter. For former,
 # pass in an optional argument PROJECT_ONLY.
 function (superbuild_append_flags key value)
-  if (NOT "x${key}" STREQUAL "xCMAKE_CXX_FLAGS" AND
-      NOT "x${key}" STREQUAL "xCMAKE_C_FLAGS" AND
-      NOT "x${key}" STREQUAL "xLDFLAGS")
+  if (NOT superbuild_build_phase)
+    return ()
+  endif ()
+
+  _superbuild_check_current_project("superbuild_append_flags")
+
+  if (NOT "x${key}" STREQUAL "xcxx_flags" AND
+      NOT "x${key}" STREQUAL "xc_flags" AND
+      NOT "x${key}" STREQUAL "xcpp_flags" AND
+      NOT "x${key}" STREQUAL "xld_flags")
     message(AUTHOR_WARNING
-      "Currently, only CMAKE_CXX_FLAGS, CMAKE_C_FLAGS, and LDFLAGS are supported.")
+      "Currently, only cxx_flags, c_flags, cpp_flags, and ld_flags are supported.")
+    return ()
   endif ()
 
   set(project_only FALSE)
@@ -262,18 +270,14 @@ function (superbuild_append_flags key value)
     endif ()
   endforeach ()
 
-  if (build-projects)
-    _superbuild_check_current_project("superbuild_append_flags")
-
-    set(property "${current_project}_append_flags_${key}")
-    if (project_only)
-      set(property "${current_project}_append_project_only_flags_${key}")
-    endif ()
-
-    set_property(GLOBAL APPEND
-      PROPERTY
-        "${property}" "${value}")
+  set(property "${current_project}_append_flags_cmake_${key}")
+  if (project_only)
+    set(property "${current_project}_append_project_only_flags_cmake_${key}")
   endif ()
+
+  set_property(GLOBAL APPEND
+    PROPERTY
+      "${property}" "${value}")
 endfunction ()
 
 function (superbuild_add_path)
@@ -558,7 +562,8 @@ function (_superbuild_add_project_internal name)
   set(extra_vars
     c_flags
     cxx_flags
-    ldflags)
+    cpp_flags
+    ld_flags)
 
   foreach (extra_var IN LISTS extra_vars)
     set("extra_${extra_var}")
@@ -569,20 +574,19 @@ function (_superbuild_add_project_internal name)
 
   # Scan project flags.
   foreach (var IN LISTS extra_vars)
-    string(TOUPPER "${var}" upper_var)
     get_property(extra_flags GLOBAL
-      PROPERTY "${name}_append_project_only_flags_cmake_${upper_var}")
+      PROPERTY "${name}_append_project_only_flags_cmake_${var}")
 
     list(APPEND "extra_${var}"
       ${extra_flags})
   endforeach ()
 
   # Scan dependency flags.
+  superbuild_get_project_depends("${name}" arg)
   foreach (dep IN LISTS arg_depends)
     foreach (var IN LISTS extra_vars)
-      string(TOUPPER "${var}" upper_var)
       get_property(extra_flags GLOBAL
-        PROPERTY "${dep}_append_flags_cmake_${upper_var}")
+        PROPERTY "${dep}_append_flags_cmake_${var}")
 
       list(APPEND "extra_${var}"
         ${extra_flags})
@@ -611,7 +615,7 @@ function (_superbuild_add_project_internal name)
   if (NOT MSVC)
     list(APPEND build_env
       LDFLAGS "${project_ld_flags}"
-      CPPFLAGS "${superbuild_cppflags}"
+      CPPFLAGS "${project_cpp_flags}"
       CXXFLAGS "${project_cxx_flags}"
       CFLAGS "${project_c_flags}")
   endif ()
@@ -758,7 +762,7 @@ endfunction ()
 
 function (_superbuild_check_current_project func)
   if (NOT current_project)
-    message(AUTHOR_WARNING "${func} called an incorrect stage.")
+    message(AUTHOR_WARNING "${func} called at an incorrect stage.")
     return ()
   endif ()
 endfunction ()
