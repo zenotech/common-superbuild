@@ -2124,24 +2124,7 @@ function(_ep_add_patch_command name)
 endfunction()
 
 
-# TODO: Make sure external projects use the proper compiler
-function(_ep_add_configure_command name)
-  ExternalProject_Get_Property(${name} source_dir binary_dir tmp_dir)
-
-  # Depend on other external projects (file-level).
-  set(file_deps)
-  get_property(deps TARGET ${name} PROPERTY _EP_DEPENDS)
-  foreach(dep IN LISTS deps)
-    get_property(dep_type TARGET ${dep} PROPERTY TYPE)
-    if(dep_type STREQUAL "UTILITY")
-      get_property(is_ep TARGET ${dep} PROPERTY _EP_IS_EXTERNAL_PROJECT)
-      if(is_ep)
-        _ep_get_step_stampfile(${dep} "done" done_stamp_file)
-        list(APPEND file_deps ${done_stamp_file})
-      endif()
-    endif()
-  endforeach()
-
+function(_ep_extract_configure_command var name)
   get_property(cmd_set TARGET ${name} PROPERTY _EP_CONFIGURE_COMMAND SET)
   if(cmd_set)
     get_property(cmd TARGET ${name} PROPERTY _EP_CONFIGURE_COMMAND)
@@ -2162,7 +2145,7 @@ function(_ep_add_configure_command name)
     get_property(cmake_cache_default_args TARGET ${name} PROPERTY _EP_CMAKE_CACHE_DEFAULT_ARGS)
 
     if(cmake_cache_args OR cmake_cache_default_args)
-      set(_ep_cache_args_script "${tmp_dir}/${name}-cache-$<CONFIG>.cmake")
+      set(_ep_cache_args_script "<TMP_DIR>/${name}-cache-$<CONFIG>.cmake")
       if(cmake_cache_args)
         _ep_command_line_to_initial_cache(script_initial_cache_force "${cmake_cache_args}" 1)
       endif()
@@ -2204,8 +2187,32 @@ function(_ep_add_configure_command name)
       endif()
     endif()
 
-    list(APPEND cmd "${source_dir}")
+    list(APPEND cmd "<SOURCE_DIR>")
   endif()
+
+  set("${var}" "${cmd}" PARENT_SCOPE)
+endfunction()
+
+
+# TODO: Make sure external projects use the proper compiler
+function(_ep_add_configure_command name)
+  ExternalProject_Get_Property(${name} binary_dir tmp_dir)
+
+  # Depend on other external projects (file-level).
+  set(file_deps)
+  get_property(deps TARGET ${name} PROPERTY _EP_DEPENDS)
+  foreach(dep IN LISTS deps)
+    get_property(dep_type TARGET ${dep} PROPERTY TYPE)
+    if(dep_type STREQUAL "UTILITY")
+      get_property(is_ep TARGET ${dep} PROPERTY _EP_IS_EXTERNAL_PROJECT)
+      if(is_ep)
+        _ep_get_step_stampfile(${dep} "done" done_stamp_file)
+        list(APPEND file_deps ${done_stamp_file})
+      endif()
+    endif()
+  endforeach()
+
+  _ep_extract_configure_command(cmd ${name})
 
   # If anything about the configure command changes, (command itself, cmake
   # used, cmake args or cmake generator) then re-run the configure step.
