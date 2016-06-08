@@ -99,13 +99,6 @@ function (_superbuild_ep_wrap_command var target command_name require)
 endfunction ()
 
 function (_superbuild_ExternalProject_add name)
-  if (WIN32)
-    # Environment variable setting unsupported here.
-    # TODO: support it.
-    _superbuild_ep_strip_extra_arguments("${name}" "${ARGN}")
-    return ()
-  endif ()
-
   # Create a temporary target so we can query target properties.
   add_custom_target("sb-${name}")
   _ep_parse_arguments(_superbuild_ExternalProject_add "sb-${name}" _SB_ "${ARGN}")

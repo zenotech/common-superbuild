@@ -276,6 +276,18 @@ function (superbuild_append_flags key value)
   endif ()
 endfunction ()
 
+function (superbuild_add_path)
+  if (NOT superbuild_build_phase)
+    return ()
+  endif ()
+
+  _superbuild_check_current_project("superbuild_add_path")
+
+  set_property(GLOBAL APPEND
+    PROPERTY
+      "${current_project}_path" ${ARGN})
+endfunction ()
+
 #------------------------------------------------------------------------------
 # Get dependencies for a project, including optional dependencies that are
 # currently enabled. Since this macro looks at the ${mod}_enabled flag, it
@@ -551,6 +563,9 @@ function (_superbuild_add_project_internal name)
   foreach (extra_var IN LISTS extra_vars)
     set("extra_${extra_var}")
   endforeach ()
+  set(extra_paths)
+
+  superbuild_get_project_depends("${name}" arg)
 
   # Scan project flags.
   foreach (var IN LISTS extra_vars)
@@ -572,6 +587,11 @@ function (_superbuild_add_project_internal name)
       list(APPEND "extra_${var}"
         ${extra_flags})
     endforeach ()
+
+    get_property(dep_paths GLOBAL
+      PROPERTY "${dep}_path")
+    list(APPEND extra_paths
+      "${dep_paths}")
   endforeach ()
 
   foreach (var IN LISTS extra_vars)
@@ -581,13 +601,49 @@ function (_superbuild_add_project_internal name)
     endif ()
   endforeach ()
 
-  set(ld_library_path_argument)
-  superbuild_unix_ld_library_path_hack(ld_library_path_argument)
-
   get_property("${name}_revision" GLOBAL
     PROPERTY "${name}_revision")
   if (NOT ${name}_revision)
     message(FATAL_ERROR "Missing revision information for ${name}.")
+  endif ()
+
+  set(build_env)
+  if (NOT MSVC)
+    list(APPEND build_env
+      LDFLAGS "${project_ld_flags}"
+      CPPFLAGS "${superbuild_cppflags}"
+      CXXFLAGS "${project_cxx_flags}"
+      CFLAGS "${project_c_flags}")
+  endif ()
+
+  if (APPLE)
+    # disabling this since it fails when building numpy.
+    #list(APPEND build_env
+    #  MACOSX_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}")
+  endif ()
+
+  list(INSERT extra_paths 0
+    "${superbuild_install_location}/bin")
+  list(REMOVE_DUPLICATES extra_paths)
+
+  if (WIN32)
+    string(REPLACE ";" "${_superbuild_list_separator}" extra_paths "${extra_paths}")
+  else ()
+    string(REPLACE ";" ":" extra_paths "${extra_paths}")
+  endif ()
+  list(APPEND build_env
+    PATH "${extra_paths}")
+
+  if (WIN32)
+    # No special environment to set.
+  elseif (APPLE)
+    # No special environment to set.
+  elseif (UNIX)
+    set(ld_library_path_argument)
+    superbuild_unix_ld_library_path_hack(ld_library_path_argument)
+
+    list(APPEND build_env
+      ${ld_library_path_argument})
   endif ()
 
   # ARGN needs to be quoted so that empty list items aren't removed if
@@ -601,13 +657,7 @@ function (_superbuild_add_project_internal name)
     ${${name}_revision}
 
     PROCESS_ENVIRONMENT
-      LDFLAGS     "${project_ld_flags}"
-      CPPFLAGS    "${superbuild_cppflags}"
-      CXXFLAGS    "${project_cxx_flags}"
-      CFLAGS      "${project_c_flags}"
-      # disabling this since it fails when building numpy.
-      # MACOSX_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}"
-      ${ld_library_path_argument}
+      "${build_env}"
       CMAKE_PREFIX_PATH "${superbuild_prefix_path}"
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${superbuild_prefix_path}
