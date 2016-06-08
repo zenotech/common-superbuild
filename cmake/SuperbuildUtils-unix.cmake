@@ -12,7 +12,7 @@ function (superbuild_unix_ld_library_path_hack var)
     "UNIX;NOT APPLE" OFF)
   mark_as_advanced(PASS_LD_LIBRARY_PATH_FOR_BUILDS)
 
-  if (PASS_LD_LIBRARY_PATH_FOR_BUILDS)
+  if (PASS_LD_LIBRARY_PATH_FOR_BUILDS AND superbuild_ld_library_path)
     set("${var}"
       LD_LIBRARY_PATH "${superbuild_ld_library_path}"
       PARENT_SCOPE)
