@@ -62,18 +62,15 @@ function (_superbuild_ep_wrap_command var target command_name)
     PROPERTY "_EP_${command_name}_COMMAND")
 
   if (NOT has_command)
-    # Get the ExternalProject-generated command.
-    _ep_get_build_command("${target}" "${command_name}" command)
-    set(has_command 1)
-  endif ()
-
-    if (command)
-      string(TOLOWER "${command_name}" step)
-      set(new_command
-        "${CMAKE_COMMAND}" -P
-        "${CMAKE_CURRENT_BINARY_DIR}/${target}-${step}.cmake")
+    if (command_name STREQUAL "CONFIGURE")
+      _ep_extract_configure_command(command "${target}")
+      if (command)
+        set(has_command 1)
+      endif ()
     else ()
-      set(has_command 0)
+      # Get the ExternalProject-generated command.
+      _ep_get_build_command("${target}" "${command_name}" command)
+      set(has_command 1)
     endif ()
   endif ()
 
