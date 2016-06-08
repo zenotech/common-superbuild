@@ -38,10 +38,12 @@ function (superbuild_setup_flags)
     return ()
   endif ()
 
-  # FIXME: currently, if any of these are empty, we have build issues on Unix.
-  set(superbuild_ld_flags "$ENV{LDFLAGS} -L${superbuild_install_location}/lib"
-    PARENT_SCOPE)
-  set(superbuild_ld_library_path "${superbuild_install_location}/lib:$ENV{LD_LIBRARY_PATH}"
+  set(ld_library_path "${superbuild_install_location}/lib")
+  if (ENV{LD_LIBRARY_PATH})
+    list(APPEND ld_library_path "$ENV{LD_LIBRARY_PATH}")
+  endif ()
+  string(REPLACE ";" ":" ld_library_path "${ld_library_path}")
+  set(superbuild_ld_library_path "${ld_library_path}"
     PARENT_SCOPE)
 
   if (CMAKE_CROSSCOMPILING)
