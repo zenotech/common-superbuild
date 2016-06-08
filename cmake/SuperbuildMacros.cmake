@@ -594,8 +594,10 @@ function (_superbuild_add_project_internal name)
 
     get_property(dep_paths GLOBAL
       PROPERTY "${dep}_path")
-    list(APPEND extra_paths
-      "${dep_paths}")
+    if (dep_paths)
+      list(APPEND extra_paths
+        "${dep_paths}")
+    endif ()
   endforeach ()
 
   foreach (var IN LISTS extra_vars)
