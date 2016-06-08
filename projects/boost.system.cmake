@@ -4,4 +4,4 @@ find_package(Boost REQUIRED
 
 superbuild_add_extra_cmake_args(
   -DBoost_NO_SYSTEM_PATHS:BOOL=ON
-  -DBoost_INCLUDE_DIR:PATH=${Boost_INCLUDE_DIR})
+  -DBOOST_INCLUDEDIR:PATH=${Boost_INCLUDE_DIR})
