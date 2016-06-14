@@ -133,6 +133,9 @@ function (superbuild_install_superbuild_python)
 
     # sunos services
     #sunaudiodev SUNAUDIODEV
+
+    # misc modules
+    opcode
     )
 
   if (WIN32)
