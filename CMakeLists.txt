@@ -141,6 +141,10 @@ endif ()
 cmake_dependent_option(BUILD_TESTING "Build testing" ON
   "COMMAND superbuild_add_tests" OFF)
 if (BUILD_TESTING)
+  if (COMMAND superbuild_setup_tests)
+    superbuild_setup_tests()
+  endif ()
+
   # Enable testing support.
   include(CTest)
   configure_file(
