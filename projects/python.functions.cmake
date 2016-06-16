@@ -150,6 +150,13 @@ function (superbuild_install_superbuild_python)
       DESTINATION
               "bin/Lib")
   else ()
-    message(FATAL_ERROR "Not supported on Linux yet.")
+    superbuild_unix_install_python(
+      "${CMAKE_INSTALL_PREFIX}"
+      ""
+      _BASE
+      MODULES ${modules}
+              ${ARGN}
+      MODULE_DIRECTORIES
+              "${superbuild_install_location}/lib/python2.7")
   endif ()
 endfunction ()
