@@ -98,7 +98,8 @@ function (superbuild_install_superbuild_python)
     sys sysconfig __builtin__ future_builtins __main__ warnings contextlib abc
     atexit traceback __future__ gc inspect site user
     #fpectl
-    _abcoll
+
+    _abcoll _sysconfigdata opcode
 
     # custom python interpreters
     code codeop
@@ -133,9 +134,6 @@ function (superbuild_install_superbuild_python)
 
     # sunos services
     #sunaudiodev SUNAUDIODEV
-
-    # misc modules
-    opcode
     )
 
   if (WIN32)
