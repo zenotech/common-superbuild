@@ -65,11 +65,17 @@ function (superbuild_unix_install_plugin name destination paths dest_subdir)
 endfunction ()
 
 function (superbuild_unix_install_python destination target_path)
+  set(options _BASE)
   set(multivalues
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
-  cmake_parse_arguments(_install_python "" "" "${multivalues}" "${ARGN}")
+  cmake_parse_arguments(_install_python "${options}" "" "${multivalues}" "${ARGN}")
+
+  set(subdir "/site-packages")
+  if (_install_python__BASE)
+    set(subdir "")
+  endif ()
 
   install(CODE
     "include(\"${_superbuild_install_cmake_dir}/scripts/fixup_python.unix.cmake\")
@@ -82,7 +88,7 @@ function (superbuild_unix_install_python destination target_path)
 
     foreach (python_module IN LISTS python_modules)
       superbuild_unix_install_python_module(\"\${CMAKE_INSTALL_PREFIX}\"
-        \"\${python_module}\" \"\${module_directories}\" \"lib/python2.7/site-packages\")
+        \"\${python_module}\" \"\${module_directories}\" \"lib/python2.7${subdir}\")
     endforeach ()"
     COMPONENT superbuild)
 endfunction ()
