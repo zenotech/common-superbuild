@@ -4,6 +4,7 @@ project(standalone-qt)
 
 function (superbuild_find_projects var)
   set(projects
+    cxx11
     freetype
     png
     qt4
