@@ -319,8 +319,11 @@ class Utility(Executable):
 
 
 class Plugin(Library):
-    def __init__(self, path, **kwargs):
+    def __init__(self, path, fake_exe_path=False, **kwargs):
         super(Plugin, self).__init__(path, None, **kwargs)
+
+        if fake_exe_path:
+            self._executable_path = os.path.dirname(path)
 
     @property
     def bundle_location(self):
@@ -467,6 +470,12 @@ def _create_arg_parser():
     parser.add_argument('-t', '--type', metavar='TYPE', type=str, required=True,
                         choices=('executable', 'utility', 'plugin', 'module'),
                         help='the type of binary to package')
+    # This flag is here so that plugins which are built for one application can
+    # bring in the required libraries for another application which doesn't
+    # have a superset of the libraries required by the plugin provided by its
+    # main application.
+    parser.add_argument('--fake-plugin-paths', action='store_true',
+                        help='if given, plugins will act as their own @executable_path')
     parser.add_argument('binary', metavar='BINARY', type=str,
                         help='the binary to package')
 
@@ -601,7 +610,7 @@ def main(args):
     _install_binary(main_exe, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run)
 
     for plugin in opts.plugins:
-        plugin_bin = Plugin(plugin, search_paths=opts.search)
+        plugin_bin = Plugin(plugin, fake_exe_path=opts.fake_plugin_paths, search_paths=opts.search)
         _install_binary(plugin_bin, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run)
 
     _fix_installed_binaries(installed, dry_run=opts.dry_run)
