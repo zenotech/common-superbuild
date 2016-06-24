@@ -1,4 +1,4 @@
-if (NOT CMAKE_OSX_SDK)
+if (NOT CMAKE_OSX_SDK AND superbuild_build_phase)
   message(FATAL_ERROR "Please set the CMAKE_OSX_SDK to use in Qt5's build")
 endif ()
 
