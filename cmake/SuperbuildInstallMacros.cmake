@@ -95,7 +95,8 @@ endfunction ()
 
 function (superbuild_apple_create_app destination name binary)
   set(options
-    CLEAN)
+    CLEAN
+    FAKE_PLUGIN_PATHS)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
@@ -108,6 +109,11 @@ function (superbuild_apple_create_app destination name binary)
   if (_create_app_CLEAN)
     set(fixup_bundle_arguments
       "${fixup_bundle_arguments} --clean")
+  endif ()
+
+  if (_create_app_FAKE_PLUGIN_PATHS)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --fake-plugin-paths")
   endif ()
 
   foreach (include_regex IN LISTS _create_app_INCLUDE_REGEXES)
