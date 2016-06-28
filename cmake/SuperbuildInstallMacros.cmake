@@ -66,13 +66,21 @@ endfunction ()
 
 function (superbuild_unix_install_python destination target_path)
   set(options _BASE)
+  set(values NAMESPACE)
   set(multivalues
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
-  cmake_parse_arguments(_install_python "${options}" "" "${multivalues}" "${ARGN}")
+  cmake_parse_arguments(_install_python "${options}" "${values}" "${multivalues}" "${ARGN}")
+
+  if (_install_python_NAMESPACE AND _install_python__BASE)
+    message(FATAL_ERROR "The _BASE and NAMESPACE options are incompatible!")
+  endif ()
 
   set(subdir "/site-packages")
+  if (_install_python_NAMESPACE)
+    set(subdir "${subdir}/${_install_python_NAMESPACE}")
+  endif ()
   if (_install_python__BASE)
     set(subdir "")
   endif ()
@@ -234,11 +242,12 @@ function (superbuild_apple_install_module destination name binary location)
 endfunction ()
 
 function (superbuild_apple_install_python destination name)
+  set(values NAMESPACE)
   set(multivalues
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
-  cmake_parse_arguments(_install_python "" "" "${multivalues}" ${ARGN})
+  cmake_parse_arguments(_install_python "" "${values}" "${multivalues}" ${ARGN})
 
   set(fixup_bundle_arguments)
 
@@ -246,6 +255,11 @@ function (superbuild_apple_install_python destination name)
     list(APPEND fixup_bundle_arguments
       --search "${search_directory}")
   endforeach ()
+
+  set(subdir "")
+  if (_install_python_NAMESPACE)
+    set(subdir "${subdir}/${_install_python_NAMESPACE}")
+  endif ()
 
   install(CODE
     "include(\"${_superbuild_install_cmake_dir}/scripts/fixup_python.apple.cmake\")
@@ -259,7 +273,7 @@ function (superbuild_apple_install_python destination name)
 
     foreach (python_module IN LISTS python_modules)
       superbuild_apple_install_python_module(\"\${bundle_destination}/\${bundle_name}\"
-        \"\${python_module}\" \"\${module_directories}\" \"Contents/Python\")
+        \"\${python_module}\" \"\${module_directories}\" \"Contents/Python${subdir}\")
     endforeach ()"
     COMPONENT superbuild)
 endfunction ()
@@ -309,6 +323,7 @@ endfunction ()
 
 function (superbuild_windows_install_python destination)
   set(singlevalues
+    NAMESPACE
     DESTINATION)
   set(multivalues
     SEARCH_DIRECTORIES
@@ -316,9 +331,18 @@ function (superbuild_windows_install_python destination)
     MODULES)
   cmake_parse_arguments(_install_python "" "${singlevalues}" "${multivalues}" "${ARGN}")
 
-  if (NOT _install_python_DESTINATION)
-    set(_install_python_DESTINATION
-      "bin/Lib/site-packages")
+  set(subdir "")
+  if (_install_python_NAMESPACE)
+    set(subdir "${_install_python_NAMESPACE}")
+  endif ()
+
+  set(destination "bin/Lib/site-packages${subdir}")
+  if (_install_python_DESTINATION)
+    message(AUTHOR_WARNING "The DESTINATION option is deprecated; use NAMESPACE instead.")
+    if (subdir)
+      message(FATAL_ERROR "The DESTINATION and NAMESPACE options are incompatible!")
+    endif ()
+    set(destination "${_install_python_DESTINATION}")
   endif ()
 
   install(CODE
@@ -331,7 +355,7 @@ function (superbuild_windows_install_python destination)
 
     foreach (python_module IN LISTS python_modules)
       superbuild_windows_install_python_module(\"\${CMAKE_INSTALL_PREFIX}\"
-        \"\${python_module}\" \"\${module_directories}\" \"${_install_python_DESTINATION}\")
+        \"\${python_module}\" \"\${module_directories}\" \"${destination}\")
     endforeach ()"
     COMPONENT superbuild)
 endfunction ()
