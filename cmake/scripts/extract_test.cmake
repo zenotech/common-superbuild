@@ -55,7 +55,7 @@ function (extract_binary dir glob output)
     message(FATAL_ERROR "Ambiguous glob: ${dir}/${glob}:\n${file}.")
   endif ()
 
-  set(output_dir "${dir}/__workdir")
+  set(output_dir "${dir}/ctest/extract/__workdir")
   file(MAKE_DIRECTORY "${output_dir}")
 
   message("Using package: ${file}")
@@ -67,7 +67,7 @@ function (extract_binary dir glob output)
     _extract_dmg("${output_dir}" "${dir}/__mount" "${file}")
   endif ()
 
-  get_filename_component(templocation "${dir}/../__Package__" ABSOLUTE)
+  get_filename_component(templocation "${dir}/__package__" ABSOLUTE)
   file(RENAME "${output_dir}" "${templocation}")
   file(REMOVE_RECURSE "${output}")
   file(RENAME "${templocation}" "${output}")
