@@ -36,8 +36,8 @@ superbuild_set_revision(boost
   URL_MD5 6aa9a5c6a4ca1016edd0ed1178e3cb87)
 
 superbuild_set_revision(png
-  URL     "http://paraview.org/files/dependencies/libpng-1.4.8.tar.gz"
-  URL_MD5 49c6e05be5fa88ed815945d7ca7d4aa9)
+  URL     "http://www.paraview.org/files/dependencies/libpng-1.6.23.tar.gz"
+  URL_MD5 a49e4cc48d968c79def53d082809c9f2)
 
 if (WIN32)
   if (superbuild_is_64bit)
