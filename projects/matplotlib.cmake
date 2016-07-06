@@ -1,6 +1,6 @@
 superbuild_add_project(matplotlib
   CAN_USE_SYSTEM
-  DEPENDS python numpy png freetype
+  DEPENDS python numpy png freetype zlib
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND
     "${CMAKE_COMMAND}"
