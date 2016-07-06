@@ -22,5 +22,5 @@ execute_process(
   RESULT_VARIABLE   rv
   WORKING_DIRECTORY ${SOURCE_DIR})
 if (rv)
-  message(FATAL_ERROR "Failed to build matplot lib")
+  message(FATAL_ERROR "Failed to build matplotlib")
 endif ()
