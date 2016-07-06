@@ -33,6 +33,8 @@ get_prerequisites(
   "${exepath}"
   "${library_paths}")
 
+get_filename_component(resolved_deproot "${superbuild_install_location}" REALPATH)
+
 # gp_resolve_item_override aren't storing the full system path, so lets fix-up
 # the prerequisites
 set(resolved_prerequisites)
@@ -50,12 +52,20 @@ foreach (link IN LISTS prerequisites)
     message(FATAL_ERROR "Failed to find the ${linkname} library. Searched paths: ${paths}.")
   endif ()
 
+  if (skip_system_deps)
+    # Do not package files which are outside of the installation root.
+    get_filename_component(resolved_link "${full_path}" REALPATH)
+    if (NOT resolved_link MATCHES "^${resolved_deproot}/")
+      continue ()
+    endif ()
+  endif ()
+
   message(STATUS "Resolving ${linkname} to path ${full_path}...")
 
   if (IS_SYMLINK "${full_path}")
     get_filename_component(resolved_link "${full_path}" REALPATH)
     # Now link may not directly point to resolved_link, so we install the
-    # resolved link as the link.
+    # resolved path as the name of the link we reached it by.
     get_filename_component(resolved_name "${full_path}" NAME)
 
     file(INSTALL

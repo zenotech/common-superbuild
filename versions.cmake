@@ -128,3 +128,7 @@ endif ()
 superbuild_set_revision(tbb
   URL     "http://www.paraview.org/files/dependencies/${tbb_file}"
   URL_MD5 "${tbb_md5}")
+
+superbuild_set_revision(pythonsetuptools
+  URL     "https://pypi.python.org/packages/45/5e/79ca67a0d6f2f42bfdd9e467ef97398d6ad87ee2fa9c8cdf7caf3ddcab1e/setuptools-23.0.0.tar.gz"
+  URL_MD5 100a90664040f8ff232fbac02a4c5652)
