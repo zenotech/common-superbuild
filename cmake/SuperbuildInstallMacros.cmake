@@ -72,7 +72,7 @@ function (superbuild_unix_install_python destination target_path)
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
-  cmake_parse_arguments(_install_python "${options}" "${values}" "${multivalues}" "${ARGN}")
+  cmake_parse_arguments(_install_python "${options}" "${values}" "${multivalues}" ${ARGN})
 
   if (_install_python_NAMESPACE AND _install_python__BASE)
     message(FATAL_ERROR "The _BASE and NAMESPACE options are incompatible!")
@@ -336,7 +336,7 @@ function (superbuild_windows_install_python destination)
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
-  cmake_parse_arguments(_install_python "" "${singlevalues}" "${multivalues}" "${ARGN}")
+  cmake_parse_arguments(_install_python "" "${singlevalues}" "${multivalues}" ${ARGN})
 
   set(subdir "")
   if (_install_python_NAMESPACE)
