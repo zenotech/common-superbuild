@@ -29,6 +29,35 @@ function (superbuild_sanity_check)
   endif ()
 endfunction ()
 
+function (superbuild_add_packaging)
+  if (python_enabled)
+    superbuild_add_extra_package_test(python TGZ
+      LABELS  "python"
+      TIMEOUT 1200)
+  endif ()
+
+  if (numpy_enabled)
+    superbuild_add_extra_package_test(numpy TGZ
+      LABELS  "python"
+      TIMEOUT 1200)
+  endif ()
+
+  if (matplotlib_enabled)
+    superbuild_add_extra_package_test(matplotlib TGZ
+      LABELS  "python"
+      TIMEOUT 1200)
+  endif ()
+
+  if (pywin32_enabled)
+    superbuild_add_extra_package_test(pywin32 TGZ
+      LABELS  "python"
+      TIMEOUT 1200)
+  endif ()
+endfunction ()
+
+function (superbuild_add_tests)
+endfunction ()
+
 list(APPEND superbuild_project_roots
   "${CMAKE_CURRENT_LIST_DIR}/projects")
 list(APPEND superbuild_version_files
