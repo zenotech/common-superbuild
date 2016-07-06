@@ -9,7 +9,7 @@ if (WIN32)
     "${INSTALL_DIR}/lib/z.lib"
     COPYONLY)
   configure_file(
-    "${INSTALL_DIR}/lib/libpng14.lib"
+    "${INSTALL_DIR}/lib/libpng16.lib"
     "${INSTALL_DIR}/lib/png.lib"
     COPYONLY)
 endif ()
