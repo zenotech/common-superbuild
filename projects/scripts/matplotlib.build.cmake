@@ -18,7 +18,7 @@ execute_process(
   COMMAND "${PYTHON_EXECUTABLE}"
           setup.py
           install
-          "--prefix=${INSTALL_DIR}"
+          "--prefix=${INSTALL_PREFIX}"
   RESULT_VARIABLE   rv
   WORKING_DIRECTORY ${SOURCE_DIR})
 if (rv)

@@ -13,5 +13,6 @@ superbuild_add_project(matplotlib
       "-DPYTHON_EXECUTABLE:PATH=${superbuild_python_executable}"
       "-DSOURCE_DIR:PATH=<SOURCE_DIR>"
       "-DINSTALL_DIR:PATH=<INSTALL_DIR>"
+      "-DINSTALL_PREFIX:PATH=<INSTALL_DIR>"
       -P "${CMAKE_CURRENT_LIST_DIR}/scripts/matplotlib.build.cmake"
   INSTALL_COMMAND "")
