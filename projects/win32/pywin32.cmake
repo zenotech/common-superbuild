@@ -1,4 +1,4 @@
-superbuild_add_project(numpy
+superbuild_add_project(pywin32
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND ""
   BUILD_COMMAND     ""

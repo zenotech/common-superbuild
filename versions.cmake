@@ -42,12 +42,12 @@ superbuild_set_revision(png
 if (WIN32)
   if (superbuild_is_64bit)
     superbuild_set_revision(python
-      URL     "http://www.computationalmodelbuilder.org/files/dependencies/python+deps.tar.bz2"
-      URL_MD5 0b0ceb15fee34dae011f90570888c429)
+      URL     "http://www.paraview.org/files/dependencies/python-2.7.2-win64.tar.gz"
+      URL_MD5 b9724a3b29274b5b52d2f0a1c8c0d5d3)
   else ()
     superbuild_set_revision(python
-      URL     "http://www.computationalmodelbuilder.org/files/dependencies/python+deps-x32.tar.bz2"
-      URL_MD5 df1438352768caecf929d7bc2bdf841c)
+      URL     "http://www.paraview.org/files/dependencies/python-2.7.2-win32.tar.gz"
+      URL_MD5 e54eadacee0a418d44e6671a803119f5)
   endif ()
 else()
   superbuild_set_revision(python
@@ -91,13 +91,49 @@ superbuild_set_revision(qt5
   URL     "http://download.qt.io/official_releases/qt/${qt5_ver_series}/${qt5_ver}/single/qt-everywhere-opensource-src-${qt5_ver}.${qt5_ext}"
   URL_MD5 "${qt5_md5}")
 
-superbuild_set_revision(numpy
-  URL     "http://paraview.org/files/dependencies/numpy-1.8.1+cmake+static.tar.bz2"
-  URL_MD5 1974dbb4bfa1509e492791a8cd225774)
+if (WIN32)
+  if (superbuild_is_64bit)
+    superbuild_set_revision(numpy
+      URL     "http://paraview.org/files/dependencies/numpy-1.8.1-win64.tar.gz"
+      URL_MD5 7f5dc0fd1464f64baca7956cba231d30)
+  else ()
+    superbuild_set_revision(numpy
+      URL     "http://paraview.org/files/dependencies/numpy-1.8.1-win32.tar.gz"
+      URL_MD5 c0865735461ad432506262c66d30fc29)
+  endif ()
+else ()
+  superbuild_set_revision(numpy
+    URL     "http://paraview.org/files/dependencies/numpy-1.8.1+cmake+static.tar.bz2"
+    URL_MD5 1974dbb4bfa1509e492791a8cd225774)
+endif ()
 
-superbuild_set_revision(matplotlib
-  URL     "http://paraview.org/files/dependencies/matplotlib-1.1.1_notests.tar.gz"
-  URL_MD5 30ee59119599331bf1f3b6e838fee9a8)
+if (WIN32)
+  if (superbuild_is_64bit)
+    superbuild_set_revision(matplotlib
+      URL     "http://paraview.org/files/dependencies/matplotlib-1.8.1-win64.tar.gz"
+      URL_MD5 da0f5d217fefadb27314424d44bc014c)
+  else ()
+    superbuild_set_revision(matplotlib
+      URL     "http://paraview.org/files/dependencies/matplotlib-1.8.1-win32.tar.gz"
+      URL_MD5 d1c4713eb0988be8d3899e5b6545829f)
+  endif ()
+else ()
+  superbuild_set_revision(matplotlib
+    URL     "http://paraview.org/files/dependencies/matplotlib-1.1.1_notests.tar.gz"
+    URL_MD5 30ee59119599331bf1f3b6e838fee9a8)
+endif ()
+
+if (WIN32)
+  if (superbuild_is_64bit)
+    superbuild_set_revision(pywin32
+      URL     "http://paraview.org/files/dependencies/pywin32-220-win64.tar.gz"
+      URL_MD5 7d7c6fdb6a5f11911df95cec624c845e)
+  else ()
+    superbuild_set_revision(pywin32
+      URL     "http://paraview.org/files/dependencies/pywin32-220-win32.tar.gz"
+      URL_MD5 ffa1183f3e5719cbacf2b39b7105df8d)
+  endif ()
+endif ()
 
 superbuild_set_revision(mpi
   URL     "http://paraview.org/files/dependencies/mpich2-1.4.1p1.tar.gz"
