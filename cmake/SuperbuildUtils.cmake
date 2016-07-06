@@ -16,6 +16,15 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
   if (NOT CMAKE_BUILD_TYPE)
     message(FATAL_ERROR "A build type (CMAKE_BUILD_TYPE) must be set.")
   endif ()
+
+  if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT SUPERBUILD_ALLOW_DEBUG)
+    message(FATAL_ERROR
+      "Debug builds are probably not what you want. "
+      "Set the SUPERBUILD_ALLOW_DEBUG variable using "
+      "either the GUI ('Add Entry') or pass "
+      "-DSUPERBUILD_ALLOW_DEBUG:BOOL=ON on the command "
+      "to indicate this is what you intended.")
+  endif ()
 endif ()
 
 function (superbuild_detect_64bit_target)
