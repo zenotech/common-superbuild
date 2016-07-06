@@ -12,6 +12,10 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE
     PROPERTY
       STRINGS "Release;RelWithDebInfo;Debug")
+
+  if (NOT CMAKE_BUILD_TYPE)
+    message(FATAL_ERROR "A build type (CMAKE_BUILD_TYPE) must be set.")
+  endif ()
 endif ()
 
 function (superbuild_detect_64bit_target)
