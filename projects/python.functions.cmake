@@ -48,13 +48,12 @@ function (superbuild_install_superbuild_python)
     ctypes
     # curses
 
-    threading multiprocessing
-    #select thread mmap
+    threading multiprocessing select thread mmap
     #dummy_threading dummy_thread readline rlcompleter
 
     # ipc and networking
-    subprocess socket
-    #ssl signal popen2 asyncore asynchat
+    subprocess socket signal popen2
+    #ssl asyncore asynchat
     _socket
 
     # internet data handling
