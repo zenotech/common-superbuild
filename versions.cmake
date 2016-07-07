@@ -110,11 +110,11 @@ endif ()
 if (WIN32)
   if (superbuild_is_64bit)
     superbuild_set_revision(matplotlib
-      URL     "http://paraview.org/files/dependencies/matplotlib-1.8.1-win64.tar.gz"
+      URL     "http://paraview.org/files/dependencies/matplotlib-1.1.1-win64.tar.gz"
       URL_MD5 da0f5d217fefadb27314424d44bc014c)
   else ()
     superbuild_set_revision(matplotlib
-      URL     "http://paraview.org/files/dependencies/matplotlib-1.8.1-win32.tar.gz"
+      URL     "http://paraview.org/files/dependencies/matplotlib-1.1.1-win32.tar.gz"
       URL_MD5 d1c4713eb0988be8d3899e5b6545829f)
   endif ()
 else ()
