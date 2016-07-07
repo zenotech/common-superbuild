@@ -2,6 +2,9 @@ file(INSTALL
   ${output_directory}/python.exe
   DESTINATION "${install_directory}/bin")
 file(INSTALL
+  ${output_directory}/python27.dll
+  DESTINATION "${install_directory}/bin")
+file(INSTALL
   ${output_directory}/python27.lib
   DESTINATION "${install_directory}/lib")
 
