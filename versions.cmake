@@ -91,7 +91,7 @@ superbuild_set_revision(qt5
   URL     "http://download.qt.io/official_releases/qt/${qt5_ver_series}/${qt5_ver}/single/qt-everywhere-opensource-src-${qt5_ver}.${qt5_ext}"
   URL_MD5 "${qt5_md5}")
 
-if (WIN32)
+if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
     superbuild_set_revision(numpy
       URL     "http://paraview.org/files/dependencies/numpy-1.8.1-win64.tar.gz"
@@ -107,7 +107,7 @@ else ()
     URL_MD5 1974dbb4bfa1509e492791a8cd225774)
 endif ()
 
-if (WIN32)
+if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
     superbuild_set_revision(matplotlib
       URL     "http://paraview.org/files/dependencies/matplotlib-1.1.1-win64.tar.gz"
@@ -123,7 +123,7 @@ else ()
     URL_MD5 30ee59119599331bf1f3b6e838fee9a8)
 endif ()
 
-if (WIN32)
+if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
     superbuild_set_revision(pywin32
       URL     "http://paraview.org/files/dependencies/pywin32-220-win64.tar.gz"
@@ -133,6 +133,10 @@ if (WIN32)
       URL     "http://paraview.org/files/dependencies/pywin32-220-win32.tar.gz"
       URL_MD5 ffa1183f3e5719cbacf2b39b7105df8d)
   endif ()
+else ()
+  superbuild_set_revision(pywin32
+    URL     "https://sourceforge.net/projects/pywin32/files/pywin32/Build%20220/pywin32-220.zip/download"
+    URL_MD5 9c386839c1485b2047c03fab66e69b9e)
 endif ()
 
 superbuild_set_revision(mpi
