@@ -20,4 +20,6 @@ superbuild_add_project(freetype
     "${CMAKE_COMMAND}"
       -Dsource_dir:PATH=<SOURCE_DIR>
       -Dinstall_dir:PATH=<INSTALL_DIR>
-      -P "${CMAKE_CURRENT_LIST_DIR}/scripts/freetype.install.cmake")
+      -P "${CMAKE_CURRENT_LIST_DIR}/scripts/freetype.install.cmake"
+  PROCESS_ENVIRONMENT
+    JAM_TOOLSET VISUALC)
