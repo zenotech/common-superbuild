@@ -5,6 +5,7 @@ project(prebuilt-python)
 if (NOT WIN32 OR NOT MSVC90)
   message(FATAL_ERROR "This project requires Visual Studio 2008 to work")
 endif ()
+set(superbuild_building_prebuilt_python ON)
 
 function (superbuild_find_projects var)
   set(projects

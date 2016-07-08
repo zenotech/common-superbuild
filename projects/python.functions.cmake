@@ -48,13 +48,12 @@ function (superbuild_install_superbuild_python)
     ctypes
     # curses
 
-    threading multiprocessing
-    #select thread mmap
+    threading multiprocessing select thread mmap
     #dummy_threading dummy_thread readline rlcompleter
 
     # ipc and networking
-    subprocess socket
-    #ssl signal popen2 asyncore asynchat
+    subprocess socket signal popen2
+    #ssl asyncore asynchat
     _socket
 
     # internet data handling
@@ -66,17 +65,16 @@ function (superbuild_install_superbuild_python)
     HTMLParser sgmllib htmllib htmlentitydefs xml
 
     # internet protocol and support
-    webbrowser urllib urllib2 httplib uuid urlparse
-    #cgi cgitb wsgiref ftplib poplib imaplib nntplib smtplib smtpd telnetlib
-    #SocketServer BaseHTTPServer SimpleHTTPServer CGIHTTPServer cookielib
-    #Cookie xmlrpclib SimpleXMLRPCServer DocXMLRPCServer
+    webbrowser urllib urllib2 httplib uuid urlparse cgi cookielib xmlrpclib
+    #cgitb wsgiref ftplib poplib imaplib nntplib smtplib smtpd telnetlib
+    #SocketServer BaseHTTPServer SimpleHTTPServer CGIHTTPServer
+    #Cookie SimpleXMLRPCServer DocXMLRPCServer
 
     # multimedia services
     #audioop imageop aifc sunau wave chunk colorsys imghdr sndhdr ossaudiodev
 
     # i18n
-    locale
-    #gettext
+    locale gettext
 
     # program frameworks
     cmd shlex
