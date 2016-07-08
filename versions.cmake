@@ -43,11 +43,11 @@ if (WIN32)
   if (superbuild_is_64bit)
     superbuild_set_revision(python
       URL     "http://www.paraview.org/files/dependencies/python-2.7.3-win64.tar.gz"
-      URL_MD5 1a91201bf85bd764a133edebc993dba0)
+      URL_MD5 ef337c10e3fcadd6adbe5a516f61ef5a)
   else ()
     superbuild_set_revision(python
       URL     "http://www.paraview.org/files/dependencies/python-2.7.3-win32.tar.gz"
-      URL_MD5 ecce0546fade39c83b9b752ec8d7d077)
+      URL_MD5 adae814a30836bcb490fb168e2c0cce9)
   endif ()
 else()
   superbuild_set_revision(python
@@ -95,11 +95,11 @@ if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
     superbuild_set_revision(numpy
       URL     "http://paraview.org/files/dependencies/numpy-1.8.1-win64.tar.gz"
-      URL_MD5 7f5dc0fd1464f64baca7956cba231d30)
+      URL_MD5 f99a3614d060d85187cc71c3c21381e1)
   else ()
     superbuild_set_revision(numpy
       URL     "http://paraview.org/files/dependencies/numpy-1.8.1-win32.tar.gz"
-      URL_MD5 c0865735461ad432506262c66d30fc29)
+      URL_MD5 860b9791bd52fe36ddc271b11aadcb5e)
   endif ()
 else ()
   superbuild_set_revision(numpy
@@ -111,11 +111,11 @@ if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
     superbuild_set_revision(matplotlib
       URL     "http://paraview.org/files/dependencies/matplotlib-1.1.1-win64.tar.gz"
-      URL_MD5 da0f5d217fefadb27314424d44bc014c)
+      URL_MD5 700786920533625afd03339e35f250c3)
   else ()
     superbuild_set_revision(matplotlib
       URL     "http://paraview.org/files/dependencies/matplotlib-1.1.1-win32.tar.gz"
-      URL_MD5 d1c4713eb0988be8d3899e5b6545829f)
+      URL_MD5 4b8e9ea90b61ebefa87e8da68b9c617b)
   endif ()
 else ()
   superbuild_set_revision(matplotlib
@@ -127,11 +127,11 @@ if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
     superbuild_set_revision(pywin32
       URL     "http://paraview.org/files/dependencies/pywin32-220-win64.tar.gz"
-      URL_MD5 7d7c6fdb6a5f11911df95cec624c845e)
+      URL_MD5 834f3bc5bdc7d8800f205eb7473d874f)
   else ()
     superbuild_set_revision(pywin32
       URL     "http://paraview.org/files/dependencies/pywin32-220-win32.tar.gz"
-      URL_MD5 ffa1183f3e5719cbacf2b39b7105df8d)
+      URL_MD5 6fd85b07c7c3ce4bbeb0efbb18391983)
   endif ()
 else ()
   superbuild_set_revision(pywin32
