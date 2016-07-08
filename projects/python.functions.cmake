@@ -65,10 +65,10 @@ function (superbuild_install_superbuild_python)
     HTMLParser sgmllib htmllib htmlentitydefs xml
 
     # internet protocol and support
-    webbrowser urllib urllib2 httplib uuid urlparse
-    #cgi cgitb wsgiref ftplib poplib imaplib nntplib smtplib smtpd telnetlib
-    #SocketServer BaseHTTPServer SimpleHTTPServer CGIHTTPServer cookielib
-    #Cookie xmlrpclib SimpleXMLRPCServer DocXMLRPCServer
+    webbrowser urllib urllib2 httplib uuid urlparse cgi cookielib xmlrpclib
+    #cgitb wsgiref ftplib poplib imaplib nntplib smtplib smtpd telnetlib
+    #SocketServer BaseHTTPServer SimpleHTTPServer CGIHTTPServer
+    #Cookie SimpleXMLRPCServer DocXMLRPCServer
 
     # multimedia services
     #audioop imageop aifc sunau wave chunk colorsys imghdr sndhdr ossaudiodev
