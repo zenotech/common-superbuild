@@ -1,0 +1,30 @@
+diff -Nr -U5 matplotlib-1.1.1/setupext.py matplotlib-1.1.1.setup/setupext.py
+--- matplotlib-1.1.1/setupext.py	2012-06-30 15:37:00.000000000 -0400
++++ matplotlib-1.1.1.setup/setupext.py	2016-07-08 15:14:46.281332771 -0400
+@@ -257,11 +257,11 @@
+     return 'msvc'
+ win32_compiler = get_win32_compiler()
+ if sys.platform == 'win32' and win32_compiler == 'msvc':
+     std_libs = []
+ else:
+-    std_libs = ['stdc++', 'm']
++    std_libs = ['c++', 'm']
+ 
+ def has_pkgconfig():
+     if has_pkgconfig.cache is not None:
+         return has_pkgconfig.cache
+     if sys.platform == 'win32':
+@@ -371,10 +371,13 @@
+                      [os.path.join(p, 'lib64')     for p in basedirlist ] )
+ 
+     module.include_dirs.extend(incdirs)
+     module.include_dirs.append('.')
+     module.library_dirs.extend(libdirs)
++    module.extra_link_args.extend(['-std=c++11', '-stdlib=libc++'])
++    module.extra_compile_args.extend(['-stdlib=libc++'])
++
+ 
+ def getoutput(s):
+     'get the output of a system command'
+ 
+     ret =  os.popen(s).read().strip()
