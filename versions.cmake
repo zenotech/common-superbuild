@@ -43,11 +43,11 @@ if (WIN32)
   if (superbuild_is_64bit)
     superbuild_set_revision(python
       URL     "http://www.paraview.org/files/dependencies/python-2.7.3-win64.tar.gz"
-      URL_MD5 ee571b6bf477fadebf19c78d14855a8b)
+      URL_MD5 55a6dbf9c822a4c58823fac5d5d2242c)
   else ()
     superbuild_set_revision(python
       URL     "http://www.paraview.org/files/dependencies/python-2.7.3-win32.tar.gz"
-      URL_MD5 42a17e07b3ebc52749d85d7730b74107)
+      URL_MD5 f2e650c95762e46e555407361e6b5674)
   endif ()
 else()
   superbuild_set_revision(python
