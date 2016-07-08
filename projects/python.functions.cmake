@@ -74,8 +74,7 @@ function (superbuild_install_superbuild_python)
     #audioop imageop aifc sunau wave chunk colorsys imghdr sndhdr ossaudiodev
 
     # i18n
-    locale
-    #gettext
+    locale gettext
 
     # program frameworks
     cmd shlex
