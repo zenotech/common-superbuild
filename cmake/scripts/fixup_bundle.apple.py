@@ -335,8 +335,11 @@ class Plugin(Library):
 
 
 class Module(Library):
-    def __init__(self, path, bundle_location, **kwargs):
+    def __init__(self, path, bundle_location, fake_exe_path=False, **kwargs):
         super(Module, self).__init__(path, None, **kwargs)
+
+        if fake_exe_path:
+            self._executable_path = os.path.dirname(path)
 
         self._bundle_location = bundle_location
 
@@ -562,7 +565,9 @@ def main(args):
         if opts.location is None:
             raise RuntimeError('Modules require a location')
 
-        main_exe = Module(opts.binary, opts.location, search_paths=opts.search)
+        main_exe = Module(opts.binary, opts.location,
+                          fake_exe_path=opts.fake_plugin_paths,
+                          search_paths=opts.search)
     elif opts.type == 'framework':
         main_exe = Framework(opts.binary, search_paths=opts.search)
 
