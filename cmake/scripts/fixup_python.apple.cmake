@@ -15,6 +15,9 @@ function (superbuild_apple_install_python_module destination module search_paths
                 --location    "${location}"
                 --manifest    "${bundle_manifest}"
                 --type        module
+                # VTK's module system tends to write @executable_path for
+                # Python modules as well. Just fake up paths.
+                --fake-plugin-paths
                 "${search_path}/${module}.so"
         RESULT_VARIABLE res
         ERROR_VARIABLE  err)
