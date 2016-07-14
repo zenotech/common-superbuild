@@ -338,10 +338,12 @@ class Module(Library):
     def __init__(self, path, bundle_location, fake_exe_path=False, **kwargs):
         super(Module, self).__init__(path, None, **kwargs)
 
-        if fake_exe_path:
-            self._executable_path = os.path.dirname(path)
-
         self._bundle_location = bundle_location
+
+        if fake_exe_path:
+            self._executable_path = path
+            for _ in range(self.bundle_location.count('/')):
+                self._executable_path = os.path.dirname(self._executable_path)
 
         parent_parts = ['..'] * self.bundle_location.count('/')
         self._dependent_reference = os.path.join('@loader_path', *parent_parts)
