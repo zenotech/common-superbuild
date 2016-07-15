@@ -21,6 +21,11 @@ function (superbuild_find_projects var)
     tbb
     zlib)
 
+  if (WIN32)
+    list(APPEND projects
+      ftjam)
+  endif ()
+
   if (NOT WIN32)
     list(APPEND projects
       ffmpeg
