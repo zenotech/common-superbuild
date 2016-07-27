@@ -64,6 +64,8 @@ function (superbuild_install_superbuild_python)
     # markup tools
     HTMLParser sgmllib htmllib htmlentitydefs xml
 
+    pyexpat
+
     # internet protocol and support
     webbrowser urllib urllib2 httplib uuid urlparse cgi cookielib xmlrpclib
     #cgitb wsgiref ftplib poplib imaplib nntplib smtplib smtpd telnetlib
