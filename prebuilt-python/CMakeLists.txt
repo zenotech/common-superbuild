@@ -11,6 +11,7 @@ function (superbuild_find_projects var)
   set(projects
     bzip2
     freetype
+    ftjam
     png
     python
     pythonsetuptools
