@@ -18,7 +18,7 @@ else ()
 endif ()
 
 list(APPEND boost_extra_options
-  --toolset=msvc-${msvc_ver})
+  "--toolset=msvc-${msvc_ver}")
 
 if (superbuild_is_64bit)
   list(APPEND boost_extra_options
