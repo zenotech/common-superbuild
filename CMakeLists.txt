@@ -6,6 +6,14 @@ if (CMAKE_SOURCE_DIR STREQUAL common-superbuild_SOURCE_DIR)
   message(FATAL_ERROR
     "This project is not meant to be run directly, but instead used via "
     "add_subdirectory.")
+elseif (CMAKE_CONFIGURATION_TYPES)
+  # These generators aren't tested at all and non-CMake subprojects do not
+  # change their configuration properly without a reconfigure. This could
+  # change in the future, but it is not in the plan right now.
+  message(FATAL_ERROR
+    "The superbuild does not currently support multi-config generators "
+    "(such as Visual Studio or Xcode). The recommended generators are "
+    "Ninja and Unix Makefiles, but NMake Makefiles should work as well.")
 elseif (NOT COMMAND superbuild_find_projects)
   message(FATAL_ERROR
     "The superbuild_find_projects function is not implemented; no projects "
