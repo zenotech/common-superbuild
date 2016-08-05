@@ -7,7 +7,7 @@ endif ()
 superbuild_add_project(ffmpeg
   DEPENDS zlib
   CONFIGURE_COMMAND
-    "<SOURCE_DIR>/configure
+    <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
       --disable-avdevice
       --disable-bzlib
@@ -20,9 +20,9 @@ superbuild_add_project(ffmpeg
       --disable-yasm
       ${ffmpeg_shared_args}
       --cc=${CMAKE_C_COMPILER}
-      \"--extra-cflags=${superbuild_c_flags}\"
-      \"--extra-ldflags=${superbuild_ld_flags}\"
-      ${extra_commands}"
+      "--extra-cflags=${superbuild_c_flags}"
+      "--extra-ldflags=${superbuild_ld_flags}"
+      ${extra_commands}
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND
