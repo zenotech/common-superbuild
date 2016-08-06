@@ -17,7 +17,7 @@ _superbuild_sanitize_lists_in_string(SB_ MPI_C_LIBRARIES)
 _superbuild_sanitize_lists_in_string(SB_ MPI_C_LINK_FLAGS)
 _superbuild_sanitize_lists_in_string(SB_ MPI_EXTRA_LIBRARY)
 
-add_extra_cmake_args(
+superbuild_add_extra_cmake_args(
   -DMPIEXEC:FILEPATH=${MPIEXEC}
   -DMPI_CXX_COMPILER:FILEPATH=${MPI_CXX_COMPILER}
   -DMPI_C_COMPILER:FILEPATH=${MPI_C_COMPILER}
