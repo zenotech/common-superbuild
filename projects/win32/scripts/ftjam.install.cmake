@@ -1,3 +1,3 @@
 file(INSTALL
-  "${source_dir}/jam.exe"
-  DESTINATION "${install_dir}/bin")
+  "${source_location}/jam.exe"
+  DESTINATION "${install_location}/bin")
