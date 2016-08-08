@@ -26,4 +26,8 @@ if (MSVC)
   # compiler when using nmake or ninja generators. This patch fixes that.
   superbuild_apply_patch(hdf5 msvc-non-vs-generator
     "Fix MSVC detection with Makefiles and Ninja generators")
+
+  # VS2015 support
+  superbuild_apply_patch(hdf5 vs2015-support
+    "Support Visual Studio 2015")
 endif ()
