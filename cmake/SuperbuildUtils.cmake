@@ -40,9 +40,17 @@ function (superbuild_detect_64bit_target)
   if (void_ptr_size EQUAL 8)
     set(superbuild_is_64bit TRUE
       PARENT_SCOPE)
-  else ()
+  elseif (void_ptr_size EQUAL 4)
     set(superbuild_is_64bit FALSE
       PARENT_SCOPE)
+  else ()
+    if (WIN32)
+      set(extra_message "Are you in a Visual Studio command prompt?")
+    else ()
+      set(extra_message "Do you have working compilers?")
+    endif ()
+    message(FATAL_ERROR "Failed to determine whether the target architecture "
+                        "is 32bit or 64bit. ${extra_message}")
   endif ()
 endfunction ()
 
