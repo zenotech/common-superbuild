@@ -24,9 +24,9 @@ superbuild_add_project(python
   # We need to copy pyconfig.h from PC/ to Include.
   INSTALL_COMMAND
     "${CMAKE_COMMAND}"
-      -Dsource_directory:PATH=<SOURCE_DIR>
-      -Doutput_directory:PATH=${python_executable_dir}
-      -Dinstall_directory:PATH=<INSTALL_DIR>
+      -Dsource_location:PATH=<SOURCE_DIR>
+      -Doutput_location:PATH=${python_executable_dir}
+      -Dinstall_location:PATH=<INSTALL_DIR>
       -P "${CMAKE_CURRENT_LIST_DIR}/scripts/python.install.cmake")
 
 set(python_projects_to_build

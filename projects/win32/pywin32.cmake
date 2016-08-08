@@ -4,5 +4,5 @@ superbuild_add_project(pywin32
   BUILD_COMMAND     ""
   INSTALL_COMMAND
     "${CMAKE_COMMAND}"
-      "-Dinstall_dir:PATH=<INSTALL_DIR>"
+      "-Dinstall_location:PATH=<INSTALL_DIR>"
       -P "${CMAKE_CURRENT_LIST_DIR}/scripts/prebuilt.python.install.cmake")
