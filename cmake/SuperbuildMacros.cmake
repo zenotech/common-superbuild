@@ -754,11 +754,10 @@ function (_superbuild_sanitize_lists_in_string out_var_prefix var)
     PARENT_SCOPE)
 endfunction ()
 
-#------------------------------------------------------------------------------
-# internal macro to validate project names.
 function (_superbuild_project_check_name name)
   if (NOT name MATCHES "^[a-zA-Z][a-zA-Z0-9]*$")
-    message(FATAL_ERROR "Invalid project name: ${_name}")
+    message(FATAL_ERROR "Invalid project name: ${_name}. "
+                        "Only alphanumerics are allowed.")
   endif ()
 endfunction ()
 
