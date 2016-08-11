@@ -10,6 +10,14 @@ endif ()
 list(APPEND boost_options
   --prefix=<INSTALL_DIR>)
 
+if (NOT boost_libraries)
+  # Boost's build system is silly and builds all by default, but doesn't have a
+  # flag to say "build no libraries". We add this so we get a small build, but
+  # we also get an install rule for all of the headers.
+  set(boost_libraries
+    system)
+endif ()
+
 foreach (boost_library IN LISTS boost_libraries)
   list(APPEND boost_options
     --with-${boost_library})
