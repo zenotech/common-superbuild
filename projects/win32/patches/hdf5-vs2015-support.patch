@@ -67,7 +67,7 @@ diff -U5 -Nru hdf5-1.8.13/config/cmake/ConfigureChecks.cmake hdf5-1.8.13.vs2015-
 -      )
 -    endif (HDF5_PRINTF_LL_TEST_COMPILE)
 -  endforeach (HDF5_PRINTF_LL)
-+  endforeach (HDF5_PRINTF_LL_TEST_COMPILE)
++  endif (HDF5_PRINTF_LL_TEST_COMPILE)
  
    if (PRINT_LL_FOUND)
 -    message (STATUS "Checking for apropriate format for 64 bit long: found ${H5_PRINTF_LL_WIDTH}")
