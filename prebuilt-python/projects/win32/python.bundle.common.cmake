@@ -4,7 +4,7 @@ endif ()
 
 set(CPACK_PACKAGE_VENDOR "Kitware, Inc.")
 
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY
+set(CPACK_PACKAGE_INSTALL_DIRECTORY
   "${package_name} ${version}")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME
   "${package_name}-${version}")
