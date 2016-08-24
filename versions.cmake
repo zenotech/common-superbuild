@@ -56,8 +56,8 @@ else()
 endif()
 
 superbuild_set_revision(ftjam
-  URL     "https://sourceforge.net/projects/freetype/files/ftjam/2.5.2/ftjam-2.5.2-win32.zip/download"
-  URL_MD5 53c1c32f8f4730538a6d3e9eb5d8589e)
+  URL     "http://paraview.org/files/dependencies/ftjam-2.5.2-win32.tar.bz2"
+  URL_MD5 ee52f3faff6d31ffb89a2fedb3b0caf6)
 
 superbuild_set_revision(freetype
   URL     "http://paraview.org/files/dependencies/freetype-2.4.8.tar.gz"
