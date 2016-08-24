@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.0)
+if (CMAKE_MINIMUM_REQUIRED_VERSION VERSION_LESS "3.0")
+  cmake_minimum_required(VERSION 3.0)
+endif ()
 
 project(common-superbuild)
 
