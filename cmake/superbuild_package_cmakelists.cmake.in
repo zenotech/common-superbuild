@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION "@CMAKE_MINIMUM_REQUIRED_VERSION@")
 
 # We need to explicitly state so form of language support. That is how CMake
 # detects what compilers are being used, and therefore what
