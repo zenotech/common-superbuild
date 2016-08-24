@@ -17,14 +17,12 @@ endif ()
 # not able to utilize the top level make jobserver so it's -j level must be
 # manually controlled.
 include(ProcessorCount)
-ProcessorCount(N)
-if(NOT N EQUAL 0)
-  set(SUPERBUILD_NCPUS ${N})
-else()
+processorcount(superbuild_cpu_count)
+if (NOT superbuild_cpu_count)
   set(SUPERBUILD_NCPUS 8)
-endif()
+endif ()
 
-set(SUPERBUILD_PROJECT_PARALLELISM ${SUPERBUILD_NCPUS}
+set(SUPERBUILD_PROJECT_PARALLELISM "${superbuild_cpu_count}"
   CACHE STRING "Number of jobs to use when compiling subprojects")
 mark_as_advanced(SUPERBUILD_PROJECT_PARALLELISM)
 
