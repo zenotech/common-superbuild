@@ -413,12 +413,17 @@ function (superbuild_process_dependencies)
       PROPERTY "${project}_system_force" SET)
     if (must_use_system)
       set(can_use_system TRUE)
-      set(USE_SYSTEM_${project} TRUE)
+      set("USE_SYSTEM_${project}" TRUE)
     elseif (can_use_system)
       # For every enabled project that can use system, expose the option to the
       # user.
       cmake_dependent_option("USE_SYSTEM_${project}" "" OFF
         "${project}_enabled" OFF)
+    endif ()
+
+    set("${name}_built_by_superbuild" TRUE)
+    if (USE_SYSTEM_${project})
+      set("${name}_built_by_superbuild" FALSE)
     endif ()
 
     get_property(allow_developer_mode GLOBAL
