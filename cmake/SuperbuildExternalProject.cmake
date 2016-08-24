@@ -16,7 +16,15 @@ endif ()
 # Because of the wrapped and nested way that "make" needs to get called, it's
 # not able to utilize the top level make jobserver so it's -j level must be
 # manually controlled.
-set(SUPERBUILD_PROJECT_PARALLELISM 5
+include(ProcessorCount)
+ProcessorCount(N)
+if(NOT N EQUAL 0)
+  set(SUPERBUILD_NCPUS ${N})
+else()
+  set(SUPERBUILD_NCPUS 8)
+endif()
+
+set(SUPERBUILD_PROJECT_PARALLELISM ${SUPERBUILD_NCPUS}
   CACHE STRING "Number of jobs to use when compiling subprojects")
 mark_as_advanced(SUPERBUILD_PROJECT_PARALLELISM)
 
