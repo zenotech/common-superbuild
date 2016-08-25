@@ -421,9 +421,9 @@ function (superbuild_process_dependencies)
         "${project}_enabled" OFF)
     endif ()
 
-    set("${name}_built_by_superbuild" TRUE)
+    set("${project}_built_by_superbuild" TRUE)
     if (USE_SYSTEM_${project})
-      set("${name}_built_by_superbuild" FALSE)
+      set("${project}_built_by_superbuild" FALSE)
     endif ()
 
     get_property(allow_developer_mode GLOBAL
