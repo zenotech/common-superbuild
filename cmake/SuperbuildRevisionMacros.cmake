@@ -34,8 +34,12 @@ function (superbuild_set_customizable_revision name)
     if (_args_${key})
       set(option_name "${name_UPPER}_${key}")
       set(option_default "${_args_${key}}")
+      set(cache_type STRING)
+      if (name STREQUAL "SOURCE_DIR")
+        set(cache_type PATH)
+      endif ()
       set(${option_name} "${option_default}"
-        CACHE STRING "${key} for project '${name}'")
+        CACHE "${cache_type}" "${key} for project '${name}'")
       mark_as_advanced(${option_name})
       list(APPEND customized_args
         "${key}" "${${option_name}}")
