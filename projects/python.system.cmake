@@ -1,7 +1,8 @@
 find_package(PythonLibs   2.7 REQUIRED)
 find_package(PythonInterp 2.7 REQUIRED)
 
-if (NOT PYTHON_VERSION_STRING STREQUAL PYTHONLIBS_VERSION_STRING)
+if (NOT PYTHON_VERSION_STRING STREQUAL PYTHONLIBS_VERSION_STRING AND
+    NOT PYTHON_I_KNOW_WHAT_IM_DOING)
   message(FATAL_ERROR
     "Python interpreter version (${PYTHON_VERSION_STRING}) does "
     "not match the library version (${PYTHONLIBS_VERSION_STRING})")
