@@ -185,6 +185,8 @@ function (superbuild_apply_patch _name _patch _comment)
   superbuild_project_add_step("${_name}-patch-${_patch}"
     COMMAND   "${GIT_EXECUTABLE}"
               apply
+              # Necessary for applying patches to windows-newline files.
+              --whitespace=fix
               -p1
               "${CMAKE_CURRENT_LIST_DIR}/patches/${_name}-${_patch}.patch"
     DEPENDEES update
