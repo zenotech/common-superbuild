@@ -9,6 +9,6 @@ Our [Wiki][] is used to document features, flesh out designs and host other
 documentation. We have several [Mailing Lists][] to coordinate development and
 to provide support.
 
-[ParaView-Superbuild Git]: Documentation/dev/git/README.md
+[ParaView-Superbuild Git]: https://gitlab.kitware.com/paraview/paraview-superbuild/blob/master/Documentation/dev/git/README.md
 [Wiki]: http://www.paraview.org/Wiki/ParaView
 [Mailing Lists]: http://www.paraview.org/mailing-lists/
