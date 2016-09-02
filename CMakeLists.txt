@@ -2,8 +2,6 @@ if (CMAKE_MINIMUM_REQUIRED_VERSION VERSION_LESS "3.0")
   cmake_minimum_required(VERSION 3.0)
 endif ()
 
-project(common-superbuild)
-
 if (CMAKE_SOURCE_DIR STREQUAL common-superbuild_SOURCE_DIR)
   message(FATAL_ERROR
     "This project is not meant to be run directly, but instead used via "
