@@ -43,6 +43,13 @@ else ()
     -system-zlib)
 endif ()
 
+cmake_dependent_option(qt4_ENABLE_OPENSSL "Build Qt with OpenSSL support" OFF
+  qt4_enabled OFF)
+mark_as_advanced(qt4_ENABLE_OPENSSL)
+if (NOT qt4_ENABLE_OPENSSL)
+  list(APPEND qt4_extra_options "-no-openssl")
+endif ()
+
 superbuild_add_project(qt4
   CAN_USE_SYSTEM
   DEPENDS zlib ${qt4_extra_depends}
@@ -63,7 +70,6 @@ superbuild_add_project(qt4
       -no-dbus
       -no-declarative-debug
       -no-multimedia
-      -no-openssl
       -no-phonon
       -no-script
       -no-scripttools

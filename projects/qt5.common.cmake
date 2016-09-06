@@ -33,6 +33,24 @@ if (WIN32)
     INSTALL_COMMAND ${NMAKE_PATH} install)
 endif ()
 
+cmake_dependent_option(qt5_ENABLE_OPENSSL
+  "Build with OpenSSL support. Requires system-installed OpenSSL at runtime."
+  OFF
+  qt5_enabled
+  OFF)
+mark_as_advanced(qt5_ENABLE_OPENSSL)
+if (qt5_ENABLE_OPENSSL)
+  # Require build machines to have OpenSSL
+  find_package(OpenSSL)
+  if (NOT OpenSSL_FOUND)
+    message(FATAL_ERROR "Cannot build with qt5_ENABLE_OPENSSL option because OpenSSL not found")
+  endif ()
+  list(APPEND qt5_options "-openssl-linked")
+else ()
+  list(APPEND qt5_options "-no-openssl")
+endif ()
+
+
 superbuild_add_project(qt5
   CAN_USE_SYSTEM
   DEPENDS ${qt5_depends} ${qt5_extra_depends}
@@ -63,7 +81,6 @@ superbuild_add_project(qt5
       -nomake tests
 
       -no-dbus
-      -no-openssl
 
       -qt-libjpeg
       -qt-pcre
