@@ -33,10 +33,11 @@ function (_extract_dmg output mount input)
             "yes | hdiutil attach -mountpoint '${mount}' '${input}'")
   file(GLOB apps "${mount}/*.app")
   foreach (app IN LISTS apps)
+    get_filename_component(app_name "${app}" NAME)
     _extract_process("${app}"
       COMMAND "${CMAKE_COMMAND}" -E copy_directory
               "${app}"
-              "${output}/${app}/")
+              "${output}/${app_name}/")
   endforeach ()
   _extract_process("${input} (detach)"
     COMMAND hdiutil
