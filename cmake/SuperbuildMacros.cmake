@@ -277,9 +277,9 @@ function (superbuild_append_flags key value)
     set(property "${current_project}_append_project_only_flags_cmake_${key}")
   endif ()
 
-  set_property(GLOBAL APPEND
+  set_property(GLOBAL APPEND_STRING
     PROPERTY
-      "${property}" "${value}")
+      "${property}" " ${value}")
 endfunction ()
 
 function (superbuild_add_path)
