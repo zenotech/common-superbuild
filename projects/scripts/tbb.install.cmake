@@ -29,6 +29,7 @@ endif ()
 if (APPLE)
   file(GLOB libraries "${install_location}/lib/${libprefix}tbb*.dylib")
   foreach (library IN LISTS libraries)
+    message("Fixing the library ID of ${library}")
     execute_process(
       COMMAND install_name_tool
               -id "${library}"
