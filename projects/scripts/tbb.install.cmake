@@ -4,18 +4,6 @@ file(INSTALL
   DESTINATION "${install_location}/include"
   PATTERN "index.html" EXCLUDE)
 
-# Remove rpath junk
-if (APPLE)
-  file(GLOB libraries "${source_location}/${libdir}/*.dylib")
-  foreach (library IN LISTS libraries)
-    get_filename_component(filename "${library}" NAME)
-    execute_process(
-      COMMAND install_name_tool
-              -id "${library}"
-              "${library}")
-  endforeach ()
-endif ()
-
 # Install libraries
 file(INSTALL
   "${source_location}/${libdir}/"
@@ -35,4 +23,16 @@ if (WIN32)
     "${source_location}/${bindir}/${libprefix}tbbmalloc${libsuffixshared}"
     "${source_location}/${bindir}/${libprefix}tbbmalloc_debug${libsuffixshared}"
     DESTINATION "${install_location}/bin")
+endif ()
+
+# Remove rpath junk
+if (APPLE)
+  file(GLOB libraries "${install_location}/lib/${libprefix}tbb*.dylib")
+  foreach (library IN LISTS libraries)
+    message("Fixing the library ID of ${library}")
+    execute_process(
+      COMMAND install_name_tool
+              -id "${library}"
+              "${library}")
+  endforeach ()
 endif ()
