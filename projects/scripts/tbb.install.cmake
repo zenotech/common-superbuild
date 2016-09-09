@@ -33,6 +33,13 @@ if (APPLE)
     execute_process(
       COMMAND install_name_tool
               -id "${library}"
-              "${library}")
+              "${library}"
+      ERROR_VARIABLE  out
+      OUTPUT_VARIABLE out
+      RESULT_VARIABLE res)
+
+    if (res)
+      message(FATAL_ERROR "Failed to set the ID of ${library}:\n${out}")
+    endif ()
   endforeach ()
 endif ()
