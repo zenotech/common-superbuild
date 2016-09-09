@@ -110,7 +110,7 @@ class Library(object):
 
         # TODO: Handle $LIB and $PLATFORM (also ${} forms).
 
-        return rpath
+        return rpath.strip()
 
     @property
     def rpaths(self):
@@ -146,7 +146,7 @@ class Library(object):
                 ])
             rpaths.extend(get_rpaths().split('\n'))
 
-            self._rpaths = list(map(self._resolve_rpath, rpaths))
+            self._rpaths = list(filter(lambda x: x, map(self._resolve_rpath, rpaths)))
         return self._rpaths
 
     @property
@@ -167,7 +167,7 @@ class Library(object):
                 ])
             runpaths.extend(get_runpaths().split(':'))
 
-            self._runpaths = list(map(self._resolve_rpath, runpaths))
+            self._runpaths = list(filter(lambda x: x, map(self._resolve_rpath, runpaths)))
         return self._runpaths
 
     def _get_dependencies(self):
