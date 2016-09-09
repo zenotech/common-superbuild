@@ -14,6 +14,10 @@ superbuild_add_project(fontconfig
       --enable-libxml2
       ${fontconfig_shared_args}
       --with-freetype-config=<INSTALL_DIR>/bin/freetype-config
+
+      # Use the system configuration and cachedirs.
+      --sysconfdir=/etc
+      --localstatedir=/var
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND
