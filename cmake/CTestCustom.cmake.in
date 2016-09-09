@@ -1,16 +1,16 @@
 function (project_ignore_regexes variable project)
   set(exceptions)
   list(APPEND exceptions
-    "${project}/src/${project}"
-    "${project}\\\\src\\\\${project}")
+    "${project}/src"
+    "${project}\\\\src")
   string(TOLOWER "${project}" lower_project)
   if ((APPLE OR WIN32) AND (NOT lower_project STREQUAL project))
     if (WIN32)
       list(APPEND exceptions
-        "${lower_project}\\\\src\\\\${lower_project}")
+        "${lower_project}\\\\src")
     else ()
       list(APPEND exceptions
-        "${lower_project}/src/${lower_project}")
+        "${lower_project}/src")
     endif ()
   endif ()
 
