@@ -262,7 +262,7 @@ class Library(object):
         search_path = loader._find_library(ref)
         if os.path.exists(search_path):
             return cls.create_from_path(search_path, parent=loader)
-        raise RuntimeError('Unable to find the %s library from %s' % (ref, loader.path))
+        raise RuntimeError('Unable to find the %s library from %s: %s' % (ref, loader.path, ', '.join(paths)))
 
     __cache = {}
 
