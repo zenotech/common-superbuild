@@ -1,10 +1,9 @@
-
 set(png_libtype_args)
 if (BUILD_SHARED_LIBS)
   set(png_libtype_args -DPNG_SHARED:BOOL=ON -DPNG_STATIC:BOOL=OFF)
-else()
+else ()
   set(png_libtype_args -DPNG_STATIC:BOOL=ON -DPNG_SHARED:BOOL=OFF)
-endif()
+endif ()
 
 superbuild_add_project(png
   CAN_USE_SYSTEM
