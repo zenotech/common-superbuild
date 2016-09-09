@@ -238,6 +238,8 @@ class Library(object):
             if os.path.exists(ref):
                 return cls.create_from_path(ref, parent=loader)
         else:
+            paths.append(loader.loader_path)
+
             # Find the path via rpath.
             paths.extend(loader.rpaths)
 
