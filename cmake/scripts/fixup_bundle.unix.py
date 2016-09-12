@@ -287,6 +287,7 @@ class Library(object):
             raise RuntimeError('There is already a library for %s' % path)
 
         library = Library(path)
+        library._dependencies = {}
 
         cls.__cache[path] = library
         return cls.__cache[path]
