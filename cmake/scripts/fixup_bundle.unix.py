@@ -238,6 +238,8 @@ class Library(object):
             if os.path.exists(ref):
                 return cls.create_from_path(ref, parent=loader)
         else:
+            # TODO: Automatically search in the libdir we are placing dependent libraries.
+
             paths.extend(loader.loader_paths)
 
             # Find the path via rpath.
