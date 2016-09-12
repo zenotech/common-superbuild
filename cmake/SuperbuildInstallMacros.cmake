@@ -195,6 +195,7 @@ function (superbuild_unix_install_python)
     set(fixup_bundle_arguments \"${fixup_bundle_arguments}\")
     set(bundle_destination \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}\")
     set(bundle_manifest \"${CMAKE_BINARY_DIR}/install.manifest\")
+    set(libdir \"${_install_python_LIBDIR}\")
 
     foreach (python_module IN LISTS python_modules)
       superbuild_unix_install_python_module(\"\${CMAKE_INSTALL_PREFIX}\"
