@@ -44,7 +44,6 @@ class Library(object):
         self._dependencies = None
         self._rpaths = None
         self._runpaths = None
-        self._installed_id = None
 
     def __hash__(self):
         return self._path.__hash__()
@@ -66,13 +65,6 @@ class Library(object):
     @property
     def name(self):
         return os.path.basename(self.path)
-
-    @property
-    def installed_id(self):
-        return self._installed_id
-
-    def set_installed_id(self, installed_id):
-        self._installed_id = installed_id
 
     @property
     def symlinks(self):
