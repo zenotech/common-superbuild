@@ -1,5 +1,6 @@
 set(_superbuild_install_cmake_dir "${CMAKE_CURRENT_LIST_DIR}")
-set(_superbuild_has_cleaned FALSE)
+set_property(GLOBAL PROPERTY
+  superbuild_has_cleaned FALSE)
 
 include(CMakeParseArguments)
 
@@ -51,8 +52,11 @@ function (_superbuild_unix_install_binary)
   set(fixup_bundle_arguments
     "${fixup_bundle_arguments} --libdir ${_install_binary_LIBDIR}")
 
-  if (_install_binary_CLEAN OR NOT _superbuild_has_cleaned)
-    set(_superbuild_has_cleaned TRUE)
+  get_property(superbuild_has_cleaned GLOBAL PROPERTY
+    superbuild_has_cleaned)
+  if (_install_binary_CLEAN OR NOT superbuild_has_cleaned)
+    set_property(GLOBAL PROPERTY
+      superbuild_has_cleaned TRUE)
     set(fixup_bundle_arguments
       "${fixup_bundle_arguments} --clean")
   endif ()
