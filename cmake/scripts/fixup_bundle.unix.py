@@ -202,6 +202,7 @@ class Library(object):
                     'find',
                     loc,
                     '-name', ref,
+                    '-maxdepth', '1',
                 ])
             output = find()
             if output:
