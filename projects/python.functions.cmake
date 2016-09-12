@@ -149,7 +149,7 @@ function (superbuild_install_superbuild_python)
               "bin/Lib")
   else ()
     superbuild_unix_install_python(
-      MODULE_DESTINATION  ""
+      MODULE_DESTINATION  "/"
       LIBDIR              "lib"
       MODULES             ${modules} ${ARGN}
       MODULE_DIRECTORIES  "${superbuild_install_location}/lib/python2.7")
