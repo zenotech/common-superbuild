@@ -421,12 +421,15 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
         shutil.copy(binary.path, app_dest)
 
 
-def _update_manifest(manifest, installed, path):
+def _update_manifest(manifest, installed, path, libdir):
     for input_path in installed.keys():
-        manifest.add(input_path)
+        manifest.setdefault(libdir, []).append(input_path)
+
+    for k, v in manifest.items():
+        manifest[k] = list(set(v))
 
     with open(path, 'w+') as fout:
-        json.dump(list(manifest), fout)
+        json.dump(manifest, fout)
 
 
 def main(args):
@@ -470,20 +473,22 @@ def main(args):
 
     if opts.clean:
         # A new bundle does not have a manifest.
-        manifest = set()
+        manifest = {}
     else:
         with open(opts.manifest, 'r') as fin:
-            manifest = set(json.load(fin))
+            manifest = json.load(fin)
 
         # Seed the cache with manifest entries.
-        for path in manifest:
+        for path in manifest.get(opts.libdir, []):
             Library.create_from_manifest(path)
+
+    cur_manifest = manifest.setdefault(opts.libdir, [])
 
     installed = {}
     _install_binary(main_exe, is_excluded, bundle_dest, opts.libdir, installed, manifest, dry_run=opts.dry_run)
 
     if not opts.dry_run:
-        _update_manifest(manifest, installed, opts.manifest)
+        _update_manifest(manifest, installed, opts.manifest, opts.libdir)
 
 
 if __name__ == '__main__':
