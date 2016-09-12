@@ -96,6 +96,13 @@ class Library(object):
     def loader_path(self):
         return os.path.dirname(self.path)
 
+    @property
+    def loader_paths(self):
+        loader_paths = [self.loader_path]
+        if self.parent is not None:
+            loader_paths.extend(self.parent.loader_paths)
+        return loader_paths
+
     def _resolve_rpath(self, rpath):
         if rpath.startswith('$ORIGIN'):
             rpath = rpath.replace('$ORIGIN', self.loader_path)
@@ -230,7 +237,7 @@ class Library(object):
             if os.path.exists(ref):
                 return cls.create_from_path(ref, parent=loader)
         else:
-            paths.append(loader.loader_path)
+            paths.extend(loader.loader_paths)
 
             # Find the path via rpath.
             paths.extend(loader.rpaths)
