@@ -665,13 +665,19 @@ function (_superbuild_add_project_internal name)
     set(binary_dir)
   endif ()
 
+  set(source_dir SOURCE_DIR "${name}/src")
+  list(FIND "${name}_revision" "SOURCE_DIR" ext_source)
+  if (ext_source GREATER -1)
+    set(source_dir)
+  endif ()
+
   # ARGN needs to be quoted so that empty list items aren't removed if
   # that happens options like INSTALL_COMMAND "" won't work
   _superbuild_ExternalProject_add(${name} "${ARGN}"
     PREFIX        "${name}"
     DOWNLOAD_DIR  "${superbuild_download_location}"
     STAMP_DIR     "${name}/stamp"
-    SOURCE_DIR    "${name}/src"
+    ${source_dir}
     ${binary_dir}
     INSTALL_DIR   "${superbuild_install_location}"
 
