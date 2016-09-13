@@ -152,6 +152,7 @@ function (superbuild_install_superbuild_python)
       MODULE_DESTINATION  "/"
       LIBDIR              "lib"
       MODULES             ${modules} ${ARGN}
-      MODULE_DIRECTORIES  "${superbuild_install_location}/lib/python2.7")
+      MODULE_DIRECTORIES  "${superbuild_install_location}/lib/python2.7"
+                          "${superbuild_install_location}/lib/python2.7/lib-dynload")
   endif ()
 endfunction ()
