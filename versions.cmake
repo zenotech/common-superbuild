@@ -98,12 +98,12 @@ superbuild_set_revision(qt5
 if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
     superbuild_set_revision(numpy
-      URL     "http://paraview.org/files/dependencies/numpy-1.8.1-win64.tar.gz"
-      URL_MD5 f99a3614d060d85187cc71c3c21381e1)
+      URL     "http://paraview.org/files/dependencies/numpy-1.8.1-win64-20160913.tar.gz"
+      URL_MD5 fa885d5c07294b9808aea517133932a9)
   else ()
     superbuild_set_revision(numpy
-      URL     "http://paraview.org/files/dependencies/numpy-1.8.1-win32.tar.gz"
-      URL_MD5 860b9791bd52fe36ddc271b11aadcb5e)
+      URL     "http://paraview.org/files/dependencies/numpy-1.8.1-win32-20160913.tar.gz"
+      URL_MD5 713931c0322cc8dd1aa3a1f42458868b)
   endif ()
 else ()
   superbuild_set_revision(numpy
