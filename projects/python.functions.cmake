@@ -149,12 +149,9 @@ function (superbuild_install_superbuild_python)
               "bin/Lib")
   else ()
     superbuild_unix_install_python(
-      "${CMAKE_INSTALL_PREFIX}"
-      ""
-      _BASE
-      MODULES ${modules}
-              ${ARGN}
-      MODULE_DIRECTORIES
-              "${superbuild_install_location}/lib/python2.7")
+      MODULE_DESTINATION  "/"
+      LIBDIR              "lib"
+      MODULES             ${modules} ${ARGN}
+      MODULE_DIRECTORIES  "${superbuild_install_location}/lib/python2.7")
   endif ()
 endfunction ()
