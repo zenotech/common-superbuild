@@ -173,8 +173,6 @@ function (_superbuild_ExternalProject_add name)
 
   foreach (step configure build install)
     if (req_${step}_command)
-      string(TOUPPER "${step}" step_upper)
-
       set(step_command "${original_${step}_command}")
       _ep_replace_location_tags("${name}" step_command)
 
