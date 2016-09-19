@@ -151,8 +151,13 @@ function (_superbuild_ExternalProject_add name)
     endif ()
   endforeach ()
 
-  option(SUPPRESS_${name}_OUTPUT "Suppress output for ${name}" OFF)
-  mark_as_advanced(SUPPRESS_${name}_OUTPUT)
+  set(suppress_default OFF)
+  if (DEFINED "_superbuild_suppress_${name}_output")
+    set(suppress_default "${_superbuild_suppress_${name}_output}")
+  endif ()
+
+  option("SUPPRESS_${name}_OUTPUT" "Suppress output for ${name}" "${suppress_default}")
+  mark_as_advanced("SUPPRESS_${name}_OUTPUT")
 
   if (SUPPRESS_${name}_OUTPUT)
     # Silence the build and install steps.
