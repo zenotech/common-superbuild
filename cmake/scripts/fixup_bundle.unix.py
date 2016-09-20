@@ -284,6 +284,7 @@ class Library(object):
 
         library = Library(path)
         library._dependencies = {}
+        library._symlinks = []
 
         cls.__cache[path] = library
         return cls.__cache[path]
