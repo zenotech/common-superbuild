@@ -608,9 +608,9 @@ function (_superbuild_add_project_internal name)
   endforeach ()
 
   foreach (var IN LISTS extra_vars)
-    set(project_${var} "${superbuild_${var}}")
+    set("project_${var}" "${superbuild_${var}}")
     if (extra_${var})
-      set(project_${var} "${project_${var}} ${extra_${var}}")
+      set("project_${var}" "${project_${var}} ${extra_${var}}")
     endif ()
   endforeach ()
 

@@ -3,6 +3,13 @@ function (superbuild_install_superbuild_python)
     return ()
   endif ()
 
+  set(options)
+  set(values
+    LIBSUFFIX)
+  set(multivalues
+    MODULES)
+  cmake_parse_arguments(_install_superbuild_python "${options}" "${values}" "${multivalues}" ${ARGN})
+
   set(modules
     # string services
     string re struct difflib StringIO cStringIO textwrap codecs unicodedata
@@ -11,14 +18,18 @@ function (superbuild_install_superbuild_python)
     encodings
     sre_compile sre_constants sre_parse
 
+    _struct
+
     # data types
     datetime calendar collections heapq bisect array sets sched mutex Queue
     weakref UserDict UserList UserString types new copy pprint repr
 
-    _weakrefset
+    _weakrefset _collections
 
     # numeric and math modules
     numbers math cmath decimal fractions random itertools functools operator
+
+    _functools
 
     # file and directory access
     fileinput stat statvfs filecmp tempfile glob fnmatch linecache shutil
@@ -45,11 +56,13 @@ function (superbuild_install_superbuild_python)
 
     # os services
     os io time argparse optparse getopt logging getpass platform errno
-    ctypes
+    ctypes fcntl
     # curses
 
-    threading multiprocessing select thread mmap
-    #dummy_threading dummy_thread readline rlcompleter
+    _ctypes _io
+
+    threading multiprocessing select thread mmap dummy_threading
+    #dummy_thread readline rlcompleter
 
     # ipc and networking
     subprocess socket signal popen2
@@ -64,13 +77,15 @@ function (superbuild_install_superbuild_python)
     # markup tools
     HTMLParser sgmllib htmllib htmlentitydefs xml
 
-    pyexpat
+    pyexpat markupbase
 
     # internet protocol and support
     webbrowser urllib urllib2 httplib uuid urlparse cgi cookielib xmlrpclib
     #cgitb wsgiref ftplib poplib imaplib nntplib smtplib smtpd telnetlib
     #SocketServer BaseHTTPServer SimpleHTTPServer CGIHTTPServer
     #Cookie SimpleXMLRPCServer DocXMLRPCServer
+
+    _LWPCookieJar _MozillaCookieJar
 
     # multimedia services
     #audioop imageop aifc sunau wave chunk colorsys imghdr sndhdr ossaudiodev
@@ -88,7 +103,8 @@ function (superbuild_install_superbuild_python)
     pydoc doctest unittest test
 
     # debugging and profiling
-    #bdb pdb hotshot timeit trace
+    bdb pdb
+    #hotshot timeit trace
 
     # software packaging and distribution
     distutils
@@ -115,7 +131,7 @@ function (superbuild_install_superbuild_python)
     compileall dis pickletools
 
     # misc services
-    #formatter
+    formatter
 
     # windows services
     #msilib msvcrt _winreg winsound
@@ -139,19 +155,15 @@ function (superbuild_install_superbuild_python)
   if (WIN32)
     superbuild_windows_install_python(
       "${CMAKE_INSTALL_PREFIX}"
-      MODULES ${modules}
-              ${ARGN}
-      MODULE_DIRECTORIES
-              "${superbuild_install_location}/bin/Lib"
-      SEARCH_DIRECTORIES
-              "lib"
-      DESTINATION
-              "bin/Lib")
+      MODULES             ${modules} ${_install_superbuild_python_MODULES}
+      MODULE_DIRECTORIES  "${superbuild_install_location}/bin/Lib"
+      SEARCH_DIRECTORIES  "lib${_install_superbuild_python_LIBSUFFIX}"
+      DESTINATION         "bin/Lib")
   else ()
     superbuild_unix_install_python(
       MODULE_DESTINATION  "/"
-      LIBDIR              "lib"
-      MODULES             ${modules} ${ARGN}
+      LIBDIR              "lib${_install_superbuild_python_LIBSUFFIX}"
+      MODULES             ${modules} ${_install_superbuild_python_MODULES}
       MODULE_DIRECTORIES  "${superbuild_install_location}/lib/python2.7"
                           "${superbuild_install_location}/lib/python2.7/lib-dynload")
   endif ()
