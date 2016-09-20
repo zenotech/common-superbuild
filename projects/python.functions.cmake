@@ -4,7 +4,8 @@ function (superbuild_install_superbuild_python)
   endif ()
 
   set(options)
-  set(values)
+  set(values
+    LIBSUFFIX)
   set(multivalues
     MODULES)
   cmake_parse_arguments(_install_superbuild_python "${options}" "${values}" "${multivalues}" ${ARGN})
@@ -156,12 +157,12 @@ function (superbuild_install_superbuild_python)
       "${CMAKE_INSTALL_PREFIX}"
       MODULES             ${modules} ${_install_superbuild_python_MODULES}
       MODULE_DIRECTORIES  "${superbuild_install_location}/bin/Lib"
-      SEARCH_DIRECTORIES  "lib"
+      SEARCH_DIRECTORIES  "lib${_install_superbuild_python_LIBSUFFIX}"
       DESTINATION         "bin/Lib")
   else ()
     superbuild_unix_install_python(
       MODULE_DESTINATION  "/"
-      LIBDIR              "lib"
+      LIBDIR              "lib${_install_superbuild_python_LIBSUFFIX}"
       MODULES             ${modules} ${_install_superbuild_python_MODULES}
       MODULE_DIRECTORIES  "${superbuild_install_location}/lib/python2.7"
                           "${superbuild_install_location}/lib/python2.7/lib-dynload")
