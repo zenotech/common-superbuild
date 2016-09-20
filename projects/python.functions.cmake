@@ -29,7 +29,7 @@ function (superbuild_install_superbuild_python)
     # numeric and math modules
     numbers math cmath decimal fractions random itertools functools operator
 
-    _functools
+    _functools _random
 
     # file and directory access
     fileinput stat statvfs filecmp tempfile glob fnmatch linecache shutil
