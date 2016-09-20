@@ -231,14 +231,9 @@ class Library(object):
     def _find_library(self, ref):
         print 'WARNING: dependency from %s to %s requires a search path' % (self.path, ref)
         for loc in self._search_paths:
-            find = Pipeline([
-                    'find',
-                    loc,
-                    '-name', ref,
-                ])
-            output = find()
-            if output:
-                return output.split('\n')[0]
+            path = os.path.join(loc, ref)
+            if os.path.exists(path):
+                return path
         return ref
 
     @classmethod
