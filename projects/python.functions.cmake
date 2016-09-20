@@ -3,6 +3,12 @@ function (superbuild_install_superbuild_python)
     return ()
   endif ()
 
+  set(options)
+  set(values)
+  set(multivalues
+    MODULES)
+  cmake_parse_arguments(_install_superbuild_python "${options}" "${values}" "${multivalues}" ${ARGN})
+
   set(modules
     # string services
     string re struct difflib StringIO cStringIO textwrap codecs unicodedata
@@ -148,19 +154,15 @@ function (superbuild_install_superbuild_python)
   if (WIN32)
     superbuild_windows_install_python(
       "${CMAKE_INSTALL_PREFIX}"
-      MODULES ${modules}
-              ${ARGN}
-      MODULE_DIRECTORIES
-              "${superbuild_install_location}/bin/Lib"
-      SEARCH_DIRECTORIES
-              "lib"
-      DESTINATION
-              "bin/Lib")
+      MODULES             ${modules} ${_install_superbuild_python_MODULES}
+      MODULE_DIRECTORIES  "${superbuild_install_location}/bin/Lib"
+      SEARCH_DIRECTORIES  "lib"
+      DESTINATION         "bin/Lib")
   else ()
     superbuild_unix_install_python(
       MODULE_DESTINATION  "/"
       LIBDIR              "lib"
-      MODULES             ${modules} ${ARGN}
+      MODULES             ${modules} ${_install_superbuild_python_MODULES}
       MODULE_DIRECTORIES  "${superbuild_install_location}/lib/python2.7"
                           "${superbuild_install_location}/lib/python2.7/lib-dynload")
   endif ()
