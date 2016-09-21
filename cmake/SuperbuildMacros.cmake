@@ -584,8 +584,8 @@ function (_superbuild_add_project_internal name)
     get_property(extra_flags GLOBAL
       PROPERTY "${name}_append_project_only_flags_cmake_${var}")
 
-    list(APPEND "extra_${var}"
-      ${extra_flags})
+    set("extra_${var}"
+      "${extra_${var}} ${extra_flags}")
   endforeach ()
 
   # Scan dependency flags.
@@ -595,8 +595,8 @@ function (_superbuild_add_project_internal name)
       get_property(extra_flags GLOBAL
         PROPERTY "${dep}_append_flags_cmake_${var}")
 
-      list(APPEND "extra_${var}"
-        ${extra_flags})
+      set("extra_${var}"
+        "${extra_${var}} ${extra_flags}")
     endforeach ()
 
     get_property(dep_paths GLOBAL
