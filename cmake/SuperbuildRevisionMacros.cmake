@@ -32,17 +32,17 @@ function (superbuild_set_customizable_revision name)
 
   foreach (key IN LISTS keys)
     if (_args_${key})
-      if (${name_UPPER}_${key})
-        message(WARNING "${name_UPPER}_${key} is deprecated; use ${name}_${key} instead.")
-        set("${name}_${key}" "${${name_UPPER}_${key}}")
-      endif ()
       set(option_name "${name}_${key}")
       set(option_default "${_args_${key}}")
       set(cache_type STRING)
       if (name STREQUAL "SOURCE_DIR")
         set(cache_type PATH)
       endif ()
-      set(${option_name} "${option_default}"
+      if (${name_UPPER}_${key})
+        message(WARNING "${name_UPPER}_${key} is deprecated; use ${name}_${key} instead.")
+        set(option_default "${${name_UPPER}_${key}}")
+      endif ()
+      set("${option_name}" "${option_default}"
         CACHE "${cache_type}" "${key} for project '${name}'")
       mark_as_advanced(${option_name})
       list(APPEND customized_args
