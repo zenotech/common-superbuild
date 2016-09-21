@@ -265,11 +265,19 @@ function (superbuild_unix_install_python)
     MODULES)
   cmake_parse_arguments(_install_python "${options}" "${values}" "${multivalues}" ${ARGN})
 
-  set(fixup_bundle_arguments)
-
   if (NOT _install_python_LIBDIR)
     message(FATAL_ERROR "Cannot install Python modules without knowing where to put dependent libraries.")
   endif ()
+
+  if (NOT _install_python_MODULES)
+    message(FATAL_ERROR "No modules specified.")
+  endif ()
+
+  if (NOT _install_python_MODULE_DIRECTORIES)
+    message(FATAL_ERROR "No modules search paths specified.")
+  endif ()
+
+  set(fixup_bundle_arguments)
 
   if (NOT _install_python_MODULE_DESTINATION)
     set(_install_python_MODULE_DESTINATION "/site-packages")
@@ -545,6 +553,14 @@ function (superbuild_apple_install_python destination name)
     MODULES)
   cmake_parse_arguments(_install_python "" "" "${multivalues}" ${ARGN})
 
+  if (NOT _install_python_MODULES)
+    message(FATAL_ERROR "No modules specified.")
+  endif ()
+
+  if (NOT _install_python_MODULE_DIRECTORIES)
+    message(FATAL_ERROR "No modules search paths specified.")
+  endif ()
+
   set(fixup_bundle_arguments)
 
   foreach (search_directory IN LISTS _install_python_SEARCH_DIRECTORIES)
@@ -664,6 +680,14 @@ function (superbuild_windows_install_python)
     MODULE_DIRECTORIES
     MODULES)
   cmake_parse_arguments(_install_python "" "${singlevalues}" "${multivalues}" ${ARGN})
+
+  if (NOT _install_python_MODULES)
+    message(FATAL_ERROR "No modules specified.")
+  endif ()
+
+  if (NOT _install_python_MODULE_DIRECTORIES)
+    message(FATAL_ERROR "No modules search paths specified.")
+  endif ()
 
   set(subdir "")
   if (_install_python_NAMESPACE)
