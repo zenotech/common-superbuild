@@ -786,8 +786,8 @@ function (_superbuild_add_project_internal name)
     set(source_dir)
   endif ()
 
-  # ARGN needs to be quoted so that empty list items aren't removed if
-  # that happens options like INSTALL_COMMAND "" won't work
+  # ARGN needs to be quoted so that empty list items aren't removed if that
+  # happens options like INSTALL_COMMAND "" won't work
   _superbuild_ExternalProject_add(${name} "${ARGN}"
     PREFIX        "${name}"
     DOWNLOAD_DIR  "${superbuild_download_location}"
@@ -796,6 +796,7 @@ function (_superbuild_add_project_internal name)
     ${binary_dir}
     INSTALL_DIR   "${superbuild_install_location}"
 
+    # Add source information specified in versions functions.
     ${${name}_revision}
 
     PROCESS_ENVIRONMENT
