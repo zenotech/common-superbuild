@@ -43,8 +43,8 @@ else ()
     -system-zlib)
 endif ()
 
-cmake_dependent_option(qt4_ENABLE_OPENSSL "Build Qt with OpenSSL support" OFF
-  qt4_enabled OFF)
+# If not using system qt4, add qt4_ENABLE_OPENSSL option
+option(qt4_ENABLE_OPENSSL "Build Qt with OpenSSL support" OFF)
 mark_as_advanced(qt4_ENABLE_OPENSSL)
 if (NOT qt4_ENABLE_OPENSSL)
   list(APPEND qt4_extra_options "-no-openssl")

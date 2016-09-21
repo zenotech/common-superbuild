@@ -33,11 +33,9 @@ if (WIN32)
     INSTALL_COMMAND ${NMAKE_PATH} install)
 endif ()
 
-cmake_dependent_option(qt5_ENABLE_OPENSSL
-  "Build with OpenSSL support. Requires system-installed OpenSSL at runtime."
-  OFF
-  qt5_enabled
-  OFF)
+# If not using system qt5, add qt5_ENABLE_OPENSSL option
+option(qt5_ENABLE_OPENSSL
+  "Build with OpenSSL support. Requires system-installed OpenSSL at runtime." OFF)
 mark_as_advanced(qt5_ENABLE_OPENSSL)
 if (qt5_ENABLE_OPENSSL)
   # Require build machines to have OpenSSL
