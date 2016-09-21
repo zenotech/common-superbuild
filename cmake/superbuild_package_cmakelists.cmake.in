@@ -27,6 +27,7 @@ include(SuperbuildInstallMacros)
 include("@name@.bundle")
 
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "bin")
+set(CMAKE_INSTALL_SYSTEM_RUNTIME_COMPONENT "superbuild")
 include(InstallRequiredSystemLibraries)
 
 include(CPack)
