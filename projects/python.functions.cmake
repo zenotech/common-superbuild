@@ -54,6 +54,8 @@ function (superbuild_install_superbuild_python)
     hashlib hmac
     #md5 sha
 
+    _sha _md5 _sha256 _sha512
+
     # os services
     os io time argparse optparse getopt logging getpass platform errno
     ctypes fcntl
