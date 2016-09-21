@@ -34,3 +34,7 @@ superbuild_apply_patch(qt4 corewlan-new-osx
 # https://bugreports.qt-project.org/browse/QTBUG-37699?focusedCommentId=251106#comment-251106
 superbuild_apply_patch(qt4 osx-10.9-modal-dialogs
   "Fix modal dialog state management for 10.9 and up")
+
+# Patch for supporing newer Xcode versions.
+superbuild_apply_patch(qt4 selection-flags-static_cast
+  "Fix modal dialog state management for 10.9 and up")
