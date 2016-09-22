@@ -497,7 +497,7 @@ define_property(DIRECTORY PROPERTY "EP_UPDATE_DISCONNECTED" INHERITED
   "ExternalProject module."
   )
 
-function(_ep_write_gitclone_script script_filename source_dir git_EXECUTABLE git_repository git_tag git_submodules src_name work_dir gitclone_infofile gitclone_stampfile)
+function(_ep_write_gitclone_script script_filename source_dir git_EXECUTABLE git_clone_flags git_repository git_tag git_submodules src_name work_dir gitclone_infofile gitclone_stampfile)
   file(WRITE ${script_filename}
 "if(\"${git_tag}\" STREQUAL \"\")
   message(FATAL_ERROR \"Tag for git checkout should not be empty.\")
@@ -527,7 +527,7 @@ set(error_code 1)
 set(number_of_tries 0)
 while(error_code AND number_of_tries LESS 3)
   execute_process(
-    COMMAND \"${git_EXECUTABLE}\" clone --progress \"${git_repository}\" \"${src_name}\"
+    COMMAND \"${git_EXECUTABLE}\" clone ${git_clone_flags} \"${git_repository}\" \"${src_name}\"
     WORKING_DIRECTORY \"${work_dir}\"
     RESULT_VARIABLE error_code
     )
@@ -1788,12 +1788,22 @@ function(_ep_add_download_command name)
     get_filename_component(src_name "${source_dir}" NAME)
     get_filename_component(work_dir "${source_dir}" PATH)
 
+    # Let clone progress be explicitly enabled
+    set(default_git_clone_arguments "")
+    if(DEFINED _git_clone_arguments_default)
+      set(default_git_clone_arguments "${_git_clone_arguments_default}")
+    endif()
+    set(superbuild_git_clone_arguments "${default_git_clone_arguments}"
+      CACHE STRING "Arguments to pass to git clone")
+    mark_as_advanced(superbuild_git_clone_arguments)
+
     # Since git clone doesn't succeed if the non-empty source_dir exists,
     # create a cmake script to invoke as download command.
     # The script will delete the source directory and then call git clone.
     #
     _ep_write_gitclone_script(${tmp_dir}/${name}-gitclone.cmake ${source_dir}
-      ${GIT_EXECUTABLE} ${git_repository} ${git_tag} "${git_submodules}" ${src_name} ${work_dir}
+      ${GIT_EXECUTABLE} "${superbuild_git_clone_arguments}" ${git_repository}
+      ${git_tag} "${git_submodules}" ${src_name} ${work_dir}
       ${stamp_dir}/${name}-gitinfo.txt ${stamp_dir}/${name}-gitclone-lastrun.txt
       )
     set(comment "Performing download step (git clone) for '${name}'")
