@@ -156,7 +156,6 @@ function (superbuild_install_superbuild_python)
 
   if (WIN32)
     superbuild_windows_install_python(
-      "${CMAKE_INSTALL_PREFIX}"
       MODULES             ${modules} ${_install_superbuild_python_MODULES}
       MODULE_DIRECTORIES  "${superbuild_install_location}/bin/Lib"
       SEARCH_DIRECTORIES  "lib${_install_superbuild_python_LIBSUFFIX}"
