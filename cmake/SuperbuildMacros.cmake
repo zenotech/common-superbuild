@@ -5,7 +5,49 @@ include(CMakeParseArguments)
 # anything else can use it that needs it.
 set(_superbuild_list_separator "-+-")
 
-#------------------------------------------------------------------------------
+# Describe a project to be built as part of the superbuild.
+#
+# Usage:
+#
+#   superbuild_add_project(<name> [ARGS...])
+#
+# All ExternalProject keywords are valid here as well as the following
+# extensions:
+#
+#   ``CAN_USE_SYSTEM``
+#     Marks that the project may be provided by the system. In this case, the
+#     ``${name}.system.cmake`` file will be used during the second phase if the
+#     system version is selected.
+#   ``MUST_USE_SYSTEM``
+#     Where a project can be provided by the system, this flag may be specified
+#     to indicate that this platform *must* use the system's version rather
+#     than a custom built one. Usually only used in platform-specific files.
+#   ``DEFAULT_ON``
+#     If present, the project will default to be built.
+#   ``DEVELOPER_MODE``
+#     If present, the project will offer an option to build it in "developer"
+#     mode. Developer mode enables and builds all dependent projects, but skips
+#     the project itself. Instead, a file named
+#     ``${name}-developer-config.cmake`` is written to the build directory
+#     which may be passed to a standalone instance of the project using the
+#     ``-C`` option of CMake to initialize the cache to use the dependencies
+#     built as part of the superbuild.
+#   ``DEBUGGABLE``
+#     If present, an option to change the build type for the project will be
+#     exposed.
+#   ``HELP_STRING``
+#     Set the description string for the option to enable the project.
+#   ``DEPENDS_OPTIONAL <project>...``
+#     Projects which this one can use if it is enabled, but is not required for
+#     use.
+#   ``PROCESS_ENVIRONMENT <var> <value>...``
+#     Sets environment variables for the configure, build, and install steps.
+#     Some are "magic" and are prepended to the current value (namely ``PATH``,
+#     ``LD_LIBRARY_PATH`` (Linux), and ``DYLD_LIBRARY_PATH`` (OS X).
+#
+# Projects which are depended on may declare that they have CMake variables and
+# flags which must be set in dependent projects (e.g., a Python project would
+# set ``PYTHON_EXECUTABLE`` to the location of its installed Python).
 function (superbuild_add_project name)
   _superbuild_project_check_name("${name}")
 
@@ -52,6 +94,11 @@ function (superbuild_add_project name)
         "${arg}")
     endif ()
   endforeach ()
+
+  # Allow projects to override the help string specified in the project file.
+  if (DEFINED "superbuild_help_string_${name}")
+    set(help_string "${superbuild_help_string_${name}}")
+  endif ()
 
   if (NOT help_string)
     set(help_string "Request to build project ${name}")
@@ -145,10 +192,16 @@ function (superbuild_add_project name)
   endif ()
 endfunction ()
 
-#------------------------------------------------------------------------------
-# adds a dummy project to the build, which is a great way to setup a list
-# of dependencies as a build option. IE dummy project that turns on all
-# third party libraries
+# Adds a project to the list, but with a no-op build step. Useful for "feature"
+# projects to set flags.
+#
+# Usage:
+#
+#   superbuild_add_dummy_project(<name> [ARGS...])
+#
+# The only keyword arguments which do anything for dummy projects are the
+# ``DEPENDS`` and ``DEPENDS_OPTIONAL`` keywords which are used to enforce build
+# order.
 function (superbuild_add_dummy_project _name)
   superbuild_add_project(${_name} "${ARGN}")
 
@@ -157,6 +210,27 @@ function (superbuild_add_dummy_project _name)
       "${_name}_is_dummy" TRUE)
 endfunction ()
 
+# Apply a patch to a project.
+#
+# Usage:
+#
+#   superbuild_apply_patch(<name> <patch-name> <description>)
+#
+# Applies a patch to the project during the build. The patch is assumed live at
+# the following path:
+#
+#   ${CMAKE_CURRENT_LIST_DIR}/patches/${name}-${patch-name}.patch
+#
+# Patches should not be applied to projects which are sourced from Git
+# repositories due to bugs in ``git apply``. Use of this function on such
+# projects will cause patches to, in all probability, be ignored or fail to
+# apply. For those projects, create a fork, create commits, and point the
+# repository to the fork instead.
+#
+# This function does check if the build tree lives under a git repository and
+# errors out if so since then *all* patch applications will fail.
+#
+# Please send relevant patches upstream.
 function (superbuild_apply_patch _name _patch _comment)
   find_package(Git QUIET)
   if (NOT GIT_FOUND)
@@ -195,23 +269,14 @@ function (superbuild_apply_patch _name _patch _comment)
     WORKING_DIRECTORY <SOURCE_DIR>)
 endfunction ()
 
-function (superbuild_commit_patch _name _patch _comment)
-  find_package(Git QUIET)
-  if (NOT GIT_FOUND)
-    mark_as_advanced(CLEAR GIT_EXECUTABLE)
-    message(FATAL_ERROR "Could not find git executable.  Please set GIT_EXECUTABLE.")
-  endif()
-
-  superbuild_project_add_step("${_name}-patch-${_patch}"
-    COMMAND   "${GIT_EXECUTABLE}"
-              am
-              "${CMAKE_CURRENT_LIST_DIR}/patches/${_name}-${_patch}.patch"
-    DEPENDEES update
-    DEPENDERS patch
-    COMMENT   "${_comment}"
-    WORKING_DIRECTORY <SOURCE_DIR>)
-endfunction ()
-
+# Add CMake arguments to projects using this one.
+#
+# Usage:
+#
+#   superbuild_add_extra_cmake_args([-DREQUIRED_VARIABLE:TYPE=VALUE]...)
+#
+# The ``-D`` and ``TYPE`` are required (due to the way ExternalProject does
+# things internally).
 function (superbuild_add_extra_cmake_args)
   if (NOT superbuild_build_phase)
     return ()
@@ -224,7 +289,14 @@ function (superbuild_add_extra_cmake_args)
       "${current_project}_cmake_args" ${ARGN})
 endfunction ()
 
-#------------------------------------------------------------------------------
+# Add a custom step to the project.
+#
+# Usage:
+#
+#   superbuild_project_add_step(myproject <step-arguments>...)
+#
+# See the documentation for ``ExternalProject_add_step`` for the arguments to
+# this.
 function (superbuild_project_add_step name)
   if (NOT superbuild_build_phase)
     return ()
@@ -240,13 +312,21 @@ function (superbuild_project_add_step name)
       "${current_project}_step_${name}" ${ARGN})
 endfunction ()
 
-#------------------------------------------------------------------------------
-# In case of OpenMPI on Windows, for example, we need to pass extra compiler
-# flags when building projects that use MPI. This provides an experimental
-# mechanism for the same.
-# There are two kinds of flags, those to use to build to the project itself, or
-# those to use to build any dependencies. The default is the latter. For former,
-# pass in an optional argument PROJECT_ONLY.
+# Add flags to projects using this one.
+#
+# Usage:
+#
+#   superbuild_append_flags(<key> <value> [PROJECT_ONLY])
+#
+# Adds flags to the build of this and, if ``PROJECT_ONLY`` is not specified,
+# dependent projects.
+#
+# Valid values for ``<key>`` are:
+#
+#   cxx_flags: add flags for C++ compilation.
+#   c_flags: add flags for C compilation.
+#   cpp_flags: add flags C and C++ preprocessors.
+#   ld_flags: add flags for linkers.
 function (superbuild_append_flags key value)
   if (NOT superbuild_build_phase)
     return ()
@@ -282,6 +362,14 @@ function (superbuild_append_flags key value)
       "${property}" " ${value}")
 endfunction ()
 
+# Add directories to PATH for projects using this one.
+#
+# Usage:
+#
+#   superbuild_add_path(<path>...)
+#
+# Adds the arguments to the ``PATH`` environment for projects which use this
+# one.
 function (superbuild_add_path)
   if (NOT superbuild_build_phase)
     return ()
@@ -294,11 +382,16 @@ function (superbuild_add_path)
       "${current_project}_path" ${ARGN})
 endfunction ()
 
-#------------------------------------------------------------------------------
-# Get dependencies for a project, including optional dependencies that are
-# currently enabled. Since this macro looks at the ${mod}_enabled flag, it
-# cannot be used in the 'processing' pass, but the 'build' pass alone.
-function (superbuild_get_project_depends name prefix)
+# INTERNAL
+# Get a list of the dependencies this project has.
+#
+# Usage:
+#
+#   _superbuild_get_project_depends(<name> <prefix>)
+#
+# Returns a list of projects depended on by ``<name>`` in the
+# ``${prefix}_depends`` variable.
+function (_superbuild_get_project_depends name prefix)
   if (NOT superbuild_build_phase)
     message(AUTHOR_WARNING "get_project_depends can only be used in build pass")
   endif ()
@@ -313,7 +406,7 @@ function (superbuild_get_project_depends name prefix)
     if (NOT ${prefix}_${dep}_done)
       list(APPEND "${prefix}_depends"
         "${dep}")
-      superbuild_get_project_depends("${dep}" "${prefix}")
+      _superbuild_get_project_depends("${dep}" "${prefix}")
     endif ()
   endforeach ()
 
@@ -322,7 +415,7 @@ function (superbuild_get_project_depends name prefix)
     if (${dep}_enabled AND NOT ${prefix}_${dep}_done)
       list(APPEND "${prefix}_depends"
         "${dep}")
-      superbuild_get_project_depends("${dep}" "${prefix}")
+      _superbuild_get_project_depends("${dep}" "${prefix}")
     endif ()
   endforeach ()
 
@@ -334,10 +427,19 @@ function (superbuild_get_project_depends name prefix)
     PARENT_SCOPE)
 endfunction ()
 
-#------------------------------------------------------------------------------
+# Entry point of the build logic.
+#
+# Usage:
+#
+#   superbuild_process_dependencies()
+#
+# Parses all of the relevant variables created by the inclusion of all of the
+# project files. It uses this information to create the build recipes for all
+# of the projects with the flags propagated and dependencies sorted properly.
 function (superbuild_process_dependencies)
   set (enabled_projects)
 
+  # Gather all of the project names.
   get_property(all_projects GLOBAL
     PROPERTY superbuild_projects)
   foreach(project IN LISTS all_projects)
@@ -381,14 +483,16 @@ function (superbuild_process_dependencies)
   endforeach ()
   set(enabled_projects ${new_order})
 
-  # build information about what project needs what.
+  # Enable enabled projects.
   foreach (project IN LISTS enabled_projects)
     _superbuild_enable_project("${project}" "")
+    # Also enable dependent projects.
     foreach (dep IN LISTS "${project}_depends")
       _superbuild_enable_project("${dep}" "${project}")
     endforeach ()
   endforeach ()
 
+  # Log all of the enabled projects and why they are enabled.
   foreach (project IN LISTS enabled_projects)
     list(SORT "${project}_needed_by")
     list(REMOVE_DUPLICATES "${project}_needed_by")
@@ -402,11 +506,13 @@ function (superbuild_process_dependencies)
     endif ()
   endforeach ()
 
+  # Log all of the projects which will be built (in build order).
   string(REPLACE ";" ", " enabled "${enabled_projects}")
   message(STATUS "Building projects: ${enabled}")
 
   set(system_projects)
 
+  # Start the second phase of the build.
   set(superbuild_build_phase TRUE)
   foreach (project IN LISTS enabled_projects)
     get_property(can_use_system GLOBAL
@@ -508,7 +614,8 @@ function (superbuild_process_dependencies)
     PARENT_SCOPE)
 endfunction ()
 
-#------------------------------------------------------------------------------
+# INTERNAL
+# Sets properties properly when enabling a project.
 function (_superbuild_enable_project name needed_by)
   set("${name}_enabled" TRUE
     PARENT_SCOPE)
@@ -522,11 +629,12 @@ function (_superbuild_enable_project name needed_by)
   endif ()
 endfunction ()
 
-#------------------------------------------------------------------------------
+# INTERNAL
+# Implementation of building a dummy project.
 function (_superbuild_add_dummy_project_internal name)
-  superbuild_get_project_depends("${name}" arg)
+  _superbuild_get_project_depends("${name}" arg)
 
-  ExternalProject_Add("${name}"
+  ExternalProject_add("${name}"
     DEPENDS           ${arg_depends}
     INSTALL_DIR       "${superbuild_install_location}"
     DOWNLOAD_COMMAND  ""
@@ -537,29 +645,36 @@ function (_superbuild_add_dummy_project_internal name)
     INSTALL_COMMAND   "")
 endfunction ()
 
-#------------------------------------------------------------------------------
+# INTERNAL
+# Implementation of building an actual project.
 function (_superbuild_add_project_internal name)
   set(cmake_params)
-  foreach (flag CMAKE_C_FLAGS_DEBUG
-                CMAKE_C_FLAGS_MINSIZEREL
-                CMAKE_C_FLAGS_RELEASE
-                CMAKE_C_FLAGS_RELWITHDEBINFO
-                CMAKE_CXX_FLAGS_DEBUG
-                CMAKE_CXX_FLAGS_MINSIZEREL
-                CMAKE_CXX_FLAGS_RELEASE
-                CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+  # Pass down C and CXX flags from this project.
+  foreach (flag IN ITEMS
+      CMAKE_C_FLAGS_DEBUG
+      CMAKE_C_FLAGS_MINSIZEREL
+      CMAKE_C_FLAGS_RELEASE
+      CMAKE_C_FLAGS_RELWITHDEBINFO
+      CMAKE_CXX_FLAGS_DEBUG
+      CMAKE_CXX_FLAGS_MINSIZEREL
+      CMAKE_CXX_FLAGS_RELEASE
+      CMAKE_CXX_FLAGS_RELWITHDEBINFO)
     if (${flag})
       list(APPEND cmake_params "-D${flag}:STRING=${${flag}}")
     endif ()
   endforeach ()
 
+  # Handle the DEBUGGABLE flag setting.
   if (debuggable AND NOT CMAKE_BUILD_TYPE_${name} STREQUAL "<same>")
     list(APPEND cmake_params "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE_${name}}")
   else ()
     list(APPEND cmake_params "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}")
   endif ()
 
+  # Set SDK and target version flags.
   superbuild_osx_pass_version_flags(apple_flags)
+
+  # Get the flags from dependent projects.
   _superbuild_fetch_cmake_args("${name}" cmake_dep_args)
   list(APPEND cmake_params
     ${apple_flags}
@@ -571,7 +686,6 @@ function (_superbuild_add_project_internal name)
     cxx_flags
     cpp_flags
     ld_flags)
-
   foreach (extra_var IN LISTS extra_vars)
     set("extra_${extra_var}")
   endforeach ()
@@ -579,7 +693,7 @@ function (_superbuild_add_project_internal name)
 
   superbuild_get_project_depends("${name}" arg)
 
-  # Scan project flags.
+  # Scan for project flags.
   foreach (var IN LISTS extra_vars)
     get_property(extra_flags GLOBAL
       PROPERTY "${name}_append_project_only_flags_cmake_${var}")
@@ -588,7 +702,7 @@ function (_superbuild_add_project_internal name)
       "${extra_${var}} ${extra_flags}")
   endforeach ()
 
-  # Scan dependency flags.
+  # Scan for dependency flags.
   superbuild_get_project_depends("${name}" arg)
   foreach (dep IN LISTS arg_depends)
     foreach (var IN LISTS extra_vars)
@@ -614,6 +728,7 @@ function (_superbuild_add_project_internal name)
     endif ()
   endforeach ()
 
+  # Get the information about where this project comes from.
   get_property("${name}_revision" GLOBAL
     PROPERTY "${name}_revision")
   if (NOT ${name}_revision)
@@ -671,8 +786,8 @@ function (_superbuild_add_project_internal name)
     set(source_dir)
   endif ()
 
-  # ARGN needs to be quoted so that empty list items aren't removed if
-  # that happens options like INSTALL_COMMAND "" won't work
+  # ARGN needs to be quoted so that empty list items aren't removed if that
+  # happens options like INSTALL_COMMAND "" won't work
   _superbuild_ExternalProject_add(${name} "${ARGN}"
     PREFIX        "${name}"
     DOWNLOAD_DIR  "${superbuild_download_location}"
@@ -681,7 +796,7 @@ function (_superbuild_add_project_internal name)
     ${binary_dir}
     INSTALL_DIR   "${superbuild_install_location}"
 
-    # add url/mdf/git-repo etc. specified in versions.cmake
+    # Add source information specified in versions functions.
     ${${name}_revision}
 
     PROCESS_ENVIRONMENT
@@ -697,18 +812,22 @@ function (_superbuild_add_project_internal name)
 
     LIST_SEPARATOR "${_superbuild_list_separator}")
 
+  # Declare additional steps.
   get_property(additional_steps GLOBAL
     PROPERTY "${name}_steps")
   if (additional_steps)
     foreach (step IN LISTS additional_steps)
       get_property(step_arguments GLOBAL
         PROPERTY "${name}_step_${step}")
-      ExternalProject_Add_Step("${name}" "${step}"
+      ExternalProject_add_step("${name}" "${step}"
         "${step_arguments}")
     endforeach ()
   endif ()
 endfunction ()
 
+# INTERNAL
+# Wrapper around ExternalProject's internal calls to gather the CMake flags
+# that would be passed to a project if it were enabled.
 function (_superbuild_write_developer_mode_cache name)
   set(cmake_args
     "-DCMAKE_PREFIX_PATH:PATH=${superbuild_prefix_path}")
@@ -740,6 +859,7 @@ function (_superbuild_write_developer_mode_cache name)
     endif ()
   endforeach ()
 
+  # Create the target.
   _superbuild_add_dummy_project_internal("${name}")
 
   set(cache_file "${CMAKE_BINARY_DIR}/${name}-developer-config.cmake")
@@ -751,9 +871,11 @@ function (_superbuild_write_developer_mode_cache name)
   _ep_write_initial_cache(${name} "${cache_file}" "${cmake_args}")
 endfunction ()
 
+# INTERNAL
+# Queries dependencies for their CMake flags they declare.
 function (_superbuild_fetch_cmake_args name var)
   # Get extra cmake args from every dependent project, if any.
-  superbuild_get_project_depends("${name}" arg)
+  _superbuild_get_project_depends("${name}" arg)
   set(cmake_params)
   foreach (dep IN LISTS arg_depends)
     get_property(cmake_args GLOBAL
@@ -767,15 +889,19 @@ function (_superbuild_fetch_cmake_args name var)
     PARENT_SCOPE)
 endfunction ()
 
-#------------------------------------------------------------------------------
-# When passing string with ";" to add_external_project() macros, we need to
-# ensure that the -+- is replaced with the LIST_SEPARATOR.
-function (_superbuild_sanitize_lists_in_string out_var_prefix var)
+# Readies an argument which may contain ';' for use in ExternalProject_add.
+#
+# Usually you shouldn't need this, but in case you do.
+function (superbuild_sanitize_lists_in_string out_var_prefix var)
   string(REPLACE ";" "${_superbuild_list_separator}" command "${${var}}")
   set("${out_var_prefix}${var}" "${command}"
     PARENT_SCOPE)
 endfunction ()
 
+# INTERNAL
+# Checks that a project name is valid.
+#
+# Currently "valid" means alphanumeric with a non-numeric prefix.
 function (_superbuild_project_check_name name)
   if (NOT name MATCHES "^[a-zA-Z][a-zA-Z0-9]*$")
     message(FATAL_ERROR "Invalid project name: ${_name}. "
@@ -783,6 +909,8 @@ function (_superbuild_project_check_name name)
   endif ()
 endfunction ()
 
+# INTERNAL
+# Checkpoint function to ensure that the phases are well-separated.
 function (_superbuild_check_current_project func)
   if (NOT current_project)
     message(AUTHOR_WARNING "${func} called at an incorrect stage.")
@@ -790,6 +918,15 @@ function (_superbuild_check_current_project func)
   endif ()
 endfunction ()
 
+# Add a project to be built via Python's setup.py routine.
+#
+# Usage:
+#
+#   superbuild_add_project_python(<name> <args>...)
+#
+# Same as ``superbuild_add_project``, but sets the ``PYTHONPATH`` and build
+# commands to work properly out of the box. See ``superbuild_add_project`` its
+# argument documentation.
 macro (superbuild_add_project_python _name)
   if (WIN32)
     set(_superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)

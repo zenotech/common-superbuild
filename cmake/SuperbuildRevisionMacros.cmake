@@ -1,8 +1,13 @@
 include(CMakeParseArguments)
 
-#------------------------------------------------------------------------------
-# Macro to be used to register versions for any module. This makes it easier to
-# consolidate versions for all modules in a single file, if needed.
+# Sets the arguments to ``ExternalProject_add`` to download the project.
+#
+# Usage:
+#
+#   superbuild_set_revision(<name> <args>...)
+#
+# If this is called multiple times for a single project, only the first one
+# takes effect.
 function (superbuild_set_revision name)
   get_property(have_revision GLOBAL
     PROPERTY
@@ -15,12 +20,18 @@ function (superbuild_set_revision name)
   endif ()
 endfunction ()
 
-#------------------------------------------------------------------------------
-# Use this macro instead of the superbuild_set_revision() macro when adding a
-# source repo to expose advanced options to the user to change the default
-# selections. Currently advanced options are added for GIT_REPOSITORY,
-# GIT_TAG, URL, URL_HASH, URL_MD5, and SOURCE_DIR.
-#------------------------------------------------------------------------------
+# Sets arguments to ``ExternalProject_add`` to download the project, but adds
+# cache variables so that they may be changed by the user.
+#
+# Usage:
+#
+#   superbuild_set_customizable_revision(<name> <args>...)
+#
+# Adds advanced variables for the following keys:
+#
+#   GIT_REPOSITORY, GIT_TAG, URL, URL_HASH, URL_MD5, and SOURCE_DIR
+#
+# they are named ``${name_UPPER}_${key}``.
 function (superbuild_set_customizable_revision name)
   set(keys
     GIT_REPOSITORY GIT_TAG
@@ -55,6 +66,18 @@ function (superbuild_set_customizable_revision name)
     ${_args_UNPARSED_ARGUMENTS})
 endfunction ()
 
+# Convenient way to declare a main project's source.
+#
+# Usage:
+#
+#   superbuild_set_external_source(<name>
+#     <git-url> <git-ref>
+#     <tarball-url> <tarball-md5>)
+#
+# Adds options to build the project from a git repository, a tarball, or a
+# source tree (linked from the source tree as
+# ``${CMAKE_SOURCE_DIR}/source-${name}``). Usually relevant for the "primary"
+# project(s) in a single superbuild.
 function (superbuild_set_external_source name git_repo git_tag tarball_url tarball_md5)
   option("${name}_FROM_GIT" "If enabled, fetch sources from GIT" ON)
   cmake_dependent_option("${name}_FROM_SOURCE_DIR" "Use an existing source directory" OFF
@@ -67,7 +90,7 @@ function (superbuild_set_external_source name git_repo git_tag tarball_url tarba
       GIT_TAG        "${git_tag}")
   elseif (${name}_FROM_SOURCE_DIR)
     set(args
-      SOURCE_DIR "source-${name}")
+      SOURCE_DIR "${CMAKE_SOURCE_DIR}/source-${name}")
   else ()
     set(args
       URL     "${tarball_url}"

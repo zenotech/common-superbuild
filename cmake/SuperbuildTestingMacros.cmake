@@ -1,5 +1,6 @@
 set(_superbuild_testing_cmake_dir "${CMAKE_CURRENT_LIST_DIR}")
 
+# Adds a test which extracts a CPack artifact.
 function (superbuild_add_extract_test name glob_prefix generator output)
   set(_ZIP_test_glob "${glob_prefix}*.zip")
   set(_NSIS_test_glob "${glob_prefix}*.exe")
@@ -19,3 +20,5 @@ function (superbuild_add_extract_test name glob_prefix generator output)
       DEPENDS "cpack-${name}-${generator}"
       ${ARGN})
 endfunction ()
+
+# TODO: Add support for extracting a specific CPack's output.
