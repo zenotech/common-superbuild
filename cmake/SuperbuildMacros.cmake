@@ -691,7 +691,7 @@ function (_superbuild_add_project_internal name)
   endforeach ()
   set(extra_paths)
 
-  superbuild_get_project_depends("${name}" arg)
+  _superbuild_get_project_depends("${name}" arg)
 
   # Scan for project flags.
   foreach (var IN LISTS extra_vars)
@@ -703,7 +703,7 @@ function (_superbuild_add_project_internal name)
   endforeach ()
 
   # Scan for dependency flags.
-  superbuild_get_project_depends("${name}" arg)
+  _superbuild_get_project_depends("${name}" arg)
   foreach (dep IN LISTS arg_depends)
     foreach (var IN LISTS extra_vars)
       get_property(extra_flags GLOBAL
