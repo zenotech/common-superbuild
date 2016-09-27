@@ -4,6 +4,11 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     toolset=clang)
 endif ()
 
+if (cxx11_enabled)
+  list(APPEND boost_extra_options
+    cxxflags=${CMAKE_CXX11_STANDARD_COMPILE_OPTION})
+endif ()
+
 include(boost.common)
 
 if (APPLE)
