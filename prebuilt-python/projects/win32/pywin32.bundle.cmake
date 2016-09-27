@@ -10,11 +10,15 @@ set(modules
 include(python.package.bundle)
 
 install(
-  DIRECTORY   "${superbuild_install_location}/bin/Lib/site-packages/pywin32_system32"
-  DESTINATION "bin/Lib/site-packages"
+  DIRECTORY   "${superbuild_install_location}/bin/Lib/site-packages/pywin32_system32/"
+  DESTINATION "bin/Lib/site-packages/win32"
   COMPONENT   "superbuild")
 install(
   DIRECTORY   "${superbuild_install_location}/bin/Lib/site-packages/win32"
+  DESTINATION "bin/Lib/site-packages"
+  COMPONENT   "superbuild")
+install(
+  DIRECTORY   "${superbuild_install_location}/bin/Lib/site-packages/win32comext"
   DESTINATION "bin/Lib/site-packages"
   COMPONENT   "superbuild")
 install(
