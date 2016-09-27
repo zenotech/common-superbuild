@@ -66,6 +66,8 @@ function (superbuild_install_superbuild_python)
     threading multiprocessing select thread mmap dummy_threading
     #dummy_thread readline rlcompleter
 
+    _multiprocessing
+
     # ipc and networking
     subprocess socket signal popen2
     #ssl asyncore asynchat
