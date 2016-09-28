@@ -284,13 +284,13 @@ function (superbuild_unix_install_python)
   endif ()
 
   foreach (include_regex IN LISTS _install_python_INCLUDE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --include \"${include_regex}\"")
+    list(APPEND fixup_bundle_arguments
+      --include "${include_regex}")
   endforeach ()
 
   foreach (exclude_regex IN LISTS _install_python_EXCLUDE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
+    list(APPEND fixup_bundle_arguments
+      --exclude "${exclude_regex}")
   endforeach ()
 
   foreach (search_directory IN LISTS _install_python_SEARCH_DIRECTORIES)
