@@ -26,11 +26,14 @@ function (superbuild_add_extra_package_test name generator)
       "${superbuild_extra_variables}set(\"${variable}\" \"${${variable}}\")\n")
   endforeach ()
 
-  set(cpack_working_dir "${CMAKE_BINARY_DIR}/cpack/${name}/${generator}")
+  set(cpack_source_dir "${CMAKE_BINARY_DIR}/cpack/${name}/${generator}")
+  set(cpack_build_dir "${cpack_source_dir}/build")
   configure_file(
     "${_superbuild_packaging_cmake_dir}/superbuild_package_cmakelists.cmake.in"
-    "${cpack_working_dir}/CMakeLists.txt"
+    "${cpack_source_dir}/CMakeLists.txt"
     @ONLY)
+
+  file(MAKE_DIRECTORY "${cpack_build_dir}")
 
   add_test(
     NAME    "cpack-${name}-${generator}"
@@ -39,9 +42,10 @@ function (superbuild_add_extra_package_test name generator)
             -Dcmake_generator=${CMAKE_GENERATOR}
             -Dcpack_generator=${generator}
             -Doutput_directory=${CMAKE_BINARY_DIR}
-            -Dworking_directory=${cpack_working_dir}
+            -Dsource_directory=${cpack_source_dir}
+            -Dbuild_directory=${cpack_build_dir}
             -P "${_superbuild_packaging_cmake_dir}/scripts/package_test.cmake"
-    WORKING_DIRECTORY "${cpack_working_dir}")
+    WORKING_DIRECTORY "${cpack_build_dir}")
 
   set_tests_properties("cpack-${name}-${generator}"
     PROPERTIES
