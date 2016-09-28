@@ -6,4 +6,5 @@ superbuild_add_project(szip
 superbuild_apply_patch(szip install-ricehdf.h
   "Fix CMake script to install ricehdf5.h")
 
-include(szip.common)
+superbuild_apply_patch(szip add-filename-component-win32
+  "Fix get_filename_component call")
