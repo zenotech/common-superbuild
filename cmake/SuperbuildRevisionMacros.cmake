@@ -99,4 +99,9 @@ function (superbuild_set_external_source name git_repo git_tag tarball_url tarba
 
   superbuild_set_customizable_revision("${name}"
     ${args})
+
+  # Push the cmake_dependent_option to the parent scope.
+  set("${name}_FROM_SOURCE_DIR"
+    "${${name}_FROM_SOURCE_DIR}"
+    PARENT_SCOPE)
 endfunction ()
