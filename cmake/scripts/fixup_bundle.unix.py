@@ -44,6 +44,7 @@ class Library(object):
         self._dependencies = None
         self._rpaths = None
         self._runpaths = None
+        self._is_cached = False
 
     def __hash__(self):
         return self._path.__hash__()
@@ -53,6 +54,10 @@ class Library(object):
 
     def __repr__(self):
         return 'Library(%s : %s)' % (self.id, self.path)
+
+    @property
+    def is_cached(self):
+        return self._is_cached
 
     @property
     def path(self):
@@ -285,6 +290,7 @@ class Library(object):
         library = Library(path)
         library._dependencies = {}
         library._symlinks = []
+        library._is_cached = True
 
         cls.__cache[path] = library
         return cls.__cache[path]
@@ -307,6 +313,9 @@ class Executable(Module):
 
 
 def copy_library(destination, libdir, library, dry_run=False):
+    if library._is_cached:
+        return
+
     print 'Copying %s ==> %s' % (library.path, libdir)
 
     app_dest = os.path.join(destination, libdir)
