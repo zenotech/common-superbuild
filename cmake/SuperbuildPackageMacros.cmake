@@ -26,11 +26,18 @@ function (superbuild_add_extra_package_test name generator)
       "${superbuild_extra_variables}set(\"${variable}\" \"${${variable}}\")\n")
   endforeach ()
 
-  set(cpack_working_dir "${CMAKE_BINARY_DIR}/cpack/${name}/${generator}")
+  set(cpack_source_dir "${CMAKE_BINARY_DIR}/cpack/${name}/${generator}")
+  set(cpack_build_dir "${cpack_source_dir}/build")
   configure_file(
     "${_superbuild_packaging_cmake_dir}/superbuild_package_cmakelists.cmake.in"
-    "${cpack_working_dir}/CMakeLists.txt"
+    "${cpack_source_dir}/CMakeLists.txt"
     @ONLY)
+
+  file(MAKE_DIRECTORY "${cpack_build_dir}")
+
+  set_property(GLOBAL APPEND
+    PROPERTY
+      _superbuild_packages "${name}/${generator}")
 
   add_test(
     NAME    "cpack-${name}-${generator}"
@@ -39,14 +46,70 @@ function (superbuild_add_extra_package_test name generator)
             -Dcmake_generator=${CMAKE_GENERATOR}
             -Dcpack_generator=${generator}
             -Doutput_directory=${CMAKE_BINARY_DIR}
-            -Dworking_directory=${cpack_working_dir}
+            -Dsource_directory=${cpack_source_dir}
+            -Dbuild_directory=${cpack_build_dir}
             -P "${_superbuild_packaging_cmake_dir}/scripts/package_test.cmake"
-    WORKING_DIRECTORY "${cpack_working_dir}")
+    WORKING_DIRECTORY "${cpack_build_dir}")
 
   set_tests_properties("cpack-${name}-${generator}"
     PROPERTIES
       RESOURCE_LOCK cpack
       ${ARGN})
+endfunction ()
+
+# Add a "superbuild-install" target to install one of the packages.
+#
+# This function adds a target which acts like "make install" for a selected
+# package.
+#
+# The ``default`` argument is used as the default package to build and the
+# cache editors use the list of available packages as the selection choices for
+# the ``SUPERBUILD_DEFAULT_INSTALL`` variable.
+function (superbuild_enable_install_target default)
+  get_property(all_packages GLOBAL
+    PROPERTY _superbuild_packages)
+
+  set(SUPERBUILD_DEFAULT_INSTALL "${default}"
+    CACHE STRING "The package to install by default")
+  set_property(CACHE SUPERBUILD_DEFAULT_INSTALL
+    PROPERTY
+      STRINGS "${all_packages}")
+
+  if (SUPERBUILD_DEFAULT_INSTALL)
+    set(cpack_source_dir "${CMAKE_BINARY_DIR}/cpack/${SUPERBUILD_DEFAULT_INSTALL}")
+    set(cpack_build_dir "${cpack_source_dir}/install")
+    file(MAKE_DIRECTORY "${cpack_build_dir}")
+
+    if (NOT EXISTS "${cpack_source_dir}")
+      message(FATAL_ERROR
+        "The ${SUPERBUILD_DEFAULT_INSTALL} package does not exist; it cannot "
+        "be used as the default \"install\" target.")
+    endif ()
+
+    install(CODE
+      "file(MAKE_DIRECTORY \"${cpack_build_dir}\")
+  execute_process(
+    COMMAND \"${CMAKE_COMMAND}\"
+            \"-DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}\"
+            \"${cpack_source_dir}\"
+    RESULT_VARIABLE   res
+    WORKING_DIRECTORY \"${cpack_build_dir}\")
+
+  if (res)
+    message(FATAL_ERROR \"Failed to configure the ${SUPERBUILD_DEFAULT_INSTALL} package.\")
+  endif ()
+
+  execute_process(
+    COMMAND \"${CMAKE_COMMAND}\"
+            --build \"${cpack_build_dir}\"
+            --target install
+    RESULT_VARIABLE res)
+
+  if (res)
+    message(FATAL_ERROR \"Failed to install the ${SUPERBUILD_DEFAULT_INSTALL} package.\")
+  endif ()"
+      COMPONENT install)
+  endif ()
 endfunction ()
 
 # DEPRECATED

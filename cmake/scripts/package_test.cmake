@@ -1,9 +1,9 @@
 execute_process(
   COMMAND "${CMAKE_COMMAND}"
           -G "${cmake_generator}"
-          "${working_directory}"
+          "${source_directory}"
   RESULT_VARIABLE   res
-  WORKING_DIRECTORY "${working_directory}")
+  WORKING_DIRECTORY "${build_directory}")
 
 if (res)
   message(FATAL_ERROR "CMake failed with exit code ${res}")
@@ -15,7 +15,7 @@ execute_process(
           -G "${cpack_generator}"
           -B "${output_directory}"
   RESULT_VARIABLE   res
-  WORKING_DIRECTORY "${working_directory}")
+  WORKING_DIRECTORY "${build_directory}")
 
 if (res)
   message(FATAL_ERROR "CPack failed with exit code ${res}")
