@@ -21,7 +21,7 @@ superbuild_add_project(fontconfig
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND
-    $(MAKE) install-exec
+    $(MAKE) install-exec install-pkgconfigDATA
   PROCESS_ENVIRONMENT
     LIBXML2_CFLAGS -I<INSTALL_DIR>/include/libxml2
     LIBXML2_LIBS -lxml2)
