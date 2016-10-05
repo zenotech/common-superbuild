@@ -16,7 +16,7 @@ install(
   DESTINATION "lib")
 install(
   FILES       "${superbuild_install_location}/lib/python27.lib"
-  DESTINATION "bin/Lib")
+  DESTINATION "bin/libs")
 
 include(python.functions)
 superbuild_install_superbuild_python()
