@@ -263,8 +263,8 @@ function (superbuild_apply_patch _name _patch _comment)
               --whitespace=fix
               -p1
               "${CMAKE_CURRENT_LIST_DIR}/patches/${_name}-${_patch}.patch"
-    DEPENDEES update
-    DEPENDERS patch
+    DEPENDEES patch
+    DEPENDERS configure
     COMMENT   "${_comment}"
     WORKING_DIRECTORY <SOURCE_DIR>)
 endfunction ()
