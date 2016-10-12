@@ -13,7 +13,6 @@ superbuild_add_project(fontconfig
       --disable-docs
       --enable-libxml2
       ${fontconfig_shared_args}
-      --with-freetype-config=<INSTALL_DIR>/bin/freetype-config
 
       # Use the system configuration and cachedirs.
       --sysconfdir=/etc
@@ -23,5 +22,4 @@ superbuild_add_project(fontconfig
   INSTALL_COMMAND
     $(MAKE) install-exec install-pkgconfigDATA
   PROCESS_ENVIRONMENT
-    LIBXML2_CFLAGS -I<INSTALL_DIR>/include/libxml2
-    LIBXML2_LIBS -lxml2)
+    PKG_CONFIG_PATH <INSTALL_DIR/lib/pkgconfig)
