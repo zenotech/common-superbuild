@@ -22,4 +22,4 @@ superbuild_add_project(fontconfig
   INSTALL_COMMAND
     $(MAKE) install-exec install-pkgconfigDATA
   PROCESS_ENVIRONMENT
-    PKG_CONFIG_PATH <INSTALL_DIR/lib/pkgconfig)
+    PKG_CONFIG_PATH <INSTALL_DIR>/lib/pkgconfig)
