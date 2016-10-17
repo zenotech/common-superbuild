@@ -111,15 +111,11 @@ endfunction ()
 # Usage:
 #
 #   superbuild_set_selectable_source(<name>
-#     <SELECT <selection_name> [DEFAULT]
+#     <SELECT <selection_name> [DEFAULT] [CUSTOMIZABLE]
 #       <args...>>...)
 #
 # This may be used to provide multiple ways to build a project:
 #
-#   set(myproject_git_tag "origin/master"
-#     CACHE STRING "The git tag or hash to use")
-#   set(myproject_path "path/to/local/directory"
-#     CACHE STRING "The source directory to use")
 #   superbuild_set_selectable_source(myproject
 #     SELECT v1.0
 #       URL     "https://hostname/path/to/myproject-1.0.tar.gz"
@@ -127,16 +123,17 @@ endfunction ()
 #     SELECT v2.0 DEFAULT
 #       URL     "https://hostname/path/to/myproject-2.0.tar.gz"
 #       URL_MD5 00000000000000000000000000000000
-#     SELECT git
+#     SELECT git CUSTOMIZABLE
 #       GIT_REPOSITORY  "https://path/to/myproject.git"
-#       GIT_TAG         "${myproject_git_tag}"
-#     SELECT source
-#       SOURCE_DIR  "${myproject_path}")
+#       GIT_TAG         "origin/master"
+#     SELECT source CUSTOMIZABLE
+#       SOURCE_DIR  "path/to/local/directory")
 #
 # This will create a variable in the cache named ``${name}_SOURCE_SELECTION``
 # which may be used to select one of the sources.
 function (superbuild_set_selectable_source name)
   set(selections)
+  set(customizable_selections)
 
   set(selection_name)
   set(selection_args)
@@ -191,6 +188,21 @@ function (superbuild_set_selectable_source name)
       endif ()
 
       set(default_selection "${selection_name}")
+    elseif (arg STREQUAL "CUSTOMIZABLE")
+      # Error out if CUSTOMIZABLE is not after a name.
+      if (NOT selection_name)
+        message(FATAL_ERROR
+          "A `CUSTOMIZABLE` specifier must come after a selection name.")
+      endif ()
+
+      # Error out if CUSTOMIZABLE is not before the args.
+      if (selection_args)
+        message(FATAL_ERROR
+          "A `CUSTOMIZABLE` specifier must come before the selection args.")
+      endif ()
+
+      list(APPEND customizable_selections
+        "${selection_name}")
     elseif (grab)
       # Store the argument.
       list(APPEND "${grab}"
@@ -235,6 +247,14 @@ function (superbuild_set_selectable_source name)
       "The ${selection} source selection for ${name} does not exist.")
   endif ()
 
-  superbuild_set_revision("${name}"
-    ${selection_${selection}_args})
+  # See if the selection is customizable.
+  list(FIND customizable_selections "${selection}" idx)
+
+  if (idx EQUAL "-1")
+    superbuild_set_revision("${name}"
+      ${selection_${selection}_args})
+  else ()
+    superbuild_set_customizable_revision("${name}"
+      ${selection_${selection}_args})
+  endif ()
 endfunction ()
