@@ -105,3 +105,136 @@ function (superbuild_set_external_source name git_repo git_tag tarball_url tarba
     "${${name}_FROM_SOURCE_DIR}"
     PARENT_SCOPE)
 endfunction ()
+
+# A way to provide selections for a project's source.
+#
+# Usage:
+#
+#   superbuild_set_selectable_source(<name>
+#     <SELECT <selection_name> [DEFAULT]
+#       <args...>>...)
+#
+# This may be used to provide multiple ways to build a project:
+#
+#   set(myproject_git_tag "origin/master"
+#     CACHE STRING "The git tag or hash to use")
+#   set(myproject_path "path/to/local/directory"
+#     CACHE STRING "The source directory to use")
+#   superbuild_set_selectable_source(myproject
+#     SELECT v1.0
+#       URL     "https://hostname/path/to/myproject-1.0.tar.gz"
+#       URL_MD5 00000000000000000000000000000000
+#     SELECT v2.0 DEFAULT
+#       URL     "https://hostname/path/to/myproject-2.0.tar.gz"
+#       URL_MD5 00000000000000000000000000000000
+#     SELECT git
+#       GIT_REPOSITORY  "https://path/to/myproject.git"
+#       GIT_TAG         "${myproject_git_tag}"
+#     SELECT source
+#       SOURCE_DIR  "${myproject_path}")
+#
+# This will create a variable in the cache named ``${name}_SOURCE_SELECTION``
+# which may be used to select one of the sources.
+function (superbuild_set_selectable_source name)
+  set(selections)
+
+  set(selection_name)
+  set(selection_args)
+  set(default_selection)
+  set(first_selection)
+  set(selects_with)
+
+  set(grab)
+
+  foreach (arg IN LISTS ARGN)
+    if (arg STREQUAL "SELECT")
+      if (selection_name)
+        # Store the first selection.
+        if (NOT first_selection)
+          set(first_selection "${selection_name}")
+        endif ()
+
+        # Make sure there are arguments.
+        if (NOT selection_args)
+          message(FATAL_ERROR
+            "The ${selection_name} is missing arguments")
+        endif ()
+
+        list(APPEND selections
+          "${selection_name}")
+        set("selection_${selection_name}_args"
+          "${selection_args}")
+      endif ()
+
+      # Clear the selection data.
+      set(selection_name)
+      set(selection_args)
+
+      set(grab selection_name)
+    elseif (arg STREQUAL "DEFAULT")
+      # Error out on duplicate defaults.
+      if (default_selection)
+        message(FATAL_ERROR
+          "The ${name} package may only have one default source selection.")
+      endif ()
+
+      # Error out if DEFAULT is not after a name.
+      if (NOT selection_name)
+        message(FATAL_ERROR
+          "A `DEFAULT` specifier must come after a selection name.")
+      endif ()
+
+      # Error out if DEFAULT is not before the args.
+      if (selection_args)
+        message(FATAL_ERROR
+          "A `DEFAULT` specifier must come before the selection args.")
+      endif ()
+
+      set(default_selection "${selection_name}")
+    elseif (grab)
+      # Store the argument.
+      list(APPEND "${grab}"
+        "${arg}")
+
+      # If we just got the name, store future arguments in the arguments.
+      if (grab STREQUAL "selection_name")
+        set(grab selection_args)
+      endif ()
+    endif ()
+  endforeach ()
+
+  if (selection_args)
+    set("selection_${selection_name}_args"
+      "${selection_args}")
+    set(selection_args)
+  endif ()
+
+  # Check that there's at least one selection.
+  if (NOT selections)
+    message(FATAL_ERROR
+      "The ${name} project did not provide any selections")
+  endif ()
+
+  # Use the first as the default if one was not specified.
+  if (NOT default_selection)
+    message(WARNING
+      "Using the ${first_selection} selection as the default for ${name} "
+      "because no default was specified.")
+    set(default_selection "${first_selection}")
+  endif ()
+
+  set("${name}_SOURCE_SELECTION" "${default_selection}"
+    CACHE STRING "The source selection for ${name}")
+  set_property(CACHE "${name}_SOURCE_SELECTION"
+    PROPERTY
+      STRINGS "${selections}")
+  set(selection "${${name}_SOURCE_SELECTION}")
+
+  if (NOT selection_${selection}_args)
+    message(FATAL_ERROR
+      "The ${selection} source selection for ${name} does not exist.")
+  endif ()
+
+  superbuild_set_revision("${name}"
+    ${selection_${selection}_args})
+endfunction ()
