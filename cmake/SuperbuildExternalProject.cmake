@@ -37,6 +37,13 @@ set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
   PROPERTY
     EP_INDEPENDENT_STEP_TARGETS "download;update")
 
+option(SUPERBUILD_OFFLINE_BUILD "Do not update git repositories during the build" OFF)
+if (SUPERBUILD_OFFLINE_BUILD)
+  set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    PROPERTY
+      EP_UPDATE_DISCONNECTED ON)
+endif ()
+
 # Version of the function which strips PROCESS_ENVIRONMENT arguments for
 # ExternalProject_add.
 function (_superbuild_ep_strip_extra_arguments name)
