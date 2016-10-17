@@ -31,6 +31,12 @@ endif ()
 string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
   _ep_keywords__superbuild_ExternalProject_add "${_ep_keywords_ExternalProject_Add}")
 
+add_custom_target(download-all)
+
+set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+  PROPERTY
+    EP_INDEPENDENT_STEP_TARGETS "download;update")
+
 # Version of the function which strips PROCESS_ENVIRONMENT arguments for
 # ExternalProject_add.
 function (_superbuild_ep_strip_extra_arguments name)
@@ -166,6 +172,11 @@ function (_superbuild_ExternalProject_add name)
   # Quote args to keep empty list elements around so that we properly parse
   # empty install, configure, build, etc.
   ExternalProject_add("${name}" "${args}")
+
+  if (TARGET "${name}-download")
+    add_dependencies(download-all
+      "${name}-download")
+  endif ()
 
   # Configure the scripts after the call ExternalProject_add() since that sets
   # up the directories correctly.
