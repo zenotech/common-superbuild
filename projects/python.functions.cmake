@@ -169,5 +169,13 @@ function (superbuild_install_superbuild_python)
       MODULES             ${modules} ${_install_superbuild_python_MODULES}
       MODULE_DIRECTORIES  "${superbuild_install_location}/lib/python2.7"
                           "${superbuild_install_location}/lib/python2.7/lib-dynload")
+
+    set(lib_dynload_directory "${CMAKE_CURRENT_BINARY_DIR}/python/lib-dynload")
+    file(REMOVE_RECURSE "${lib_dynload_directory}")
+    file(MAKE_DIRECTORY "${lib_dynload_directory}")
+    install(
+      DIRECTORY   "${lib_dynload_directory}/"
+      DESTINATION "lib/python2.7/lib-dynload"
+      COMPONENT   "superbuild")
   endif ()
 endfunction ()
