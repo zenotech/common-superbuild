@@ -2096,6 +2096,7 @@ Update to Mercurial >= 2.1.1.
     ${uses_terminal}
     )
 
+  set_property(TARGET ${name} PROPERTY _EP_UPDATE_ALWAYS ${always})
   if(always AND update_disconnected)
     _ep_get_step_stampfile(${name} skip-update skip-update_stamp_file)
     string(REPLACE "Performing" "Skipping" comment "${comment}")
@@ -2256,7 +2257,8 @@ function(_ep_add_configure_command name)
   else()
     get_property(update_disconnected DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED)
   endif()
-  if(update_disconnected)
+  get_property(always_update TARGET ${name} PROPERTY _EP_UPDATE_ALWAYS)
+  if(always_update AND update_disconnected)
     set(update_dep skip-update)
   else()
     set(update_dep update)
