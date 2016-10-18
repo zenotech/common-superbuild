@@ -112,7 +112,7 @@ endfunction ()
 #
 #   superbuild_set_selectable_source(<name>
 #     [SELECTS_WITH <parent_name>]
-#     <SELECT <selection_name> [DEFAULT] [CUSTOMIZABLE]
+#     <SELECT <selection_name> [DEFAULT] [CUSTOMIZABLE] [FALLBACK]
 #       <args...>>...)
 #
 # This may be used to provide multiple ways to build a project:
@@ -138,7 +138,7 @@ endfunction ()
 #     SELECT v2.0
 #       URL     "https://hostname/path/to/myprojectdocs-2.0.tar.gz"
 #       URL_MD5 00000000000000000000000000000000
-#     SELECT git
+#     SELECT git FALLBACK
 #       GIT_REPOSITORY  "https://path/to/myprojectdocs.git"
 #       GIT_TAG         "origin/master")
 #
@@ -147,7 +147,9 @@ endfunction ()
 #
 # If ``SELECTS_WITH`` is given, the selection of the ``<parent_name>`` will be
 # used as the selection for this project as well. The ``DEFAULT`` keyword may
-# not be used in projects which use ``SELECTS_WITH``.
+# not be used in projects which use ``SELECTS_WITH``. Instead, the ``FALLBACK``
+# keyword may be used to indicate that that selection should be used if there
+# is not a matching selection in this project.
 function (superbuild_set_selectable_source name)
   set(selections)
   set(customizable_selections)
@@ -155,6 +157,7 @@ function (superbuild_set_selectable_source name)
   set(selection_name)
   set(selection_args)
   set(default_selection)
+  set(fallback_selection)
   set(first_selection)
   set(selects_with)
 
@@ -223,6 +226,32 @@ function (superbuild_set_selectable_source name)
       endif ()
 
       set(default_selection "${selection_name}")
+    elseif (arg STREQUAL "FALLBACK")
+      # Error out on duplicate fallbacks.
+      if (fallback_selection)
+        message(FATAL_ERROR
+          "The ${name} package may only have one fallback source selection.")
+      endif ()
+
+      # Error out if FALLBACK is not after a name.
+      if (NOT selection_name)
+        message(FATAL_ERROR
+          "A `FALLBACK` specifier must come after a selection name.")
+      endif ()
+
+      # Error out if FALLBACK is not before the args.
+      if (selection_args)
+        message(FATAL_ERROR
+          "A `FALLBACK` specifier must come before the selection args.")
+      endif ()
+
+      # Error out if we're using a separate selection.
+      if (NOT selects_with)
+        message(FATAL_ERROR
+          "A `FALLBACK` selection is only allowed with `SELECTS_WITH`.")
+      endif ()
+
+      set(fallback_selection "${selection_name}")
     elseif (arg STREQUAL "CUSTOMIZABLE")
       # Error out if CUSTOMIZABLE is not after a name.
       if (NOT selection_name)
@@ -275,6 +304,13 @@ function (superbuild_set_selectable_source name)
 
   if (selects_with)
     set(selection "${${selects_with}_SOURCE_SELECTION}")
+
+    if (NOT selection_${selection}_args AND fallback_selection)
+      set(selection "${fallback_selection}")
+    endif ()
+
+    set("${name}_SOURCE_SELECTION" "${selection}"
+      CACHE INTERNAL "The source selection for ${name}; based off of ${selects_with}")
   else ()
     set("${name}_SOURCE_SELECTION" "${default_selection}"
       CACHE STRING "The source selection for ${name}")
