@@ -35,3 +35,11 @@ include(boost.common)
 # remove the code which creates such things here.
 superbuild_apply_patch(boost no-junction-test
   "Assume junctions work on Windows")
+
+superbuild_project_add_step(boost-copylibs
+  COMMAND   "${CMAKE_COMMAND}"
+            -Dinstall_location:PATH=<INSTALL_DIR>
+            -P "${CMAKE_CURRENT_LIST_DIR}/scripts/boost.copylibs.cmake"
+  DEPENDEES install
+  COMMENT   "Copy .dll files to the bin/ directory"
+  WORKING_DIRECTORY <SOURCE_DIR>)
