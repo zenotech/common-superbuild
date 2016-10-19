@@ -843,6 +843,9 @@ function (_superbuild_write_developer_mode_cache name)
       "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}")
   endif ()
 
+  list(APPEND cmake_args
+    "-DSUPERBUILD_DEVELOPER_MODE_ROOT:PATH=${superbuild_prefix_path}")
+
   superbuild_osx_pass_version_flags(apple_args)
   _superbuild_fetch_cmake_args("${name}" cmake_dep_args)
   list(APPEND cmake_args
