@@ -212,6 +212,11 @@ endfunction ()
 # Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
 # to search for dependent libraries.
 function (superbuild_unix_install_plugin name libdir paths)
+  if (IS_ABSOLUTE "${name}")
+    _superbuild_unix_install_module("${name}" "${paths}" "${libdir}" ${ARGN})
+    return ()
+  endif ()
+
   set(found FALSE)
   foreach (path IN LISTS paths)
     if (EXISTS "${superbuild_install_location}/${path}/${name}")
@@ -640,16 +645,23 @@ endfunction ()
 # relative to the install's root directory. The required libraries are
 # installed beside the plugin.
 function (superbuild_windows_install_plugin name destination paths)
-  set(bin_var "bin")
-  foreach (path IN LISTS bin_var paths)
-    if (EXISTS "${superbuild_install_location}/${path}/${name}")
-      install(
-        FILES       "${superbuild_install_location}/${path}/${name}"
-        DESTINATION "${destination}"
-        COMPONENT   superbuild)
-      break ()
-    endif ()
-  endforeach ()
+  if (IS_ABSOLUTE "${name}")
+    install(
+      FILES       "${name}"
+      DESTINATION "${destination}"
+      COMPONENT   superbuild)
+  elseif ()
+    set(bin_var "bin")
+    foreach (path IN LISTS bin_var paths)
+      if (EXISTS "${superbuild_install_location}/${path}/${name}")
+        install(
+          FILES       "${superbuild_install_location}/${path}/${name}"
+          DESTINATION "${destination}"
+          COMPONENT   superbuild)
+        break ()
+      endif ()
+    endforeach ()
+  endif ()
 
   _superbuild_windows_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
 endfunction ()
