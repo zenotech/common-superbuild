@@ -216,6 +216,8 @@ class Library(object):
             pipe = Pipeline([
                     'ldconfig',
                     '-v',
+                    '-N', # Don't rebuild the cache.
+                    '-X', # Don't update links.
                 ], [
                     'grep',
                     '-v',
