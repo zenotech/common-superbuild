@@ -10,9 +10,13 @@ foreach (extra_path IN LISTS extra_paths)
   endif ()
 endforeach ()
 
-find_file(executable
-  NAMES "${executable_name}"
-  PATHS ${library_paths})
+if (IS_ABSOLUTE "${executable_name}")
+  set(executable "${executable_name}")
+else ()
+  find_file(executable
+    NAMES "${executable_name}"
+    PATHS ${library_paths})
+endif ()
 
 if (NOT executable)
   message(FATAL_ERROR "Failed to find the ${executable_name} executable")
