@@ -282,9 +282,24 @@ function (superbuild_set_selectable_source name)
     endif ()
   endforeach ()
 
-  if (selection_args)
+  if (selection_name)
+    # Store the first selection.
+    if (NOT first_selection)
+      set(first_selection "${selection_name}")
+    endif ()
+
+    # Make sure there are arguments.
+    if (NOT selection_args)
+      message(FATAL_ERROR
+        "The ${selection_name} is missing arguments")
+    endif ()
+
+    list(APPEND selections
+      "${selection_name}")
     set("selection_${selection_name}_args"
       "${selection_args}")
+
+    set(selection_name)
     set(selection_args)
   endif ()
 
