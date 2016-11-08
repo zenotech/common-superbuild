@@ -652,7 +652,7 @@ function (superbuild_windows_install_plugin name destination paths)
       FILES       "${name}"
       DESTINATION "${destination}"
       COMPONENT   superbuild)
-  elseif ()
+  else ()
     set(bin_var "bin")
     foreach (path IN LISTS bin_var paths)
       if (EXISTS "${superbuild_install_location}/${path}/${name}")
