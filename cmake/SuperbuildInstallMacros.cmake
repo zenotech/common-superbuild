@@ -645,15 +645,18 @@ endfunction ()
 # relative to the install's root directory. The required libraries are
 # installed beside the plugin.
 function (superbuild_windows_install_plugin name destination paths)
+  set(found FALSE)
   if (IS_ABSOLUTE "${name}")
+    set(found TRUE)
     install(
       FILES       "${name}"
       DESTINATION "${destination}"
       COMPONENT   superbuild)
-  elseif ()
+  else ()
     set(bin_var "bin")
     foreach (path IN LISTS bin_var paths)
       if (EXISTS "${superbuild_install_location}/${path}/${name}")
+        set(found TRUE)
         install(
           FILES       "${superbuild_install_location}/${path}/${name}"
           DESTINATION "${destination}"
@@ -661,6 +664,10 @@ function (superbuild_windows_install_plugin name destination paths)
         break ()
       endif ()
     endforeach ()
+  endif ()
+
+  if (NOT found)
+    message(FATAL_ERROR "Unable to find the actual plugin for ${name}")
   endif ()
 
   _superbuild_windows_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
