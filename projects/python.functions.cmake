@@ -85,9 +85,9 @@ function (superbuild_install_superbuild_python)
 
     # internet protocol and support
     webbrowser urllib urllib2 httplib uuid urlparse cgi cookielib xmlrpclib
+    BaseHTTPServer SimpleHTTPServer SimpleXMLRPCServer SocketServer
     #cgitb wsgiref ftplib poplib imaplib nntplib smtplib smtpd telnetlib
-    #SocketServer BaseHTTPServer SimpleHTTPServer CGIHTTPServer
-    #Cookie SimpleXMLRPCServer DocXMLRPCServer
+    #CGIHTTPServer Cookie DocXMLRPCServer
 
     _LWPCookieJar _MozillaCookieJar
 
