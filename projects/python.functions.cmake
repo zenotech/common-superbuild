@@ -34,49 +34,51 @@ function (superbuild_install_superbuild_python)
     # file and directory access
     fileinput stat statvfs filecmp tempfile glob fnmatch linecache shutil
     dircache
-    #macpath
+    macpath
 
     # os.path (part of os below), but needs these:
     genericpath ntpath nturl2path posixpath
 
     # data persistence
     pickle cPickle copy_reg shelve
-    #marshal anydbm whichdb dbm gdbm dbhash bsddb dumbdbm sqlite3
+    marshal anydbm whichdb dbm gdbm dbhash bsddb dumbdbm sqlite3
 
     # data compression and archiving
     zlib gzip bz2 zipfile tarfile
 
     # file formats
     csv ConfigParser
-    #robotparser netrc xdrlib plistlib
+    robotparser netrc xdrlib plistlib
+
+    _csv
 
     # crypto services
     hashlib hmac
-    #md5 sha
+    md5 sha
 
     _hashlib _sha _md5 _sha256 _sha512
 
     # os services
     os io time argparse optparse getopt logging getpass platform errno
     ctypes fcntl
-    # curses
+    curses
 
     _ctypes _io
 
     threading multiprocessing select thread mmap dummy_threading
-    #dummy_thread readline rlcompleter
+    dummy_thread readline rlcompleter
 
     _multiprocessing
 
     # ipc and networking
     subprocess socket signal popen2
-    #ssl asyncore asynchat
+    ssl asyncore asynchat
     _socket
 
     # internet data handling
     email json mimetools mimetypes MimeWriter multifile rfc822 base64 binhex
     binascii quopri uu
-    #mailcap mailbox mhlib mimify
+    mailcap mailbox mhlib mimify
 
     # markup tools
     HTMLParser sgmllib htmllib htmlentitydefs xml
@@ -86,13 +88,13 @@ function (superbuild_install_superbuild_python)
     # internet protocol and support
     webbrowser urllib urllib2 httplib uuid urlparse cgi cookielib xmlrpclib
     BaseHTTPServer SimpleHTTPServer SimpleXMLRPCServer SocketServer
-    #cgitb wsgiref ftplib poplib imaplib nntplib smtplib smtpd telnetlib
-    #CGIHTTPServer Cookie DocXMLRPCServer
+    cgitb wsgiref ftplib poplib imaplib nntplib smtplib smtpd telnetlib
+    CGIHTTPServer Cookie DocXMLRPCServer
 
     _LWPCookieJar _MozillaCookieJar
 
     # multimedia services
-    #audioop imageop aifc sunau wave chunk colorsys imghdr sndhdr ossaudiodev
+    audioop imageop aifc sunau wave chunk colorsys imghdr sndhdr ossaudiodev
 
     # i18n
     locale gettext
@@ -101,23 +103,23 @@ function (superbuild_install_superbuild_python)
     cmd shlex
 
     # gui modules (tk)
-    #Tkinter ttk Tix ScrolledText turtle
+    Tkinter ttk Tix ScrolledText turtle
 
     # development tools
     pydoc doctest unittest test
 
     # debugging and profiling
     bdb pdb
-    #hotshot timeit trace
+    hotshot timeit trace
 
     # software packaging and distribution
     distutils
-    #ensurepip
+    ensurepip
 
     # python runtime services
     sys sysconfig __builtin__ future_builtins __main__ warnings contextlib abc
     atexit traceback __future__ gc inspect site user
-    #fpectl
+    fpectl
 
     _abcoll _sysconfigdata opcode
 
@@ -125,7 +127,7 @@ function (superbuild_install_superbuild_python)
     code codeop
 
     # restricted execution
-    #rexec Bastion
+    rexec Bastion
 
     # importing modules
     imp importlib imputil zipimport pkgutil modulefinder runpy
@@ -138,16 +140,16 @@ function (superbuild_install_superbuild_python)
     formatter
 
     # windows services
-    #msilib msvcrt _winreg winsound
+    msilib msvcrt _winreg winsound
 
     # unix services
     commands
-    # posix pwd spwd grp crypt dl termios tty pty fnctl pipes posixfile
-    # resource nis syslog
+    posix pwd spwd grp crypt dl termios tty pty fnctl pipes posixfile
+    resource nis syslog
 
     # os x services
-    #ic MacOS macostools findertools EasyDialogs FrameWork autoGIL ColorPicker
-    #gensuitemodule aetools aepack aetypes MiniAEFrame
+    ic MacOS macostools findertools EasyDialogs FrameWork autoGIL ColorPicker
+    gensuitemodule aetools aepack aetypes MiniAEFrame
 
     # irix services
     #al AL cd fl FL flp fm gl DEVICE GL imgfile jpeg
