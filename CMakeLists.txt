@@ -123,6 +123,11 @@ endif ()
 if (COMMAND superbuild_add_packaging)
   include(SuperbuildPackageMacros)
 
+  if (superbuild_python_executable)
+    set(superbuild_export_variables
+      superbuild_python_executable)
+  endif ()
+
   superbuild_add_packaging()
 endif ()
 
