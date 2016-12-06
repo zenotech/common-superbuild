@@ -65,7 +65,14 @@ function (superbuild_detect_version_git var source_dir default)
   endif ()
 
   if (result)
-    set(output "${default}")
+    set(version_file "${source_dir}/${version_file}")
+    if (source_dir AND version_file AND EXISTS "${version_file}")
+      # Read the first line from the version file as the version number.
+      file(STRINGS "${version_file}" output
+        LIMIT_COUNT 1)
+    else ()
+      set(output "${default}")
+    endif ()
   endif ()
 
   if (output MATCHES "([0-9]+)\\.([0-9]+)\\.([0-9]+)-?(.*)")
@@ -104,12 +111,16 @@ endmacro ()
 # Extracts the version for a project from its source information or falls back
 # to a default.
 #
-#   superbuild_set_version_variables(<project> <default> <include file>)
+#   superbuild_set_version_variables(<project> <default> <include file> [version file])
 #
 # This will write out a file to ``<include file>`` which may be included to set
 # variables related to the versions of the given ``<project>``. If the version
 # cannot be determined (e.g., because the project will be cloned during the
 # build), the default will be used.
+#
+# If there is a source directory to be used for the project, the ``<version
+# file>`` will be used to get the version number. If it is empty or not
+# provided, the default will be used instead.
 #
 # The variables set are:
 #
@@ -128,7 +139,7 @@ function (superbuild_set_version_variables project default include_file)
   if ((NOT ${project}_FROM_GIT AND ${project}_FROM_SOURCE_DIR) OR ${project}_SOURCE_SELECTION STREQUAL "source")
     set(source_dir "${${project}_SOURCE_DIR}")
   endif ()
-  superbuild_detect_version_git("${project}" "${source_dir}" "${default}")
+  superbuild_detect_version_git("${project}" "${source_dir}" "${default}" "${ARGV3}")
 
   _superbuild_set_up("${project}_version" "${${project}_VERSION}")
   _superbuild_set_up("${project}_version_major" "${${project}_VERSION_MAJOR}")
