@@ -138,6 +138,9 @@ endfunction ()
 #       GIT_REPOSITORY  "https://path/to/myprojectdocs.git"
 #       GIT_TAG         "origin/master")
 #
+# Generally, the ``source`` selection should be used to set up an external
+# directory as the source tree for the project.
+#
 # This will create a variable in the cache named ``${name}_SOURCE_SELECTION``
 # which may be used to select one of the sources.
 #
