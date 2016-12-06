@@ -75,6 +75,9 @@ function (superbuild_detect_version_git var source_dir default)
     set(minor "${CMAKE_MATCH_2}")
     set(patch "${CMAKE_MATCH_3}")
     set(patch_extra "${CMAKE_MATCH_4}")
+  else ()
+    message(FATAL_ERROR
+      "Failed to determine the version for ${var}; got ${output}")
   endif ()
 
   if (full)
