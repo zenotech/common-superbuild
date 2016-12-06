@@ -31,9 +31,9 @@ find_package(Git)
 #
 # Arguments are:
 #   var:        prefix for variables e.g. "PARAVIEW".
-#   source_dir: Source directory
-#   default:    (optional) Default value for the version
-function (superbuild_detect_version_git var source_dir)
+#   source_dir: Source directory.
+#   default:    Default value for the version.
+function (superbuild_detect_version_git var source_dir default)
   set(major)
   set(minor)
   set(patch)
@@ -43,17 +43,29 @@ function (superbuild_detect_version_git var source_dir)
 
   if (GIT_FOUND AND source_dir)
     execute_process(
-      COMMAND         "${GIT_EXECUTABLE}" describe
+      COMMAND         "${GIT_EXECUTABLE}"
+                      rev-parse
+                      --is-inside-work-tree
       RESULT_VARIABLE result
       OUTPUT_VARIABLE output
       WORKING_DIRECTORY "${source_dir}"
       ERROR_QUIET
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-      ERROR_STRIP_TRAILING_WHITESPACE)
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    if (NOT result)
+      execute_process(
+        COMMAND         "${GIT_EXECUTABLE}"
+                        describe
+        RESULT_VARIABLE result
+        OUTPUT_VARIABLE output
+        WORKING_DIRECTORY "${source_dir}"
+        ERROR_QUIET
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    endif ()
   endif ()
 
-  if (result AND ARGC GREATER 2)
-    set(output "${ARGV2}")
+  if (result)
+    set(output "${default}")
   endif ()
 
   if (output MATCHES "([0-9]+)\\.([0-9]+)\\.([0-9]+)-?(.*)")
