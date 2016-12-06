@@ -14,26 +14,7 @@
 
 find_package(Git)
 
-#-------------------------------------------------------------------------
-# Used to determine the version for a git repository using "git describe", if
-# git is found. On success sets following variables in caller's scope:
-#
-#   ${var_prefix}_VERSION
-#   ${var_prefix}_VERSION_MAJOR
-#   ${var_prefix}_VERSION_MINOR
-#   ${var_prefix}_VERSION_PATCH
-#   ${var_prefix}_VERSION_PATCH_EXTRA
-#   ${var_prefix}_VERSION_FULL
-#   ${var_prefix}_VERSION_IS_RELEASE is PATCH_EXTRA is empty.
-#
-# If git is not found, or git describe cannot be run successfully, then these
-# variables are left unchanged and status message is printed.
-#
-# Arguments are:
-#   var:        prefix for variables e.g. "PARAVIEW".
-#   source_dir: Source directory.
-#   default:    Default value for the version.
-function (superbuild_detect_version_git var source_dir default)
+function (_superbuild_detect_version_git var source_dir default version_file)
   set(major)
   set(minor)
   set(patch)
@@ -139,7 +120,7 @@ function (superbuild_set_version_variables project default include_file)
   if ((NOT ${project}_FROM_GIT AND ${project}_FROM_SOURCE_DIR) OR ${project}_SOURCE_SELECTION STREQUAL "source")
     set(source_dir "${${project}_SOURCE_DIR}")
   endif ()
-  superbuild_detect_version_git("${project}" "${source_dir}" "${default}" "${ARGV3}")
+  _superbuild_detect_version_git("${project}" "${source_dir}" "${default}" "${ARGV3}")
 
   _superbuild_set_up("${project}_version" "${${project}_VERSION}")
   _superbuild_set_up("${project}_version_major" "${${project}_VERSION_MAJOR}")
