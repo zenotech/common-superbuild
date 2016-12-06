@@ -101,6 +101,28 @@ macro (_superbuild_set_up variable value)
   set("${variable}" "${value}")
 endmacro ()
 
+# Extracts the version for a project from its source information or falls back
+# to a default.
+#
+#   superbuild_set_version_variables(<project> <default> <include file>)
+#
+# This will write out a file to ``<include file>`` which may be included to set
+# variables related to the versions of the given ``<project>``. If the version
+# cannot be determined (e.g., because the project will be cloned during the
+# build), the default will be used.
+#
+# The variables set are:
+#
+#  <project>_version (as ``<major>.<minor>``)
+#  <project>_version_major
+#  <project>_version_minor
+#  <project>_version_patch
+#  <project>_version_patch_extra (e.g., ``rc1``)
+#  <project>_version_suffix (equivalent to ``-<patch_extra>`` if
+#                            ``patch_extra`` is non-empty)
+#  <project>_version_full
+#  <project>_version_is_release (``TRUE`` if the suffix is empty, ``FALSE``
+#                                otherwise)
 function (superbuild_set_version_variables project default include_file)
   set(source_dir "")
   if ((NOT ${project}_FROM_GIT AND ${project}_FROM_SOURCE_DIR) OR ${project}_SOURCE_SELECTION STREQUAL "source")
