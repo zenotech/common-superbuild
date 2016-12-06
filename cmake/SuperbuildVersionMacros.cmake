@@ -103,7 +103,7 @@ endmacro ()
 
 function (superbuild_set_version_variables project default include_file)
   set(source_dir "")
-  if (${project}_SOURCE_SELECTION STREQUAL "source")
+  if ((NOT ${project}_FROM_GIT AND ${project}_FROM_SOURCE_DIR) OR ${project}_SOURCE_SELECTION STREQUAL "source")
     set(source_dir "${${project}_SOURCE_DIR}")
   endif ()
   superbuild_detect_version_git("${project}" "${source_dir}" "${default}")
