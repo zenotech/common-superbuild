@@ -21,3 +21,7 @@ superbuild_apply_patch(netcdf vtk-tag
 
 superbuild_apply_patch(netcdf find-hdf5-hl
   "Fix use of old, undocumented FindHDF5 variable")
+
+# TODO: make this patch work
+#superbuild_apply_patch(netcdf config.h.in.cmake
+#  "Avoid redefining snprintf for VS2015")
