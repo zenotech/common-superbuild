@@ -12,3 +12,7 @@ superbuild_add_project(hdf5
 
 superbuild_add_extra_cmake_args(
   -DVTK_USE_SYSTEM_HDF5:BOOL=ON)
+
+# HDF5 on Windows installs a zlib that gets found this way; avoid using it.
+superbuild_apply_patch(hdf5 no-zlib-config
+  "Do not use a system zlib-config.cmake file")
