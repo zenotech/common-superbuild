@@ -8,7 +8,8 @@ function (superbuild_unix_install_python_module destination module search_paths 
         DESTINATION "${destination}/${location}")
     elseif (EXISTS "${search_path}/${module}.so")
       execute_process(
-        COMMAND "${_superbuild_install_cmake_scripts_dir}/fixup_bundle.unix.py"
+        COMMAND "${superbuild_python_executable}"
+                "${_superbuild_install_cmake_scripts_dir}/fixup_bundle.unix.py"
                 --destination "${bundle_destination}"
                 ${fixup_bundle_arguments}
                 --location    "${location}"

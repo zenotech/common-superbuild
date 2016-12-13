@@ -4,6 +4,20 @@ set_property(GLOBAL PROPERTY
 
 include(CMakeParseArguments)
 
+if (UNIX AND NOT APPLE)
+  if (NOT superbuild_python_executable)
+    find_package(PythonInterp 2.7)
+    if (PYTHONINTERP_FOUND)
+      set(superbuild_python_executable
+        "${PYTHON_EXECUTABLE}")
+    else ()
+      message(FATAL_ERROR
+        "Could not find a Python executable newer than 2.7; one is required "
+        "to create packages on Linux.")
+    endif ()
+  endif ()
+endif ()
+
 # TODO: The functions in this file should be grouped and made OS-agnostic.
 #       Keyword arguments should be used more and be uniform across all
 #       platforms.
@@ -104,7 +118,8 @@ function (_superbuild_unix_install_binary)
 
   install(CODE
     "execute_process(
-      COMMAND \"${_superbuild_install_cmake_dir}/scripts/fixup_bundle.unix.py\"
+      COMMAND \"${superbuild_python_executable}\"
+              \"${_superbuild_install_cmake_dir}/scripts/fixup_bundle.unix.py\"
               ${fixup_bundle_arguments}
               --manifest    \"${CMAKE_BINARY_DIR}/install.manifest\"
               \"${_install_binary_BINARY}\"
