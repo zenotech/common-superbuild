@@ -1,1 +1,1 @@
-*.patch     whitespace=-blank-at-eol -text
+*.patch     whitespace=-blank-at-eol,-space-before-tab -text -crlf
