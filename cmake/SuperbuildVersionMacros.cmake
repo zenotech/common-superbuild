@@ -14,26 +14,7 @@
 
 find_package(Git)
 
-#-------------------------------------------------------------------------
-# Used to determine the version for a git repository using "git describe", if
-# git is found. On success sets following variables in caller's scope:
-#
-#   ${var_prefix}_VERSION
-#   ${var_prefix}_VERSION_MAJOR
-#   ${var_prefix}_VERSION_MINOR
-#   ${var_prefix}_VERSION_PATCH
-#   ${var_prefix}_VERSION_PATCH_EXTRA
-#   ${var_prefix}_VERSION_FULL
-#   ${var_prefix}_VERSION_IS_RELEASE is PATCH_EXTRA is empty.
-#
-# If git is not found, or git describe cannot be run successfully, then these
-# variables are left unchanged and status message is printed.
-#
-# Arguments are:
-#   var:        prefix for variables e.g. "PARAVIEW".
-#   source_dir: Source directory
-#   default:    (optional) Default value for the version
-function (superbuild_detect_version_git var source_dir)
+function (_superbuild_detect_version_git var source_dir default version_file)
   set(major)
   set(minor)
   set(patch)
@@ -43,17 +24,36 @@ function (superbuild_detect_version_git var source_dir)
 
   if (GIT_FOUND AND source_dir)
     execute_process(
-      COMMAND         "${GIT_EXECUTABLE}" describe
+      COMMAND         "${GIT_EXECUTABLE}"
+                      rev-parse
+                      --is-inside-work-tree
       RESULT_VARIABLE result
       OUTPUT_VARIABLE output
       WORKING_DIRECTORY "${source_dir}"
       ERROR_QUIET
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-      ERROR_STRIP_TRAILING_WHITESPACE)
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    if (NOT result)
+      execute_process(
+        COMMAND         "${GIT_EXECUTABLE}"
+                        describe
+        RESULT_VARIABLE result
+        OUTPUT_VARIABLE output
+        WORKING_DIRECTORY "${source_dir}"
+        ERROR_QUIET
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    endif ()
   endif ()
 
-  if (result AND ARGC GREATER 2)
-    set(output "${ARGV2}")
+  if (result)
+    set(version_file "${source_dir}/${version_file}")
+    if (source_dir AND version_file AND EXISTS "${version_file}")
+      # Read the first line from the version file as the version number.
+      file(STRINGS "${version_file}" output
+        LIMIT_COUNT 1)
+    else ()
+      set(output "${default}")
+    endif ()
   endif ()
 
   if (output MATCHES "([0-9]+)\\.([0-9]+)\\.([0-9]+)-?(.*)")
@@ -63,6 +63,9 @@ function (superbuild_detect_version_git var source_dir)
     set(minor "${CMAKE_MATCH_2}")
     set(patch "${CMAKE_MATCH_3}")
     set(patch_extra "${CMAKE_MATCH_4}")
+  else ()
+    message(FATAL_ERROR
+      "Failed to determine the version for ${var}; got ${output}")
   endif ()
 
   if (full)
@@ -86,12 +89,38 @@ macro (_superbuild_set_up variable value)
   set("${variable}" "${value}")
 endmacro ()
 
+# Extracts the version for a project from its source information or falls back
+# to a default.
+#
+#   superbuild_set_version_variables(<project> <default> <include file> [version file])
+#
+# This will write out a file to ``<include file>`` which may be included to set
+# variables related to the versions of the given ``<project>``. If the version
+# cannot be determined (e.g., because the project will be cloned during the
+# build), the default will be used.
+#
+# If there is a source directory to be used for the project, the ``<version
+# file>`` will be used to get the version number. If it is empty or not
+# provided, the default will be used instead.
+#
+# The variables set are:
+#
+#  <project>_version (as ``<major>.<minor>``)
+#  <project>_version_major
+#  <project>_version_minor
+#  <project>_version_patch
+#  <project>_version_patch_extra (e.g., ``rc1``)
+#  <project>_version_suffix (equivalent to ``-<patch_extra>`` if
+#                            ``patch_extra`` is non-empty)
+#  <project>_version_full
+#  <project>_version_is_release (``TRUE`` if the suffix is empty, ``FALSE``
+#                                otherwise)
 function (superbuild_set_version_variables project default include_file)
   set(source_dir "")
-  if (${project}_SOURCE_SELECTION STREQUAL "source")
+  if ((NOT ${project}_FROM_GIT AND ${project}_FROM_SOURCE_DIR) OR ${project}_SOURCE_SELECTION STREQUAL "source")
     set(source_dir "${${project}_SOURCE_DIR}")
   endif ()
-  superbuild_detect_version_git("${project}" "${source_dir}" "${default}")
+  _superbuild_detect_version_git("${project}" "${source_dir}" "${default}" "${ARGV3}")
 
   _superbuild_set_up("${project}_version" "${${project}_VERSION}")
   _superbuild_set_up("${project}_version_major" "${${project}_VERSION_MAJOR}")

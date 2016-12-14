@@ -45,7 +45,7 @@ function (superbuild_set_customizable_revision name)
     if (_args_${key})
       set(option_name "${name}_${key}")
       set(cache_type STRING)
-      if (name STREQUAL "SOURCE_DIR")
+      if (key STREQUAL "SOURCE_DIR")
         set(cache_type PATH)
       endif ()
       superbuild_deprecated_setting(option_default "${option_name}" "${name_UPPER}_${key}" "${_args_${key}}")
@@ -137,6 +137,9 @@ endfunction ()
 #     SELECT git FALLBACK
 #       GIT_REPOSITORY  "https://path/to/myprojectdocs.git"
 #       GIT_TAG         "origin/master")
+#
+# Generally, the ``source`` selection should be used to set up an external
+# directory as the source tree for the project.
 #
 # This will create a variable in the cache named ``${name}_SOURCE_SELECTION``
 # which may be used to select one of the sources.
