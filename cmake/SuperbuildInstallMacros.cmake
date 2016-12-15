@@ -319,7 +319,8 @@ function (superbuild_unix_install_python)
   endforeach ()
 
   install(CODE
-    "include(\"${_superbuild_install_cmake_dir}/scripts/fixup_python.unix.cmake\")
+    "set(superbuild_python_executable \"${superbuild_python_executable}\")
+    include(\"${_superbuild_install_cmake_dir}/scripts/fixup_python.unix.cmake\")
     set(python_modules \"${_install_python_MODULES}\")
     set(module_directories \"${_install_python_MODULE_DIRECTORIES}\")
 
