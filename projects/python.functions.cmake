@@ -42,6 +42,7 @@ function (superbuild_install_superbuild_python)
     # data persistence
     pickle cPickle copy_reg shelve
     marshal anydbm whichdb dbm gdbm dbhash bsddb dumbdbm sqlite3
+    _bsddb
 
     # data compression and archiving
     zlib gzip bz2 zipfile tarfile
@@ -68,12 +69,12 @@ function (superbuild_install_superbuild_python)
     threading multiprocessing select thread mmap dummy_threading
     dummy_thread readline rlcompleter
 
-    _multiprocessing
+    _multiprocessing _threading_local
 
     # ipc and networking
     subprocess socket signal popen2
     ssl asyncore asynchat
-    _socket
+    _socket _ssl
 
     # internet data handling
     email json mimetools mimetypes MimeWriter multifile rfc822 base64 binhex
@@ -128,6 +129,7 @@ function (superbuild_install_superbuild_python)
 
     # restricted execution
     rexec Bastion
+    ihooks
 
     # importing modules
     imp importlib imputil zipimport pkgutil modulefinder runpy
