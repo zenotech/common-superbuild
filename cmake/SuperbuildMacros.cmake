@@ -458,7 +458,7 @@ endfunction ()
 # project files. It uses this information to create the build recipes for all
 # of the projects with the flags propagated and dependencies sorted properly.
 function (superbuild_process_dependencies)
-  set (enabled_projects)
+  set(enabled_projects)
 
   get_property(has_selectable GLOBAL
     PROPERTY superbuild_has_selectable)
