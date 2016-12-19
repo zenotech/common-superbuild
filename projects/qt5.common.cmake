@@ -51,8 +51,7 @@ endif ()
 
 superbuild_add_project(qt5
   CAN_USE_SYSTEM
-  DEPENDS ${qt5_depends} ${qt5_extra_depends}
-  DEPENDS_OPTIONAL cxx11
+  DEPENDS ${qt5_depends} ${qt5_extra_depends} cxx11
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure${qt5_configure_ext}
       -opensource
