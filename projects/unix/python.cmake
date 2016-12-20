@@ -25,8 +25,13 @@ if (NOT CMAKE_CROSSCOMPILING)
     PROJECT_ONLY)
 endif ()
 
-set(superbuild_python_executable "${superbuild_install_location}/bin/python"
-  CACHE INTERNAL "")
+if (python_enabled)
+  set(superbuild_python_executable "${superbuild_install_location}/bin/python"
+    CACHE INTERNAL "")
+else ()
+  set(superbuild_python_executable ""
+    CACHE INTERNAL "")
+endif ()
 
 superbuild_add_extra_cmake_args(
   -DVTK_PYTHON_VERSION=2.7)
