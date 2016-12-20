@@ -380,6 +380,8 @@ def _create_arg_parser():
                         help='do not actually copy files')
     parser.add_argument('-c', '--clean', action='store_true',
                         help='clear out the bundle destination before starting')
+    parser.add_argument('-N', '--new', action='store_true',
+                        help='start a new manifest')
     parser.add_argument('-l', '--location', metavar='PATH', type=str,
                         help='where to place a module within the bundle')
     parser.add_argument('-L', '--libdir', metavar='PATH', type=str, required=True,
@@ -479,7 +481,7 @@ def main(args):
             return True
         return False
 
-    if opts.clean:
+    if opts.new:
         # A new bundle does not have a manifest.
         manifest = {}
     else:

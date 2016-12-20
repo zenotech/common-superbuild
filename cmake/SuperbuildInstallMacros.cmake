@@ -92,8 +92,13 @@ function (_superbuild_unix_install_binary)
   if (_install_binary_CLEAN OR NOT superbuild_has_cleaned)
     set_property(GLOBAL PROPERTY
       superbuild_has_cleaned TRUE)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --clean")
+    if (superbuild_is_install_target)
+      set(fixup_bundle_arguments
+        "${fixup_bundle_arguments} --new")
+    else ()
+      set(fixup_bundle_arguments
+        "${fixup_bundle_arguments} --clean --new")
+    endif ()
   endif ()
 
   if (_install_binary_LOCATION)
@@ -385,8 +390,13 @@ function (superbuild_apple_create_app destination name binary)
   set(fixup_bundle_arguments)
 
   if (_create_app_CLEAN)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --clean")
+    if (superbuild_is_install_target)
+      set(fixup_bundle_arguments
+        "${fixup_bundle_arguments} --new")
+    else ()
+      set(fixup_bundle_arguments
+        "${fixup_bundle_arguments} --clean --new")
+    endif ()
   endif ()
 
   if (_create_app_FAKE_PLUGIN_PATHS)

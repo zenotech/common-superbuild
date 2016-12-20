@@ -91,6 +91,7 @@ function (superbuild_enable_install_target default)
   execute_process(
     COMMAND \"${CMAKE_COMMAND}\"
             \"-DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}\"
+            \"-Dsuperbuild_is_install_target:BOOL=ON\"
             \"${cpack_source_dir}\"
     RESULT_VARIABLE   res
     WORKING_DIRECTORY \"${cpack_build_dir}\")
