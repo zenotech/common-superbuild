@@ -48,7 +48,6 @@ else ()
   list(APPEND qt5_options "-no-openssl")
 endif ()
 
-
 superbuild_add_project(qt5
   CAN_USE_SYSTEM
   DEPENDS ${qt5_depends} ${qt5_extra_depends}

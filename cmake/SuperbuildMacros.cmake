@@ -35,6 +35,10 @@ set(_superbuild_list_separator "-+-")
 #   ``DEBUGGABLE``
 #     If present, an option to change the build type for the project will be
 #     exposed.
+#   ``SELECTABLE``
+#     If present, this project's ``ENABLE_`` option will be visible (and all
+#     non-selectable projects will be hidden). May be set externally with the
+#     ``_superbuild_${name}_selectable`` flag.
 #   ``HELP_STRING``
 #     Set the description string for the option to enable the project.
 #   ``DEPENDS_OPTIONAL <project>...``
@@ -56,9 +60,14 @@ function (superbuild_add_project name)
   set(default "${_superbuild_default_${name}}")
   set(allow_developer_mode FALSE)
   set(debuggable FALSE)
+  set(selectable FALSE)
   set(help_string)
   set(depends)
   set(optional_depends)
+
+  if (DEFINED "_superbuild_${name}_selectable")
+    set(selectable "${_superbuild_${name}_selectable}")
+  endif ()
 
   set(ep_arguments)
   set(grab)
@@ -78,6 +87,9 @@ function (superbuild_add_project name)
       set(grab)
     elseif (arg STREQUAL "DEBUGGABLE")
       set(debuggable TRUE)
+      set(grab)
+    elseif (arg STREQUAL "SELECTABLE")
+      set(selectable TRUE)
       set(grab)
     elseif (arg STREQUAL "HELP_STRING")
       set(grab help_string)
@@ -181,6 +193,15 @@ function (superbuild_add_project name)
       set_property(GLOBAL
         PROPERTY
           "${name}_debuggable" TRUE)
+    endif ()
+
+    if (selectable)
+      set_property(GLOBAL
+        PROPERTY
+          "superbuild_has_selectable" TRUE)
+      set_property(GLOBAL
+        PROPERTY
+          "${project}_selectable" TRUE)
     endif ()
 
     set_property(GLOBAL
@@ -437,7 +458,10 @@ endfunction ()
 # project files. It uses this information to create the build recipes for all
 # of the projects with the flags propagated and dependencies sorted properly.
 function (superbuild_process_dependencies)
-  set (enabled_projects)
+  set(enabled_projects)
+
+  get_property(has_selectable GLOBAL
+    PROPERTY superbuild_has_selectable)
 
   # Gather all of the project names.
   get_property(all_projects GLOBAL
@@ -447,9 +471,19 @@ function (superbuild_process_dependencies)
       PROPERTY "${project}_depends")
     get_property("${project}_depends_optional" GLOBAL
       PROPERTY "${project}_depends_optional")
+    get_property(selectable GLOBAL
+      PROPERTY "${project}_selectable")
     set("${project}_depends_all"
       ${${project}_depends}
       ${${project}_depends_optional})
+
+    if (has_selectable AND NOT selectable)
+      set(advanced TRUE)
+    else ()
+      set(advanced FALSE)
+    endif ()
+    set_property(CACHE "ENABLE_${project}"
+      PROPERTY ADVANCED "${advanced}")
 
     if (ENABLE_${project})
       list(APPEND enabled_projects "${project}")
