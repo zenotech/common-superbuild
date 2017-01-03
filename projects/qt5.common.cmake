@@ -84,7 +84,8 @@ superbuild_add_project(qt5
       ${qt5_options}
       ${qt5_extra_options}
       ${qt5_EXTRA_CONFIGURATION_OPTIONS}
-  ${qt5_build_commands})
+  ${qt5_build_commands}
+  ${qt5_process_environment})
 
 superbuild_add_extra_cmake_args(
   -DPARAVIEW_QT_VERSION:STRING=5
