@@ -8,4 +8,6 @@ list(APPEND qt5_extra_options
   -I <INSTALL_DIR>/include/freetype2
   -I <INSTALL_DIR>/include/fontconfig)
 
+list(APPEND qt5_process_environment PROCESS_ENVIRONMENT PKG_CONFIG_PATH <INSTALL_DIR>/lib/pkgconfig)
+
 include(qt5.common)
