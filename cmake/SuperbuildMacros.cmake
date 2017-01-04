@@ -272,9 +272,25 @@ function (superbuild_apply_patch _name _patch _comment)
     message(FATAL_ERROR "Failed to determine if the build tree is inside of a git repository.")
   endif ()
   if (out STREQUAL "true")
+    execute_process(
+      COMMAND "${GIT_EXECUTABLE}"
+              rev-parse
+              --show-toplevel
+      RESULT_VARIABLE res
+      OUTPUT_VARIABLE out
+      ERROR_VARIABLE  err
+      WORKING_DIRECTORY "${CMAKE_BINARY_DIRECTORY}"
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if (res)
+      message(WARNING
+        "Failed to detect the top-level of the git repository: ${err}.")
+      set(out "<unknown>")
+    endif ()
     message(FATAL_ERROR
-      "`git apply` does not work properly underneath a git repository; please "
-      "relocate your build directory to be outside of any git repository.")
+      "The build tree appears to be inside of the git repository located at "
+      "${out}. This interferes with the way the superbuild applies patches to "
+      "projects and is not supported. Please relocate the build tree to a "
+      "directory which is not under a git repository.")
   endif ()
 
   superbuild_project_add_step("${_name}-patch-${_patch}"
