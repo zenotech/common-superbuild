@@ -17,7 +17,8 @@ else ()
 endif ()
 
 superbuild_add_extra_cmake_args(
-  "-DHDF5_DIR:PATH=<INSTALL_DIR>/${hdf5_cmake_subdir}")
+  "-DHDF5_DIR:PATH=<INSTALL_DIR>/${hdf5_cmake_subdir}"
+  -DHDF5_ROOT:PATH=<INSTALL_DIR>)
 
 # HDF5 on Windows installs a zlib that gets found this way; avoid using it.
 superbuild_apply_patch(hdf5 no-zlib-config
