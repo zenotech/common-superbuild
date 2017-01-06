@@ -16,3 +16,13 @@ superbuild_add_project(freetype
     $(MAKE)
   INSTALL_COMMAND
     $(MAKE) install)
+
+if (APPLE AND __BUILDBOT_INSTALL_LOCATION)
+  superbuild_project_add_step(clean-build
+    COMMAND   make
+              clean
+    DEPENDEES configure
+    DEPENDERS build
+    COMMENT   "Cleaning the build tree for install name fixes"
+    WORKING_DIRECTORY <BINARY_DIR>)
+endif ()
