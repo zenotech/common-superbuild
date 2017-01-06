@@ -108,6 +108,7 @@ function (superbuild_install_superbuild_python)
 
     # development tools
     pydoc doctest unittest test
+    pydoc_data
 
     # debugging and profiling
     bdb pdb
@@ -120,7 +121,7 @@ function (superbuild_install_superbuild_python)
     # python runtime services
     sys sysconfig __builtin__ future_builtins __main__ warnings contextlib abc
     atexit traceback __future__ gc inspect site user
-    fpectl
+    fpectl lib2to3
 
     _abcoll _sysconfigdata opcode
 
@@ -136,7 +137,7 @@ function (superbuild_install_superbuild_python)
 
     # python language services
     parser ast symtable symbol token keyword tokenize pyclbr py_compile
-    compileall dis pickletools
+    compileall compiler dis pickletools
 
     # misc services
     formatter
