@@ -54,18 +54,29 @@ function (superbuild_detect_64bit_target)
   endif ()
 endfunction ()
 
+macro(superbuild_make_path_var var)
+  set(${var} ${ARGN})
+  list(REMOVE_ITEM ${var} "")
+  if (UNIX)
+    string(REPLACE ";" ":" ${var} "${${var}}")
+  endif ()
+endmacro()
+
 function (superbuild_setup_flags)
   if (WIN32)
     return ()
   endif ()
 
-  set(ld_library_path "${superbuild_install_location}/lib")
-  if (ENV{LD_LIBRARY_PATH})
-    list(APPEND ld_library_path "$ENV{LD_LIBRARY_PATH}")
-  endif ()
-  string(REPLACE ";" ":" ld_library_path "${ld_library_path}")
-  set(superbuild_ld_library_path "${ld_library_path}"
-    PARENT_SCOPE)
+  superbuild_make_path_var(superbuild_ld_library_path
+    "${superbuild_install_location}/lib"
+    "$ENV{LD_LIBRARY_PATH}")
+  set(superbuild_ld_library_path "${superbuild_ld_library_path}" PARENT_SCOPE)
+
+  superbuild_make_path_var(superbuild_pkg_config_path
+    "${superbuild_install_location}/lib/pkgconfig"
+    "${superbuild_install_location}/share/pkgconfig"
+    "$ENV{PKG_CONFIG_PATH}")
+  set(superbuild_pkg_config_path "${superbuild_pkg_config_path}" PARENT_SCOPE)
 
   if (CMAKE_CROSSCOMPILING)
     return ()

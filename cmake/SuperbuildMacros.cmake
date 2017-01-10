@@ -827,6 +827,7 @@ function (_superbuild_add_project_internal name)
     list(APPEND build_env
       ${ld_library_path_argument})
   endif ()
+  list(APPEND build_env PKG_CONFIG_PATH "${superbuild_pkg_config_path}")
 
   set(binary_dir BINARY_DIR "${name}/build")
   list(FIND ARGN "BUILD_IN_SOURCE" in_source)
