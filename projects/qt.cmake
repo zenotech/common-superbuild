@@ -5,3 +5,10 @@ endif ()
 
 superbuild_add_dummy_project(qt
   DEPENDS_OPTIONAL qt4 qt5)
+
+set(qt_version)
+if (qt4_enabled)
+  set(qt_version 4)
+elseif (qt5_enabled)
+  set(qt_version 5)
+endif ()
