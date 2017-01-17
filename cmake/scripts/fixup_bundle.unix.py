@@ -214,7 +214,7 @@ class Library(object):
     def default_search_paths(cls):
         if cls.__search_cache is None:
             pipe = Pipeline([
-                    'ldconfig',
+                    '/sbin/ldconfig',
                     '-v',
                     '-N', # Don't rebuild the cache.
                     '-X', # Don't update links.
