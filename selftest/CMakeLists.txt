@@ -7,6 +7,7 @@ function (superbuild_find_projects var)
     boost
     bzip2
     cxx11
+    fortran
     freetype
     hdf5
     lapack
@@ -30,7 +31,8 @@ function (superbuild_find_projects var)
     list(APPEND projects
       ffmpeg
       mpi
-      libxml2)
+      libxml2
+      scipy)
   endif ()
 
   if (UNIX AND NOT APPLE)
