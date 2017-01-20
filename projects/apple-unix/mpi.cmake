@@ -11,7 +11,7 @@ superbuild_add_project(mpi
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
       ${mpi_shared_args}
-      --disable-f77
+      --disable-fortran
       --disable-fc
       --disable-mpe
   # PVExternalProject_Add sets up an parallel build, by default. that doesn't
