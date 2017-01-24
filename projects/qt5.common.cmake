@@ -63,6 +63,7 @@ superbuild_add_project(qt5
       -L <INSTALL_DIR>/lib
 
       -skip qtconnectivity
+      -skip qtgamepad
       -skip qtlocation
       -skip qtmultimedia
       -skip qtsensors
