@@ -21,12 +21,10 @@ superbuild_add_project(mpi
       ${mpi_shared_args}
       ${mpi_fortran_flags}
       --disable-mpe
-  # PVExternalProject_Add sets up an parallel build, by default. that doesn't
-  # work for the version of MPICH2 we're using.
   BUILD_COMMAND
-    make
+    $(MAKE)
   INSTALL_COMMAND
-    make install)
+    $(MAKE) install)
 
 if (NOT USE_SYSTEM_mpi)
   set(MPI_C_COMPILER <INSTALL_DIR>/bin/mpicc)
