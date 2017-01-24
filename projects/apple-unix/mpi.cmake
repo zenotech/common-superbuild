@@ -4,15 +4,22 @@ else ()
   set(mpi_shared_args --disable-shared --enable-static)
 endif ()
 
+set(mpi_fortran_flags
+  --disable-fortran
+  --disable-fc)
+if (fortran_enabled)
+  set(mpi_fortran_flags)
+endif ()
+
 superbuild_add_project(mpi
   CAN_USE_SYSTEM
+  DEPENDS_OPTIONAL fortran
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
       ${mpi_shared_args}
-      --disable-fortran
-      --disable-fc
+      ${mpi_fortran_flags}
       --disable-mpe
   # PVExternalProject_Add sets up an parallel build, by default. that doesn't
   # work for the version of MPICH2 we're using.
