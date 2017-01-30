@@ -1,1 +1,2 @@
-superbuild_add_dummy_project(zlib)
+superbuild_add_project(zlib
+  MUST_USE_SYSTEM)
