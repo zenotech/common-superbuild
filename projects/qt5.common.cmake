@@ -5,7 +5,6 @@ else ()
   list(APPEND qt5_depends
     zlib)
   list(APPEND qt5_options
-    -no-alsa
     -no-pulseaudio
     -system-zlib)
 endif ()
