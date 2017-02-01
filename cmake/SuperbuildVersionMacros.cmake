@@ -46,10 +46,10 @@ function (_superbuild_detect_version_git var source_dir default version_file)
   endif ()
 
   if (result)
-    set(version_file "${source_dir}/${version_file}")
-    if (source_dir AND version_file AND EXISTS "${version_file}")
+    set(version_path "${source_dir}/${version_file}")
+    if (source_dir AND version_file AND EXISTS "${version_path}")
       # Read the first line from the version file as the version number.
-      file(STRINGS "${version_file}" output
+      file(STRINGS "${version_path}" output
         LIMIT_COUNT 1)
     else ()
       set(output "${default}")
