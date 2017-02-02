@@ -20,6 +20,12 @@ superbuild_add_project(fontconfig
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND
-    $(MAKE) install-exec install-pkgconfigDATA
+    $(MAKE) install-exec install-pkgconfigDATA installdirs
   PROCESS_ENVIRONMENT
     PKG_CONFIG_PATH <INSTALL_DIR>/lib/pkgconfig)
+
+superbuild_project_add_step(install-headers
+  COMMAND   $(MAKE) install-fontconfigincludeHEADERS
+  DEPENDEES install
+  COMMENT   ""
+  WORKING_DIRECTORY <SOURCE_DIR>/fontconfig)
