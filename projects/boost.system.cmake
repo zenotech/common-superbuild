@@ -1,4 +1,4 @@
-find_package(Boost REQUIRED
+find_package(Boost ${boost_minimum_version} REQUIRED
   COMPONENTS
     ${boost_libraries})
 
