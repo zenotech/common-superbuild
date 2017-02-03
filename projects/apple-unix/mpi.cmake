@@ -7,8 +7,11 @@ endif ()
 set(mpi_fortran_flags
   --disable-fortran
   --disable-fc)
+set(mpi_environment)
 if (fortran_enabled)
   set(mpi_fortran_flags)
+  set(mpi_environment
+    FC ${CMAKE_Fortran_COMPILER})
 endif ()
 
 superbuild_add_project(mpi
@@ -24,7 +27,9 @@ superbuild_add_project(mpi
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND
-    $(MAKE) install)
+    $(MAKE) install
+  PROCESS_ENVIRONMENT
+    ${mpi_environment})
 
 if (NOT USE_SYSTEM_mpi)
   set(MPI_C_COMPILER <INSTALL_DIR>/bin/mpicc)
