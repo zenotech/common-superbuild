@@ -7,6 +7,11 @@ if (lapack_enabled)
     LAPACK  "${LAPACK_LIBRARIES}")
 endif ()
 
+if (fortran_enabled)
+  list(APPEND numpy_process_environment
+    FC ${CMAKE_Fortran_COMPILER})
+endif ()
+
 # If any variables are set, we must have the PROCESS_ENVIRONMENT keyword
 if (numpy_process_environment)
   list(INSERT numpy_process_environment 0
