@@ -25,7 +25,7 @@ superbuild_add_project(fontconfig
     PKG_CONFIG_PATH <INSTALL_DIR>/lib/pkgconfig)
 
 superbuild_project_add_step(install-headers
-  COMMAND   $(MAKE) install-fontconfigincludeHEADERS
+  COMMAND   make install-fontconfigincludeHEADERS
   DEPENDEES install
   COMMENT   ""
   WORKING_DIRECTORY <SOURCE_DIR>/fontconfig)
