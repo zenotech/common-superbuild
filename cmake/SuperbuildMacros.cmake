@@ -858,6 +858,7 @@ function (_superbuild_add_project_internal name)
       "${build_env}"
       CMAKE_PREFIX_PATH "${superbuild_prefix_path}"
     CMAKE_ARGS
+      --no-warn-unused-cli
       -DCMAKE_INSTALL_PREFIX:PATH=${superbuild_prefix_path}
       -DCMAKE_PREFIX_PATH:PATH=${superbuild_prefix_path}
       -DCMAKE_C_FLAGS:STRING=${project_c_flags}

@@ -34,4 +34,4 @@ else ()
 endif ()
 
 superbuild_add_extra_cmake_args(
-  -DVTK_PYTHON_VERSION=2.7)
+  -DVTK_PYTHON_VERSION:STRING=2.7)
