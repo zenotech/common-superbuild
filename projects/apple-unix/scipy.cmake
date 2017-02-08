@@ -1,8 +1,15 @@
 set(scipy_process_environment)
 if (lapack_enabled)
   list(APPEND scipy_process_environment
+    MKL     "None"
+    ATLAS   "None"
     BLAS    "<INSTALL_DIR>/lib"
     LAPACK  "<INSTALL_DIR>/lib")
+endif ()
+
+if (fortran_enabled)
+  list(APPEND scipy_process_environment
+    FC ${CMAKE_Fortran_COMPILER})
 endif ()
 
 superbuild_add_project(scipy
@@ -13,6 +20,7 @@ superbuild_add_project(scipy
     ${superbuild_python_executable}
       setup.py
       config_fc
+      "--f90exec=${CMake_Fortran_COMPILER}"
       build
   INSTALL_COMMAND
     ${superbuild_python_executable}
