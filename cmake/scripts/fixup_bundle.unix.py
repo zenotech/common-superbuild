@@ -102,8 +102,13 @@ class Library(object):
         return os.path.dirname(self.path)
 
     @property
+    def extra_loader_paths(self):
+        return []
+
+    @property
     def loader_paths(self):
         loader_paths = [self.loader_path]
+        loader_paths.extend(self.extra_loader_paths)
         if self.parent is not None:
             loader_paths.extend(self.parent.loader_paths)
         return loader_paths
@@ -299,10 +304,18 @@ class Library(object):
 
 
 class Module(Library):
-    def __init__(self, path, bundle_location, **kwargs):
+    def __init__(self, path, bundle_location, loader_paths=None, **kwargs):
         super(Module, self).__init__(path, None, **kwargs)
 
+        if loader_paths is None:
+            self._extra_loader_paths = []
+        else:
+            self._extra_loader_paths = loader_paths
         self._bundle_location = bundle_location
+
+    @property
+    def extra_loader_paths(self):
+        return self._extra_loader_paths
 
     @property
     def bundle_location(self):
@@ -373,6 +386,9 @@ def _create_arg_parser():
     parser.add_argument('-e', '--exclude', metavar='REGEX', action='append',
                         default=[],
                         help='regular expression to exclude from the bundle')
+    parser.add_argument('-p', '--loader-path', metavar='PATH', action='append',
+                        default=[],
+                        help='additional location to look for libraries based on the expected loader')
     parser.add_argument('-s', '--search', metavar='PATH', action='append',
                         default=[],
                         help='add a directory to search for dependent libraries')
@@ -453,6 +469,7 @@ def main(args):
             raise RuntimeError('Modules require a location')
 
         main_exe = Module(opts.binary, opts.location,
+                          loader_paths=opts.loader_path,
                           search_paths=opts.search)
 
     bundle_dest = opts.destination

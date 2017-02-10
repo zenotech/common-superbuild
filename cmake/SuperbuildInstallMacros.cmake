@@ -38,6 +38,7 @@ endif ()
 #   [LOCATION <location>]
 #   [INCLUDE_REGEXES <include-regex>...]
 #   [EXCLUDE_REGEXES <exclude-regex>...]
+#   [LOADER_PATHS <loader-paths>...]
 #   [SEARCH_DIRECTORIES <search-directory>...])
 function (_superbuild_unix_install_binary)
   set(options
@@ -51,6 +52,7 @@ function (_superbuild_unix_install_binary)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
+    LOADER_PATHS
     SEARCH_DIRECTORIES)
   cmake_parse_arguments(_install_binary "${options}" "${values}" "${multivalues}" ${ARGN})
 
@@ -114,6 +116,11 @@ function (_superbuild_unix_install_binary)
   foreach (exclude_regex IN LISTS _install_binary_EXCLUDE_REGEXES)
     set(fixup_bundle_arguments
       "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
+  endforeach ()
+
+  foreach (loader_path IN LISTS _install_binary_LOADER_PATHS)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --loader-path \"${loader_path}\"")
   endforeach ()
 
   foreach (search_directory IN LISTS _install_binary_SEARCH_DIRECTORIES)
@@ -221,6 +228,7 @@ endfunction ()
 #   superbuild_unix_install_plugin(<filename> <libdir> <search-paths>
 #     [INCLUDE_REGEXES <include-regex>...]
 #     [EXCLUDE_REGEXES <exclude-regex>...]
+#     [LOADER_PATHS <loader-paths>...]
 #     [SEARCH_DIRECTORIES <search-directory>...])
 #
 # Install a plugin from ``<filename>`` to the package. The file is searched for
@@ -229,8 +237,10 @@ endfunction ()
 #
 # The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
 # include or exclude found paths from being installed to the package. They are
-# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
-# to search for dependent libraries.
+# Python regular expressions. ``LOADER_PATHS`` is a list of directories where
+# the executable loading the plugin is looking for libraries. These are
+# searched for dependencies first. ``SEARCH_DIRECTORIES`` is a list of
+# directories to search for dependent libraries.
 function (superbuild_unix_install_plugin name libdir paths)
   if (IS_ABSOLUTE "${name}")
     _superbuild_unix_install_module("${name}" "${paths}" "${libdir}" ${ARGN})
@@ -263,6 +273,7 @@ endfunction ()
 #     [MODULE_DESTINATION <destination>]
 #     [INCLUDE_REGEXES <include-regex>...]
 #     [EXCLUDE_REGEXES <exclude-regex>...]
+#     [LOADER_PATHS <loader-paths>...]
 #     [SEARCH_DIRECTORIES <library-path>...])
 #
 # Installs Python modules or packages named ``<name>`` into the package. The
@@ -276,8 +287,10 @@ endfunction ()
 #
 # The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
 # include or exclude found paths from being installed to the package. They are
-# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
-# to search for dependent libraries.
+# Python regular expressions. ``LOADER_PATHS`` is a list of directories where
+# the executable loading the Python modules is looking for libraries. These are
+# searched for dependencies first. ``SEARCH_DIRECTORIES`` is a list of
+# directories to search for dependent libraries.
 function (superbuild_unix_install_python)
   set(values
     MODULE_DESTINATION
@@ -285,6 +298,7 @@ function (superbuild_unix_install_python)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
+    LOADER_PATHS
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
@@ -321,6 +335,11 @@ function (superbuild_unix_install_python)
   foreach (search_directory IN LISTS _install_python_SEARCH_DIRECTORIES)
     list(APPEND fixup_bundle_arguments
       --search "${search_directory}")
+  endforeach ()
+
+  foreach (loader_path IN LISTS _install_python_LOADER_PATHS)
+    list(APPEND fixup_bundle_arguments
+      --loader-path "${loader_path}")
   endforeach ()
 
   install(CODE
