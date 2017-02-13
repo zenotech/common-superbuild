@@ -1,4 +1,5 @@
 superbuild_add_project(numpy
+  DEPENDS python
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND ""
   BUILD_COMMAND     ""
