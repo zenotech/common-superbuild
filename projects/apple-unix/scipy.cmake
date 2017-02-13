@@ -20,7 +20,7 @@ superbuild_add_project(scipy
     ${superbuild_python_executable}
       setup.py
       config_fc
-      "--f90exec=${CMake_Fortran_COMPILER}"
+      "--f90exec=${CMAKE_Fortran_COMPILER}"
       build
   INSTALL_COMMAND
     ${superbuild_python_executable}
