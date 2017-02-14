@@ -10,6 +10,7 @@ set(superbuild_building_prebuilt_python ON)
 function (superbuild_find_projects var)
   set(projects
     bzip2
+    cxx11
     freetype
     ftjam
     png
