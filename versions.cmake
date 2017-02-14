@@ -176,6 +176,22 @@ superbuild_set_revision(tbb
   URL     "https://www.paraview.org/files/dependencies/${tbb_file}"
   URL_MD5 "${tbb_md5}")
 
+superbuild_set_revision(pytz
+  URL     "http://www.paraview.org/files/dependencies/pytz-2016.10.tar.bz2"
+  URL_MD5 88b1d6c50c764579292edce3493c8a3a)
+
+superbuild_set_revision(pythondateutil
+  URL     "http://www.paraview.org/files/dependencies/python-dateutil-2.6.0.tar.gz"
+  URL_MD5 6e38f91e8c94c15a79ce22768dfeca87)
+
+superbuild_set_revision(pythonpyparsing
+  URL     "http://www.paraview.org/files/dependencies/pyparsing-2.2.0.tar.gz"
+  URL_MD5 0214e42d63af850256962b6744c948d9)
+
+superbuild_set_revision(pythoncycler
+  URL     "http://www.paraview.org/files/dependencies/cycler-0.10.0.tar.gz"
+  URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)
+
 superbuild_set_revision(pythonsetuptools
   URL     "https://www.paraview.org/files/dependencies/setuptools-23.0.0.tar.gz"
   URL_MD5 100a90664040f8ff232fbac02a4c5652)

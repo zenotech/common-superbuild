@@ -18,15 +18,19 @@ function (superbuild_find_projects var)
     python
     pythonautobahn
     pythonconstantly
+    pythoncycler
+    pythondateutil
     pythonhyperlink
     pythonincremental
     pythonpygments
+    pythonpyparsing
     pythonsetuptools
     pythonsix
     pythontwisted
     pythontxaio
     pythonwslink
     pythonzopeinterface
+    pytz
     qt4
     qt5
     szip
