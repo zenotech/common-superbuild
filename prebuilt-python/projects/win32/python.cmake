@@ -1,3 +1,9 @@
+if (superbuild_use_prebuilt_python)
+
+include("${prebuilt-python_SOURCE_DIR}/../projects/win32/python.cmake")
+
+else ()
+
 if (superbuild_is_64bit)
   set(python_configuration "Release|x64")
   set(python_executable_dir "<SOURCE_DIR>/PCbuild/amd64")
@@ -9,6 +15,12 @@ endif ()
 find_program(DEVENV_EXE
   NAMES devenv
   DOC   "Path to the devenv executable")
+
+if (NOT DEVENV_EXE)
+  message(FATAL_ERROR
+    "Could not find the devenv.exe program. This is required in order to "
+    "compile the actual Python project itself.")
+endif ()
 
 superbuild_add_project(python
   DEFAULT_ON
@@ -68,3 +80,5 @@ superbuild_add_extra_cmake_args(
   -DPYTHON_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python.exe
   -DPYTHON_INCLUDE_DIR:FILEPATH=<INSTALL_DIR>/include
   -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/python27.lib)
+
+endif ()
