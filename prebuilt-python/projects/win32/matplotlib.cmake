@@ -1,1 +1,1 @@
-include("${common-superbuild_SOURCE_DIR}/projects/matplotlib.cmake")
+include("${prebuilt-python_SOURCE_DIR}/../projects/matplotlib.cmake")
