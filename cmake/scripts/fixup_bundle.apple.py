@@ -223,7 +223,8 @@ class Library(object):
             collection = {}
             for dep in self._get_dependencies():
                 deplib = Library.create_from_reference(dep, self)
-                if deplib is not None:
+                if deplib is not None and \
+                   not deplib.path == self.path:
                     collection[dep] = deplib
             self._dependencies = collection
         return self._dependencies
