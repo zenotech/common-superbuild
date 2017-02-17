@@ -279,6 +279,7 @@ class Library(object):
         if not os.path.exists(path):
             raise RuntimeError('%s does not exist' % path)
 
+        path = os.path.normpath(path)
         if path not in cls.__cache:
             search_paths = None
             if parent is not None:
