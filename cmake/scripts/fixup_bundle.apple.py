@@ -32,7 +32,7 @@ class Pipeline(object):
 class Library(object):
     def __init__(self, path, parent=None, search_paths=None):
         # This is the actual path to a physical file
-        self._path = path
+        self._path = os.path.normpath(path)
 
         if search_paths is None:
             self._search_paths = []
