@@ -25,6 +25,8 @@ list(INSERT CMAKE_MODULE_PATH 0
 include("SuperbuildUtils")
 include("SuperbuildCrossMacros")
 
+_superbuild_check_up_to_date()
+
 set(platform)
 if (APPLE)
   set(platforms "apple" "apple-unix")
