@@ -132,3 +132,115 @@ function (superbuild_deprecated_setting output_default new old intended_default)
 
   set("${output_default}" "${default}" PARENT_SCOPE)
 endfunction ()
+
+# Determine whether the common superbuild is up-to-date or not.
+#
+# The common superbuild is intended to be used as a submodule to projects.
+# However, updating the submodule when updating the main superbuild is an easy
+# step to forget. This function tries to determine whether the common
+# superbuild is up-to-date or not and error out if it is not.
+function (_superbuild_check_up_to_date)
+  file(RELATIVE_PATH common_superbuild_path
+    "${CMAKE_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}")
+  if (common_superbuild_path MATCHES "^\\.\\./")
+    # We're in a project shipped by the common-superbuild.
+    return ()
+  endif ()
+
+  find_package(Git QUIET)
+  if (NOT Git_FOUND)
+    # No Git; can't perform the check.
+    return ()
+  endif ()
+
+  execute_process(
+    COMMAND "${GIT_EXECUTABLE}"
+            rev-parse
+            --is-inside-work-tree
+    RESULT_VARIABLE res
+    OUTPUT_VARIABLE out
+    ERROR_VARIABLE  err
+    WORKING_DIRECTORY
+            "${CMAKE_SOURCE_DIR}"
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_STRIP_TRAILING_WHITESPACE)
+  if (res)
+    # We're not in a git repository; assume all is well.
+    return ()
+  endif ()
+
+  set(out_of_date
+    "The common superbuild may be out of date, but cannot be verified.")
+
+  execute_process(
+    COMMAND "${GIT_EXECUTABLE}"
+            ls-tree
+            HEAD
+            --
+            "${common_superbuild_path}"
+    RESULT_VARIABLE res
+    OUTPUT_VARIABLE out
+    ERROR_VARIABLE  err
+    WORKING_DIRECTORY
+            "${CMAKE_SOURCE_DIR}"
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_STRIP_TRAILING_WHITESPACE)
+  if (res)
+    message(WARNING
+      "Failed to get information about the common superbuild from the "
+      "containing repository. ${out_of_date}: ${err}")
+    return ()
+  endif ()
+  if (NOT out MATCHES "^160000 ")
+    # The superbuild is not a submodule; assume all is well.
+    return ()
+  endif ()
+  string(REGEX REPLACE "^160000 commit \([a-f0-9]+\)\t.*$" "\\1"
+    expected_commit "${out}")
+
+  execute_process(
+    COMMAND "${GIT_EXECUTABLE}"
+            rev-parse
+            HEAD
+    RESULT_VARIABLE res
+    OUTPUT_VARIABLE actual_commit
+    ERROR_VARIABLE  err
+    WORKING_DIRECTORY
+            "${CMAKE_CURRENT_SOURCE_DIR}"
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_STRIP_TRAILING_WHITESPACE)
+  if (res)
+    message(WARNING
+      "Failed to get the current commit of the common superbuild. "
+      "${out_of_date}: ${err}")
+    return ()
+  endif ()
+
+  execute_process(
+    COMMAND "${GIT_EXECUTABLE}"
+            merge-base
+            --is-ancestor
+            "${expected_commit}"
+            "${actual_commit}"
+    RESULT_VARIABLE res
+    OUTPUT_VARIABLE out
+    ERROR_VARIABLE  err
+    WORKING_DIRECTORY
+            "${CMAKE_CURRENT_SOURCE_DIR}"
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_STRIP_TRAILING_WHITESPACE)
+  if (res EQUAL 1)
+    set(severity FATAL_ERROR)
+    if (superbuild_can_be_out_of_date)
+      set(severity WARNING)
+    endif ()
+    message("${severity}"
+      "The common superbuild is out of date and should be updated. Please run "
+      "`git submodule update` in the source directory to update.")
+  elseif (res)
+    message(WARNING
+      "Failed to determine if the common superbuild is an old checkout. "
+      "${out_of_date}: ${err}")
+  endif ()
+endfunction ()
