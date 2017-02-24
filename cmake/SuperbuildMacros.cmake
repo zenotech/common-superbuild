@@ -842,7 +842,7 @@ function (_superbuild_add_project_internal name)
   endif ()
 
   # ARGN needs to be quoted so that empty list items aren't removed if that
-  # happens options like INSTALL_COMMAND "" won't work
+  # happens options like INSTALL_COMMAND "" won't work.
   _superbuild_ExternalProject_add(${name} "${ARGN}"
     PREFIX        "${name}"
     DOWNLOAD_DIR  "${superbuild_download_location}"
