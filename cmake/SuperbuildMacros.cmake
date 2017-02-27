@@ -464,6 +464,20 @@ function (_superbuild_get_project_depends name prefix)
     PARENT_SCOPE)
 endfunction ()
 
+# Include all projects.
+#
+# Usage:
+#
+#   _superbuild_discover_projects(<projects...>)
+#
+# This runs the first pass which gathers the required dependency information
+# from projects which may be enabled.
+function (_superbuild_discover_projects)
+  foreach (project IN LISTS ARGN)
+    include("${project}")
+  endforeach ()
+endfunction ()
+
 # Entry point of the build logic.
 #
 # Usage:
