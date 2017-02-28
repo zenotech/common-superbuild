@@ -110,9 +110,7 @@ if (NOT superbuild_projects)
 endif ()
 
 # Discover the projects.
-foreach (project IN LISTS superbuild_projects)
-  include("${project}")
-endforeach ()
+_superbuild_discover_projects(${superbuild_projects})
 # Enable projects, etc.
 superbuild_process_dependencies()
 
