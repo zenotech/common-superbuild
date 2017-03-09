@@ -1,21 +1,13 @@
 set(numpy_process_environment)
 if (lapack_enabled)
   list(APPEND numpy_process_environment
-    MKL     "None"
-    ATLAS   "None"
     BLAS    "${BLAS_LIBRARIES}"
     LAPACK  "${LAPACK_LIBRARIES}")
 endif ()
 
 if (fortran_enabled)
   list(APPEND numpy_process_environment
-    FC ${CMAKE_Fortran_COMPILER})
-endif ()
-
-# If any variables are set, we must have the PROCESS_ENVIRONMENT keyword
-if (numpy_process_environment)
-  list(INSERT numpy_process_environment 0
-    PROCESS_ENVIRONMENT)
+    FC "${CMAKE_Fortran_COMPILER}")
 endif ()
 
 set(numpy_fortran_compiler "no")
@@ -40,4 +32,7 @@ superbuild_add_project(numpy
       install
       --install-lib=<INSTALL_DIR>/lib/python2.7/site-packages
       --prefix=<INSTALL_DIR>
-  ${numpy_process_environment})
+  PROCESS_ENVIRONMENT
+    MKL   "None"
+    ATLAS "None"
+    ${numpy_process_environment})
