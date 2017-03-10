@@ -22,7 +22,7 @@ superbuild_add_project(python
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
-      ${python_USE_UNICODE}
+      ${python_unicode_args}
       ${python_shared_args}
   BUILD_COMMAND
     $(MAKE)
