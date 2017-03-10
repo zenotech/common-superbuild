@@ -6,6 +6,6 @@ set(modules matplotlib)
 include(python.package.bundle)
 
 install(
-  DIRECTORY   "${superbuild_install_location}/bin/Lib/site-packages/matplotlib/mpl-data/"
+  DIRECTORY   "${superbuild_install_location}/lib/site-packages/matplotlib/mpl-data/"
   DESTINATION "bin/Lib/site-packages/matplotlib/mpl-data"
   COMPONENT   superbuild)

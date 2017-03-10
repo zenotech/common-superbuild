@@ -166,7 +166,7 @@ function (superbuild_install_superbuild_python)
       MODULES             ${modules} ${_install_superbuild_python_MODULES}
       MODULE_DIRECTORIES  "${superbuild_install_location}/bin/Lib"
       SEARCH_DIRECTORIES  "lib${_install_superbuild_python_LIBSUFFIX}"
-      DESTINATION         "bin/Lib")
+      NAMESPACE           "/..")
   else ()
     superbuild_unix_install_python(
       MODULE_DESTINATION  "/"

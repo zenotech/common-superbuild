@@ -1,20 +1,20 @@
 if (BUILD_SHARED_LIBS)
-  set(python_shared_args --enable-shared --disable-static)
+  set(python_shared_args --enable-shared)
 else ()
   set(python_shared_args --disable-shared --enable-static)
 endif ()
 
-set(python_USE_UNICODE UCS2 CACHE STRING "Enable Unicode support for python")
+set(python_USE_UNICODE "UCS2" CACHE STRING "Enable Unicode support for python")
 set_property(CACHE python_USE_UNICODE PROPERTY STRINGS "OFF;UCS2;UCS4")
 mark_as_advanced(python_USE_UNICODE)
 
-if(python_USE_UNICODE STREQUAL "UCS2")
+if (python_USE_UNICODE STREQUAL "UCS2")
   set(python_unicode_args "--enable-unicode=ucs2")
-elseif(python_USE_UNICODE STREQUAL "UCS4")
+elseif (python_USE_UNICODE STREQUAL "UCS4")
   set(python_unicode_args "--enable-unicode=ucs4")
-else()
+else ()
   set(python_unicode_args "--disable-unicode")
-endif()
+endif ()
 
 superbuild_add_project(python
   CAN_USE_SYSTEM
@@ -22,7 +22,7 @@ superbuild_add_project(python
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
-      ${python_USE_UNICODE}
+      ${python_unicode_args}
       ${python_shared_args}
   BUILD_COMMAND
     $(MAKE)
