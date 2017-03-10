@@ -1,5 +1,5 @@
 if (BUILD_SHARED_LIBS)
-  set(python_shared_args --enable-shared --disable-static)
+  set(python_shared_args --enable-shared)
 else ()
   set(python_shared_args --disable-shared --enable-static)
 endif ()
