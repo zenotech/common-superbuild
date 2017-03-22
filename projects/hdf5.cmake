@@ -10,14 +10,7 @@ superbuild_add_project(hdf5
     -DHDF5_BUILD_HL_LIB:BOOL=TRUE
     -DHDF5_BUILD_WITH_INSTALL_NAME:BOOL=ON)
 
-if (WIN32)
-  set(hdf5_cmake_subdir "cmake/hdf5")
-else ()
-  set(hdf5_cmake_subdir "share/cmake/hdf5")
-endif ()
-
 superbuild_add_extra_cmake_args(
-  "-DHDF5_DIR:PATH=<INSTALL_DIR>/${hdf5_cmake_subdir}"
   -DHDF5_ROOT:PATH=<INSTALL_DIR>
   -DHDF5_NO_FIND_PACKAGE_CONFIG_FILE:BOOL=ON)
 
