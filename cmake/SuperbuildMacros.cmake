@@ -1021,6 +1021,7 @@ macro (superbuild_add_project_python _name)
       "${superbuild_python_executable}"
         setup.py
         build
+        ${${_name}_python_build_args}
     INSTALL_COMMAND
       "${superbuild_python_executable}"
         setup.py
@@ -1028,6 +1029,7 @@ macro (superbuild_add_project_python _name)
         --skip-build
         --root=<INSTALL_DIR>
         ${_superbuild_python_args}
+        ${${_name}_python_install_args}
     PROCESS_ENVIRONMENT
       PYTHONPATH ${_superbuild_python_path})
 endmacro ()
