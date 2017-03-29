@@ -46,4 +46,6 @@ else ()
 endif ()
 
 superbuild_add_extra_cmake_args(
-  -DVTK_PYTHON_VERSION:STRING=2.7)
+  -DPYTHON_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python2.7
+  -DPYTHON_INCLUDE_DIR:PATH=<INSTALL_DIR>/include/python2.7
+  -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython2.7.so)
