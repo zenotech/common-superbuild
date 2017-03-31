@@ -1,7 +1,7 @@
 set(qt4_extra_options)
 
 # Set the silence flag to remove a warning in 2015 that is really an error.
-if (MSVC14)
+if (NOT MSVC_VERSION VERSION_LESS 1900)
   list(APPEND qt4_extra_options
     -D _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS)
 endif ()
