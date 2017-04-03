@@ -12,7 +12,7 @@ elseif (NOT MSVC_VERSION VERSION_GREATER 1700)
   set(tbb_vsdir vc11)
 elseif (NOT MSVC_VERSION VERSION_GREATER 1800)
   set(tbb_vsdir vc12)
-else ()
+elseif (tbb_enabled)
   message(FATAL_ERROR "tbb does not support your Visual Studio compiler; please use a system version.")
 endif ()
 
