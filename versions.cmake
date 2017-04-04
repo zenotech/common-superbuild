@@ -178,3 +178,7 @@ superbuild_set_revision(tbb
 superbuild_set_revision(pythonsetuptools
   URL     "http://www.paraview.org/files/dependencies/setuptools-23.0.0.tar.gz"
   URL_MD5 100a90664040f8ff232fbac02a4c5652)
+
+superbuild_set_revision(pythonsix
+  URL     "http://www.paraview.org/files/dependencies/six-1.10.0.tar.gz"
+  URL_MD5 34eed507548117b2ab523ab14b2f8b55)
