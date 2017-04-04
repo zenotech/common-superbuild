@@ -34,6 +34,7 @@ function (superbuild_find_projects var)
   if (NOT WIN32)
     list(APPEND projects
       ffmpeg
+      h5py
       mpi
       libxml2
       scipy)

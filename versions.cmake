@@ -179,6 +179,10 @@ superbuild_set_revision(pythonsetuptools
   URL     "http://www.paraview.org/files/dependencies/setuptools-23.0.0.tar.gz"
   URL_MD5 100a90664040f8ff232fbac02a4c5652)
 
+superbuild_set_revision(h5py
+  URL     "http://www.paraview.org/files/dependencies/h5py-2.7.0.tar.gz"
+  URL_MD5 f62937f40f68d3b128b3941be239dd93)
+
 superbuild_set_revision(pythonsix
   URL     "http://www.paraview.org/files/dependencies/six-1.10.0.tar.gz"
   URL_MD5 34eed507548117b2ab523ab14b2f8b55)
