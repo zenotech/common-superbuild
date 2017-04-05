@@ -1,0 +1,13 @@
+diff -U5 -Nru pkgconfig-1.2.1/setup.py pkgconfig-1.2.1.no-nose/setup.py
+--- pkgconfig-1.2.1/setup.py	2016-12-01 03:58:23.000000000 -0500
++++ pkgconfig-1.2.1.no-nose/setup.py	2017-04-05 13:35:03.921219513 -0400
+@@ -10,8 +10,8 @@
+     url='http://github.com/matze/pkgconfig',
+     license='MIT',
+     packages=['pkgconfig'],
+     description="Interface Python with pkg-config",
+     long_description=open('README.rst').read(),
+-    setup_requires=['nose>=1.0'],
++    #setup_requires=['nose>=1.0'],
+     test_suite='test',
+ )

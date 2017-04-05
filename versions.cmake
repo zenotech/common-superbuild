@@ -182,3 +182,7 @@ superbuild_set_revision(pythonsetuptools
 superbuild_set_revision(pythonsix
   URL     "http://www.paraview.org/files/dependencies/six-1.10.0.tar.gz"
   URL_MD5 34eed507548117b2ab523ab14b2f8b55)
+
+superbuild_set_revision(pythonpkgconfig
+  URL     "http://www.paraview.org/files/dependencies/pkgconfig-1.2.1.tar.gz"
+  URL_MD5 5eda90e67929f5fab31d1a9cfc923d3f)

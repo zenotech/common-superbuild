@@ -16,6 +16,7 @@ function (superbuild_find_projects var)
     numpy
     png
     python
+    pythonpkgconfig
     pythonsetuptools
     pythonsix
     qt4
