@@ -7,6 +7,7 @@ function (superbuild_find_projects var)
     boost
     bzip2
     cxx11
+    cython
     fortran
     freetype
     hdf5

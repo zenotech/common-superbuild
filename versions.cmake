@@ -186,3 +186,7 @@ superbuild_set_revision(pythonsix
 superbuild_set_revision(pythonpkgconfig
   URL     "http://www.paraview.org/files/dependencies/pkgconfig-1.2.1.tar.gz"
   URL_MD5 5eda90e67929f5fab31d1a9cfc923d3f)
+
+superbuild_set_revision(cython
+  URL     "http://www.paraview.org/files/dependencies/Cython-0.25.2.tar.gz"
+  URL_MD5 642c81285e1bb833b14ab3f439964086)
