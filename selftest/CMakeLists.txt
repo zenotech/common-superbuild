@@ -7,6 +7,7 @@ function (superbuild_find_projects var)
     boost
     bzip2
     cxx11
+    cython
     fortran
     freetype
     hdf5
@@ -16,7 +17,9 @@ function (superbuild_find_projects var)
     numpy
     png
     python
+    pythonpkgconfig
     pythonsetuptools
+    pythonsix
     qt4
     qt5
     szip
@@ -31,6 +34,7 @@ function (superbuild_find_projects var)
   if (NOT WIN32)
     list(APPEND projects
       ffmpeg
+      h5py
       mpi
       libxml2
       scipy)

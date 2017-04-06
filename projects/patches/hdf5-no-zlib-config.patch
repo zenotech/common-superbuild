@@ -1,19 +1,19 @@
-diff -Nru5 hdf5-1.8.13/CMakeFilters.cmake hdf5-1.8.13.no-zlib-config/CMakeFilters.cmake
---- hdf5-1.8.13/CMakeFilters.cmake	2014-05-05 22:13:24.000000000 -0400
-+++ hdf5-1.8.13.no-zlib-config/CMakeFilters.cmake	2016-12-13 17:53:24.386066384 -0500
-@@ -41,13 +41,13 @@
+diff -Nru5 hdf5-1.8.18/CMakeFilters.cmake hdf5-1.8.18.no-zlib-config/CMakeFilters.cmake
+--- hdf5-1.8.18/CMakeFilters.cmake	2016-11-03 11:26:55.000000000 -0400
++++ hdf5-1.8.18.no-zlib-config/CMakeFilters.cmake	2017-04-04 11:57:13.569761893 -0400
+@@ -31,13 +31,13 @@
  #-----------------------------------------------------------------------------
  option (HDF5_ENABLE_Z_LIB_SUPPORT "Enable Zlib Filters" OFF)
  if (HDF5_ENABLE_Z_LIB_SUPPORT)
    if (NOT H5_ZLIB_HEADER)
      if (NOT ZLIB_USE_EXTERNAL)
--      FIND_PACKAGE (ZLIB NAMES ${ZLIB_PACKAGE_NAME}${HDF_PACKAGE_EXT})
-+      #FIND_PACKAGE (ZLIB NAMES ${ZLIB_PACKAGE_NAME}${HDF_PACKAGE_EXT})
+-      find_package (ZLIB NAMES ${ZLIB_PACKAGE_NAME}${HDF_PACKAGE_EXT} COMPONENTS static shared)
++      #find_package (ZLIB NAMES ${ZLIB_PACKAGE_NAME}${HDF_PACKAGE_EXT} COMPONENTS static shared)
        if (NOT ZLIB_FOUND)
--        FIND_PACKAGE (ZLIB) # Legacy find
-+        FIND_PACKAGE (ZLIB MODULE) # Legacy find
+-        find_package (ZLIB) # Legacy find
++        find_package (ZLIB MODULE) # Legacy find
+         if (ZLIB_FOUND)
+           set (LINK_LIBS ${LINK_LIBS} ${ZLIB_LIBRARIES})
+           set (LINK_SHARED_LIBS ${LINK_SHARED_LIBS} ${ZLIB_LIBRARIES})
+         endif (ZLIB_FOUND)
        endif (NOT ZLIB_FOUND)
-     endif (NOT ZLIB_USE_EXTERNAL)
-     if (ZLIB_FOUND)
-       set (H5_HAVE_FILTER_DEFLATE 1)
-       set (H5_HAVE_ZLIB_H 1)
