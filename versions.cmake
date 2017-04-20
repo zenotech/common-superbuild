@@ -28,8 +28,8 @@ superbuild_set_revision(szip
   URL_MD5 902f831bcefb69c6b635374424acbead)
 
 superbuild_set_revision(hdf5
-  URL     "http://www.paraview.org/files/dependencies/hdf5-1.8.18.tar.bz2"
-  URL_MD5 29117bf488887f89888f9304c8ebea0b)
+  URL     "http://www.paraview.org/files/dependencies/hdf5-1.8.13.tar.gz"
+  URL_MD5 c03426e9e77d7766944654280b467289)
 
 superbuild_set_revision(boost
   URL     "http://www.paraview.org/files/dependencies/boost_1_59_0.tar.bz2"
@@ -178,19 +178,3 @@ superbuild_set_revision(tbb
 superbuild_set_revision(pythonsetuptools
   URL     "http://www.paraview.org/files/dependencies/setuptools-23.0.0.tar.gz"
   URL_MD5 100a90664040f8ff232fbac02a4c5652)
-
-superbuild_set_revision(h5py
-  URL     "http://www.paraview.org/files/dependencies/h5py-2.7.0.tar.gz"
-  URL_MD5 f62937f40f68d3b128b3941be239dd93)
-
-superbuild_set_revision(pythonsix
-  URL     "http://www.paraview.org/files/dependencies/six-1.10.0.tar.gz"
-  URL_MD5 34eed507548117b2ab523ab14b2f8b55)
-
-superbuild_set_revision(pythonpkgconfig
-  URL     "http://www.paraview.org/files/dependencies/pkgconfig-1.2.1.tar.gz"
-  URL_MD5 5eda90e67929f5fab31d1a9cfc923d3f)
-
-superbuild_set_revision(cython
-  URL     "http://www.paraview.org/files/dependencies/Cython-0.25.2.tar.gz"
-  URL_MD5 642c81285e1bb833b14ab3f439964086)
