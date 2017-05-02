@@ -17,13 +17,19 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
     message(FATAL_ERROR "A build type (CMAKE_BUILD_TYPE) must be set.")
   endif ()
 
-  if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT SUPERBUILD_ALLOW_DEBUG)
-    message(FATAL_ERROR
-      "Debug builds are probably not what you want. "
-      "Set the SUPERBUILD_ALLOW_DEBUG variable using "
-      "either the GUI ('Add Entry') or pass "
-      "-DSUPERBUILD_ALLOW_DEBUG:BOOL=ON on the command "
-      "to indicate this is what you intended.")
+  if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    if (SUPERBUILD_ALLOW_DEBUG)
+      message(WARNING
+        "Debug builds are probably not what you want. This is an unsupported "
+        "configuration. Please consider using the CMAKE_BUILD_TYPE_<project> "
+        "options if you are debugging specific projects.")
+    else ()
+      message(FATAL_ERROR
+        "Debug builds are probably not what you want. Set the "
+        "SUPERBUILD_ALLOW_DEBUG variable using either the GUI ('Add Entry') "
+        "or pass -DSUPERBUILD_ALLOW_DEBUG:BOOL=ON on the command to indicate "
+        "this is what you intended.")
+    endif ()
   endif ()
 endif ()
 
