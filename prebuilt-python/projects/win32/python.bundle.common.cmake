@@ -22,3 +22,6 @@ endif ()
 
 # Skip installing the MSVC runtime.
 set(superbuild_bundle_skip_system_libraries TRUE)
+
+# Clear the manifest since only Python modules are installed.
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/install.manifest" "{}\n")
