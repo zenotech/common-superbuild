@@ -8,23 +8,21 @@ function (superbuild_windows_install_python_module destination module search_pat
         DESTINATION "${destination}/${location}")
     elseif (EXISTS "${search_path}/${module}.pyd")
       execute_process(
-        COMMAND "${CMAKE_COMMAND}"
-                "-Dexecutable_name:PATH=${module}.pyd"
-                "-Dsuperbuild_install_location:PATH=${superbuild_install_location}"
-                "-Dextra_paths:STRING=${search_path};${search_directories}"
-                "-Ddestination:PATH=${destination}/${location}"
-                "-DCMAKE_INSTALL_PREFIX:STRING=${CMAKE_INSTALL_PREFIX}"
-                -P "${_superbuild_install_cmake_scripts_dir}/install_dependencies.windows.cmake"
+        COMMAND "${superbuild_python_executable}"
+                "${_superbuild_install_cmake_scripts_dir}/fixup_bundle.windows.py"
+                --destination "${bundle_destination}"
+                ${fixup_bundle_arguments}
+                --location    "${location}"
+                --manifest    "${bundle_manifest}"
+                --type        module
+                --libdir      "${location}"
+                "${search_path}/${module}.pyd"
         RESULT_VARIABLE res
         ERROR_VARIABLE  err)
 
       if (res)
         message(FATAL_ERROR "Failed to install Python module ${module}:\n${err}")
       endif ()
-
-      file(INSTALL
-        FILES       "${search_path}/${module}.pyd"
-        DESTINATION "${CMAKE_INSTALL_PREFIX}/${location}")
     elseif (EXISTS "${search_path}/${module}/__init__.py")
       file(GLOB modules "${search_path}/${module}/*.py" "${search_path}/${module}/*.pyd")
       foreach (submodule IN LISTS modules)

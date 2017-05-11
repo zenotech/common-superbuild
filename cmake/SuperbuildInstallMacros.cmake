@@ -641,16 +641,106 @@ endfunction ()
 
 # INTERNAL
 # Install a binary and its required libraries to a location.
-function (_superbuild_windows_install_executable name destination paths)
+#
+# _superbuild_windows_install_binary(
+#   LIBDIR <libdir>
+#   BINARY <path>
+#   TYPE <module|executable>
+#   [CLEAN]
+#   [DESTINATION <destination>]
+#   [LOCATION <location>]
+#   [INCLUDE_REGEXES <include-regex>...]
+#   [EXCLUDE_REGEXES <exclude-regex>...]
+#   [SEARCH_DIRECTORIES <search-directory>...])
+function (_superbuild_windows_install_binary)
+  set(options
+    CLEAN)
+  set(values
+    DESTINATION
+    LIBDIR
+    LOCATION
+    BINARY
+    TYPE)
+  set(multivalues
+    INCLUDE_REGEXES
+    EXCLUDE_REGEXES
+    SEARCH_DIRECTORIES)
+  cmake_parse_arguments(_install_binary "${options}" "${values}" "${multivalues}" ${ARGN})
+
+  if (NOT _install_binary_BINARY)
+    message(FATAL_ERROR "Cannot install a binary without a path.")
+  endif ()
+
+  if (NOT IS_ABSOLUTE "${_install_binary_BINARY}")
+    message(FATAL_ERROR "Cannot install a binary without an absolute path (${_install_binary_BINARY}).")
+  endif ()
+
+  if (NOT _install_binary_DESTINATION)
+    set(_install_binary_DESTINATION
+      "\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}")
+  endif ()
+
+  if (NOT _install_binary_LIBDIR)
+    message(FATAL_ERROR "Cannot install ${_install_binary_BINARY} without knowing where to put dependent libraries.")
+  endif ()
+
+  if (NOT _install_binary_TYPE)
+    message(FATAL_ERROR "Cannot install ${_install_binary_BINARY} without knowing its type.")
+  endif ()
+
+  if (_install_binary_TYPE STREQUAL "module" AND NOT _install_binary_LOCATION)
+    message(FATAL_ERROR "Cannot install ${_install_binary_BINARY} as a module without knowing where to place it.")
+  endif ()
+
+  set(fixup_bundle_arguments)
+  set(fixup_bundle_arguments
+    "${fixup_bundle_arguments} --destination ${_install_binary_DESTINATION}")
+  set(fixup_bundle_arguments
+    "${fixup_bundle_arguments} --type ${_install_binary_TYPE}")
+  set(fixup_bundle_arguments
+    "${fixup_bundle_arguments} --libdir ${_install_binary_LIBDIR}")
+
+  get_property(superbuild_has_cleaned GLOBAL PROPERTY
+    superbuild_has_cleaned)
+  if (_install_binary_CLEAN OR NOT superbuild_has_cleaned)
+    set_property(GLOBAL PROPERTY
+      superbuild_has_cleaned TRUE)
+    if (superbuild_is_install_target)
+      set(fixup_bundle_arguments
+        "${fixup_bundle_arguments} --new")
+    else ()
+      set(fixup_bundle_arguments
+        "${fixup_bundle_arguments} --clean --new")
+    endif ()
+  endif ()
+
+  if (_install_binary_LOCATION)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --location \"${_install_binary_LOCATION}\"")
+  endif ()
+
+  foreach (include_regex IN LISTS _install_binary_INCLUDE_REGEXES)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --include \"${include_regex}\"")
+  endforeach ()
+
+  foreach (exclude_regex IN LISTS _install_binary_EXCLUDE_REGEXES)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
+  endforeach ()
+
+  foreach (search_directory IN LISTS _install_binary_SEARCH_DIRECTORIES)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --search \"${search_directory}\"")
+  endforeach ()
+
   install(CODE
     "execute_process(
-      COMMAND \"${CMAKE_COMMAND}\"
-              \"-Dexecutable_name:PATH=${name}\"
-              \"-Dsuperbuild_install_location:PATH=${superbuild_install_location}\"
-              \"-Dextra_paths:STRING=${paths}\"
-              \"-Ddestination:STRING=\${CMAKE_INSTALL_PREFIX}/${destination}\"
-              \"-DCMAKE_INSTALL_PREFIX:STRING=\${CMAKE_INSTALL_PREFIX}\"
-              -P \"${_superbuild_install_cmake_dir}/scripts/install_dependencies.windows.cmake\"
+      COMMAND \"${superbuild_python_executable}\"
+              \"${_superbuild_install_cmake_dir}/scripts/fixup_bundle.windows.py\"
+              ${fixup_bundle_arguments}
+              --manifest    \"${CMAKE_BINARY_DIR}/install.manifest\"
+              \"${_install_binary_BINARY}\"
       RESULT_VARIABLE res
       ERROR_VARIABLE  err)
 
@@ -660,90 +750,115 @@ function (_superbuild_windows_install_executable name destination paths)
     COMPONENT superbuild)
 endfunction ()
 
-# Install a program to the package.
+function (_superbuild_windows_install_executable path libdir)
+  _superbuild_windows_install_binary(
+    BINARY      "${path}"
+    LIBDIR      "${libdir}"
+    TYPE        executable
+    ${ARGN})
+endfunction ()
+
+function (_superbuild_windows_install_module path subdir libdir)
+  _superbuild_windows_install_binary(
+    BINARY      "${path}"
+    LOCATION    "${subdir}"
+    LIBDIR      "${libdir}"
+    TYPE        module
+    ${ARGN})
+endfunction ()
+
+# Install a program from the installation tree to the package.
 #
 # Usage:
 #
-#   superbuild_windows_install_program(<name> <library-paths>)
+#   superbuild_windows_install_program(<path> <libdir>
+#     [INCLUDE_REGEXES <include-regex>...]
+#     [EXCLUDE_REGEXES <exclude-regex>...]
+#     [SEARCH_DIRECTORIES <search-directory>...])
 #
-# Installs a binary named ``<name>`` to the package. The ``<library-paths>`` is
-# a list of directories to search for libraries. Relative paths are taken to be
-# relative to the install's root directory. The libraries are installed to the
-# ``bin/`` directory.
-function (superbuild_windows_install_program name paths)
-  _superbuild_windows_install_executable("${name}.exe" "bin" "${paths}" ${ARGN})
-
-  install(
-    PROGRAMS    "${superbuild_install_location}/bin/${name}.exe"
-    DESTINATION "bin"
-    COMPONENT   superbuild)
+# Installs a program ``<name>`` into ``bin/`` and its dependent libraies into
+# ``<libdir>``.
+#
+# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
+# include or exclude found paths from being installed to the package. They are
+# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
+# to search for dependent libraries.
+function (superbuild_windows_install_program name libdir)
+  _superbuild_windows_install_executable("${superbuild_install_location}/bin/${name}.exe" "${libdir}" ${ARGN})
 endfunction ()
 
 # Install a plugin to the package.
 #
 # Usage:
 #
-#   superbuild_windows_install_plugin(<name> <destination> <library-paths>)
+#   superbuild_windows_install_plugin(<filename> <libdir> <search-paths>
+#     [INCLUDE_REGEXES <include-regex>...]
+#     [EXCLUDE_REGEXES <exclude-regex>...]
+#     [SEARCH_DIRECTORIES <search-directory>...])
 #
-# Installs a binary named ``<name>`` to the package. The ``<library-paths>`` is
-# a list of directories to search for libraries. Relative paths are taken to be
-# relative to the install's root directory. The required libraries are
-# installed beside the plugin.
-function (superbuild_windows_install_plugin name destination paths)
-  set(found FALSE)
+# Install a plugin from ``<filename>`` to the package. The file is searched for
+# in ``<search-paths>`` under the superbuild's install tree. Required libraries
+# are installed to ``<libdir>``.
+#
+# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
+# include or exclude found paths from being installed to the package. They are
+# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
+# to search for dependent libraries.
+function (superbuild_windows_install_plugin name libdir paths)
   if (IS_ABSOLUTE "${name}")
-    set(found TRUE)
-    install(
-      FILES       "${name}"
-      DESTINATION "${destination}"
-      COMPONENT   superbuild)
-  else ()
-    set(bin_var "bin")
-    foreach (path IN LISTS bin_var paths)
-      if (EXISTS "${superbuild_install_location}/${path}/${name}")
-        set(found TRUE)
-        install(
-          FILES       "${superbuild_install_location}/${path}/${name}"
-          DESTINATION "${destination}"
-          COMPONENT   superbuild)
-        break ()
-      endif ()
-    endforeach ()
+    _superbuild_windows_install_module("${name}" "${paths}" "${libdir}" ${ARGN})
+    return ()
   endif ()
+
+  set(found FALSE)
+  foreach (path IN LISTS paths)
+    if (EXISTS "${superbuild_install_location}/${path}/${name}")
+      _superbuild_windows_install_module("${superbuild_install_location}/${path}/${name}" "${path}" "${libdir}" ${ARGN})
+      set(found TRUE)
+      break ()
+    endif ()
+  endforeach ()
 
   if (NOT found)
-    message(FATAL_ERROR "Unable to find the actual plugin for ${name}")
+    string(REPLACE ";" ", " paths_list "${paths}")
+    message(FATAL_ERROR "Unable to find the ${name} plugin in ${paths_list}")
   endif ()
-
-  _superbuild_windows_install_executable("${name}" "${destination}" "${paths}" ${ARGN})
 endfunction ()
 
-# Add Python modules or packages to the package.
+# Install Python modules to the package.
 #
 # Usage:
 #
 #   superbuild_windows_install_python(
-#     [DESTINATION <destination>]
 #     MODULES <module>...
-#     [NAMESPACE <namespace>]
 #     MODULE_DIRECTORIES <module-path>...
+#     [MODULE_DESTINATION <destination>]
+#     [INCLUDE_REGEXES <include-regex>...]
+#     [EXCLUDE_REGEXES <exclude-regex>...]
 #     [SEARCH_DIRECTORIES <library-path>...])
 #
-# Installs Python modules or packages named ``<name>`` into the package. By
-# default, modules are installed underneath the ``bin/Lib/site-packages``
-# directory, which should be in the default ``sys.path``.
+# Installs Python modules or packages named ``<name>`` into the package.
+# Libraries are searched for in ``<library-paths>`` and relative paths are
+# taken to be relative to the superbuild's install directory. The modules are
+# searched for in the ``<module-paths>``. Modules are installed into the proper
+# location (``lib/python2.7/site-packages``) within the package, but may be
+# placed inside of a different directory by using the ``MODULE_DESTINATION``
+# argument.
 #
-# See ``superbuild_unix_install_python`` for the documentation for
-# ``MODULES``, ``NAMESPACE``, and ``MODULE_DIRECTORIES``.
+# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
+# include or exclude found paths from being installed to the package. They are
+# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
+# to search for dependent libraries.
 function (superbuild_windows_install_python)
-  set(singlevalues
-    NAMESPACE
-    DESTINATION)
+  set(values
+    MODULE_DESTINATION)
   set(multivalues
+    INCLUDE_REGEXES
+    EXCLUDE_REGEXES
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
-  cmake_parse_arguments(_install_python "" "${singlevalues}" "${multivalues}" ${ARGN})
+  cmake_parse_arguments(_install_python "${options}" "${values}" "${multivalues}" ${ARGN})
 
   if (NOT _install_python_MODULES)
     message(FATAL_ERROR "No modules specified.")
@@ -753,31 +868,40 @@ function (superbuild_windows_install_python)
     message(FATAL_ERROR "No modules search paths specified.")
   endif ()
 
-  set(subdir "")
-  if (_install_python_NAMESPACE)
-    set(subdir "${_install_python_NAMESPACE}")
+  set(fixup_bundle_arguments)
+
+  if (NOT _install_python_MODULE_DESTINATION)
+    set(_install_python_MODULE_DESTINATION "/site-packages")
   endif ()
 
-  set(destination "bin/Lib/site-packages${subdir}")
-  if (_install_python_DESTINATION)
-    message(AUTHOR_WARNING "The DESTINATION option is deprecated; use NAMESPACE instead.")
-    if (subdir)
-      message(FATAL_ERROR "The DESTINATION and NAMESPACE options are incompatible!")
-    endif ()
-    set(destination "${_install_python_DESTINATION}")
-  endif ()
+  foreach (include_regex IN LISTS _install_python_INCLUDE_REGEXES)
+    list(APPEND fixup_bundle_arguments
+      --include "${include_regex}")
+  endforeach ()
+
+  foreach (exclude_regex IN LISTS _install_python_EXCLUDE_REGEXES)
+    list(APPEND fixup_bundle_arguments
+      --exclude "${exclude_regex}")
+  endforeach ()
+
+  foreach (search_directory IN LISTS _install_python_SEARCH_DIRECTORIES)
+    list(APPEND fixup_bundle_arguments
+      --search "${search_directory}")
+  endforeach ()
 
   install(CODE
-    "include(\"${_superbuild_install_cmake_dir}/scripts/fixup_python.windows.cmake\")
+    "set(superbuild_python_executable \"${superbuild_python_executable}\")
+    include(\"${_superbuild_install_cmake_dir}/scripts/fixup_python.windows.cmake\")
     set(python_modules \"${_install_python_MODULES}\")
     set(module_directories \"${_install_python_MODULE_DIRECTORIES}\")
-    set(search_directories \"${_install_python_SEARCH_DIRECTORIES}\")
 
-    set(superbuild_install_location \"${superbuild_install_location}\")
+    set(fixup_bundle_arguments \"${fixup_bundle_arguments}\")
+    set(bundle_destination \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}\")
+    set(bundle_manifest \"${CMAKE_BINARY_DIR}/install.manifest\")
 
     foreach (python_module IN LISTS python_modules)
       superbuild_windows_install_python_module(\"\${CMAKE_INSTALL_PREFIX}\"
-        \"\${python_module}\" \"\${module_directories}\" \"${destination}\")
+        \"\${python_module}\" \"\${module_directories}\" \"lib/python2.7${_install_python_MODULE_DESTINATION}\")
     endforeach ()"
     COMPONENT superbuild)
 endfunction ()
