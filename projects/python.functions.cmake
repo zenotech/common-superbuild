@@ -163,10 +163,11 @@ function (superbuild_install_superbuild_python)
 
   if (WIN32)
     superbuild_windows_install_python(
+      MODULE_DESTINATION  "/"
       MODULES             ${modules} ${_install_superbuild_python_MODULES}
       MODULE_DIRECTORIES  "${superbuild_install_location}/bin/Lib"
-      SEARCH_DIRECTORIES  "lib${_install_superbuild_python_LIBSUFFIX}"
-      NAMESPACE           "/..")
+      SEARCH_DIRECTORIES  "bin;lib${_install_superbuild_python_LIBSUFFIX}"
+      EXCLUDE_REGEXES     "MSVCR90.dll")
   else ()
     superbuild_unix_install_python(
       MODULE_DESTINATION  "/"
