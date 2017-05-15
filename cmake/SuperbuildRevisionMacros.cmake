@@ -272,10 +272,10 @@ function (superbuild_set_selectable_source name)
         "${arg}")
 
       # If we just got the name, store future arguments in the arguments.
-      if (grab STREQUAL "selection_name")
+      if ("x${grab}" STREQUAL "xselection_name")
         set(grab selection_args)
       # If we just got the "selects with" project, drop future arguments.
-      elseif (grab STREQUAL "selects_with")
+      elseif ("x${grab}" STREQUAL "xselects_with")
         set(grab)
       endif ()
     endif ()
