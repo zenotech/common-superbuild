@@ -939,7 +939,7 @@ function (_superbuild_write_developer_mode_cache name)
   endforeach ()
 
   # Create the target.
-  _superbuild_add_dummy_project_internal("${name}")
+  _superbuild_add_dummy_project_internal("developer-${name}")
 
   set(cache_file "${CMAKE_BINARY_DIR}/${name}-developer-config.cmake")
   if (COMMAND _ep_command_line_to_initial_cache)
@@ -947,7 +947,7 @@ function (_superbuild_write_developer_mode_cache name)
     # internal functions, go with the flow.
     _ep_command_line_to_initial_cache(cmake_args "${cmake_args}" 0)
   endif ()
-  _ep_write_initial_cache(${name} "${cache_file}" "${cmake_args}")
+  _ep_write_initial_cache("developer-${name}" "${cache_file}" "${cmake_args}")
 endfunction ()
 
 # INTERNAL
