@@ -665,11 +665,11 @@ function (superbuild_process_dependencies)
       _superbuild_add_project_internal("${project}" "${${project}_arguments}")
       set(is_buildable_project TRUE)
     endif ()
-  endforeach ()
 
-  if (allow_developer_mode AND is_buildable_project)
-    _superbuild_write_developer_mode_cache("${project}" "${${project}_arguments}")
-  endif ()
+    if (allow_developer_mode AND is_buildable_project)
+      _superbuild_write_developer_mode_cache("${project}" "${${project}_arguments}")
+    endif ()
+  endforeach ()
 
   foreach (project IN LISTS all_projects)
     set("${project}_enabled"
