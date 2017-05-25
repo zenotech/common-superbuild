@@ -631,6 +631,7 @@ function (superbuild_process_dependencies)
 
     set(current_project "${project}")
 
+    set(is_buildable_project FALSE)
     get_property(is_dummy GLOBAL
       PROPERTY "${project}_is_dummy")
     if (can_use_system AND USE_SYSTEM_${project})
@@ -653,7 +654,7 @@ function (superbuild_process_dependencies)
       endif ()
 
       include("${project}")
-      _superbuild_write_developer_mode_cache("${project}" "${${project}_arguments}")
+      set(is_buildable_project TRUE)
     elseif (is_dummy)
       # This project isn't built, just used as a graph node to represent a
       # group of dependencies.
@@ -662,8 +663,13 @@ function (superbuild_process_dependencies)
     else ()
       include("${project}")
       _superbuild_add_project_internal("${project}" "${${project}_arguments}")
+      set(is_buildable_project TRUE)
     endif ()
   endforeach ()
+
+  if (allow_developer_mode AND is_buildable_project)
+    _superbuild_write_developer_mode_cache("${project}" "${${project}_arguments}")
+  endif ()
 
   foreach (project IN LISTS all_projects)
     set("${project}_enabled"
