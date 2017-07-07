@@ -82,13 +82,13 @@ superbuild_set_revision(qt4
   URL     "http://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-${qt4_ver}.tar.gz"
   URL_MD5 "${qt4_md5}")
 
-set(qt5_ver "5.8.0")
+set(qt5_ver "5.9.1")
 if (WIN32)
   set(qt5_ext "zip")
-  set(qt5_md5 "1e372fabc9d97a32877cb4adb377e7c8")
+  set(qt5_md5 "3f2e538ccc468d28bcfdefac96d1e975")
 else ()
   set(qt5_ext "tar.xz")
-  set(qt5_md5 "66660cd3d9e1a6fed36e88adcb72e9fe")
+  set(qt5_md5 "77b4af61c49a09833d4df824c806acaf")
 endif ()
 superbuild_set_revision(qt5
   URL     "http://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-${qt5_ver}.${qt5_ext}"
