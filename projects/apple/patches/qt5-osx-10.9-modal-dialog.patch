@@ -7,7 +7,7 @@ diff -Nr -U5 qt-everywhere-opensource-src-5.4.1/qtbase/src/plugins/platforms/coc
              // [NSApp run], which is the normal code path for cocoa applications.
              if (NSModalSession session = d->currentModalSession()) {
                  QBoolBlocker execGuard(d->currentExecIsNSAppRun, false);
--                while ([NSApp runModalSession:session] == NSRunContinuesResponse && !d->interrupt)
+-                while ([NSApp runModalSession:session] == NSModalResponseContinue && !d->interrupt)
 -                    qt_mac_waitForMoreEvents(NSModalPanelRunLoopMode);
 +
 +                // OSX 10.9 appears to tighten up its internal code such that
@@ -57,7 +57,7 @@ diff -Nr -U5 qt-everywhere-opensource-src-5.4.1/qtbase/src/plugins/platforms/coc
 +                    checkStatus = NSModalResponseContinue;
 +#endif
                      NSInteger status = [NSApp runModalSession:session];
--                    if (status != NSRunContinuesResponse && session == d->currentModalSessionCached) {
+-                    if (status != NSModalResponseContinue && session == d->currentModalSessionCached) {
 +                    if (status != checkStatus && session == d->currentModalSessionCached) {
                          // INVARIANT: Someone called [NSApp stopModal:] from outside the event
                          // dispatcher (e.g to stop a native dialog). But that call wrongly stopped
