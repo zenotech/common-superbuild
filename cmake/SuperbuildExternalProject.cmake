@@ -1,8 +1,7 @@
 # This file implements the logic to inject environment variables into the build
 # steps of projects. It is quite messy.
 
-if (CMAKE_VERSION VERSION_LESS "3.4"
-    OR TRUE) # Patches exist which aren't upstreamed yet.
+if (CMAKE_VERSION VERSION_LESS "3.9")
   # Needed for fixes.
   include("${CMAKE_CURRENT_LIST_DIR}/patches/ExternalProject.cmake")
 else ()
