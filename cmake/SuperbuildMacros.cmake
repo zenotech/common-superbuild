@@ -861,6 +861,12 @@ function (_superbuild_add_project_internal name)
     set(source_dir)
   endif ()
 
+  set(extra_options)
+  if (_superbuild_show_progress)
+    list(APPEND extra_options
+      GIT_PROGRESS 1)
+  endif ()
+
   # ARGN needs to be quoted so that empty list items aren't removed if that
   # happens options like INSTALL_COMMAND "" won't work.
   _superbuild_ExternalProject_add(${name} "${ARGN}"
@@ -870,6 +876,7 @@ function (_superbuild_add_project_internal name)
     ${source_dir}
     ${binary_dir}
     INSTALL_DIR   "${superbuild_install_location}"
+    ${extra_options}
 
     # Add source information specified in versions functions.
     ${${name}_revision}
