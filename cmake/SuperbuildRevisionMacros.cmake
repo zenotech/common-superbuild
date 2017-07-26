@@ -51,7 +51,11 @@ function (superbuild_set_customizable_revision name)
       superbuild_deprecated_setting(option_default "${option_name}" "${name_UPPER}_${key}" "${_args_${key}}")
       set("${option_name}" "${option_default}"
         CACHE "${cache_type}" "${key} for project '${name}'")
-      mark_as_advanced(${option_name})
+      if (NOT key STREQUAL "SOURCE_DIR")
+        mark_as_advanced(${option_name})
+      else ()
+        mark_as_advanced(CLEAR ${option_name})
+      endif ()
       list(APPEND customized_args
         "${key}" "${${option_name}}")
     endif ()
