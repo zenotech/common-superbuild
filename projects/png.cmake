@@ -11,6 +11,7 @@ superbuild_add_project(png
 
   CMAKE_ARGS
     ${png_libtype_args}
+    -DCMAKE_MACOSX_RPATH:BOOL=FALSE
     -DPNG_TESTS:BOOL=OFF
     # VTK uses API that gets hidden when PNG_NO_STDIO is TRUE (default).
     -DPNG_NO_STDIO:BOOL=OFF)
