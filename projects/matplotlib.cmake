@@ -1,3 +1,9 @@
+set(matplotlib_process_environment)
+if (NOT WIN32)
+  set(matplotlib_process_environment
+    PYTHONPATH "<INSTALL_DIR>/lib/python2.7/site-packages")
+endif ()
+
 superbuild_add_project(matplotlib
   CAN_USE_SYSTEM
   DEPENDS python numpy png freetype zlib pythonsetuptools
@@ -15,4 +21,6 @@ superbuild_add_project(matplotlib
       "-Dsource_location:PATH=<SOURCE_DIR>"
       "-Dinstall_location:PATH=<INSTALL_DIR>"
       -P "${CMAKE_CURRENT_LIST_DIR}/scripts/matplotlib.build.cmake"
-  INSTALL_COMMAND "")
+  INSTALL_COMMAND ""
+  PROCESS_ENVIRONMENT
+  "${matplotlib_process_environment}")
