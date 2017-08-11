@@ -23,4 +23,4 @@ superbuild_add_project(matplotlib
       -P "${CMAKE_CURRENT_LIST_DIR}/scripts/matplotlib.build.cmake"
   INSTALL_COMMAND ""
   PROCESS_ENVIRONMENT
-  "${matplotlib_process_environment}")
+    "${matplotlib_process_environment}")
