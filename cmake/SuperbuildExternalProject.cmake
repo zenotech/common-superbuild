@@ -32,9 +32,12 @@ string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
 
 add_custom_target(download-all)
 
+set(_superbuild_independent_step_targets
+  download
+  update)
 set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
   PROPERTY
-    EP_INDEPENDENT_STEP_TARGETS "download;update")
+    EP_INDEPENDENT_STEP_TARGETS "${_superbuild_independent_step_targets}")
 
 option(SUPERBUILD_OFFLINE_BUILD "Do not update git repositories during the build" OFF)
 if (SUPERBUILD_OFFLINE_BUILD)
