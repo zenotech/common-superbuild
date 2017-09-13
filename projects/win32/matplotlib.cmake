@@ -1,5 +1,5 @@
 superbuild_add_project(matplotlib
-  DEPENDS python
+  DEPENDS python numpy
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND ""
   BUILD_COMMAND     ""
