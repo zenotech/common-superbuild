@@ -37,6 +37,7 @@ function (_superbuild_detect_version_git var source_dir default version_file)
       execute_process(
         COMMAND         "${GIT_EXECUTABLE}"
                         describe
+                        --tags
         RESULT_VARIABLE result
         OUTPUT_VARIABLE output
         WORKING_DIRECTORY "${source_dir}"
