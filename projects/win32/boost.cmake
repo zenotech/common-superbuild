@@ -1,4 +1,4 @@
-set(boost_extra_options)
+set(boost_platform_options)
 
 # 8.0 and below unsupported anyways.
 if (NOT MSVC_VERSION VERSION_GREATER 1400)
@@ -20,14 +20,14 @@ else ()
   message(FATAL_ERROR "Unrecognized MSVC version")
 endif ()
 
-list(APPEND boost_extra_options
+list(APPEND boost_platform_options
   "--toolset=msvc-${msvc_ver}")
 
 if (superbuild_is_64bit)
-  list(APPEND boost_extra_options
+  list(APPEND boost_platform_options
     address-model=64)
 else ()
-  list(APPEND boost_extra_options
+  list(APPEND boost_platform_options
     address-model=32)
 endif ()
 

@@ -1,11 +1,12 @@
+set(boost_platform_options)
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # Set the platform to be clang if using it.
-  list(APPEND boost_extra_options
+  list(APPEND boost_platform_options
     toolset=clang)
 endif ()
 
 if (cxx11_enabled)
-  list(APPEND boost_extra_options
+  list(APPEND boost_platform_options
     cxxflags=${CMAKE_CXX11_STANDARD_COMPILE_OPTION})
 endif ()
 

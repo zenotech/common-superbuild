@@ -30,6 +30,7 @@ if (WIN32)
     BUILD_COMMAND
       <SOURCE_DIR>/b2
         ${boost_options}
+        ${boost_platform_options}
         ${boost_extra_options}
         install
     INSTALL_COMMAND
@@ -41,10 +42,12 @@ else ()
     BUILD_COMMAND
       <SOURCE_DIR>/b2
         ${boost_options}
+        ${boost_platform_options}
         ${boost_extra_options}
     INSTALL_COMMAND
       <SOURCE_DIR>/b2
         ${boost_options}
+        ${boost_platform_options}
         ${boost_extra_options}
         install)
 endif ()
