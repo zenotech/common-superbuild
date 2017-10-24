@@ -4,7 +4,6 @@ find_package(Qt5 REQUIRED
     ${qt5_components})
 
 superbuild_add_extra_cmake_args(
-  -DPARAVIEW_QT_VERSION:STRING=5
   -DQt5_DIR:PATH=${Qt5_DIR}
   -DQt5Core_DIR:PATH=${Qt5_DIR}/../Qt5Core)
 
