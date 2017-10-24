@@ -21,6 +21,7 @@ superbuild_add_project(mpi
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
+      --with-device=ch3:sock
       ${mpi_shared_args}
       ${mpi_fortran_flags}
       --disable-mpe
