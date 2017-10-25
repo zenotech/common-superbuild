@@ -60,12 +60,12 @@ superbuild_set_revision(ftjam
   URL_MD5 ee52f3faff6d31ffb89a2fedb3b0caf6)
 
 superbuild_set_revision(freetype
-  URL     "http://www.paraview.org/files/dependencies/freetype-2.4.8.tar.gz"
-  URL_MD5 5d82aaa9a4abc0ebbd592783208d9c76)
+  URL     "http://www.paraview.org/files/dependencies/freetype-2.8.1.tar.bz2"
+  URL_MD5 bf0a210b6fe781228fa0e4a80691a521)
 
 superbuild_set_revision(fontconfig
-  URL     "http://www.paraview.org/files/dependencies/fontconfig-2.12.1.tar.bz2"
-  URL_MD5 b5af5a423ee3b5cfc34846838963c058)
+  URL     "http://www.paraview.org/files/dependencies/fontconfig-2.12.6.tar.bz2"
+  URL_MD5 733f5e2371ca77b69707bd7b30cc2163)
 
 superbuild_set_revision(libxml2
   URL     "http://www.paraview.org/files/dependencies/libxml2-2.7.8.tar.gz"

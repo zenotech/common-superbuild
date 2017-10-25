@@ -5,7 +5,7 @@ else ()
 endif ()
 
 superbuild_add_project(fontconfig
-  DEPENDS freetype libxml2
+  DEPENDS freetype libxml2 png
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
