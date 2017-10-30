@@ -1,10 +1,13 @@
 set(boost_options)
+set(boost_use_static)
 if (BUILD_SHARED_LIBS)
   list(APPEND boost_options
     link=shared)
+  set(boost_use_static OFF)
 else ()
   list(APPEND boost_options
     link=static)
+  set(boost_use_static ON)
 endif ()
 
 list(APPEND boost_options
@@ -61,4 +64,5 @@ superbuild_add_project(boost
   ${boost_extra_arguments})
 
 superbuild_add_extra_cmake_args(
-  -DBOOST_ROOT:PATH=<INSTALL_DIR>)
+  -DBOOST_ROOT:PATH=<INSTALL_DIR>
+  -DBoost_USE_STATIC_LIBS:BOOL=${boost_use_static})
