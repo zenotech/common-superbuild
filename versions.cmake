@@ -63,6 +63,11 @@ superbuild_set_revision(freetype
   URL     "https://www.paraview.org/files/dependencies/freetype-2.8.1.tar.bz2"
   URL_MD5 bf0a210b6fe781228fa0e4a80691a521)
 
+
+superbuild_set_revision(gperf
+  URL     "https://www.paraview.org/files/dependencies/gperf-3.1.tar.gz"
+  URL_MD5 9e251c0a618ad0824b51117d5d9db87e)
+
 superbuild_set_revision(fontconfig
   URL     "https://www.paraview.org/files/dependencies/fontconfig-2.12.6.tar.bz2"
   URL_MD5 733f5e2371ca77b69707bd7b30cc2163)
