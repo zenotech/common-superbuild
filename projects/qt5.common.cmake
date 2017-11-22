@@ -46,6 +46,14 @@ else ()
   list(APPEND qt5_options "-no-openssl")
 endif ()
 
+# Add option to build qtsvg
+option(qt5_ENABLE_SVG "Build Qt5 SVG library." OFF)
+mark_as_advanced(qt5_ENABLE_SVG)
+if (NOT qt5_ENABLE_SVG)
+  list(APPEND qt5_options "-skip qtsvg")
+endif()
+
+
 superbuild_add_project(qt5
   CAN_USE_SYSTEM
   DEPENDS ${qt5_depends} ${qt5_extra_depends} cxx11
@@ -66,7 +74,6 @@ superbuild_add_project(qt5
       -skip qtmultimedia
       -skip qtsensors
       -skip qtserialport
-      -skip qtsvg
       -skip qtwayland
       -skip qtwebchannel
       -skip qtwebengine
