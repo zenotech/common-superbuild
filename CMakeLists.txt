@@ -47,6 +47,15 @@ option(BUILD_SHARED_LIBS "Enable shared libraries" ON)
 if (NOT superbuild_install_location)
   set(superbuild_install_location "${CMAKE_BINARY_DIR}/install")
 endif ()
+
+if (NOT IS_ABSOLUTE "${superbuild_install_location}")
+  message(WARNING
+    "The given install location `${superbuild_install_location}` is relative; "
+    "replacing with an absolute path.")
+  get_filename_component(superbuild_install_location
+    "${superbuild_install_location}" ABSOLUTE)
+endif ()
+
 set(superbuild_prefix_path "${superbuild_install_location}")
 set(superbuild_download_location "${CMAKE_BINARY_DIR}/downloads"
   CACHE PATH "Location for downloaded source tarballs")
