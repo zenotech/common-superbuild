@@ -50,7 +50,8 @@ endif ()
 option(qt5_ENABLE_SVG "Build Qt5 SVG library." OFF)
 mark_as_advanced(qt5_ENABLE_SVG)
 if (NOT qt5_ENABLE_SVG)
-  list(APPEND qt5_options "-skip qtsvg")
+  list(APPEND qt5_options
+    -skip qtsvg)
 endif()
 
 
