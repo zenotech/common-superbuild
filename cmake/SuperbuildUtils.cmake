@@ -11,7 +11,12 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
   mark_as_advanced(CMAKE_BUILD_TYPE)
   set_property(CACHE CMAKE_BUILD_TYPE
     PROPERTY
-      STRINGS "Release;RelWithDebInfo;Debug")
+      STRINGS "Release;RelWithDebInfo")
+  if (NOT WIN32)
+    set_property(CACHE CMAKE_BUILD_TYPE APPEND
+      PROPERTY
+        STRINGS "Debug")
+  endif ()
 
   if (NOT CMAKE_BUILD_TYPE)
     message(FATAL_ERROR "A build type (CMAKE_BUILD_TYPE) must be set.")
