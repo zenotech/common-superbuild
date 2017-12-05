@@ -22,6 +22,15 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
     message(FATAL_ERROR "A build type (CMAKE_BUILD_TYPE) must be set.")
   endif ()
 
+  get_property(build_type_options
+    CACHE     CMAKE_BUILD_TYPE
+    PROPERTY  STRINGS)
+  list(FIND build_type_options "${CMAKE_BUILD_TYPE}" idx)
+  if (idx EQUAL "-1")
+    string(REPLACE ";" ", " build_type_options "${build_type_options}")
+    message(FATAL_ERROR "CMAKE_BUILD_TYPE must be one of: ${build_type_options}.")
+  endif ()
+
   if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     if (SUPERBUILD_ALLOW_DEBUG)
       message(WARNING
