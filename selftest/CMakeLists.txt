@@ -34,6 +34,7 @@ function (superbuild_find_projects var)
       ffmpeg
       mpi
       libxml2
+      pythonmpi4py
       scipy)
   endif ()
 
