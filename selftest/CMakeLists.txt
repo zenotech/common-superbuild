@@ -17,6 +17,7 @@ function (superbuild_find_projects var)
     png
     python
     pythonsetuptools
+    pythonsix
     qt4
     qt5
     szip
