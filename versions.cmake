@@ -50,8 +50,8 @@ if (WIN32)
   endif ()
 else()
   superbuild_set_revision(python
-    URL     "https://www.paraview.org/files/dependencies/Python-2.7.11.tgz"
-    URL_MD5 6b6076ec9e93f05dd63e47eb9c15728b)
+    URL     "https://www.paraview.org/files/dependencies/Python-2.7.14.tar.xz"
+    URL_MD5 1f6db41ad91d9eb0a6f0c769b8613c5b)
 endif()
 
 superbuild_set_revision(ftjam
