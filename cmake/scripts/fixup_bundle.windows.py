@@ -99,7 +99,10 @@ class Library(object):
     def dependencies(self):
         if self._dependencies is None:
             collection = {}
+            msvc_runtimes = re.compile('MSVC[A-Z][0-9]*.dll')
             for dep in self._get_dependencies():
+                if msvc_runtimes.match(dep):
+                    continue
                 deplib = Library.create_from_reference(dep, self)
                 if deplib is not None:
                     collection[dep] = deplib
