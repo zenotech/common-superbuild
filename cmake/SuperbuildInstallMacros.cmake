@@ -651,6 +651,7 @@ endfunction ()
 #   [LOCATION <location>]
 #   [INCLUDE_REGEXES <include-regex>...]
 #   [EXCLUDE_REGEXES <exclude-regex>...]
+#   [BINARY_LIBDIR <binary_libdirs>...]
 #   [SEARCH_DIRECTORIES <search-directory>...])
 function (_superbuild_windows_install_binary)
   set(options
@@ -664,6 +665,7 @@ function (_superbuild_windows_install_binary)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
+    BINARY_LIBDIR
     SEARCH_DIRECTORIES)
   cmake_parse_arguments(_install_binary "${options}" "${values}" "${multivalues}" ${ARGN})
 
@@ -691,6 +693,10 @@ function (_superbuild_windows_install_binary)
   if (_install_binary_TYPE STREQUAL "module" AND NOT _install_binary_LOCATION)
     message(FATAL_ERROR "Cannot install ${_install_binary_BINARY} as a module without knowing where to place it.")
   endif ()
+
+  if (NOT _install_binary_BINARY_LIBDIR)
+    list(APPEND _install_binary_BINARY_LIBDIR "bin")
+  endif()
 
   set(fixup_bundle_arguments)
   set(fixup_bundle_arguments
@@ -728,6 +734,11 @@ function (_superbuild_windows_install_binary)
     set(fixup_bundle_arguments
       "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
   endforeach ()
+
+  foreach(binary_libdir IN LISTS _install_binary_BINARY_LIBDIR)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --binary-libdir \"${binary_libdir}\"")
+  endforeach()
 
   foreach (search_directory IN LISTS _install_binary_SEARCH_DIRECTORIES)
     set(fixup_bundle_arguments

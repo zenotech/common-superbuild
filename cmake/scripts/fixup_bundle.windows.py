@@ -239,6 +239,8 @@ def _create_arg_parser():
                         help='start a new manifest')
     parser.add_argument('-l', '--location', metavar='PATH', type=str,
                         help='where to place a module within the bundle')
+    parser.add_argument('-B', '--binary-libdir', metavar='PATH', type=str, action='append', default=[],
+                        help='location the binary will search for libraries')
     parser.add_argument('-L', '--libdir', metavar='PATH', type=str,
                         help='location to put dependent libraries')
     parser.add_argument('-m', '--manifest', metavar='PATH', type=str, required=True,
@@ -343,9 +345,10 @@ def main(args):
         with open(opts.manifest, 'r') as fin:
             manifest = json.load(fin)
 
-        # Seed the cache with manifest entries.
-        for path in manifest.get(libdir, []):
-            Library.create_from_manifest(path)
+        manifest_dirs = set(opts.binary_libdir + [libdir,])
+        for mdir in manifest_dirs:
+            for path in manifest.get(mdir, []):
+                Library.create_from_manifest(path)
 
     cur_manifest = manifest.setdefault(opts.libdir, [])
 
