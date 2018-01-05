@@ -125,6 +125,10 @@ class Library(object):
         # Use the loader's location.
         paths.append(loader.loader_path)
 
+        # Use the loader's search paths.
+        if loader._search_paths:
+            paths += loader._search_paths
+
         # Use PATH.
         ld_library_path = os.environ.get('PATH')
         if ld_library_path is not None:
