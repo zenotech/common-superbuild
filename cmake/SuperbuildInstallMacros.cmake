@@ -912,7 +912,7 @@ function (superbuild_windows_install_python)
 
     foreach (python_module IN LISTS python_modules)
       superbuild_windows_install_python_module(\"\${CMAKE_INSTALL_PREFIX}\"
-        \"\${python_module}\" \"\${module_directories}\" \"lib/python2.7${_install_python_MODULE_DESTINATION}\")
+	      \"\${python_module}\" \"\${module_directories}\" \"bin/Lib${_install_python_MODULE_DESTINATION}\")
     endforeach ()"
     COMPONENT superbuild)
 endfunction ()
