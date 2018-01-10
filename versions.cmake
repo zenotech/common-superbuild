@@ -119,8 +119,8 @@ endif ()
 if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
     superbuild_set_revision(matplotlib
-      URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20171211.tar.gz"
-      URL_MD5 381f47d272e0d2fa75c7f93762f0fca5)
+      URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20180110.tar.gz"
+      URL_MD5 0582f726009fd756d51fee2201ea593a)
   else ()
     message(FATAL_ERROR
       "Prebuilt Python binaries for Windows 32 bit are not provided.")
