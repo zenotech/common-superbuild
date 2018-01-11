@@ -16,7 +16,16 @@ function (superbuild_find_projects var)
     numpy
     png
     python
+    pythonautobahn
+    pythonconstantly
+    pythonhyperlink
+    pythonincremental
     pythonsetuptools
+    pythonsix
+    pythontwisted
+    pythontxaio
+    pythonwslink
+    pythonzopeinterface
     qt4
     qt5
     szip
@@ -33,6 +42,7 @@ function (superbuild_find_projects var)
       ffmpeg
       mpi
       libxml2
+      pythonmpi4py
       scipy)
   endif ()
 

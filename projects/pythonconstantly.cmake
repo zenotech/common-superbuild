@@ -1,0 +1,2 @@
+superbuild_add_project_python(pythonconstantly
+  DEPENDS pythonsetuptools)

@@ -50,8 +50,8 @@ if (WIN32)
   endif ()
 else()
   superbuild_set_revision(python
-    URL     "https://www.paraview.org/files/dependencies/Python-2.7.11.tgz"
-    URL_MD5 6b6076ec9e93f05dd63e47eb9c15728b)
+    URL     "https://www.paraview.org/files/dependencies/Python-2.7.14.tar.xz"
+    URL_MD5 1f6db41ad91d9eb0a6f0c769b8613c5b)
 endif()
 
 superbuild_set_revision(ftjam
@@ -119,8 +119,8 @@ endif ()
 if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
     superbuild_set_revision(matplotlib
-      URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20171211.tar.gz"
-      URL_MD5 381f47d272e0d2fa75c7f93762f0fca5)
+      URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20180110.tar.gz"
+      URL_MD5 0582f726009fd756d51fee2201ea593a)
   else ()
     message(FATAL_ERROR
       "Prebuilt Python binaries for Windows 32 bit are not provided.")
@@ -179,3 +179,43 @@ superbuild_set_revision(tbb
 superbuild_set_revision(pythonsetuptools
   URL     "https://www.paraview.org/files/dependencies/setuptools-23.0.0.tar.gz"
   URL_MD5 100a90664040f8ff232fbac02a4c5652)
+
+superbuild_set_revision(pythonmpi4py
+  URL     "http://www.paraview.org/files/dependencies/mpi4py-3.0.0.tar.gz"
+  URL_MD5 bfe19f20cef5e92f6e49e50fb627ee70)
+
+superbuild_set_revision(pythonautobahn
+  URL     "http://www.paraview.org/files/dependencies/autobahn-17.10.1.tar.gz"
+  URL_MD5 f8c8d74bf73644719b751e6fb11dc4a3)
+
+superbuild_set_revision(pythonconstantly
+  URL     "http://www.paraview.org/files/dependencies/constantly-15.1.0.tar.gz"
+  URL_MD5 f0762f083d83039758e53f8cf0086eef)
+
+superbuild_set_revision(pythonhyperlink
+  URL     "http://www.paraview.org/files/dependencies/hyperlink-17.3.1.tar.gz"
+  URL_MD5 eaccb9845b559817e838846669cbc68a)
+
+superbuild_set_revision(pythonincremental
+  URL     "http://www.paraview.org/files/dependencies/incremental-17.5.0.tar.gz"
+  URL_MD5 602746e0d438e075a5a9e0678140bba2)
+
+superbuild_set_revision(pythontwisted
+  URL     "http://www.paraview.org/files/dependencies/Twisted-17.9.0.tar.bz2"
+  URL_MD5 6dbedb918f0c7288a4c670f59393ecf8)
+
+superbuild_set_revision(pythontxaio
+  URL     "http://www.paraview.org/files/dependencies/txaio-2.8.2.tar.gz"
+  URL_MD5 a20e3431c95896a49fa3ffa84f77cde1)
+
+superbuild_set_revision(pythonwslink
+  URL     "http://www.paraview.org/files/dependencies/wslink-0.1.4.tar.gz"
+  URL_MD5 6fb2b6b4851ba7658a4ad36de6156eb0)
+
+superbuild_set_revision(pythonzopeinterface
+  URL     "http://www.paraview.org/files/dependencies/zope.interface-4.4.3.tar.gz"
+  URL_MD5 8700a4f527c1203b34b10c2b4e7a6912)
+
+superbuild_set_revision(pythonsix
+  URL     "http://www.paraview.org/files/dependencies/six-1.11.0.tar.gz"
+  URL_MD5 d12789f9baf7e9fb2524c0c64f1773f8)
