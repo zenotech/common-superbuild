@@ -86,16 +86,16 @@ superbuild_set_revision(qt4
   URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-${qt4_ver}.tar.gz"
   URL_MD5 "${qt4_md5}")
 
-set(qt5_ver "5.9.2")
+set(qt5_ver "5.10.0")
 if (WIN32)
   set(qt5_ext "zip")
-  set(qt5_md5 "d5239e19f6b80dcf44f4dd2de04c7d3d")
+  set(qt5_md5 "db6a623759cdf9399bac95802742e40b")
 else ()
   set(qt5_ext "tar.xz")
-  set(qt5_md5 "738d1b98106e1bd39f00cc228beb522a")
+  set(qt5_md5 "c5e275ab0ed7ee61d0f4b82cd471770d")
 endif ()
 superbuild_set_revision(qt5
-  URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-${qt5_ver}.${qt5_ext}"
+  URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-${qt5_ver}.${qt5_ext}"
   URL_MD5 "${qt5_md5}")
 
 if (WIN32 AND NOT superbuild_building_prebuilt_python)
