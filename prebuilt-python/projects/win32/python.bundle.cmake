@@ -2,7 +2,9 @@ set(package_name python)
 set(version 2.7.3)
 include(python.bundle.common)
 
-superbuild_windows_install_program(python "")
+superbuild_windows_install_program(python
+  "bin"
+  SEARCH_DIRECTORIES "bin")
 
 # Install the headers and library.
 install(

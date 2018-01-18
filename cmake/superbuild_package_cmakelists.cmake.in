@@ -29,8 +29,10 @@ endforeach ()
 include(SuperbuildInstallMacros)
 include("@name@.bundle")
 
-set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "bin")
-set(CMAKE_INSTALL_SYSTEM_RUNTIME_COMPONENT "superbuild")
-include(InstallRequiredSystemLibraries)
+if (NOT superbuild_bundle_skip_system_libraries)
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION "bin")
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_COMPONENT "superbuild")
+  include(InstallRequiredSystemLibraries)
+endif ()
 
 include(CPack)

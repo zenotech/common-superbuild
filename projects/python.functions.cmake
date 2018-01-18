@@ -18,13 +18,13 @@ function (superbuild_install_superbuild_python)
     encodings
     sre_compile sre_constants sre_parse
 
-    _struct
+    _struct _strptime
 
     # data types
     datetime calendar collections heapq bisect array sets sched mutex Queue
     weakref UserDict UserList UserString types new copy pprint repr
 
-    _weakrefset _collections
+    arraymodule _bisectmodule _weakrefset _collections
 
     # numeric and math modules
     numbers math cmath decimal fractions random itertools functools operator
@@ -64,7 +64,7 @@ function (superbuild_install_superbuild_python)
     ctypes fcntl
     curses
 
-    _ctypes _io
+    _ctypes _io _pyio
 
     threading multiprocessing select thread mmap dummy_threading
     dummy_thread readline rlcompleter
@@ -84,7 +84,7 @@ function (superbuild_install_superbuild_python)
     # markup tools
     HTMLParser sgmllib htmllib htmlentitydefs xml
 
-    pyexpat markupbase
+    _elementtree pyexpat markupbase
 
     # internet protocol and support
     webbrowser urllib urllib2 httplib uuid urlparse cgi cookielib xmlrpclib
@@ -163,10 +163,11 @@ function (superbuild_install_superbuild_python)
 
   if (WIN32)
     superbuild_windows_install_python(
+      MODULE_DESTINATION  "/"
       MODULES             ${modules} ${_install_superbuild_python_MODULES}
       MODULE_DIRECTORIES  "${superbuild_install_location}/bin/Lib"
-      SEARCH_DIRECTORIES  "lib${_install_superbuild_python_LIBSUFFIX}"
-      NAMESPACE           "/..")
+      SEARCH_DIRECTORIES  "bin;lib${_install_superbuild_python_LIBSUFFIX}"
+      EXCLUDE_REGEXES     "MSVCR90.dll")
   else ()
     superbuild_unix_install_python(
       MODULE_DESTINATION  "/"

@@ -627,6 +627,15 @@ function (superbuild_process_dependencies)
           PROPERTY
             STRINGS "Debug")
       endif ()
+
+      get_property(build_type_options
+        CACHE     "CMAKE_BUILD_TYPE_${project}"
+        PROPERTY  STRINGS)
+      list(FIND build_type_options "${CMAKE_BUILD_TYPE}" idx)
+      if (idx EQUAL "-1")
+        string(REPLACE ";" ", " build_type_options "${build_type_options}")
+        message(FATAL_ERROR "CMAKE_BUILD_TYPE_${project} must be one of: ${build_type_options}.")
+      endif ()
     endif ()
 
     set(current_project "${project}")
