@@ -16,8 +16,8 @@ superbuild_set_revision(bzip2
   URL_MD5 00b516f4704d4a7cb50a1d97e6e8e15b)
 
 superbuild_set_revision(zlib
-  URL "http://zlib.net/zlib-1.2.11.tar.gz"
-  URL_MD5 1c9f62f0778697a09d36121ead88e08e)
+  URL     "https://www.paraview.org/files/dependencies/zlib-1.2.7.tar.gz"
+  URL_MD5 60df6a37c56e7c1366cca812414f7b85)
 
 superbuild_set_revision(ffmpeg
   URL     "https://www.paraview.org/files/dependencies/ffmpeg-2.3.3.tar.bz2"
@@ -28,16 +28,16 @@ superbuild_set_revision(szip
   URL_MD5 902f831bcefb69c6b635374424acbead)
 
 superbuild_set_revision(hdf5
-  URL "https://support.hdfgroup.org/ftp/HDF5/current18/src/hdf5-1.8.19.tar.bz2"
-  URL_MD5 6f0353ee33e99089c110a1c8d2dd1b22)
+  URL     "https://www.paraview.org/files/dependencies/hdf5-1.8.13.tar.gz"
+  URL_MD5 c03426e9e77d7766944654280b467289)
 
 superbuild_set_revision(boost
-  URL "https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz"
-  URL_MD5 ee64fd29a3fe42232c6ac3c419e523cf)
+  URL     "https://www.paraview.org/files/dependencies/boost_1_59_0.tar.bz2"
+  URL_MD5 6aa9a5c6a4ca1016edd0ed1178e3cb87)
 
 superbuild_set_revision(png
-  URL "http://download.sourceforge.net/libpng/libpng-1.6.29.tar.gz"
-  URL_MD5 68553080685f812d1dd7a6b8215c37d8)
+  URL     "https://www.paraview.org/files/dependencies/libpng-1.6.23.tar.gz"
+  URL_MD5 a49e4cc48d968c79def53d082809c9f2)
 
 if (WIN32)
   if (superbuild_is_64bit)
@@ -50,8 +50,8 @@ if (WIN32)
   endif ()
 else()
   superbuild_set_revision(python
-    URL "https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz"
-    URL_MD5 17add4bf0ad0ec2f08e0cae6d205c700)
+      URL     "https://www.paraview.org/files/dependencies/Python-2.7.14.tar.xz"
+      URL_MD5 1f6db41ad91d9eb0a6f0c769b8613c5b)
 endif()
 
 superbuild_set_revision(ftjam
@@ -59,8 +59,8 @@ superbuild_set_revision(ftjam
   URL_MD5 ee52f3faff6d31ffb89a2fedb3b0caf6)
 
 superbuild_set_revision(freetype
-  URL "https://download.savannah.gnu.org/releases/freetype/freetype-2.8.tar.gz"
-  URL_MD5 c89c00767f939bff559d5dad326c1355)
+  URL     "https://www.paraview.org/files/dependencies/freetype-2.8.1.tar.bz2"
+  URL_MD5 bf0a210b6fe781228fa0e4a80691a521)
 
 
 superbuild_set_revision(gperf
@@ -72,8 +72,8 @@ superbuild_set_revision(fontconfig
   URL_MD5 733f5e2371ca77b69707bd7b30cc2163)
 
 superbuild_set_revision(libxml2
-  URL "ftp://xmlsoft.org/libxslt/libxml2-2.9.6.tar.gz"
-  URL_MD5 dbae8327d8471941bf0472e273473e36)
+  URL     "https://www.paraview.org/files/dependencies/libxml2-2.7.8.tar.gz"
+  URL_MD5 8127a65e8c3b08856093099b52599c86)
 
 if (WIN32)
   set(qt4_ver "4.8.4")
@@ -180,50 +180,6 @@ superbuild_set_revision(pythonsetuptools
   URL     "https://www.paraview.org/files/dependencies/setuptools-23.0.0.tar.gz"
   URL_MD5 100a90664040f8ff232fbac02a4c5652)
 
-############################
-# Added for zCFD
-############################
-superbuild_set_revision(libunwind
-    URL "http://download.savannah.nongnu.org/releases/libunwind/libunwind-1.2.tar.gz"
-    URL_MD5 eefcb5d7f78fdc8f1ed172a26ea4202f
-)
-
-superbuild_set_revision(papi
-    URL "http://icl.utk.edu/projects/papi/downloads/papi-5.5.1.tar.gz"
-    URL_MD5 86a8a6f3d0f34cd83251da3514aae15d
-)
-
-superbuild_set_revision(extrae
-    URL "https://ftp.tools.bsc.es/extrae/extrae-3.4.3-src.tar.bz2"
-    URL_MD5 779a95aa9f498a658041f9c851ecb4f1
-    #    URL "https://ftp.tools.bsc.es/extrae/extrae-3.5.0-src.tar.bz2"
-    #    URL_MD5 832c1babb1e8f8661163120e60d918a0
-)
-
-superbuild_set_revision(libsodium
-    URL "https://github.com/jedisct1/libsodium/releases/download/1.0.15/libsodium-1.0.15.tar.gz"
-    URL_MD5 070373e73a0b10bd96f412e1732ebc42)
-
-superbuild_set_revision(openssl
-  URL "https://www.openssl.org/source/openssl-1.1.0e.tar.gz"
-  URL_MD5 51c42d152122e474754aea96f66928c6)
-
-superbuild_set_revision(silo
-  URL "http://paraview.org/files/dependencies/silo-4.9.1-bsd.tar.gz"
-  URL_MD5 465d2a0a8958b088cde83fb2a5a7eeef)
-
-superbuild_set_revision(cgns
-  URL "http://www.paraview.org/files/dependencies/cgnslib_3.1.3-4.tar.gz"
-  URL_MD5 442bba32b576f3429cbd086af43fd4ae)
-
-superbuild_set_revision(ccmio
-  URL "http://packages.zenotech.com/libccmio-2.6.1.tar.gz"
-  URL_MD5 fa363a5f9c297dd1ddfa67c86cbfe09a)
-
-superbuild_set_revision(libxslt
-  URL "ftp://xmlsoft.org/libxslt/libxslt-1.1.31.tar.gz"
-  URL_MD5 14e9842a70fda476065f2eefcbc29af0
-)
 superbuild_set_revision(pythonmpi4py
   URL     "http://www.paraview.org/files/dependencies/mpi4py-3.0.0.tar.gz"
   URL_MD5 bfe19f20cef5e92f6e49e50fb627ee70)
