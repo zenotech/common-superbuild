@@ -54,6 +54,9 @@ if (NOT qt5_ENABLE_SVG)
     -skip qtsvg)
 endif()
 
+foreach(module IN LISTS qt5_skip_modules)
+  list(APPEND qt5_skip_args -skip ${module})
+endforeach()
 
 superbuild_add_project(qt5
   CAN_USE_SYSTEM
@@ -69,16 +72,7 @@ superbuild_add_project(qt5
       -I <INSTALL_DIR>/include
       -L <INSTALL_DIR>/lib
 
-      -skip qtconnectivity
-      -skip qtgamepad
-      -skip qtlocation
-      -skip qtmultimedia
-      -skip qtsensors
-      -skip qtserialport
-      -skip qtwayland
-      -skip qtwebchannel
-      -skip qtwebengine
-      -skip qtwebsockets
+      ${qt5_skip_args}
 
       -nomake examples
       -nomake tests
