@@ -219,3 +219,7 @@ superbuild_set_revision(pythonzopeinterface
 superbuild_set_revision(pythonsix
   URL     "http://www.paraview.org/files/dependencies/six-1.11.0.tar.gz"
   URL_MD5 d12789f9baf7e9fb2524c0c64f1773f8)
+
+superbuild_set_revision(pythonpygments
+  URL     "http://www.paraview.org/files/dependencies/Pygments-2.2.0.tar.gz"
+  URL_MD5 13037baca42f16917cbd5ad2fab50844)
