@@ -12,6 +12,7 @@ function (superbuild_find_projects var)
     hdf5
     lapack
     matplotlib
+    mpi
     netcdf
     numpy
     png
@@ -22,6 +23,7 @@ function (superbuild_find_projects var)
     pythondateutil
     pythonhyperlink
     pythonincremental
+    pythonmpi4py
     pythonpygments
     pythonpyparsing
     pythonsetuptools
@@ -45,9 +47,7 @@ function (superbuild_find_projects var)
   if (NOT WIN32)
     list(APPEND projects
       ffmpeg
-      mpi
       libxml2
-      pythonmpi4py
       scipy)
   endif ()
 
