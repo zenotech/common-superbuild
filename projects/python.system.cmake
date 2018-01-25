@@ -4,7 +4,7 @@ mark_as_advanced(python_FIND_LIBRARIES)
 find_package(PythonInterp 2.7 REQUIRED)
 
 if (python_FIND_LIBRARIES)
-  find_package(PythonLibs   2.7 REQUIRED)
+  find_package(PythonLibs 2.7 REQUIRED)
   if (NOT PYTHON_VERSION_STRING VERSION_EQUAL PYTHONLIBS_VERSION_STRING AND
       NOT PYTHON_I_KNOW_WHAT_IM_DOING)
     message(FATAL_ERROR
