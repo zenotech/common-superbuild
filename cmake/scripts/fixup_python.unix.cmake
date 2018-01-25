@@ -16,6 +16,7 @@ function (superbuild_unix_install_python_module destination module search_paths 
                 --manifest    "${bundle_manifest}"
                 --type        module
                 --libdir      "${libdir}"
+                --source      "${superbuild_install_location}"
                 "${search_path}/${module}.so"
         RESULT_VARIABLE res
         ERROR_VARIABLE  err)

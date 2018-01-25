@@ -134,6 +134,7 @@ function (_superbuild_unix_install_binary)
               \"${_superbuild_install_cmake_dir}/scripts/fixup_bundle.unix.py\"
               ${fixup_bundle_arguments}
               --manifest    \"${CMAKE_BINARY_DIR}/install.manifest\"
+              --source      \"${superbuild_install_location}\"
               \"${_install_binary_BINARY}\"
       RESULT_VARIABLE res
       ERROR_VARIABLE  err)

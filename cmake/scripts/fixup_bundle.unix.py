@@ -328,7 +328,7 @@ class Executable(Module):
         super(Executable, self).__init__(path, 'bin', **kwargs)
 
 
-def copy_library(destination, libdir, library, dry_run=False):
+def copy_library(destination, libdir, library, sources, dry_run=False):
     if library._is_cached:
         return
 
@@ -386,7 +386,7 @@ def remove_prefix_rpaths(binary, sources):
         '--list',
         binary,
     ])
-    old_path = chrpath()
+    old_path = chrpath().split('=')[1]
 
     new_paths = []
     for path in old_path.split(':'):
@@ -398,11 +398,21 @@ def remove_prefix_rpaths(binary, sources):
     if old_path == new_path:
         return
 
-    chrpath = Pipeline([
-        'chrpath',
-        '-r',
-        new_path,
-    ])
+    if new_path:
+        print 'Updating the rpath in %s: %s -> %s' % (binary, old_path, new_path)
+        chrpath = Pipeline([
+            'chrpath',
+            '--replace',
+            new_path,
+            binary,
+        ])
+    else:
+        print 'Removing the rpath in %s' % binary
+        chrpath = Pipeline([
+            'chrpath',
+            '--delete',
+            binary,
+        ])
     chrpath()
 
 
