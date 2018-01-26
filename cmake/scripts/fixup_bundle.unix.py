@@ -377,8 +377,26 @@ def is_subdir(path, directory):
     return not (relative == os.pardir or relative.startswith(os.pardir + os.sep))
 
 
+HAVE_CHRPATH = None
+
+
 def remove_prefix_rpaths(binary, sources):
     if not sources:
+        return
+
+    global HAVE_CHRPATH
+    if HAVE_CHRPATH is None:
+        which = Pipeline([
+            'which',
+            'chrpath',
+        ])
+        try:
+            which()
+            HAVE_CHRPATH = True
+        except RuntimeError:
+            print 'No chrpath found; superbuild rpaths may still exist in the package'
+            HAVE_CHRPATH = False
+    if not HAVE_CHRPATH:
         return
 
     chrpath = Pipeline([
