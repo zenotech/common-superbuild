@@ -328,7 +328,7 @@ class Executable(Module):
         super(Executable, self).__init__(path, 'bin', **kwargs)
 
 
-def copy_library(destination, libdir, library, dry_run=False):
+def copy_library(destination, libdir, library, sources, dry_run=False):
     if library._is_cached:
         return
 
@@ -363,8 +363,75 @@ def copy_library(destination, libdir, library, dry_run=False):
                 binary,
             ])
         chmod()
+        if library.rpaths or library.runpaths:
+            remove_prefix_rpaths(binary, sources)
 
     return binary
+
+
+# From https://stackoverflow.com/questions/3812849/how-to-check-whether-a-directory-is-a-sub-directory-of-another-directory#18115684
+def is_subdir(path, directory):
+    path = os.path.realpath(path)
+    directory = os.path.realpath(directory)
+    relative = os.path.relpath(path, directory)
+    return not (relative == os.pardir or relative.startswith(os.pardir + os.sep))
+
+
+HAVE_CHRPATH = None
+
+
+def remove_prefix_rpaths(binary, sources):
+    if not sources:
+        return
+
+    global HAVE_CHRPATH
+    if HAVE_CHRPATH is None:
+        which = Pipeline([
+            'which',
+            'chrpath',
+        ])
+        try:
+            which()
+            HAVE_CHRPATH = True
+        except RuntimeError:
+            print 'No chrpath found; superbuild rpaths may still exist in the package'
+            HAVE_CHRPATH = False
+    if not HAVE_CHRPATH:
+        return
+
+    chrpath = Pipeline([
+        'chrpath',
+        '--list',
+        binary,
+    ])
+    old_path = chrpath().split('=')[1]
+
+    new_paths = []
+    for path in old_path.split(':'):
+        for source in sources:
+            if not is_subdir(path, source):
+                new_paths.append(path)
+
+    new_path = ':'.join(new_paths)
+    if old_path == new_path:
+        return
+
+    if new_path:
+        print 'Updating the rpath in %s: %s -> %s' % (binary, old_path, new_path)
+        chrpath = Pipeline([
+            'chrpath',
+            '--replace',
+            new_path,
+            binary,
+        ])
+    else:
+        print 'Removing the rpath in %s' % binary
+        chrpath = Pipeline([
+            'chrpath',
+            '--delete',
+            binary,
+        ])
+    chrpath()
 
 
 # A function to fix up the fact that os.makedirs chokes if the path already
@@ -393,6 +460,9 @@ def _create_arg_parser():
     parser.add_argument('-s', '--search', metavar='PATH', action='append',
                         default=[],
                         help='add a directory to search for dependent libraries')
+    parser.add_argument('-S', '--source', metavar='PATH', type=str, action='append',
+                        default=[],
+                        help='source directory for the binaries')
     parser.add_argument('-n', '--dry-run', action='store_true',
                         help='do not actually copy files')
     parser.add_argument('-c', '--clean', action='store_true',
@@ -414,7 +484,7 @@ def _create_arg_parser():
     return parser
 
 
-def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, manifest, dry_run=False):
+def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, manifest, sources, dry_run=False):
     # Start looking at our main executable's dependencies.
     deps = binary.dependencies.values()
     while deps:
@@ -436,7 +506,7 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
         # Add this dependency's dependencies to the pile.
         deps.extend(dep.dependencies.values())
         # Remember what we installed and where.
-        installed[dep.path] = (dep, copy_library(bundle_dest, dep_libdir, dep, dry_run=dry_run))
+        installed[dep.path] = (dep, copy_library(bundle_dest, dep_libdir, dep, sources, dry_run=dry_run))
 
     # Install the main executable itself.
     app_dest = os.path.join(bundle_dest, binary.bundle_location)
@@ -446,6 +516,15 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
     if not dry_run:
         _os_makedirs(app_dest)
         shutil.copy(binary.path, app_dest)
+
+        chmod = Pipeline([
+                'chmod',
+                'u+w',
+                binary_destination,
+            ])
+        chmod()
+        if binary.rpaths or binary.runpaths:
+            remove_prefix_rpaths(binary_destination, sources)
 
 
 def _update_manifest(manifest, installed, path, libdir):
@@ -513,7 +592,7 @@ def main(args):
     cur_manifest = manifest.setdefault(opts.libdir, [])
 
     installed = {}
-    _install_binary(main_exe, is_excluded, bundle_dest, opts.libdir, installed, manifest, dry_run=opts.dry_run)
+    _install_binary(main_exe, is_excluded, bundle_dest, opts.libdir, installed, manifest, opts.source, dry_run=opts.dry_run)
 
     if not opts.dry_run:
         _update_manifest(manifest, installed, opts.manifest, opts.libdir)
