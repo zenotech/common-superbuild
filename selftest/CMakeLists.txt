@@ -31,6 +31,7 @@ function (superbuild_find_projects var)
     pythontwisted
     pythontxaio
     pythonwslink
+    pythonzope
     pythonzopeinterface
     pytz
     qt4
