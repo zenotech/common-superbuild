@@ -176,13 +176,36 @@ superbuild_set_revision(tbb
   URL     "https://www.paraview.org/files/dependencies/${tbb_file}"
   URL_MD5 "${tbb_md5}")
 
+superbuild_set_revision(pytz
+  URL     "http://www.paraview.org/files/dependencies/pytz-2016.10.tar.bz2"
+  URL_MD5 88b1d6c50c764579292edce3493c8a3a)
+
+superbuild_set_revision(pythondateutil
+  URL     "http://www.paraview.org/files/dependencies/python-dateutil-2.6.0.tar.gz"
+  URL_MD5 6e38f91e8c94c15a79ce22768dfeca87)
+
+superbuild_set_revision(pythonpyparsing
+  URL     "http://www.paraview.org/files/dependencies/pyparsing-2.2.0.tar.gz"
+  URL_MD5 0214e42d63af850256962b6744c948d9)
+
+superbuild_set_revision(pythoncycler
+  URL     "http://www.paraview.org/files/dependencies/cycler-0.10.0.tar.gz"
+  URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)
+
 superbuild_set_revision(pythonsetuptools
   URL     "https://www.paraview.org/files/dependencies/setuptools-23.0.0.tar.gz"
   URL_MD5 100a90664040f8ff232fbac02a4c5652)
 
-superbuild_set_revision(pythonmpi4py
-  URL     "http://www.paraview.org/files/dependencies/mpi4py-3.0.0.tar.gz"
-  URL_MD5 bfe19f20cef5e92f6e49e50fb627ee70)
+set(mpi4py_ver "3.0.0")
+if (WIN32)
+  superbuild_set_revision(pythonmpi4py
+    URL     "http://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp27m-win_amd64.whl"
+    URL_MD5 9b95d5644b3d18819a39f4db858756ac)
+else ()
+  superbuild_set_revision(pythonmpi4py
+    URL     "http://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}.tar.gz"
+    URL_MD5 bfe19f20cef5e92f6e49e50fb627ee70)
+endif ()
 
 superbuild_set_revision(pythonautobahn
   URL     "http://www.paraview.org/files/dependencies/autobahn-17.10.1.tar.gz"
@@ -211,6 +234,10 @@ superbuild_set_revision(pythontxaio
 superbuild_set_revision(pythonwslink
   URL     "http://www.paraview.org/files/dependencies/wslink-0.1.4.tar.gz"
   URL_MD5 6fb2b6b4851ba7658a4ad36de6156eb0)
+
+superbuild_set_revision(pythonzope
+  URL     "http://www.paraview.org/files/dependencies/Zope-4.0b3.tar.gz"
+  URL_MD5 9a63e8c8b614dc6d6944fcbd9c105f45)
 
 superbuild_set_revision(pythonzopeinterface
   URL     "http://www.paraview.org/files/dependencies/zope.interface-4.4.3.tar.gz"

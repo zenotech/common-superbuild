@@ -22,6 +22,7 @@ superbuild_add_project(python
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
+      --with-ensurepip=install
       ${python_unicode_args}
       ${python_shared_args}
   BUILD_COMMAND
@@ -40,8 +41,12 @@ endif ()
 if (python_enabled)
   set(superbuild_python_executable "${superbuild_install_location}/bin/python"
     CACHE INTERNAL "")
+  set(superbuild_python_pip "${superbuild_install_location}/bin/pip"
+    CACHE INTERNAL "")
 else ()
   set(superbuild_python_executable ""
+    CACHE INTERNAL "")
+  set(superbuild_python_pip ""
     CACHE INTERNAL "")
 endif ()
 

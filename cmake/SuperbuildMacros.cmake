@@ -1020,8 +1020,8 @@ endfunction ()
 #   superbuild_add_project_python(<name> <args>...)
 #
 # Same as ``superbuild_add_project``, but sets the ``PYTHONPATH`` and build
-# commands to work properly out of the box. See ``superbuild_add_project`` its
-# argument documentation.
+# commands to work properly out of the box. See ``superbuild_add_project`` for
+# its argument documentation.
 macro (superbuild_add_project_python _name)
   if (WIN32)
     set(_superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
@@ -1054,4 +1054,34 @@ macro (superbuild_add_project_python _name)
         ${${_name}_python_install_args}
     PROCESS_ENVIRONMENT
       PYTHONPATH ${_superbuild_python_path})
+endmacro ()
+
+# Add a project to be installed from a Python wheel.
+#
+# Usage:
+#
+#   superbuild_add_project_python_wheel(<name> <args>...)
+#
+# Same as ``superbuild_add_project``, but installs using the source from a file
+# as a wheel.
+macro (superbuild_add_project_python_wheel _name)
+  if (superbuild_build_phase AND NOT superbuild_python_pip)
+    message(FATAL_ERROR
+      "No `pip` available?")
+  endif ()
+
+  superbuild_add_project("${_name}"
+    BUILD_IN_SOURCE 1
+    DOWNLOAD_NO_EXTRACT 1
+    DEPENDS python ${ARGN}
+    CONFIGURE_COMMAND
+      ""
+    BUILD_COMMAND
+      ""
+    INSTALL_COMMAND
+      ${superbuild_python_pip}
+        install
+        --no-index
+        --prefix=<INSTALL_DIR>
+        "<DOWNLOADED_FILE>")
 endmacro ()

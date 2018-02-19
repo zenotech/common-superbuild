@@ -6,7 +6,7 @@ endif ()
 
 superbuild_add_project(matplotlib
   CAN_USE_SYSTEM
-  DEPENDS python numpy png freetype zlib pythonsetuptools
+  DEPENDS python numpy png freetype zlib pythondateutil pytz pythonpyparsing pythoncycler pythonsetuptools
   DEPENDS_OPTIONAL cxx11
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND
