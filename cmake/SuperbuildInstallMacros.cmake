@@ -4,17 +4,15 @@ set_property(GLOBAL PROPERTY
 
 include(CMakeParseArguments)
 
-if (UNIX AND NOT APPLE)
-  if (NOT superbuild_python_executable)
-    find_package(PythonInterp 2.7)
-    if (PYTHONINTERP_FOUND)
-      set(superbuild_python_executable
-        "${PYTHON_EXECUTABLE}")
-    else ()
-      message(FATAL_ERROR
-        "Could not find a Python executable newer than 2.7; one is required "
-        "to create packages on Linux.")
-    endif ()
+if (NOT superbuild_python_executable)
+  find_package(PythonInterp 2.7)
+  if (PYTHONINTERP_FOUND)
+    set(superbuild_python_executable
+      "${PYTHON_EXECUTABLE}")
+  else ()
+    message(FATAL_ERROR
+      "Could not find a Python executable newer than 2.7; one is required "
+      "to create packages on Linux and Windows.")
   endif ()
 endif ()
 
