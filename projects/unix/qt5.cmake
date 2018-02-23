@@ -10,3 +10,6 @@ list(APPEND qt5_extra_options
 list(APPEND qt5_process_environment PROCESS_ENVIRONMENT PKG_CONFIG_PATH <INSTALL_DIR>/lib/pkgconfig)
 
 include(qt5.common)
+
+superbuild_apply_patch(qt5 btn-trigger-defs
+  "Handle older kernels without BTN_TRIGGER_HAPPY defines")
