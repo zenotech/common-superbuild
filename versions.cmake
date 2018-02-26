@@ -232,8 +232,8 @@ superbuild_set_revision(pythontxaio
   URL_MD5 a20e3431c95896a49fa3ffa84f77cde1)
 
 superbuild_set_revision(pythonwslink
-  URL     "http://www.paraview.org/files/dependencies/wslink-0.1.4.tar.gz"
-  URL_MD5 6fb2b6b4851ba7658a4ad36de6156eb0)
+  URL     "http://www.paraview.org/files/dependencies/wslink-0.1.7.tar.gz"
+  URL_MD5 c83ce53da39c84ec578025f36c9b18b0)
 
 superbuild_set_revision(pythonzope
   URL     "http://www.paraview.org/files/dependencies/Zope-4.0b3.tar.gz"
