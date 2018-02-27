@@ -856,7 +856,8 @@ function (_superbuild_add_project_internal name)
     list(APPEND build_env
       ${ld_library_path_argument})
   endif ()
-  list(APPEND build_env PKG_CONFIG_PATH "${superbuild_pkg_config_path}")
+  list(APPEND build_env
+    PKG_CONFIG_PATH "${superbuild_pkg_config_path}")
 
   set(binary_dir BINARY_DIR "${name}/build")
   list(FIND ARGN "BUILD_IN_SOURCE" in_source)
@@ -876,6 +877,9 @@ function (_superbuild_add_project_internal name)
       GIT_PROGRESS 1)
   endif ()
 
+  set(prepended_cmake_prefix_path
+    "${superbuild_prefix_path}${_superbuild_list_separator}${CMAKE_PREFIX_PATH}")
+
   # ARGN needs to be quoted so that empty list items aren't removed if that
   # happens options like INSTALL_COMMAND "" won't work.
   _superbuild_ExternalProject_add(${name} "${ARGN}"
@@ -892,11 +896,10 @@ function (_superbuild_add_project_internal name)
 
     PROCESS_ENVIRONMENT
       "${build_env}"
-      CMAKE_PREFIX_PATH "${superbuild_prefix_path}"
     CMAKE_ARGS
       --no-warn-unused-cli
       -DCMAKE_INSTALL_PREFIX:PATH=${superbuild_prefix_path}
-      -DCMAKE_PREFIX_PATH:PATH=${superbuild_prefix_path}
+      -DCMAKE_PREFIX_PATH:STRING=${prepended_cmake_prefix_path}
       -DCMAKE_C_FLAGS:STRING=${project_c_flags}
       -DCMAKE_CXX_FLAGS:STRING=${project_cxx_flags}
       -DCMAKE_SHARED_LINKER_FLAGS:STRING=${project_ld_flags}
@@ -922,7 +925,7 @@ endfunction ()
 # that would be passed to a project if it were enabled.
 function (_superbuild_write_developer_mode_cache name)
   set(cmake_args
-    "-DCMAKE_PREFIX_PATH:PATH=${superbuild_prefix_path}")
+    "-DCMAKE_PREFIX_PATH:PATH=\"${superbuild_prefix_path};${CMAKE_PREFIX_PATH}\"")
   if (debuggable AND NOT CMAKE_BUILD_TYPE_${name} STREQUAL "<same>")
     list(APPEND cmake_args
       "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE_${name}}")
