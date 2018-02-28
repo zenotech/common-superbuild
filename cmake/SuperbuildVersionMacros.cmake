@@ -120,6 +120,8 @@ function (superbuild_set_version_variables project default include_file)
   set(source_dir "")
   if ((NOT ${project}_FROM_GIT AND ${project}_FROM_SOURCE_DIR) OR ${project}_SOURCE_SELECTION STREQUAL "source")
     set(source_dir "${${project}_SOURCE_DIR}")
+  elseif (${project}_SOURCE_SELECTION STREQUAL "git")
+    set(source_dir "${CMAKE_BINARY_DIR}/superbuild/${project}/src")
   endif ()
   _superbuild_detect_version_git("${project}" "${source_dir}" "${default}" "${ARGV3}")
 
