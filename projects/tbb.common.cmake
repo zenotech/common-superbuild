@@ -21,7 +21,4 @@ superbuild_add_project(tbb
       -P "${CMAKE_CURRENT_LIST_DIR}/scripts/tbb.install.cmake")
 
 superbuild_add_extra_cmake_args(
-  -DTBB_INCLUDE_DIRS:PATH=<INSTALL_DIR>/include
-  -DTBB_LIBRARIES:PATH=<INSTALL_DIR>/lib/libtbb${tbb_libsuffix}
-  -DTBB_MALLOC_INCLUDE_DIRS:PATH=<INSTALL_DIR>/include
-  -DTBB_MALLOC_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libtbb_malloc${tbb_libsuffix})
+  -DTBB_ROOT:PATH=<INSTALL_DIR>)
