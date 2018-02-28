@@ -4,7 +4,7 @@ set(command "@step_command@")
 
 set(env_separator ":")
 set(prepend_envvars
-  PATH)
+  PATH CMAKE_PREFIX_PATH PKG_CONFIG_PATH)
 if (WIN32)
   set(env_separator ";")
 elseif (APPLE)
