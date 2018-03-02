@@ -112,27 +112,3 @@ function (superbuild_enable_install_target default)
       COMPONENT install)
   endif ()
 endfunction ()
-
-# DEPRECATED
-# Adds a test to package the top-level superbuild.
-#
-# This is deprecated because CPack will rerun the build of the top-level
-# project. Since superbuilds never have a "do-nothing" build in the presense of
-# Git repositories, it is not recommended to use this.
-function (superbuild_add_package_test generator)
-  message(AUTHOR_WARNING
-    "superbuild_add_package_test: This function is deprecated; "
-    "use the newer superbuild_add_extra_package_test mechanism instead.")
-
-  add_test(
-    NAME    "cpack-${generator}"
-    COMMAND "${CMAKE_CPACK_COMMAND}"
-            -V
-            -G "${generator}"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
-
-  set_tests_properties("cpack-${generator}"
-    PROPERTIES
-      RESOURCE_LOCK cpack
-      ${ARGN})
-endfunction ()

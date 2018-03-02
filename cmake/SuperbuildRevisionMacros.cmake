@@ -66,46 +66,6 @@ function (superbuild_set_customizable_revision name)
     ${_args_UNPARSED_ARGUMENTS})
 endfunction ()
 
-# Convenient way to declare a main project's source.
-#
-# Usage:
-#
-#   superbuild_set_external_source(<name>
-#     <git-url> <git-ref>
-#     <tarball-url> <tarball-md5>)
-#
-# Adds options to build the project from a git repository, a tarball, or a
-# source tree (linked from the source tree as
-# ``${CMAKE_SOURCE_DIR}/source-${name}``). Usually relevant for the "primary"
-# project(s) in a single superbuild.
-function (superbuild_set_external_source name git_repo git_tag tarball_url tarball_md5)
-  option("${name}_FROM_GIT" "If enabled, fetch sources from GIT" ON)
-  cmake_dependent_option("${name}_FROM_SOURCE_DIR" "Use an existing source directory" OFF
-    "NOT ${name}_FROM_GIT" OFF)
-
-  set(args)
-  if (${name}_FROM_GIT)
-    set(args
-      GIT_REPOSITORY "${git_repo}"
-      GIT_TAG        "${git_tag}")
-  elseif (${name}_FROM_SOURCE_DIR)
-    set(args
-      SOURCE_DIR "${CMAKE_SOURCE_DIR}/source-${name}")
-  else ()
-    set(args
-      URL     "${tarball_url}"
-      URL_MD5 "${tarball_md5}")
-  endif ()
-
-  superbuild_set_customizable_revision("${name}"
-    ${args})
-
-  # Push the cmake_dependent_option to the parent scope.
-  set("${name}_FROM_SOURCE_DIR"
-    "${${name}_FROM_SOURCE_DIR}"
-    PARENT_SCOPE)
-endfunction ()
-
 # A way to provide selections for a project's source.
 #
 # Usage:
