@@ -441,41 +441,48 @@ function (superbuild_unix_install_python)
     COMPONENT superbuild)
 endfunction ()
 
-# =======================================================================
-# OS X
-# =======================================================================
+#[==[.md
+## Mach-O (macOS)
 
-# Create an application bundle.
-#
-# Usage:
-#
-#   superbuild_apple_create_app(<destination> <name> <binary>
-#     [INCLUDE_REGEXES <regex>...]
-#     [EXCLUDE_REGEXES <regex>...]
-#     [SEARCH_DIRECTORIES <library-path>...]
-#     [PLUGINS <plugin>...]
-#     [FAKE_PLUGIN_PATHS] [CLEAN])
-#
-# Creates a ``<name>.app`` bundle. The bundle is placed in ``<destination>``
-# with ``<binary>`` (full path) as a main executable for the bundle (under the
-# ``MacOS/`` directory). Libraries are searched for and placed into the bundle
-# from the ``<library-paths>`` specified. Library IDs and link paths are
-# rewritten to use ``@executable_path`` or ``@loader_path`` as necessary.
-#
-# To exclude libraries from the bundle, use Python regular expressions as
-# arguments to the ``EXCLUDE_REGEXES`` keyword. To include any
-# otherwise-excluded libraries, use ``INCLUDE_REGEXES``. System libraries and
-# frameworks are excluded by default.
-#
-# The ``CLEAN`` argument starts a new bundle, otherwise the bundle is left
-# as-is (and is expected to have been created by this call).
-#
-# Plugins may be listed under the ``PLUGINS`` keyword and will be installed to
-# the ``Plugins/`` directory in the bundle. These are full paths to the plugin
-# binaries. If ``FAKE_PLUGIN_PATHS`` is given, the plugin is treated as its
-# own ``@executable_path`` which is useful when packaging plugins which may be
-# used for multiple applications and may require additional libraries
-# depending on the application.
+The superbuild installs Mach-O binaries using a core function to construct an
+`.app` bundle using the `fixup_bundle.apple.py` script with the correct
+arguments. It tries to emulate an Mach-O runtime loader to determine where to
+find dependent files and it copies them to the installation directory. It also
+fixes up internal library references so that the resulting package is
+self-contained and relocatable.
+
+### Create an application bundle.
+
+```
+superbuild_apple_create_app(<DESTINATION> <NAME> <BINARY>
+  [INCLUDE_REGEXES <regex>...]
+  [EXCLUDE_REGEXES <regex>...]
+  [SEARCH_DIRECTORIES <library-path>...]
+  [PLUGINS <plugin>...]
+  [FAKE_PLUGIN_PATHS] [CLEAN])
+```
+
+Creates a `<NAME>.app` bundle. The bundle is placed in `<DESTINATION>` with
+`<BINARY>` (an absolute path) as a main executable for the bundle (under the
+`MacOS/` directory). Libraries are searched for and placed into the bundle from
+the `SEARCH_DIRECTORIES` specified. Library IDs and link paths are rewritten to
+use `@executable_path` or `@loader_path` as necessary.
+
+To exclude libraries from the bundle, use Python regular expressions as
+arguments to the `EXCLUDE_REGEXES` keyword. To include any otherwise-excluded
+libraries, use `INCLUDE_REGEXES`. System libraries and frameworks are excluded
+by default.
+
+The `CLEAN` argument starts a new bundle, otherwise the bundle is left as-is
+(and is expected to have been created by this call).
+
+Plugins may be listed under the `PLUGINS` keyword and will be installed to the
+`Plugins/` directory in the bundle. These are full paths to the plugin
+binaries. If `FAKE_PLUGIN_PATHS` is given, the plugin is treated as its own
+`@executable_path` which is useful when packaging plugins which may be used for
+multiple applications and may require additional libraries depending on the
+application.
+#]==]
 function (superbuild_apple_create_app destination name binary)
   set(options
     CLEAN
@@ -542,23 +549,25 @@ function (superbuild_apple_create_app destination name binary)
     COMPONENT superbuild)
 endfunction ()
 
-# Add a utility executable to a bundle.
-#
-# Usage:
-#
-#   superbuild_apple_install_utility(<destination> <name> <binary>
-#     [INCLUDE_REGEXES <regex>...]
-#     [EXCLUDE_REGEXES <regex>...]
-#     [SEARCH_DIRECTORIES <library-path>...])
-#
-# Adds a binary to the ``bin/`` path of the bundle. Required libraries are
-# installed and fixed up.
-#
-# Must match an existing call to ``superbuild_apple_create_app(<destination>
-# <name>)``.
-#
-# See ``superbuild_apple_create_app`` for the documentation for
-# ``INCLUDE_REGEXES``, ``EXCLUDE_REGEXES``, and ``SEARCH_DIRECTORIES``.
+#[==[.md
+### Utility executables
+
+```
+superbuild_apple_install_utility(<DESTINATION> <NAME> <BINARY>
+  [INCLUDE_REGEXES <regex>...]
+  [EXCLUDE_REGEXES <regex>...]
+  [SEARCH_DIRECTORIES <library-path>...])
+```
+
+Adds a binary to the `bin/` path of the bundle. Required libraries are
+installed and fixed up using `@executable_path`.
+
+A previous call must have been made with matching `DESTINATION` and `NAME`
+arguments; this call will not create a new application bundle.
+
+The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, and `SEARCH_DIRECTORIES` arguments
+are the same as those for `superbuild_apple_create_app`.
+#]==]
 function (superbuild_apple_install_utility destination name binary)
   set(multivalues
     INCLUDE_REGEXES
@@ -601,24 +610,27 @@ function (superbuild_apple_install_utility destination name binary)
     COMPONENT superbuild)
 endfunction ()
 
-# Add a module library to a bundle.
-#
-# Usage:
-#
-#   superbuild_apple_install_module(<destination> <name> <binary> <location>
-#     [INCLUDE_REGEXES <regex>...]
-#     [EXCLUDE_REGEXES <regex>...]
-#     [SEARCH_DIRECTORIES <library-path>...])
-#
-# Adds a library to the ``<location>`` path of the bundle. Required libraries are
-# installed and fixed up using ``@loader_path``. Use this to install things
-# such as compiled language modules and the like.
-#
-# Must match an existing call to ``superbuild_apple_create_app(<destination>
-# <name>)``.
-#
-# See ``superbuild_apple_create_app`` for the documentation for
-# ``INCLUDE_REGEXES``, ``EXCLUDE_REGEXES``, and ``SEARCH_DIRECTORIES``.
+#[==[.md
+### Module libraries
+
+```
+superbuild_apple_install_module(<DESTINATION> <NAME> <BINARY> <LOCATION>
+  [INCLUDE_REGEXES <regex>...]
+  [EXCLUDE_REGEXES <regex>...]
+  [SEARCH_DIRECTORIES <library-path>...])
+```
+
+Adds a library to the `<LOCATION>` path of the bundle. Required libraries which
+have not been installed by previous executable installs are installed and fixed
+up using `@loader_path`. Use this to install things such as compiled language
+modules and the like.
+
+A previous call must have been made with matching `DESTINATION` and `NAME`
+arguments; this call will not create a new application bundle.
+
+The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, and `SEARCH_DIRECTORIES` arguments
+are the same as those for `superbuild_apple_create_app`.
+#]==]
 function (superbuild_apple_install_module destination name binary location)
   set(multivalues
     INCLUDE_REGEXES
@@ -662,21 +674,29 @@ function (superbuild_apple_install_module destination name binary location)
     COMPONENT superbuild)
 endfunction ()
 
-# Add Python modules or packages to a bundle.
-#
-# Usage:
-#
-#   superbuild_apple_install_python(<destination> <name>
-#     MODULES <module>...
-#     MODULE_DIRECTORIES <module-path>...
-#     [SEARCH_DIRECTORIES <library-path>...])
-#
-# Adds Python modules or packages ``<modules>`` to the bundle. Required
-# libraries are searched for in the ``<library-paths>`` and placed next to the
-# module which requires it.
-#
-# See ``superbuild_unix_install_python`` for the documentation for
-# ``MODULES`` and ``MODULE_DIRECTORIES``.
+#[==[.md
+### Python packages
+
+The superbuild also provides functions to install Python modules and packages.
+
+```
+superbuild_apple_install_python(<DESTINATION> <NAME>
+  MODULES <module>...
+  MODULE_DIRECTORIES <module-path>...
+  [SEARCH_DIRECTORIES <library-path>...])
+```
+
+The list of modules to installed is given to the `MODULES` argument. These
+modules (or packages) are searched for at install time in the paths given to
+the `MODULE_DIRECTORIES` argument.
+
+Modules are placed in the `Python/` directory in the given application bundle.
+
+A previous call must have been made with matching `DESTINATION` and `NAME`
+arguments; this call will not create a new application bundle.
+
+Note that modules in the list which cannot be found are ignored.
+#]==]
 function (superbuild_apple_install_python destination name)
   set(multivalues
     SEARCH_DIRECTORIES
