@@ -21,9 +21,9 @@ endfunction ()
 # right build hints and patches later on.
 #
 function (_superbuild_cross_target_machine)
-  set(cross_target "generic"
+  set(SUPERBUILD_CROSS_TARGET "generic"
     CACHE STRING "Platform to cross compile for, either generic|bgp_xlc|bgq_xlc|bgq_gnu|xk7_gnu")
-  set_property(CACHE cross_target PROPERTY STRINGS
+  set_property(CACHE SUPERBUILD_CROSS_TARGET PROPERTY STRINGS
     "generic" "bgp_xlc" "bgq_xlc" "bgq_gnu" "xk7_gnu")
 endfunction ()
 
@@ -31,7 +31,7 @@ endfunction ()
 # Includes an optionally site-specific file from the cross-compiling directory.
 function (_superbuild_cross_include_file var name)
   set(site_file
-    "crosscompile/${cross_target}/${name}.cmake")
+    "crosscompile/${SUPERBUILD_CROSS_TARGET}/${name}.cmake")
   include("${site_file}" OPTIONAL
     RESULT_VARIABLE res)
   if (NOT res)
@@ -49,7 +49,7 @@ endfunction ()
 #
 function (_superbuild_cross_platform_settings)
   set(site_toolchain
-    "${CMAKE_CURRENT_LIST_DIR}/crosscompile/${cross_target}/toolchain.cmake.in")
+    "${CMAKE_CURRENT_LIST_DIR}/crosscompile/${SUPERBUILD_CROSS_TARGET}/toolchain.cmake.in")
   set(superbuild_cross_toolchain
     "${CMAKE_BINARY_DIR}/crosscompile/toolchain.cmake")
 
