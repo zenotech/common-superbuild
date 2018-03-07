@@ -114,10 +114,14 @@ class Library(object):
         return loader_paths
 
     def _resolve_rpath(self, rpath):
-        if rpath.startswith('$ORIGIN'):
+        if rpath.startswith('$ORIGIN/'):
             rpath = rpath.replace('$ORIGIN', self.loader_path)
+        elif rpath.startswith('${ORIGIN}/'):
+            rpath = rpath.replace('${ORIGIN}', self.loader_path)
 
-        # TODO: Handle $LIB and $PLATFORM (also ${} forms).
+        # TODO: Handle $LIB and $PLATFORM. These really shouldn't be used in
+        # superbuilds however; libraries should all be under a plain ``lib``
+        # directory.
 
         return rpath.strip()
 
