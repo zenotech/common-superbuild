@@ -39,7 +39,6 @@ function (_superbuild_set_customizable_revision name)
     SOURCE_DIR)
   cmake_parse_arguments(_args "" "${keys}" "" ${ARGN})
   set(customized_args)
-  string(TOUPPER "${name}" name_UPPER)
 
   foreach (key IN LISTS keys)
     if (_args_${key})
@@ -48,8 +47,7 @@ function (_superbuild_set_customizable_revision name)
       if (key STREQUAL "SOURCE_DIR")
         set(cache_type PATH)
       endif ()
-      superbuild_deprecated_setting(option_default "${option_name}" "${name_UPPER}_${key}" "${_args_${key}}")
-      set("${option_name}" "${option_default}"
+      set("${option_name}" "${_args_${key}}"
         CACHE "${cache_type}" "${key} for project '${name}'")
       if (NOT key STREQUAL "SOURCE_DIR")
         mark_as_advanced(${option_name})
