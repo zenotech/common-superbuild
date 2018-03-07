@@ -222,7 +222,7 @@ class Library(object):
         if self._dependencies is None:
             collection = {}
             for dep in self._get_dependencies():
-                deplib = Library.create_from_reference(dep, self)
+                deplib = Library.from_reference(dep, self)
                 if deplib is not None and \
                    not deplib.path == self.path:
                     collection[dep] = deplib
@@ -238,33 +238,33 @@ class Library(object):
         return ref
 
     @classmethod
-    def create_from_reference(cls, ref, loader):
+    def from_reference(cls, ref, loader):
         paths = [ref]
-        if ref.startswith('@executable_path'):
+        if ref.startswith('@executable_path/'):
             # If the loader does not have an executable path, it is a plugin or
             # a framework and we trust the executable which loads the plugin to
             # provide this library instead.
             if loader.executable_path is None:
                 return None
             paths.append(ref.replace('@executable_path', loader.executable_path))
-        elif ref.startswith('@loader_path'):
+        elif ref.startswith('@loader_path/'):
             paths.append(ref.replace('@loader_path', loader.loader_path))
-        elif ref.startswith('@rpath'):
+        elif ref.startswith('@rpath/'):
             for rpath in loader.rpaths:
                 paths.append(ref.replace('@rpath', rpath))
         paths.append(os.path.join(os.path.dirname(loader.path), ref))
         for path in paths:
             if os.path.exists(path):
-                return cls.create_from_path(path, parent=loader)
+                return cls.from_path(path, parent=loader)
         search_path = loader._find_library(ref)
         if os.path.exists(search_path):
-            return cls.create_from_path(search_path, parent=loader)
+            return cls.from_path(search_path, parent=loader)
         raise RuntimeError('Unable to find the %s library from %s' % (ref, loader.path))
 
     __cache = {}
 
     @classmethod
-    def create_from_path(cls, path, parent=None):
+    def from_path(cls, path, parent=None):
         if not os.path.exists(path):
             raise RuntimeError('%s does not exist' % path)
 
@@ -280,7 +280,7 @@ class Library(object):
         return cls.__cache[path]
 
     @classmethod
-    def create_from_manifest(cls, path, installed_id):
+    def from_manifest(cls, path, installed_id):
         if path in cls.__cache:
             raise RuntimeError('There is already a library for %s' % path)
 
@@ -441,7 +441,7 @@ def _os_makedirs(path):
     os.makedirs(path)
 
 
-def _create_arg_parser():
+def _arg_parser():
     import argparse
 
     parser = argparse.ArgumentParser(description='Install an OS X binary into a bundle')
@@ -553,7 +553,7 @@ def _update_manifest(manifest, installed, path):
 
 
 def main(args):
-    parser = _create_arg_parser()
+    parser = _arg_parser()
     opts = parser.parse_args(args)
 
     if opts.type == 'executable':
@@ -610,7 +610,7 @@ def main(args):
 
         # Seed the cache with manifest entries.
         for path, installed_id in manifest.items():
-            Library.create_from_manifest(path, installed_id)
+            Library.from_manifest(path, installed_id)
 
     installed = {}
     _install_binary(main_exe, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run)
