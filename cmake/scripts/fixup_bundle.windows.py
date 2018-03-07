@@ -103,7 +103,7 @@ class Library(object):
             for dep in self._get_dependencies():
                 if msvc_runtimes.match(dep):
                     continue
-                deplib = Library.create_from_reference(dep, self)
+                deplib = Library.from_reference(dep, self)
                 if deplib is not None:
                     collection[dep] = deplib
             self._dependencies = collection
@@ -119,7 +119,7 @@ class Library(object):
     __search_cache = None
 
     @classmethod
-    def create_from_reference(cls, ref, loader):
+    def from_reference(cls, ref, loader):
         paths = []
 
         # Use the loader's location.
@@ -137,17 +137,17 @@ class Library(object):
         for path in paths:
             libpath = os.path.join(path, ref)
             if os.path.exists(libpath):
-                return cls.create_from_path(libpath, parent=loader)
+                return cls.from_path(libpath, parent=loader)
 
         search_path = loader._find_library(ref)
         if os.path.exists(search_path):
-            return cls.create_from_path(search_path, parent=loader)
+            return cls.from_path(search_path, parent=loader)
         raise RuntimeError('Unable to find the %s library from %s: %s' % (ref, loader.path, ', '.join(paths)))
 
     __cache = {}
 
     @classmethod
-    def create_from_path(cls, path, parent=None):
+    def from_path(cls, path, parent=None):
         if not os.path.exists(path):
             raise RuntimeError('%s does not exist' % path)
 
@@ -163,7 +163,7 @@ class Library(object):
         return cls.__cache[path]
 
     @classmethod
-    def create_from_manifest(cls, path):
+    def from_manifest(cls, path):
         if path in cls.__cache:
             raise RuntimeError('There is already a library for %s' % path)
 
@@ -216,7 +216,7 @@ def _os_makedirs(path):
     os.makedirs(path)
 
 
-def _create_arg_parser():
+def _arg_parser():
     import argparse
 
     parser = argparse.ArgumentParser(description='Install an ELF binary into a bundle')
@@ -300,7 +300,7 @@ def _update_manifest(manifest, installed, path, location):
 
 
 def main(args):
-    parser = _create_arg_parser()
+    parser = _arg_parser()
     opts = parser.parse_args(args)
 
     if opts.type == 'executable':
@@ -348,7 +348,7 @@ def main(args):
         manifest_dirs = set(opts.binary_libdir + [libdir,])
         for mdir in manifest_dirs:
             for path in manifest.get(mdir, []):
-                Library.create_from_manifest(path)
+                Library.from_manifest(path)
 
     cur_manifest = manifest.setdefault(opts.libdir, [])
 
