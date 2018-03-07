@@ -25,14 +25,14 @@ endfunction ()
 #
 # Usage:
 #
-#   superbuild_set_customizable_revision(<name> <args>...)
+#   _superbuild_set_customizable_revision(<name> <args>...)
 #
 # Adds advanced variables for the following keys:
 #
 #   GIT_REPOSITORY, GIT_TAG, URL, URL_HASH, URL_MD5, and SOURCE_DIR
 #
 # they are named ``${name_UPPER}_${key}``.
-function (superbuild_set_customizable_revision name)
+function (_superbuild_set_customizable_revision name)
   set(keys
     GIT_REPOSITORY GIT_TAG
     URL URL_HASH URL_MD5
@@ -315,7 +315,7 @@ function (superbuild_set_selectable_source name)
     superbuild_set_revision("${name}"
       ${selection_${selection}_args})
   else ()
-    superbuild_set_customizable_revision("${name}"
+    _superbuild_set_customizable_revision("${name}"
       ${selection_${selection}_args})
   endif ()
 endfunction ()
