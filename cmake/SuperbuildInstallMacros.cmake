@@ -736,24 +736,70 @@ function (superbuild_apple_install_python destination name)
     COMPONENT superbuild)
 endfunction ()
 
-# =======================================================================
-# Windows
-# =======================================================================
+#[==[.md
+## PE-COFF (Windows)
 
-# INTERNAL
-# Install a binary and its required libraries to a location.
-#
-# _superbuild_windows_install_binary(
-#   LIBDIR <libdir>
-#   BINARY <path>
-#   TYPE <module|executable>
-#   [CLEAN]
-#   [DESTINATION <destination>]
-#   [LOCATION <location>]
-#   [INCLUDE_REGEXES <include-regex>...]
-#   [EXCLUDE_REGEXES <exclude-regex>...]
-#   [BINARY_LIBDIR <binary_libdirs>...]
-#   [SEARCH_DIRECTORIES <search-directory>...])
+The superbuild installs PE-COFF binaries using a core function to construct a
+command to run the `fixup_bundle.windows.py` script with the correct arguments.
+It tries to emulate the runtime loader to determine where to find dependent
+files and it copies them to the installation directory.
+
+Calling this function directory should not be necessary. Instead, using the
+more specific functions documented later is recommended. The core function is
+used as a single place to document the various common arguments available to
+the other functions. If an argument is specified by a function, it should not
+be passed as the remaining arguments to the function.
+
+```
+_superbuild_windows_install_binary(
+  LIBDIR <libdir>
+  BINARY <path>
+  TYPE <module|executable>
+  [CLEAN]
+  [DESTINATION <destination>]
+  [LOCATION <location>]
+  [INCLUDE_REGEXES <include-regex>...]
+  [EXCLUDE_REGEXES <exclude-regex>...]
+  [BINARY_LIBDIR <binary_libdirs>...]
+  [SEARCH_DIRECTORIES <search-directory>...])
+```
+
+A manifest file is kept in the binary directory of the packaging step. This
+allows for a library to be installed just once for an entire package. It is
+reset when the `CLEAN` argument is present. In addition, the install directory
+is removed for non-install targets (based on `superbuild_is_install_target`)
+when `CLEAN` is specified. Whether this is necessary or not is maintained
+internally and it should almost never need to be provided.
+
+The `DESTINATION` is the absolute path to the installation prefix, including
+`DESTDIR`. It defaults to `\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}`. It is
+escaped because we want CMake to expand its value at install time, not
+configure time.
+
+The `BINARY` argument is the path to the actual executable to install. It must
+be an absolute path.
+
+The `TYPE` argument specifies whether an executable or module (e.g., plugin or
+standalone library) is being installed. For a module, the `LOCATION` argument
+must be given. This is the path under the installation prefix to place the
+module. Executables are always installed into `bin`. The libraries that are
+found to be required by the installed binary are placed in the subdirectory of
+the install destination given by the `LIBDIR` argument.
+
+The `BINARY_LIBDIR` argument is a list of paths which the binary is assumed to
+already be searching when loading a module.
+
+The `SEARCH_DIRECTORIES` argument is a list of paths to search for libraries if
+the library cannot be found due to rpaths in the binary, `LOADER_PATHS`, or
+other runtime-loader logic. If these paths are required to find a library, a
+warning is printed at install time.
+
+By default, Microsoft's C runtime libraries are ignored when installing. The
+`INCLUDE_REGEXES` and `EXCLUDE_REGEXES` arguments are lists of Python regular
+expressions to either force-include or force-exclude from installation.
+Inclusion overrides exclusion. The provided regular expressions are also
+expected to match the full path of the library.
+#]==]
 function (_superbuild_windows_install_binary)
   set(options
     CLEAN)
@@ -862,6 +908,7 @@ function (_superbuild_windows_install_binary)
     COMPONENT superbuild)
 endfunction ()
 
+# A convenience function for installing an executable.
 function (_superbuild_windows_install_executable path libdir)
   _superbuild_windows_install_binary(
     BINARY      "${path}"
@@ -870,6 +917,7 @@ function (_superbuild_windows_install_executable path libdir)
     ${ARGN})
 endfunction ()
 
+# A convenience function for installing a module.
 function (_superbuild_windows_install_module path subdir libdir)
   _superbuild_windows_install_binary(
     BINARY      "${path}"
@@ -879,43 +927,53 @@ function (_superbuild_windows_install_module path subdir libdir)
     ${ARGN})
 endfunction ()
 
-# Install a program from the installation tree to the package.
-#
-# Usage:
-#
-#   superbuild_windows_install_program(<path> <libdir>
-#     [INCLUDE_REGEXES <include-regex>...]
-#     [EXCLUDE_REGEXES <exclude-regex>...]
-#     [SEARCH_DIRECTORIES <search-directory>...])
-#
-# Installs a program ``<name>`` into ``bin/`` and its dependent libraies into
-# ``<libdir>``.
-#
-# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
-# include or exclude found paths from being installed to the package. They are
-# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
-# to search for dependent libraries.
+#[==[.md
+### Executables
+
+Non-forwarding executables are binaries that may not work in the package
+without the proper rpaths or `LD_LIBRARY_PATH` set when running the executable.
+
+```
+superbuild_windows_install_program(<NAME> <LIBDIR>)
+```
+
+Installs a program at `NAME` into `bin/` and its dependent libraries into
+`LIBDIR` under the install destination. The program is assumed to be in the
+installation prefix as `bin/<NAME>.exe`.
+
+The following arguments are set by calling this function:
+
+  - `BINARY`
+  - `LIBDIR`
+  - `TYPE` (`executable`)
+#]==]
 function (superbuild_windows_install_program name libdir)
   _superbuild_windows_install_executable("${superbuild_install_location}/bin/${name}.exe" "${libdir}" ${ARGN})
 endfunction ()
 
-# Install a plugin to the package.
-#
-# Usage:
-#
-#   superbuild_windows_install_plugin(<filename> <libdir> <search-paths>
-#     [INCLUDE_REGEXES <include-regex>...]
-#     [EXCLUDE_REGEXES <exclude-regex>...]
-#     [SEARCH_DIRECTORIES <search-directory>...])
-#
-# Install a plugin from ``<filename>`` to the package. The file is searched for
-# in ``<search-paths>`` under the superbuild's install tree. Required libraries
-# are installed to ``<libdir>``.
-#
-# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
-# include or exclude found paths from being installed to the package. They are
-# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
-# to search for dependent libraries.
+#[==[.md
+### Plugins
+
+Plugins include libraries that are meant to be loaded at runtime. It also
+includes libraries that are linked to, but need to be installed separately.
+
+```
+superbuild_windows_install_plugin(<FILENAME> <LIBDIR> <SEARCH PATHS> [<ARG>...])
+```
+
+Installs a library named `FILENAME` into `bin/` and its dependent libraries
+into `LIBDIR` under the install destination. The given filename is searched for
+under each path in the `SEARCH PATHS` argument.
+
+Note that `SEARCH PATHS` is a CMake list passed as a single argument.
+
+The following arguments are set by calling this function:
+
+  - `BINARY`
+  - `LIBDIR`
+  - `LOCATION`
+  - `TYPE` (`module`)
+#]==]
 function (superbuild_windows_install_plugin name libdir paths)
   if (IS_ABSOLUTE "${name}")
     _superbuild_windows_install_module("${name}" "${paths}" "${libdir}" ${ARGN})
@@ -937,30 +995,33 @@ function (superbuild_windows_install_plugin name libdir paths)
   endif ()
 endfunction ()
 
-# Install Python modules to the package.
-#
-# Usage:
-#
-#   superbuild_windows_install_python(
-#     MODULES <module>...
-#     MODULE_DIRECTORIES <module-path>...
-#     [MODULE_DESTINATION <destination>]
-#     [INCLUDE_REGEXES <include-regex>...]
-#     [EXCLUDE_REGEXES <exclude-regex>...]
-#     [SEARCH_DIRECTORIES <library-path>...])
-#
-# Installs Python modules or packages named ``<name>`` into the package.
-# Libraries are searched for in ``<library-paths>`` and relative paths are
-# taken to be relative to the superbuild's install directory. The modules are
-# searched for in the ``<module-paths>``. Modules are installed into the proper
-# location (``lib/python2.7/site-packages``) within the package, but may be
-# placed inside of a different directory by using the ``MODULE_DESTINATION``
-# argument.
-#
-# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
-# include or exclude found paths from being installed to the package. They are
-# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
-# to search for dependent libraries.
+#[==[.md
+### Python packages
+
+The superbuild also provides functions to install Python modules and packages.
+
+```
+superbuild_windows_install_python(
+  MODULES <module>...
+  MODULE_DIRECTORIES <module-path>...
+  [MODULE_DESTINATION <destination>]
+  [INCLUDE_REGEXES <include-regex>...]
+  [EXCLUDE_REGEXES <exclude-regex>...]
+  [SEARCH_DIRECTORIES <library-path>...])
+```
+
+The list of modules to installed is given to the `MODULES` argument. These
+modules (or packages) are searched for at install time in the paths given to
+the `MODULE_DIRECTORIES` argument.
+
+Modules are placed in the `MODULE_DESTINATION` under the expected Python module
+paths in the package (`bin/Lib`). By default, `/site-packages` is used.
+
+The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, and `SEARCH_DIRECTORIES` used when
+installing compiled Python modules through `superbuild_windows_install_plugin`.
+
+Note that modules in the list which cannot be found are ignored.
+#]==]
 function (superbuild_windows_install_python)
   set(values
     MODULE_DESTINATION)
