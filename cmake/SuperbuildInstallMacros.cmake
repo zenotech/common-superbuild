@@ -1,9 +1,24 @@
+#[==[.md
+# Installation support
+
+When creating packages, these functions may be used in order to ensure that the
+resulting package includes the required executables as well as all runtime
+dependencies. These are discovered using platform-specific utilties to find out
+what libraries are required and then emulating the platform's library searching
+logic in order to find dependent libraries. For more details, see each
+platform's section.
+
+Due to platform differences, each platform has its own set of functions for
+use.
+#]==]
+
 set(_superbuild_install_cmake_dir "${CMAKE_CURRENT_LIST_DIR}")
 set_property(GLOBAL PROPERTY
   superbuild_has_cleaned FALSE)
 
 include(CMakeParseArguments)
 
+# Find a Python executable to run the `fixup_bundle` scripts.
 if (NOT superbuild_python_executable)
   find_package(PythonInterp 2.7)
   if (PYTHONINTERP_FOUND)
@@ -16,28 +31,78 @@ if (NOT superbuild_python_executable)
   endif ()
 endif ()
 
+# TODO: error on unrecognized arguments
+
 # TODO: The functions in this file should be grouped and made OS-agnostic.
 #       Keyword arguments should be used more and be uniform across all
 #       platforms.
 
-# =======================================================================
-# Linux
-# =======================================================================
+#[==[.md
+## ELF (Linux)
 
-# INTERNAL
-# Install a binary and its required libraries to a location.
-#
-# _superbuild_unix_install_binary(
-#   LIBDIR <libdir>
-#   BINARY <path>
-#   TYPE <module|executable>
-#   [CLEAN]
-#   [DESTINATION <destination>]
-#   [LOCATION <location>]
-#   [INCLUDE_REGEXES <include-regex>...]
-#   [EXCLUDE_REGEXES <exclude-regex>...]
-#   [LOADER_PATHS <loader-paths>...]
-#   [SEARCH_DIRECTORIES <search-directory>...])
+The superbuild installs ELF binaries using a core function to construct a
+command to run the `fixup_bundle.unix.py` script with the correct arguments. It
+tries to emulate an ELF runtime loader to determine where to find dependent
+files and it copies them to the installation directory.
+
+Calling this function directory should not be necessary. Instead, using the
+more specific functions documented later is recommended. The core function is
+used as a single place to document the various common arguments available to
+the other functions. If an argument is specified by a function, it should not
+be passed as the remaining arguments to the function.
+
+```
+_superbuild_unix_install_binary(
+  LIBDIR <libdir>
+  BINARY <path>
+  TYPE <module|executable>
+  [CLEAN]
+  [DESTINATION <destination>]
+  [LOCATION <location>]
+  [INCLUDE_REGEXES <include-regex>...]
+  [EXCLUDE_REGEXES <exclude-regex>...]
+  [LOADER_PATHS <loader-paths>...]
+  [SEARCH_DIRECTORIES <search-directory>...])
+```
+
+A manifest file is kept in the binary directory of the packaging step. This
+allows for a library to be installed just once for an entire package. It is
+reset when the `CLEAN` argument is present. In addition, the install directory
+is removed for non-install targets (based on `superbuild_is_install_target`)
+when `CLEAN` is specified. Whether this is necessary or not is maintained
+internally and it should almost never need to be provided.
+
+The `DESTINATION` is the absolute path to the installation prefix, including
+`DESTDIR`. It defaults to `\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}`. It is
+escaped because we want CMake to expand its value at install time, not
+configure time.
+
+The `BINARY` argument is the path to the actual executable to install. It must
+be an absolute path.
+
+The `TYPE` argument specifies whether an executable or module (e.g., plugin or
+standalone library) is being installed. For a module, the `LOCATION` argument
+must be given. This is the path under the installation prefix to place the
+module. Executables are always installed into `bin`. The libraries that are
+found to be required by the installed binary are placed in the subdirectory of
+the install destination given by the `LIBDIR` argument.
+
+The `LOADER_PATHS` argument is a list of paths to use when installing a module
+to search for libraries that are assumed to be available because of the loading
+executable. This is intended to be where libraries assumed to be with an
+executable live when installing a plugin for that executable.
+
+The `SEARCH_DIRECTORIES` argument is a list of paths to search for libraries if
+the library cannot be found due to rpaths in the binary, `LOADER_PATHS`, or
+other runtime-loader logic. If these paths are required to find a library, a
+warning is printed at install time.
+
+By default, libraries from the "system" (basically standard `/lib` directories)
+are ignored when installing. The `INCLUDE_REGEXES` and `EXCLUDE_REGEXES`
+arguments are lists of Python regular expressions to either force-include or
+force-exclude from installation. Inclusion overrides exclusion. The provided
+regular expressions are also expected to match the full path of the library.
+#]==]
 function (_superbuild_unix_install_binary)
   set(options
     CLEAN)
@@ -143,6 +208,7 @@ function (_superbuild_unix_install_binary)
     COMPONENT superbuild)
 endfunction ()
 
+# A convenience function for installing an executable.
 function (_superbuild_unix_install_executable path libdir)
   _superbuild_unix_install_binary(
     BINARY      "${path}"
@@ -151,6 +217,7 @@ function (_superbuild_unix_install_executable path libdir)
     ${ARGN})
 endfunction ()
 
+# A convenience function for installing a module.
 function (_superbuild_unix_install_module path subdir libdir)
   _superbuild_unix_install_binary(
     BINARY      "${path}"
@@ -160,29 +227,35 @@ function (_superbuild_unix_install_module path subdir libdir)
     ${ARGN})
 endfunction ()
 
-# Install a "forward executable" from the installation tree to the package.
-#
-# Usage:
-#
-#   superbuild_unix_install_program_fwd(<name> <library-paths>
-#     [INCLUDE_REGEXES <include-regex>...]
-#     [EXCLUDE_REGEXES <exclude-regex>...]
-#     [SEARCH_DIRECTORIES <search-directory>...])
-#
-# Note that this installs a program which was created using the KWSys forward
-# executable mechanisms. For "regular" binaries, see
-# ``superbuild_unix_install_program``.
-#
-# Installs a binary named ``<name>`` to the package. The ``<library-paths>`` is
-# a list of directories to search for the real binary and its libraries.
-# Relative paths are taken to be relative to the install directory. The
-# libraries are installed to the subdirectory the actual executable is found
-# in.
-#
-# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
-# include or exclude found paths from being installed to the package. They are
-# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
-# to search for dependent libraries.
+#[==[.md
+### Forwarding executables
+
+In the ParaView world, "forwarding" executables are used to make packages
+standalone. This functionality is provided by KWSys. This creates a small
+binary in `bin/` which finds its companion "real" executable under the
+corresponding `lib/` directory. It then sets the `LD_LIBRARY_PATH` environment
+variable accordingly and executes the real binary.
+
+In order to install these kinds of executables, this function is provided:
+
+```
+superbuild_unix_install_program_fwd(<NAME> <LIBRARY PATHS> [<ARG>...])
+```
+
+Installs a binary named `NAME` to the package. The `LIBRARY PATHS` argument is
+a list of directories to search for the real binary and its libraries. These
+paths are assumed to be relative to `superbuild_install_location`. The
+libraries are installed to the subdirectory the actual executable is found in.
+
+Note that `LIBRARY PATHS` is a CMake list passed as a single argument.
+
+The following arguments are set by calling this function:
+
+  - `BINARY`
+  - `LIBDIR`
+  - `LOCATION`
+  - `TYPE`
+#]==]
 function (superbuild_unix_install_program_fwd name paths)
   set(found FALSE)
   foreach (path IN LISTS paths)
@@ -200,46 +273,53 @@ function (superbuild_unix_install_program_fwd name paths)
   _superbuild_unix_install_executable("${superbuild_install_location}/bin/${name}" "lib")
 endfunction ()
 
-# Install a program from the installation tree to the package.
-#
-# Usage:
-#
-#   superbuild_unix_install_program(<path> <libdir>
-#     [INCLUDE_REGEXES <include-regex>...]
-#     [EXCLUDE_REGEXES <exclude-regex>...]
-#     [SEARCH_DIRECTORIES <search-directory>...])
-#
-# Installs a program ``<name>`` into ``bin/`` and its dependent libraies into
-# ``<libdir>``.
-#
-# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
-# include or exclude found paths from being installed to the package. They are
-# Python regular expressions. ``SEARCH_DIRECTORIES`` is a list of directories
-# to search for dependent libraries.
+#[==[.md
+### Executables
+
+Non-forwarding executables are binaries that may not work in the package
+without the proper rpaths or `LD_LIBRARY_PATH` set when running the executable.
+
+```
+superbuild_unix_install_program(<PATH> <LIBRARY DIR> [<ARG>...])
+```
+
+Installs a program at `PATH` into `bin/` and its dependent libraries into
+`LIBRARY DIR` under the install destination. The program must be an absolute
+path.
+
+The following arguments are set by calling this function:
+
+  - `BINARY`
+  - `LIBDIR`
+  - `TYPE` (`executable`)
+#]==]
 function (superbuild_unix_install_program name libdir)
   _superbuild_unix_install_executable("${name}" "${libdir}" ${ARGN})
 endfunction ()
 
-# Install a plugin to the package.
-#
-# Usage:
-#
-#   superbuild_unix_install_plugin(<filename> <libdir> <search-paths>
-#     [INCLUDE_REGEXES <include-regex>...]
-#     [EXCLUDE_REGEXES <exclude-regex>...]
-#     [LOADER_PATHS <loader-paths>...]
-#     [SEARCH_DIRECTORIES <search-directory>...])
-#
-# Install a plugin from ``<filename>`` to the package. The file is searched for
-# in ``<search-paths>`` under the superbuild's install tree. Required libraries
-# are installed to ``<libdir>``.
-#
-# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
-# include or exclude found paths from being installed to the package. They are
-# Python regular expressions. ``LOADER_PATHS`` is a list of directories where
-# the executable loading the plugin is looking for libraries. These are
-# searched for dependencies first. ``SEARCH_DIRECTORIES`` is a list of
-# directories to search for dependent libraries.
+#[==[.md
+### Plugins
+
+Plugins include libraries that are meant to be loaded at runtime. It also
+includes libraries that are linked to, but need to be installed separately.
+
+```
+superbuild_unix_install_plugin(<PATH> <LIBRARY DIR> <SEARCH PATHS> [<ARG>...])
+```
+
+Installs a library at `PATH` into `bin/` and its dependent libraries into
+`LIBRARY DIR` under the install destination. If the path is not absolute, it is
+searched for underneath `superbuild_install_location` with the given `PATH`
+under each path in the `SEARCH PATHS` argument.
+
+Note that `SEARCH PATHS` is a CMake list passed as a single argument.
+
+The following arguments are set by calling this function:
+
+  - `BINARY`
+  - `LIBDIR`
+  - `TYPE` (`module`)
+#]==]
 function (superbuild_unix_install_plugin name libdir paths)
   if (IS_ABSOLUTE "${name}")
     _superbuild_unix_install_module("${name}" "${paths}" "${libdir}" ${ARGN})
@@ -261,35 +341,37 @@ function (superbuild_unix_install_plugin name libdir paths)
   endif ()
 endfunction ()
 
-# Install Python modules to the package.
-#
-# Usage:
-#
-#   superbuild_unix_install_python(
-#     MODULES <module>...
-#     LIBDIR <libdir>
-#     MODULE_DIRECTORIES <module-path>...
-#     [MODULE_DESTINATION <destination>]
-#     [INCLUDE_REGEXES <include-regex>...]
-#     [EXCLUDE_REGEXES <exclude-regex>...]
-#     [LOADER_PATHS <loader-paths>...]
-#     [SEARCH_DIRECTORIES <library-path>...])
-#
-# Installs Python modules or packages named ``<name>`` into the package. The
-# ``LIBDIR`` argument is used to place dependent libraries into the correct
-# subdirectory of the package. Libraries are searched for in
-# ``<library-paths>`` and relative paths are taken to be relative to the
-# superbuild's install directory. The modules are searched for in the
-# ``<module-paths>``. Modules are installed into the proper location
-# (``lib/python2.7/site-packages``) within the package, but may be placed
-# inside of a different directory by using the ``MODULE_DESTINATION`` argument.
-#
-# The ``INCLUDE_REGEXES`` and ``EXCLUDE_REGEXES`` arguments may be used to
-# include or exclude found paths from being installed to the package. They are
-# Python regular expressions. ``LOADER_PATHS`` is a list of directories where
-# the executable loading the Python modules is looking for libraries. These are
-# searched for dependencies first. ``SEARCH_DIRECTORIES`` is a list of
-# directories to search for dependent libraries.
+#[==[.md
+### Python packages
+
+The superbuild also provides functions to install Python modules and packages.
+
+```
+superbuild_unix_install_python(
+  MODULES <module>...
+  LIBDIR <libdir>
+  MODULE_DIRECTORIES <module-path>...
+  [MODULE_DESTINATION <destination>]
+  [INCLUDE_REGEXES <include-regex>...]
+  [EXCLUDE_REGEXES <exclude-regex>...]
+  [LOADER_PATHS <loader-paths>...]
+  [SEARCH_DIRECTORIES <library-path>...])
+```
+
+The list of modules to installed is given to the `MODULES` argument. These
+modules (or packages) are searched for at install time in the paths given to
+the `MODULE_DIRECTORIES` argument.
+
+Modules are placed in the `MODULE_DESTINATION` under the expected Python module
+paths in the package (`lib/python2.7`). By default, `/site-packages` is used.
+
+The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, `LOADER_PATHS`, and
+`SEARCH_DIRECTORIES` arguments used when installing compiled Python modules
+through an internal `superbuild_unix_install_plugin` call.
+
+Note that modules in the list which cannot be found are ignored. This function
+also assumes Python 2.7 for now.
+#]==]
 function (superbuild_unix_install_python)
   set(values
     MODULE_DESTINATION
