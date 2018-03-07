@@ -1,6 +1,10 @@
+# This file is the top-level CMakeLists.txt file for the packaging step. It
+# provides variables to the `.bundle.cmake` code such as project variables and
+# the like.
+
 cmake_minimum_required(VERSION "@CMAKE_MINIMUM_REQUIRED_VERSION@")
 
-# We need to explicitly state so form of language support. That is how CMake
+# We need to explicitly state some form of language support. That is how CMake
 # detects what compilers are being used, and therefore what
 # InstallRequiredSystemLibraries should properly do. If we state NONE for
 # languages we will fail to install any of the system libraries.
