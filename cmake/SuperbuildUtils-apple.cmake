@@ -1,3 +1,23 @@
+#[==[.md INTERNAL
+# Apple utility functions
+
+On Apple platforms (mainly macOS), some wrangling with version variables and
+the link is required. These functions handle that. They are used internally to
+the superbuild and do not need to be called manually.
+#]==]
+
+#[==[.md INTERNAL
+## SDK support
+
+CMake uses various `CMAKE_OSX_` variables to control the SDK in use. The
+`superbuild_osx_add_version_flags` function extracts information from these
+flags and adds them to the `superbuild_c_flags` and `superbuild_cxx_flags`
+variables in the calling scope.
+
+```
+superbuild_osx_add_version_flags()
+```
+#]==]
 function (superbuild_osx_add_version_flags)
   if (NOT APPLE)
     return ()
@@ -13,7 +33,9 @@ function (superbuild_osx_add_version_flags)
       "-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
   endif ()
   if (CMAKE_OSX_SYSROOT)
+    # The "sysroot" may be an SDK name. Get the path to the sysroot from it.
     if (NOT IS_DIRECTORY "${CMAKE_OSX_SYSROOT}")
+      # Ask Xcode what the SDK path is.
       execute_process(
         COMMAND xcodebuild
                 -version
@@ -39,6 +61,17 @@ function (superbuild_osx_add_version_flags)
   endforeach ()
 endfunction ()
 
+#[==[.md INTERNAL
+## Version flags
+
+This `superbuild_osx_pass_version_flags` function sets the given variable to
+contain a list of CMake `-D` command line flags to use the same Apple SDK,
+architecture, and deployment target as the superbuild.
+
+```
+superbuild_osx_pass_version_flags(<VARIABLE>)
+```
+#]==]
 function (superbuild_osx_pass_version_flags var)
   if (NOT APPLE)
     return ()
