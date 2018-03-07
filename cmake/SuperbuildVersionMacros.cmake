@@ -14,6 +14,21 @@
 
 find_package(Git)
 
+#[==[.md
+# Detect the version of a source tree
+
+When creating packages, it can be useful to know the specific version of the
+source that is being built. To that end, this module provides functions which
+determine a version number for a source based on its source selection. It uses
+the `<NAME>_SOURCE_DIR` (for a `source` selection) or the build tree location
+(for a `git` selection) to query the version of the checked out code using `git
+describe`.
+
+If it turns out that Git is either not available or the source directory is not
+a Git checkout, it reads a file in the source tree if available and if all else
+fails, falls back to a static string.
+#]==]
+
 function (_superbuild_detect_version_git var source_dir default version_file)
   set(major)
   set(minor)
@@ -46,6 +61,7 @@ function (_superbuild_detect_version_git var source_dir default version_file)
     endif ()
   endif ()
 
+  # If `git describe` failed, check for a version file.
   if (result)
     set(version_path "${source_dir}/${version_file}")
     if (source_dir AND version_file AND EXISTS "${version_path}")
@@ -57,6 +73,7 @@ function (_superbuild_detect_version_git var source_dir default version_file)
     endif ()
   endif ()
 
+  # Split the version number into fields.
   if (output MATCHES "([0-9]+)\\.([0-9]+)\\.([0-9]+)-?(.*)")
     message(STATUS "Determined source version for ${project}: ${CMAKE_MATCH_0}")
     set(full "${CMAKE_MATCH_0}")
@@ -69,6 +86,7 @@ function (_superbuild_detect_version_git var source_dir default version_file)
       "Failed to determine the version for ${var}; got ${output}")
   endif ()
 
+  # Set variables in the parent scope if they're available.
   if (full)
     set("${var}_VERSION" "${major}.${minor}" PARENT_SCOPE)
     set("${var}_VERSION_MAJOR" "${major}" PARENT_SCOPE)
@@ -84,38 +102,39 @@ function (_superbuild_detect_version_git var source_dir default version_file)
   endif ()
 endfunction ()
 
+# Set a variable in the parent scope properly while still making it available
+# in the current scope..
 macro (_superbuild_set_up variable value)
   set("${variable}" "${value}"
     PARENT_SCOPE)
   set("${variable}" "${value}")
 endmacro ()
 
-# Extracts the version for a project from its source information or falls back
-# to a default.
-#
-#   superbuild_set_version_variables(<project> <default> <include file> [version file])
-#
-# This will write out a file to ``<include file>`` which may be included to set
-# variables related to the versions of the given ``<project>``. If the version
-# cannot be determined (e.g., because the project will be cloned during the
-# build), the default will be used.
-#
-# If there is a source directory to be used for the project, the ``<version
-# file>`` will be used to get the version number. If it is empty or not
-# provided, the default will be used instead.
-#
-# The variables set are:
-#
-#  <project>_version (as ``<major>.<minor>``)
-#  <project>_version_major
-#  <project>_version_minor
-#  <project>_version_patch
-#  <project>_version_patch_extra (e.g., ``rc1``)
-#  <project>_version_suffix (equivalent to ``-<patch_extra>`` if
-#                            ``patch_extra`` is non-empty)
-#  <project>_version_full
-#  <project>_version_is_release (``TRUE`` if the suffix is empty, ``FALSE``
-#                                otherwise)
+#[==[.md
+```
+superbuild_set_version_variables(<PROJECT> <DEFAULT> <INCLUDE FILE> [<VERSION FILE>])
+```
+
+This will write out a file to `<INCLUDE FILE>` which may be `include`'d after
+this function to set variables related to the versions of the given
+`<PROJECT>`. If the version cannot be determined (e.g., because the project
+will be cloned during the build), the given `DEFAULT` version will be used.
+
+If there is a source directory to be used for the project, the `<VERSION FILE>`
+will be used to get the version number. If it is empty or not provided, the
+default will be used instead.
+
+The variables available after inclusion are:
+
+ `<PROJECT>_version` (as `<major>.<minor>`)
+ `<PROJECT>_version_major`
+ `<PROJECT>_version_minor`
+ `<PROJECT>_version_patch`
+ `<PROJECT>_version_patch_extra` (e.g., `rc1`)
+ `<PROJECT>_version_suffix` (equivalent to `-<patch_extra>` if `patch_extra` is non-empty)
+ `<PROJECT>_version_full`
+ `<PROJECT>_version_is_release` (`TRUE` if the suffix is empty, `FALSE` otherwise)
+#]==]
 function (superbuild_set_version_variables project default include_file)
   set(source_dir "")
   if ((NOT ${project}_FROM_GIT AND ${project}_FROM_SOURCE_DIR) OR ${project}_SOURCE_SELECTION STREQUAL "source")
