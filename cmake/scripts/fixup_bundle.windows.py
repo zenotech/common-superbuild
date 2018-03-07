@@ -1,5 +1,10 @@
 #!/usr/bin/env python2.7
 
+'''
+A tool to install PE-COFF binaries into in installation prefix.
+'''
+
+
 import json
 import os
 import os.path
@@ -9,6 +14,11 @@ import subprocess
 
 
 class Pipeline(object):
+    '''
+    A simple class to handle a list of shell commands which need to pass input
+    to each other.
+    '''
+
     def __init__(self, *commands):
         if not commands:
             raise RuntimeError('Pipeline: at least one command must be given')
@@ -16,6 +26,7 @@ class Pipeline(object):
         self._commands = commands
 
     def __call__(self):
+        # Use /dev/null as the input for the first command.
         last_input = open(os.devnull, 'r')
 
         for command_args in self._commands:
@@ -30,6 +41,17 @@ class Pipeline(object):
 
 
 class Library(object):
+    '''
+    A representation of a library.
+
+    This class includes information that a runtime loader needs in order to
+    perform its job. It tries to implement the behavior of the Windows runtime
+    loader, but documentation is scarce.
+
+    Basically, the approach is to rely on the location of loading libraries and
+    the magic of the ``PATH`` environment variable.
+    '''
+
     def __init__(self, path, parent=None, search_paths=None):
         # This is the actual path to a physical file
         self._path = os.path.normpath(path)
@@ -54,25 +76,36 @@ class Library(object):
 
     @property
     def is_cached(self):
+        '''Whether the library has already been installed or not.'''
         return self._is_cached
 
     @property
     def path(self):
+        '''The absolute path to the library.'''
         return self._path
 
     @property
     def parent(self):
+        '''The binary which loaded the library.'''
         return self._parent
 
     @property
     def name(self):
+        '''The name of the library.'''
         return os.path.basename(self.path)
 
     @property
     def loader_path(self):
+        '''The path to use for ``@loader_path`` references from the library.'''
         return os.path.dirname(self.path)
 
     def _get_dependencies(self):
+        '''
+        Get the dependent libraries of the library.
+
+        This only extracts the required libraries. Libraries which are marked
+        as "delay load" libraries are ignored and will not be installed.
+        '''
         pipe = Pipeline([
                 'dumpbin',
                 '/DEPENDENTS',
@@ -97,6 +130,11 @@ class Library(object):
 
     @property
     def dependencies(self):
+        '''
+        Dependent libraries of the library.
+
+        Visual C runtime libraries are ignored.
+        '''
         if self._dependencies is None:
             collection = {}
             msvc_runtimes = re.compile('MSVC[A-Z][0-9]*.dll')
@@ -110,6 +148,13 @@ class Library(object):
         return self._dependencies
 
     def _find_library(self, ref):
+        '''
+        Find a library using search paths.
+
+        Use of this method to find a dependent library indicates that the
+        library depdencies are not properly specified. As such, it warns when
+        it is used.
+        '''
         for loc in self._search_paths:
             path = os.path.join(loc, ref)
             if os.path.exists(path):
@@ -120,6 +165,7 @@ class Library(object):
 
     @classmethod
     def from_reference(cls, ref, loader):
+        '''Create a library representation given a name and a loading binary.'''
         paths = []
 
         # Use the loader's location.
@@ -148,6 +194,7 @@ class Library(object):
 
     @classmethod
     def from_path(cls, path, parent=None):
+        '''Create a library representation from a path.'''
         if not os.path.exists(path):
             raise RuntimeError('%s does not exist' % path)
 
@@ -164,6 +211,7 @@ class Library(object):
 
     @classmethod
     def from_manifest(cls, path):
+        '''Create a library representation from a cached manifest entry.'''
         if path in cls.__cache:
             raise RuntimeError('There is already a library for %s' % path)
 
@@ -176,6 +224,12 @@ class Library(object):
 
 
 class Module(Library):
+    '''
+    A library loaded programmatically at runtime.
+
+    Modules are loaded at runtime using ``LoadLibrary``.
+    '''
+
     def __init__(self, path, bundle_location, **kwargs):
         super(Module, self).__init__(path, None, **kwargs)
 
@@ -187,11 +241,16 @@ class Module(Library):
 
 
 class Executable(Module):
+    '''
+    An executable in the installation.
+    '''
+
     def __init__(self, path, **kwargs):
         super(Executable, self).__init__(path, 'bin', **kwargs)
 
 
 def copy_library(destination, bundle_dest, library, dry_run=False):
+    '''Copy a library into the ``.app`` bundle.'''
     if library._is_cached:
         return
 
@@ -208,9 +267,11 @@ def copy_library(destination, bundle_dest, library, dry_run=False):
     return binary
 
 
-# A function to fix up the fact that os.makedirs chokes if the path already
-# exists.
 def _os_makedirs(path):
+    '''
+    A function to fix up the fact that os.makedirs chokes if the path already
+    exists.
+    '''
     if os.path.exists(path):
         return
     os.makedirs(path)
@@ -255,6 +316,7 @@ def _arg_parser():
 
 
 def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, manifest, dry_run=False):
+    '''Install the main binary into the package.'''
     # Start looking at our main executable's dependencies.
     deps = binary.dependencies.values()
     while deps:
@@ -289,6 +351,7 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
 
 
 def _update_manifest(manifest, installed, path, location):
+    '''Update the manifest file with a set of newly installed binaries.'''
     for input_path in installed.keys():
         manifest.setdefault(location, []).append(input_path)
 
