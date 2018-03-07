@@ -7,6 +7,12 @@ function (superbuild_add_extract_test name glob_prefix generator output)
   set(_DragNDrop_test_glob "${glob_prefix}*.dmg")
   set(_TGZ_test_glob "${glob_prefix}*.tar.gz")
 
+  if (NOT DEFINED _${generator}_test_glob)
+    message(FATAL_ERROR
+      "No known glob to find packages created by the ${generator} CPack "
+      "generator.")
+  endif ()
+
   add_test(
     NAME    "extract-${name}-${generator}"
     COMMAND "${CMAKE_COMMAND}"
