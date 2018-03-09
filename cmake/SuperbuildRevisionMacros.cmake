@@ -312,6 +312,11 @@ function (superbuild_set_selectable_source name)
       "The ${name} project did not provide any selections")
   endif ()
 
+  # Allow setting the default selection from the top-level build.
+  if (DEFINED _superbuild_${name}_default_selection)
+    set(default_selection "${_superbuild_${name}_default_selection}")
+  endif ()
+
   # Use the first as the default if one was not specified.
   if (NOT selects_with AND NOT default_selection)
     message(WARNING
