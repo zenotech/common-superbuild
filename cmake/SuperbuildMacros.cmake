@@ -827,12 +827,6 @@ function (_superbuild_add_project_internal name)
       CFLAGS "${project_c_flags} ${project_c_flags_buildtype}")
   endif ()
 
-  if (APPLE)
-    # disabling this since it fails when building numpy.
-    #list(APPEND build_env
-    #  MACOSX_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}")
-  endif ()
-
   list(INSERT extra_paths 0
     "${superbuild_install_location}/bin")
   list(REMOVE_DUPLICATES extra_paths)
