@@ -108,8 +108,8 @@ function (superbuild_add_project name)
   endforeach ()
 
   # Allow projects to override the help string specified in the project file.
-  if (DEFINED "superbuild_help_string_${name}")
-    set(help_string "${superbuild_help_string_${name}}")
+  if (DEFINED "_superbuild_help_string_${name}")
+    set(help_string "${_superbuild_help_string_${name}}")
   endif ()
 
   if (NOT help_string)
