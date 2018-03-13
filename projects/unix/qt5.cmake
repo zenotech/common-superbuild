@@ -11,5 +11,7 @@ list(APPEND qt5_process_environment PROCESS_ENVIRONMENT PKG_CONFIG_PATH <INSTALL
 
 include(qt5.common)
 
-superbuild_apply_patch(qt5 btn-trigger-defs
-  "Handle older kernels without BTN_TRIGGER_HAPPY defines")
+if (NOT qt5_SOURCE_SELECTION VERSION_LESS "5.10")
+  superbuild_apply_patch(qt5 btn-trigger-defs
+    "Handle older kernels without BTN_TRIGGER_HAPPY defines")
+endif ()
