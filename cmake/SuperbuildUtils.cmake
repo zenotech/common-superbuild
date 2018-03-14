@@ -146,7 +146,8 @@ endmacro ()
 function (superbuild_deprecated_setting output_default new old intended_default)
   set(default "${intended_default}")
   if (DEFINED "${old}")
-    message(WARNING "The '${old}' variable is deprecated for '${new}'.")
+    message(DEPRECATION
+      "The `${old}` variable is deprecated for `${new}`.")
     set(default "${${old}}")
   endif ()
 
