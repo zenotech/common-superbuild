@@ -1,24 +1,52 @@
+#[==[.md
+# Packaging support
+
+One use case of the superbuild is to build packages for projects in order to
+distribute for use as release binaries. The superbuild creates these packages
+as tests. The reason it isn't done as a CPack step of the build is because
+CPack only supports a single package per build. Multiple formats are supported,
+but not distinct packages. Another reason is that CPack runs the `install` step
+of a project which redoes a build of all targets. The superbuild may have "use
+master" sources and when making a package, we don't want to change what is
+being packaged.
+
+The general strategy for the tests is to have a CMake project generated in the
+build tree which includes the necessary `.bundle.cmake` files. These files
+contain install code and can use CPack variables to change the generated
+package.
+#]==]
+
 set(_superbuild_packaging_cmake_dir "${CMAKE_CURRENT_LIST_DIR}")
 
-# Adds a test to package a "bundle" project.
-#
-# Usage:
-#
-#   superbuild_add_extra_package_test(<name> <generator>
-#     [<property> <value>]...)
-#
-# This packages a bundle described by a ``${name}.bundle.cmake`` file in the
-# project hierarchy. Variables may be put into the package's context by setting
-# the ``superbuild_export_variables`` variable to a list of variables to put
-# into the generated CMake project.
-#
-# Extra arguments are set as properties on the test. This should be used for
-# things such as ``TIMEOUT`` and ``LABEL``.
-#
-# This creates a test named ``cpack-${name}-${generator}`` which generates the
-# package requested. These tests are set up so that they cannot run in parallel
-# with each other. This is because CPack uses the ``_CPack_Packages`` directory
-# for itself in all tests.
+# TODO: link to the right section in SuperbuildVariables.md
+#[==[.md
+## Adding a package test
+
+The `superbuild_add_extra_package_test` function handles the logic for adding a
+test which builds the package. Due to the way CPack works, only one packaging
+test may be run concurrently.
+
+```
+superbuild_add_extra_package_test(<NAME> <GENERATOR>
+  [<PROPERTY> <VALUE>]...)
+```
+
+Adds a test with the name `cpack-NAME-GENERATOR`. The packaging rules are
+handled by including a `NAME.bundle.cmake` file. The same include paths used in
+the build are available in the packaging steps. By default, only the variables
+in the [SuperbuildVariables][] packaging section are available. Other variables
+may be passed to the packaging step by adding the variable name to the
+`superbuild_export_variables` list. The value of the variable available when
+adding the test is used.
+
+All other arguments are set as properties on the tests. The only reserved
+property is the `RESOURCE_LOCK` property.
+
+[SuperbuildVariables]: SuperbuildVariables.md
+#]==]
+
+# TODO: use a PROPERTIES argument
+# TODO: use a VARIABLES argument
 function (superbuild_add_extra_package_test name generator)
   set(superbuild_extra_variables)
   foreach (variable IN LISTS superbuild_export_variables)
@@ -27,6 +55,7 @@ function (superbuild_add_extra_package_test name generator)
   endforeach ()
 
   set(cpack_source_dir "${CMAKE_BINARY_DIR}/cpack/${name}/${generator}")
+  # Create a build directory so that the installation variant doesn't conflict.
   set(cpack_build_dir "${cpack_source_dir}/build")
   configure_file(
     "${_superbuild_packaging_cmake_dir}/superbuild_package_cmakelists.cmake.in"
@@ -57,14 +86,19 @@ function (superbuild_add_extra_package_test name generator)
       ${ARGN})
 endfunction ()
 
-# Add a "superbuild-install" target to install one of the packages.
-#
-# This function adds a target which acts like "make install" for a selected
-# package.
-#
-# The ``default`` argument is used as the default package to build and the
-# cache editors use the list of available packages as the selection choices for
-# the ``SUPERBUILD_DEFAULT_INSTALL`` variable.
+#[==[.md
+In addition to packages, a package may be used as a template for the `install`
+target of the superbuild.
+
+```
+superbuild_enable_install_target(<DEFAULT>)
+```
+
+This uses a user-selectable `.bundle.cmake` to control the `install` target of
+the superbuild. The default should be in the form `<NAME>/<GENERATOR>`. An
+error is produced if the test for the package does not exist.
+#]==]
+
 function (superbuild_enable_install_target default)
   get_property(all_packages GLOBAL
     PROPERTY _superbuild_packages)
@@ -111,28 +145,4 @@ function (superbuild_enable_install_target default)
   endif ()"
       COMPONENT install)
   endif ()
-endfunction ()
-
-# DEPRECATED
-# Adds a test to package the top-level superbuild.
-#
-# This is deprecated because CPack will rerun the build of the top-level
-# project. Since superbuilds never have a "do-nothing" build in the presense of
-# Git repositories, it is not recommended to use this.
-function (superbuild_add_package_test generator)
-  message(AUTHOR_WARNING
-    "superbuild_add_package_test: This function is deprecated; "
-    "use the newer superbuild_add_extra_package_test mechanism instead.")
-
-  add_test(
-    NAME    "cpack-${generator}"
-    COMMAND "${CMAKE_CPACK_COMMAND}"
-            -V
-            -G "${generator}"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
-
-  set_tests_properties("cpack-${generator}"
-    PROPERTIES
-      RESOURCE_LOCK cpack
-      ${ARGN})
 endfunction ()

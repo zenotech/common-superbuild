@@ -1,5 +1,13 @@
 #!/usr/bin/env python2.7
 
+'''
+A tool to install Mach-O binaries into an ``.app`` bundle.
+
+Other bundle types (particularly ``.framework`` and ``.plugin`` bundles) are
+not supported yet.
+'''
+
+
 import json
 import os
 import os.path
@@ -9,6 +17,11 @@ import subprocess
 
 
 class Pipeline(object):
+    '''
+    A simple class to handle a list of shell commands which need to pass input
+    to each other.
+    '''
+
     def __init__(self, *commands):
         if not commands:
             raise RuntimeError('Pipeline: at least one command must be given')
@@ -16,7 +29,8 @@ class Pipeline(object):
         self._commands = commands
 
     def __call__(self):
-        last_input = open('/dev/null', 'r')
+        # Use /dev/null as the input for the first command.
+        last_input = open(os.devnull, 'r')
 
         for command_args in self._commands:
             command = subprocess.Popen(command_args, stdin=last_input, stdout=subprocess.PIPE)
@@ -30,6 +44,31 @@ class Pipeline(object):
 
 
 class Library(object):
+    '''
+    A representation of a library.
+
+    This class includes information that a runtime loader needs in order to
+    perform its job. It tries to implement the behavior of ``dyld(1)`` as
+    closely as possible.
+
+    Known Issues
+    ------------
+
+    ``@rpath/`` and ``DYLD_LIBRARY_PATH``
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    When a library contains a reference to a library like
+    ``@rpath/libname.dylib``, if ``DYLD_LIBRARY_PATH`` is set to contain a path
+    which has a ``libname.dylib``, ``dyld(1)`` will find it even if no
+    ``LC_RPATH`` commands are present. This behavior is not documented and it
+    only seems to work if a library is directly underneath a
+    ``DYLD_LIBRARY_PATH`` path. If the library reference is
+    ``@rpath/dir/libname.dylib``, even if a ``dir/libname.dylib`` exists in a
+    ``DYLD_LIBRARY_PATH`` path, it will still not be found. It is unknown
+    whether this behavior is expected or not due to the lack of documentation.
+    The logic in this script includes neither of these behaviors.
+    '''
+
     def __init__(self, path, parent=None, search_paths=None):
         # This is the actual path to a physical file
         self._path = os.path.normpath(path)
@@ -58,25 +97,44 @@ class Library(object):
 
     @property
     def path(self):
+        '''The absolute path to the library.'''
         return self._path
 
     @property
     def parent(self):
+        '''The binary which loaded the library.'''
         return self._parent
 
     @property
     def name(self):
+        '''The name of the library.'''
         return os.path.basename(self.path)
 
     @property
     def installed_id(self):
+        '''
+        The ID of the library.
+
+        This is the string by which the library will be referenced by other
+        binaries in the installation.
+        '''
         return self._installed_id
 
     def set_installed_id(self, installed_id):
+        '''Set the ID of the library as it is installed as.'''
         self._installed_id = installed_id
 
     @property
     def dependent_reference(self):
+        '''
+        The prefix to use for a library loaded by the library.
+
+        This is used as the prefix for IDs for libraries loaded by the library.
+        It is based on the initial binary which loaded the library. For
+        example, executables use ``@executable_path`` and plugins use
+        ``@loader_path``. In a chain of loaded libraries, the loader (parent)
+        of a library determines the prefix.
+        '''
         # Refer to libraries the same way that the library which is loading it
         # references it.
         if self.parent is None:
@@ -85,6 +143,12 @@ class Library(object):
 
     @property
     def symlinks(self):
+        '''
+        A list of symlinks to the library.
+
+        Symlinks are looked for only beside the library and the names of these
+        files are returned, not their full paths.
+        '''
         if self._symlinks is None:
             realpath = os.path.realpath(self.path)
             dirname = os.path.dirname(realpath)
@@ -111,20 +175,34 @@ class Library(object):
 
     @property
     def executable_path(self):
+        '''The path to the loading executable (if available).'''
         if self._parent is not None:
             return self._parent.executable_path
         return self._executable_path
 
     @property
     def loader_path(self):
+        '''The path to use for ``@loader_path`` references from the library.'''
         return os.path.dirname(self.path)
 
     @property
     def is_framework(self):
+        '''Whether the library is a framework or not.'''
         return self.path.count('.framework')
 
     @property
     def framework_info(self):
+        '''
+        Information for frameworks.
+
+        The return value is a tuple of path (where the framework is located),
+        name (the ``NAME.framework`` part of its path), and associated library
+        (the path under the ``.framework`` directory which contains the actual
+        library binary).
+
+        See the ``framework_path``, ``framework_name``, and
+        ``framework_library`` properties.
+        '''
         if self._framework_info is None:
             if not self.is_framework:
                 self._framework_info = (None, None, None)
@@ -152,18 +230,41 @@ class Library(object):
 
     @property
     def framework_path(self):
+        '''
+        The path which contains the ``.framework`` for the library.
+
+        ``None`` if the library is not a framework.
+        '''
         return self.framework_info[0]
 
     @property
     def framework_name(self):
+        '''
+        The name of the framework containing the library.
+
+        ``None`` if the library is not a framework.
+        '''
         return self.framework_info[1]
 
     @property
     def framework_library(self):
+        '''
+        The path to the library under the ``.framework`` directory.
+
+        ``None`` if the library is not a framework.
+        '''
         return self.framework_info[2]
 
     @property
     def rpaths(self):
+        '''
+        The list of rpaths used when resolving ``@rpath/`` references in the
+        library.
+
+        In addition to the ``LC_RPATH`` load commands contained within the
+        library, rpaths in the binaries which loaded the library are
+        referenced. These are included in the property.
+        '''
         if self._rpaths is None:
             rpaths = []
             if self._parent is not None:
@@ -188,12 +289,14 @@ class Library(object):
                 ])
             rpaths.extend(get_rpaths().split('\n'))
 
+            # rpaths may contain magic ``@`` references. This property only
+            # contains full paths, so we resolve them now.
             resolved_rpaths = []
             for rpath in rpaths:
                 if rpath.startswith('@executable_path'):
                     # If the loader does not have an executable path, it is a plugin or
                     # a framework and we trust the executable which loads the plugin to
-                    # provide this library instead.
+                    # provide the library instead.
                     if self.executable_path is None:
                         continue
                     resolved_rpaths.append(rpath.replace('@executable_path', self.executable_path))
@@ -206,6 +309,7 @@ class Library(object):
         return self._rpaths
 
     def _get_dependencies(self):
+        '''Get the dependent library IDs of the library.'''
         pipe = Pipeline([
                 'otool',
                 '-L',
@@ -219,10 +323,11 @@ class Library(object):
 
     @property
     def dependencies(self):
+        '''Dependent libraries of the library.'''
         if self._dependencies is None:
             collection = {}
             for dep in self._get_dependencies():
-                deplib = Library.create_from_reference(dep, self)
+                deplib = Library.from_reference(dep, self)
                 if deplib is not None and \
                    not deplib.path == self.path:
                     collection[dep] = deplib
@@ -230,6 +335,13 @@ class Library(object):
         return self._dependencies
 
     def _find_library(self, ref):
+        '''
+        Find a library using search paths.
+
+        Use of this method to find a dependent library indicates that the
+        library depdencies are not properly specified. As such, it warns when
+        it is used.
+        '''
         print 'WARNING: dependency from %s to %s requires a search path' % (self.path, ref)
         for loc in self._search_paths:
             path = os.path.join(loc, ref)
@@ -238,33 +350,35 @@ class Library(object):
         return ref
 
     @classmethod
-    def create_from_reference(cls, ref, loader):
+    def from_reference(cls, ref, loader):
+        '''Create a library representation given an ID and a loading binary.'''
         paths = [ref]
-        if ref.startswith('@executable_path'):
+        if ref.startswith('@executable_path/'):
             # If the loader does not have an executable path, it is a plugin or
             # a framework and we trust the executable which loads the plugin to
             # provide this library instead.
             if loader.executable_path is None:
                 return None
             paths.append(ref.replace('@executable_path', loader.executable_path))
-        elif ref.startswith('@loader_path'):
+        elif ref.startswith('@loader_path/'):
             paths.append(ref.replace('@loader_path', loader.loader_path))
-        elif ref.startswith('@rpath'):
+        elif ref.startswith('@rpath/'):
             for rpath in loader.rpaths:
                 paths.append(ref.replace('@rpath', rpath))
         paths.append(os.path.join(os.path.dirname(loader.path), ref))
         for path in paths:
             if os.path.exists(path):
-                return cls.create_from_path(path, parent=loader)
+                return cls.from_path(path, parent=loader)
         search_path = loader._find_library(ref)
         if os.path.exists(search_path):
-            return cls.create_from_path(search_path, parent=loader)
+            return cls.from_path(search_path, parent=loader)
         raise RuntimeError('Unable to find the %s library from %s' % (ref, loader.path))
 
     __cache = {}
 
     @classmethod
-    def create_from_path(cls, path, parent=None):
+    def from_path(cls, path, parent=None):
+        '''Create a library representation from a path.'''
         if not os.path.exists(path):
             raise RuntimeError('%s does not exist' % path)
 
@@ -280,7 +394,8 @@ class Library(object):
         return cls.__cache[path]
 
     @classmethod
-    def create_from_manifest(cls, path, installed_id):
+    def from_manifest(cls, path, installed_id):
+        '''Create a library representation from a cached manifest entry.'''
         if path in cls.__cache:
             raise RuntimeError('There is already a library for %s' % path)
 
@@ -292,6 +407,13 @@ class Library(object):
 
 
 class Executable(Library):
+    '''
+    The main executable of an ``.app`` bundle.
+
+    A specialization of a library which lives in ``Contents/MacOS`` inside of a
+    ``.app`` bundle.
+    '''
+
     def __init__(self, path, **kwargs):
         super(Executable, self).__init__(path, None, **kwargs)
 
@@ -307,6 +429,15 @@ class Executable(Library):
 
 
 class Utility(Executable):
+    '''
+    A utility executable in an ``.app`` bundle.
+
+    A specialization of a library which lives in ``Contents/bin`` inside of a
+    ``.app`` bundle. These are not the executables which run when opening a
+    ``.app``, but they are available for use by the main executable or via the
+    command line.
+    '''
+
     def __init__(self, path, **kwargs):
         super(Utility, self).__init__(path, **kwargs)
 
@@ -316,6 +447,19 @@ class Utility(Executable):
 
 
 class Plugin(Library):
+    '''
+    A plugin library in an ``.app`` bundle.
+
+    These libraries live under the ``Contents/Plugins`` directory in an
+    ``.app`` bundle. They are expected to be loaded by an executable and use
+    ``@executable_path/`` references where possible, but for any libraries
+    required by the plugin and not otherwise provided, ``@loader_path/`` is
+    used instead.
+
+    Some plugins may require to be considered as their own ``@executable_path``
+    reference. This may indicate errors in the building of the plugin.
+    '''
+
     def __init__(self, path, fake_exe_path=False, **kwargs):
         super(Plugin, self).__init__(path, None, **kwargs)
 
@@ -332,6 +476,20 @@ class Plugin(Library):
 
 
 class Module(Library):
+    '''
+    A library loaded programmatically at runtime.
+
+    Modules are usually used by interpreted languages (as opposed to compiled
+    languages) and loaded at runtime. They may live at any depth in a ``.app``
+    bundle.
+
+    Currently it is assumed that the only executables which will load these
+    modules is a binary in the same ``.app`` bundle. It is unknown if this
+    assumption is actually valid and documentation is scarce.
+
+    Some modules may require to be considered as their own ``@executable_path``
+    reference. This may indicate errors in the building of the module.
+    '''
     def __init__(self, path, bundle_location, fake_exe_path=False, **kwargs):
         super(Module, self).__init__(path, None, **kwargs)
 
@@ -358,6 +516,14 @@ class Module(Library):
 
 
 class Framework(Library):
+    '''
+    A ``.framework`` library.
+
+    Currently unsupported. Documentation for frameworks needs to be found and
+    understood to find out what it really means to install a framework (as a
+    usable framework).
+    '''
+
     def __init__(self, path, **kwargs):
         super(Framework, self).__init__(path, None, **kwargs)
 
@@ -373,7 +539,9 @@ class Framework(Library):
 
 
 def copy_library(destination, library, dry_run=False):
+    '''Copy a library into the ``.app`` bundle.'''
     if library.is_framework:
+        # Frameworks go into Contents/Frameworks.
         print 'Copying %s/%s ==> Contents/Frameworks' % (library.framework_path, library.framework_name)
 
         app_dest = os.path.join(destination, 'Contents', 'Frameworks')
@@ -389,6 +557,7 @@ def copy_library(destination, library, dry_run=False):
             _os_makedirs(app_dest)
             shutil.copytree(os.path.join(library.framework_path, library.framework_name), destination, symlinks=True)
     else:
+        # Libraries go into Contents/Libraries.
         print 'Copying %s ==> Contents/Libraries' % library.path
 
         app_dest = os.path.join(destination, 'Contents', 'Libraries')
@@ -402,6 +571,7 @@ def copy_library(destination, library, dry_run=False):
             _os_makedirs(app_dest)
             shutil.copy(library.path, destination)
 
+        # Create any symlinks we found for the library as well.
         for symlink in library.symlinks:
             print 'Creating symlink to Contents/Libraries/%s ==> %s' % (library.name, symlink)
             if not dry_run:
@@ -417,12 +587,14 @@ def copy_library(destination, library, dry_run=False):
                 ln()
 
     if not dry_run:
+        # We need to make the library writable first.
         chmod = Pipeline([
                 'chmod',
                 'u+w',
                 binary,
             ])
         chmod()
+        # Set the ID on the binary.
         install_name_tool = Pipeline([
                 'install_name_tool',
                 '-id', library.installed_id,
@@ -433,15 +605,17 @@ def copy_library(destination, library, dry_run=False):
     return binary
 
 
-# A function to fix up the fact that os.makedirs chokes if the path already
-# exists.
 def _os_makedirs(path):
+    '''
+    A function to fix up the fact that os.makedirs chokes if the path already
+    exists.
+    '''
     if os.path.exists(path):
         return
     os.makedirs(path)
 
 
-def _create_arg_parser():
+def _arg_parser():
     import argparse
 
     parser = argparse.ArgumentParser(description='Install an OS X binary into a bundle')
@@ -487,6 +661,7 @@ def _create_arg_parser():
 
 
 def _install_binary(binary, is_excluded, bundle_dest, installed, manifest, dry_run=False):
+    '''Install the main binary into the package.'''
     # Start looking at our main executable's dependencies.
     deps = binary.dependencies.values()
     while deps:
@@ -522,6 +697,10 @@ def _install_binary(binary, is_excluded, bundle_dest, installed, manifest, dry_r
 
 
 def _fix_installed_binaries(installed, dry_run=False):
+    '''
+    This function updates all of the installed binaries to use consistent
+    library IDs when referring to each other.
+    '''
     # Go through all of the binaries installed and fix up references to other things.
     for binary_info in installed.values():
         binary, installed_path = binary_info
@@ -544,6 +723,7 @@ def _fix_installed_binaries(installed, dry_run=False):
 
 
 def _update_manifest(manifest, installed, path):
+    '''Update the manifest file with a set of newly installed binaries.'''
     for input_path, binary_info in installed.items():
         binary, _ = binary_info
         manifest[input_path] = binary.installed_id
@@ -553,7 +733,7 @@ def _update_manifest(manifest, installed, path):
 
 
 def main(args):
-    parser = _create_arg_parser()
+    parser = _arg_parser()
     opts = parser.parse_args(args)
 
     if opts.type == 'executable':
@@ -610,7 +790,7 @@ def main(args):
 
         # Seed the cache with manifest entries.
         for path, installed_id in manifest.items():
-            Library.create_from_manifest(path, installed_id)
+            Library.from_manifest(path, installed_id)
 
     installed = {}
     _install_binary(main_exe, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run)

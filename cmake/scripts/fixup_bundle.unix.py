@@ -1,5 +1,10 @@
 #!/usr/bin/env python2.7
 
+'''
+A tool to install ELF binaries into in installation prefix.
+'''
+
+
 import json
 import os
 import os.path
@@ -9,6 +14,11 @@ import subprocess
 
 
 class Pipeline(object):
+    '''
+    A simple class to handle a list of shell commands which need to pass input
+    to each other.
+    '''
+
     def __init__(self, *commands):
         if not commands:
             raise RuntimeError('Pipeline: at least one command must be given')
@@ -16,7 +26,8 @@ class Pipeline(object):
         self._commands = commands
 
     def __call__(self):
-        last_input = open('/dev/null', 'r')
+        # Use /dev/null as the input for the first command.
+        last_input = open(os.devnull, 'r')
 
         for command_args in self._commands:
             command = subprocess.Popen(command_args, stdin=last_input, stdout=subprocess.PIPE)
@@ -30,6 +41,14 @@ class Pipeline(object):
 
 
 class Library(object):
+    '''
+    A representation of a library.
+
+    This class includes information that a runtime loader needs in order to
+    perform its job. It tries to implement the behavior of ``ld.so(8)`` as
+    closely as possible.
+    '''
+
     def __init__(self, path, parent=None, search_paths=None):
         # This is the actual path to a physical file
         self._path = os.path.normpath(path)
@@ -57,22 +76,32 @@ class Library(object):
 
     @property
     def is_cached(self):
+        '''Whether the library has already been installed or not.'''
         return self._is_cached
 
     @property
     def path(self):
+        '''The absolute path to the library.'''
         return self._path
 
     @property
     def parent(self):
+        '''The binary which loaded the library.'''
         return self._parent
 
     @property
     def name(self):
+        '''The name of the library.'''
         return os.path.basename(self.path)
 
     @property
     def symlinks(self):
+        '''
+        A list of symlinks to the library.
+
+        Symlinks are looked for only beside the library and the names of these
+        files are returned, not their full paths.
+        '''
         if self._symlinks is None:
             realpath = os.path.realpath(self.path)
             dirname = os.path.dirname(realpath)
@@ -99,14 +128,23 @@ class Library(object):
 
     @property
     def loader_path(self):
+        '''The path to use for ``@loader_path`` references from the library.'''
         return os.path.dirname(self.path)
 
     @property
     def extra_loader_paths(self):
+        '''
+        Extra paths which should be looked at because of a loader's search
+        path.
+        '''
         return []
 
     @property
     def loader_paths(self):
+        '''
+        A list of paths to look for libraries due to where the loading
+        libraries look.
+        '''
         loader_paths = [self.loader_path]
         loader_paths.extend(self.extra_loader_paths)
         if self.parent is not None:
@@ -114,15 +152,27 @@ class Library(object):
         return loader_paths
 
     def _resolve_rpath(self, rpath):
-        if rpath.startswith('$ORIGIN'):
+        '''Resolve an rpath which may contain a special token reference.'''
+        if rpath.startswith('$ORIGIN/'):
             rpath = rpath.replace('$ORIGIN', self.loader_path)
+        elif rpath.startswith('${ORIGIN}/'):
+            rpath = rpath.replace('${ORIGIN}', self.loader_path)
 
-        # TODO: Handle $LIB and $PLATFORM (also ${} forms).
+        # TODO: Handle $LIB and $PLATFORM. These really shouldn't be used in
+        # superbuilds however; libraries should all be under a plain ``lib``
+        # directory.
 
         return rpath.strip()
 
     @property
     def rpaths(self):
+        '''
+        The list of rpaths used when resolving required library references.
+
+        In addition to the ``DT_RPATH`` entries contained within the library,
+        rpaths in the binaries which loaded the library are referenced. These
+        are included in the property.
+        '''
         if self._rpaths is None:
             rpaths = []
             get_rpaths = Pipeline([
@@ -160,6 +210,12 @@ class Library(object):
 
     @property
     def runpaths(self):
+        '''
+        The list of runpaths used when resolving required library references.
+
+        These are specified by the library using ``DT_RUNPATH`` entries. Unlike
+        ``DT_RPATH``, these entries are not inherited by loaded libraries.
+        '''
         if self._runpaths is None:
             runpaths = []
             get_runpaths = Pipeline([
@@ -180,6 +236,12 @@ class Library(object):
         return self._runpaths
 
     def _get_dependencies(self):
+        '''
+        Get the dependent libraries of the library.
+
+        These are specified by ``DT_NEEDED`` entries and are specified as
+        soname values.
+        '''
         pipe = Pipeline([
                 'objdump',
                 '-p',
@@ -196,16 +258,24 @@ class Library(object):
 
     @property
     def dependencies(self):
+        '''Dependent libraries of the library.'''
         if self._dependencies is None:
             collection = {}
             for dep in self._get_dependencies():
-                deplib = Library.create_from_reference(dep, self)
+                deplib = Library.from_reference(dep, self)
                 if deplib is not None:
                     collection[dep] = deplib
             self._dependencies = collection
         return self._dependencies
 
     def _find_library(self, ref):
+        '''
+        Find a library using search paths.
+
+        Use of this method to find a dependent library indicates that the
+        library depdencies are not properly specified. As such, it warns when
+        it is used.
+        '''
         print 'WARNING: dependency from %s to %s requires a search path' % (self.path, ref)
         for loc in self._search_paths:
             path = os.path.join(loc, ref)
@@ -217,6 +287,7 @@ class Library(object):
 
     @classmethod
     def default_search_paths(cls):
+        '''A list of search paths implicit to the system.'''
         if cls.__search_cache is None:
             pipe = Pipeline([
                     '/sbin/ldconfig',
@@ -237,12 +308,13 @@ class Library(object):
         return cls.__search_cache
 
     @classmethod
-    def create_from_reference(cls, ref, loader):
+    def from_reference(cls, ref, loader):
+        '''Create a library representation given a soname and a loading binary.'''
         paths = []
 
         if '/' in ref:
             if os.path.exists(ref):
-                return cls.create_from_path(ref, parent=loader)
+                return cls.from_path(ref, parent=loader)
         else:
             # TODO: Automatically search in the libdir we are placing dependent libraries.
 
@@ -265,17 +337,18 @@ class Library(object):
             for path in paths:
                 libpath = os.path.join(path, ref)
                 if os.path.exists(libpath):
-                    return cls.create_from_path(libpath, parent=loader)
+                    return cls.from_path(libpath, parent=loader)
 
         search_path = loader._find_library(ref)
         if os.path.exists(search_path):
-            return cls.create_from_path(search_path, parent=loader)
+            return cls.from_path(search_path, parent=loader)
         raise RuntimeError('Unable to find the %s library from %s: %s' % (ref, loader.path, ', '.join(paths)))
 
     __cache = {}
 
     @classmethod
-    def create_from_path(cls, path, parent=None):
+    def from_path(cls, path, parent=None):
+        '''Create a library representation from a path.'''
         if not os.path.exists(path):
             raise RuntimeError('%s does not exist' % path)
 
@@ -291,7 +364,8 @@ class Library(object):
         return cls.__cache[path]
 
     @classmethod
-    def create_from_manifest(cls, path):
+    def from_manifest(cls, path):
+        '''Create a library representation from a cached manifest entry.'''
         if path in cls.__cache:
             raise RuntimeError('There is already a library for %s' % path)
 
@@ -305,6 +379,13 @@ class Library(object):
 
 
 class Module(Library):
+    '''
+    A library loaded programmatically at runtime.
+
+    Modules are loaded at runtime using ``dlopen``. They may contain extra
+    paths to search that are implicit to their loading executable.
+    '''
+
     def __init__(self, path, bundle_location, loader_paths=None, **kwargs):
         super(Module, self).__init__(path, None, **kwargs)
 
@@ -324,11 +405,16 @@ class Module(Library):
 
 
 class Executable(Module):
+    '''
+    An executable in the installation.
+    '''
+
     def __init__(self, path, **kwargs):
         super(Executable, self).__init__(path, 'bin', **kwargs)
 
 
 def copy_library(destination, libdir, library, sources, dry_run=False):
+    '''Copy a library into the ``.app`` bundle.'''
     if library._is_cached:
         return
 
@@ -357,6 +443,7 @@ def copy_library(destination, libdir, library, sources, dry_run=False):
             ln()
 
     if not dry_run:
+        # We need to make the library writable first.
         chmod = Pipeline([
                 'chmod',
                 'u+w',
@@ -381,6 +468,7 @@ HAVE_CHRPATH = None
 
 
 def remove_prefix_rpaths(binary, sources):
+    '''Remove rpaths which reference the build machine.'''
     if not sources:
         return
 
@@ -434,15 +522,17 @@ def remove_prefix_rpaths(binary, sources):
     chrpath()
 
 
-# A function to fix up the fact that os.makedirs chokes if the path already
-# exists.
 def _os_makedirs(path):
+    '''
+    A function to fix up the fact that os.makedirs chokes if the path already
+    exists.
+    '''
     if os.path.exists(path):
         return
     os.makedirs(path)
 
 
-def _create_arg_parser():
+def _arg_parser():
     import argparse
 
     parser = argparse.ArgumentParser(description='Install an ELF binary into a bundle')
@@ -485,6 +575,7 @@ def _create_arg_parser():
 
 
 def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, manifest, sources, dry_run=False):
+    '''Install the main binary into the package.'''
     # Start looking at our main executable's dependencies.
     deps = binary.dependencies.values()
     while deps:
@@ -528,6 +619,7 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
 
 
 def _update_manifest(manifest, installed, path, libdir):
+    '''Update the manifest file with a set of newly installed binaries.'''
     for input_path in installed.keys():
         manifest.setdefault(libdir, []).append(input_path)
 
@@ -539,7 +631,7 @@ def _update_manifest(manifest, installed, path, libdir):
 
 
 def main(args):
-    parser = _create_arg_parser()
+    parser = _arg_parser()
     opts = parser.parse_args(args)
 
     if opts.type == 'executable':
@@ -587,7 +679,7 @@ def main(args):
 
         # Seed the cache with manifest entries.
         for path in manifest.get(opts.libdir, []):
-            Library.create_from_manifest(path)
+            Library.from_manifest(path)
 
     cur_manifest = manifest.setdefault(opts.libdir, [])
 

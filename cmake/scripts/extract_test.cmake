@@ -1,3 +1,4 @@
+# A wrapper around a process call which checks the command's result.
 function (_extract_process input)
   execute_process(${ARGN}
     RESULT_VARIABLE res
@@ -8,6 +9,7 @@ function (_extract_process input)
   endif ()
 endfunction ()
 
+# Extract a package with CMake.
 function (_extract_with_cmake output input)
   _extract_process("${input}"
     COMMAND "${CMAKE_COMMAND}" -E tar
@@ -15,6 +17,7 @@ function (_extract_with_cmake output input)
     WORKING_DIRECTORY "${output}")
 endfunction ()
 
+# Detect a tarbomb package.
 function (_detect_tarbomb var dir)
   file(GLOB contents "${dir}/*")
 
@@ -27,6 +30,7 @@ function (_detect_tarbomb var dir)
     PARENT_SCOPE)
 endfunction ()
 
+# Do the dance to mount and extract a .app from a .dmg file.
 function (_extract_dmg output mount input)
   _extract_process("${input}"
     COMMAND /bin/sh -c
@@ -45,6 +49,9 @@ function (_extract_dmg output mount input)
             "${mount}")
 endfunction ()
 
+# Extract a binary from the given directory composed of the given glob into the
+# output directory. For simple composition packages (tarballs, zip, etc.),
+# non-tarbomb files have their intermediate directories removed.
 function (extract_binary dir glob output)
   file(REMOVE_RECURSE "${output}")
   file(MAKE_DIRECTORY "${output}")

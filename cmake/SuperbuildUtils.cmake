@@ -1,11 +1,20 @@
+#[==[.md INTERNAL
+# Utility functions
+
+This module contains utility functions mostly used internally to the
+superbuild. Some may be of use to corner-case project builds.
+#]==]
+
 include("SuperbuildUtils-apple")
 include("SuperbuildUtils-unix")
 
+# TODO: In 3.9.0, use the GENERATOR_IS_MULTI_CONFIG global property.
 if (NOT CMAKE_CONFIGURATION_TYPES)
   set(_superbuild_build_type_force)
   if (NOT CMAKE_BUILD_TYPE)
     set(_superbuild_build_type_force FORCE)
   endif ()
+  # Default to a Release build.
   set(CMAKE_BUILD_TYPE "Release"
     CACHE STRING "The build mode" ${_superbuild_build_type_force})
   mark_as_advanced(CMAKE_BUILD_TYPE)
@@ -13,6 +22,10 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
     PROPERTY
       STRINGS "Release;RelWithDebInfo")
   if (NOT WIN32)
+    # Windows debug builds is not really supported at the moment. Getting all
+    # projects to agree on the C++ runtime library is not easy. Also, many
+    # projects hard-code library paths and on Windows, many projects change
+    # their names for debug builds.
     set_property(CACHE CMAKE_BUILD_TYPE APPEND
       PROPERTY
         STRINGS "Debug")
@@ -22,6 +35,7 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
     message(FATAL_ERROR "A build type (CMAKE_BUILD_TYPE) must be set.")
   endif ()
 
+  # Ensure that the chosen build type is valid.
   get_property(build_type_options
     CACHE     CMAKE_BUILD_TYPE
     PROPERTY  STRINGS)
@@ -47,6 +61,14 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
   endif ()
 endif ()
 
+#[==[.md INTERNAL
+# 64-bit support
+
+Some projects need to know if a build is 32-bit or 64-bit. This function sets
+`superbuild_is_64bit`.
+
+In the future, 32-bit support may be removed completely.
+#]==]
 function (superbuild_detect_64bit_target)
   if (CMAKE_CROSSCOMPILING)
     return ()
@@ -61,6 +83,7 @@ function (superbuild_detect_64bit_target)
     set(superbuild_is_64bit TRUE
       PARENT_SCOPE)
   elseif (void_ptr_size EQUAL 4)
+    # XXX: Error out here? Is there a reason to still support 32-bit?
     set(superbuild_is_64bit FALSE
       PARENT_SCOPE)
   else ()
@@ -74,25 +97,36 @@ function (superbuild_detect_64bit_target)
   endif ()
 endfunction ()
 
-macro(superbuild_make_path_var var)
+# A utility function to create a PATH-link environment variable value.
+macro (_superbuild_make_path_var var)
   set(${var} ${ARGN})
   list(REMOVE_ITEM ${var} "")
   if (UNIX)
     string(REPLACE ";" ":" ${var} "${${var}}")
   endif ()
-endmacro()
+endmacro ()
 
+#[==[.md INTERNAL
+# Compiler flag setup
+
+Superbuild projects may set add additional language flags to be made available
+to projects during their builds via the standard environment variables (more
+detail is available in [their documentation](SuperbuildVariables.md#Language
+flags)). The function handles the setup of the flags made available to projects
+by integrating the environment at configure time, the superbuild's installation
+directory for projects.
+#]==]
 function (superbuild_setup_flags)
   if (WIN32)
     return ()
   endif ()
 
-  superbuild_make_path_var(superbuild_ld_library_path
+  _superbuild_make_path_var(superbuild_ld_library_path
     "${superbuild_install_location}/lib"
     "$ENV{LD_LIBRARY_PATH}")
   set(superbuild_ld_library_path "${superbuild_ld_library_path}" PARENT_SCOPE)
 
-  superbuild_make_path_var(superbuild_pkg_config_path
+  _superbuild_make_path_var(superbuild_pkg_config_path
     "${superbuild_install_location}/lib/pkgconfig"
     "${superbuild_install_location}/share/pkgconfig"
     "$ENV{PKG_CONFIG_PATH}")
@@ -115,6 +149,12 @@ function (superbuild_setup_flags)
   endforeach ()
 endfunction ()
 
+#[==[.md INTERNAL
+# Preparing the build tree
+
+The build tree needs some preparation for some features. These steps are done
+here.
+#]==]
 macro (superbuild_prepare_build_tree)
   if (WIN32)
     # Windows doesn't like it if that directory does not exist even if it is
@@ -128,37 +168,44 @@ macro (superbuild_prepare_build_tree)
     "${_superbuild_module_gen_dir}")
 endmacro ()
 
-# Bridge an old, deprecated, setting to a new replacement setting.
-#
-# Use this function when a user-visible flag is being renamed or otherwise
-# replaced. If the old value is set, it will be given as the default value,
-# otherwise the given default value will be used. This returned value should
-# then be used in the ``set(CACHE)`` or ``option()`` call for the new value.
-#
-# If the old value is set, it will warn that it is deprecated for the new name.
-#
-# If replacing the setting ``OLD_SETTING`` with ``NEW_SETTING``, its usage
-# would look like:
-#
-#   superbuild_deprecated_setting(default_setting NEW_SETTING OLD_SETTING "default value")
-#   set(NEW_SETTING "${default_setting}"
-#     CACHE STRING "Documentation for the setting.")
+#[==[.md
+# Handling deprecated variables
+
+Use this function when a user-visible flag is being renamed or otherwise
+replaced. If the old value is set, it will be given as the default value,
+otherwise the given default value will be used. This returned value should then
+be used in the `set(CACHE)` or `option()` call for the new value.
+
+If the old value is set, it will warn that it is deprecated for the new name.
+
+If replacing the setting `OLD_SETTING` with `NEW_SETTING`, its usage would look
+like:
+
+```cmake
+superbuild_deprecated_setting(default_setting NEW_SETTING OLD_SETTING "default value")
+set(NEW_SETTING "${default_setting}"
+  CACHE STRING "Documentation for the setting.")
+```
+#]==]
 function (superbuild_deprecated_setting output_default new old intended_default)
   set(default "${intended_default}")
   if (DEFINED "${old}")
-    message(WARNING "The '${old}' variable is deprecated for '${new}'.")
+    message(DEPRECATION
+      "The `${old}` variable is deprecated for `${new}`.")
     set(default "${${old}}")
   endif ()
 
   set("${output_default}" "${default}" PARENT_SCOPE)
 endfunction ()
 
-# Determine whether the common superbuild is up-to-date or not.
-#
-# The common superbuild is intended to be used as a submodule to projects.
-# However, updating the submodule when updating the main superbuild is an easy
-# step to forget. This function tries to determine whether the common
-# superbuild is up-to-date or not and error out if it is not.
+#[==[.md
+# Catching a stale superbuild submodule
+
+The common superbuild is intended to be used as a submodule to projects.
+However, updating the submodule when updating the main superbuild is an easy
+step to forget. This function tries to determine whether the common superbuild
+is up-to-date or not and error out if it is not.
+#]==]
 function (_superbuild_check_up_to_date)
   file(RELATIVE_PATH common_superbuild_path
     "${CMAKE_SOURCE_DIR}"
