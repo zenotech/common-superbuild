@@ -13,11 +13,12 @@ elseif (NOT MSVC_VERSION VERSION_GREATER 1800)
   set(msvc_ver 12.0)
 elseif (NOT MSVC_VERSION VERSION_GREATER 1900)
   set(msvc_ver 14.0)
-# This might be wrong for 1.64 and above.
-#elseif (NOT MSVC_VERSION VERSION_GREATER 1910)
-#  set(msvc_ver 15.0) # 14.1?
+elseif (NOT MSVC_VERSION VERSION_GREATER 1910)
+  set(msvc_ver 14.1)
+elseif (NOT MSVC_VERSION VERSION_GREATER 1912)
+  set(msvc_ver 15.0)
 else ()
-  message(FATAL_ERROR "Unrecognized MSVC version")
+  message(FATAL_ERROR "Unrecognized MSVC version: ${MSVC_VERSION}")
 endif ()
 
 list(APPEND boost_platform_options
