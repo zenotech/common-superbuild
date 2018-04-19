@@ -182,16 +182,20 @@ superbuild_set_revision(netcdf
   URL     "https://www.paraview.org/files/dependencies/netcdf-4.3.2.modified.tar.gz"
   URL_MD5 1841196c2bfcf10246966eecf92ad0ec)
 
-set(tbb_ver "44_20150728oss")
+# Using Intel Threading Building Blocks 2018 Update 2
+set(tbb_ver "2018_20171205oss")
 if (WIN32)
   set(tbb_file "tbb${tbb_ver}_win.zip")
-  set(tbb_md5 "e7bbf293cdb5a50ca81347c80168956d")
+  set(tbb_md5 "e37abf02d74a638f7a6629c992f23918")
 elseif (APPLE)
+  # using older version on Mac since newer version has issues
+  # with changing install name.
+  set(tbb_ver "44_20150728oss")
   set(tbb_file "tbb${tbb_ver}_osx.tgz")
   set(tbb_md5 "a767d7a8b375e6b054e44e2317d806b8")
 else ()
-  set(tbb_file "tbb${tbb_ver}_lin_0.tgz")
-  set(tbb_md5 "ab5df80a65adf423b14637a1f35814b2")
+  set(tbb_file "tbb${tbb_ver}_lin.tgz")
+  set(tbb_md5 "d637d29f59ee31fe5830a0366e2e973a")
 endif ()
 
 superbuild_set_revision(tbb
