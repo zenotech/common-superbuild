@@ -762,23 +762,28 @@ def main(args):
     excludes = map(re.compile, opts.exclude)
 
     def is_excluded(path):
+        # Filter by regex
         for include in includes:
             if include.match(path):
                 return False
         for exclude in excludes:
             if exclude.match(path):
                 return True
+
         # Apple
         if path.startswith('/System/Library'):
             return True
         if path.startswith('/usr/lib'):
             return True
+
         # Homebrew
         if path.startswith('/usr/local/lib'):
             return False
+
         # Macports
         if path.startswith('/opt/local/lib'):
             return False
+
         return False
 
     if opts.new:

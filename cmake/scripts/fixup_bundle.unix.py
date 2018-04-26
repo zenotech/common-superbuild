@@ -553,6 +553,9 @@ def _arg_parser():
     parser.add_argument('-S', '--source', metavar='PATH', type=str, action='append',
                         default=[],
                         help='source directory for the binaries')
+    parser.add_argument('-o', '--source-only', action='store_true',
+                        default=False,
+                        help='do not allow files outside of the source path')
     parser.add_argument('-n', '--dry-run', action='store_true',
                         help='do not actually copy files')
     parser.add_argument('-c', '--clean', action='store_true',
@@ -654,20 +657,30 @@ def main(args):
     excludes = map(re.compile, opts.exclude)
 
     def is_excluded(path):
+        # Filter by regex
         for include in includes:
             if include.match(path):
                 return False
         for exclude in excludes:
             if exclude.match(path):
                 return True
+
+        # Filter by source path
+        if opts.source_only:
+            for src in opts.source:
+                if not path.startswith(src):
+                    return True
+
         # System libs
         if path.startswith('/lib'):
             return True
         if path.startswith('/usr/lib'):
             return True
+
         # Local installs
         if path.startswith('/usr/local/lib'):
             return True
+
         return False
 
     if opts.new:
