@@ -390,15 +390,18 @@ def main(args):
     excludes = map(re.compile, opts.exclude)
 
     def is_excluded(path):
+        # Filter by regex
         for include in includes:
             if include.match(path):
                 return False
         for exclude in excludes:
             if exclude.match(path):
                 return True
+
         # System libs
         if path.startswith('C:\\Windows\\system32'):
             return True
+
         return False
 
     if opts.new:

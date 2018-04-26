@@ -152,6 +152,12 @@ function (_superbuild_unix_install_binary)
   set(fixup_bundle_arguments
     "${fixup_bundle_arguments} --libdir ${_install_binary_LIBDIR}")
 
+  get_property(superbuild_install_no_external_dependencies GLOBAL PROPERTY
+    superbuild_install_no_external_dependencies)
+  if (superbuild_install_no_external_dependencies)
+    set(fixup_bundle_arguments "${fixup_bundle_arguments} --source-only")
+  endif ()
+
   get_property(superbuild_has_cleaned GLOBAL PROPERTY
     superbuild_has_cleaned)
   if (_install_binary_CLEAN OR NOT superbuild_has_cleaned)
@@ -423,8 +429,15 @@ function (superbuild_unix_install_python)
       --loader-path "${loader_path}")
   endforeach ()
 
+  get_property(superbuild_install_no_external_dependencies GLOBAL PROPERTY
+    superbuild_install_no_external_dependencies)
+  if (superbuild_install_no_external_dependencies)
+    list(APPEND fixup_bundle_arguments --source-only)
+  endif ()
+
   install(CODE
     "set(superbuild_python_executable \"${superbuild_python_executable}\")
+    set(superbuild_install_location \"${superbuild_install_location}\")
     include(\"${_superbuild_install_cmake_dir}/scripts/fixup_python.unix.cmake\")
     set(python_modules \"${_install_python_MODULES}\")
     set(module_directories \"${_install_python_MODULE_DIRECTORIES}\")
