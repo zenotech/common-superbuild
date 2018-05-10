@@ -398,6 +398,10 @@ This function does check if the build tree lives under a git repository and
 errors out if so since then *all* patch applications will fail.
 
 Please forward relevant patches upstream.
+
+A project may call `superbuild_apply_patch()` multiple times to apply mutliple
+patches. The patches will be applied in the same order as the calls to
+`superbuild_apply_patch` for that project.
 #]==]
 function (superbuild_apply_patch _name _patch _comment)
   find_package(Git QUIET)
@@ -440,6 +444,18 @@ function (superbuild_apply_patch _name _patch _comment)
       "directory which is not under a git repository.")
   endif ()
 
+  if (NOT superbuild_build_phase)
+    return ()
+  endif ()
+
+  _superbuild_check_current_project("superbuild_apply_patch")
+
+  # get patch steps added for the project so far.
+  # we add a dependency between all patch steps in order they were added.
+  get_property(patch-steps GLOBAL
+    PROPERTY
+      "${current_project}_patch_steps")
+
   superbuild_project_add_step("${_name}-patch-${_patch}"
     COMMAND   "${GIT_EXECUTABLE}"
               apply
@@ -447,10 +463,15 @@ function (superbuild_apply_patch _name _patch _comment)
               --whitespace=fix
               -p1
               "${CMAKE_CURRENT_LIST_DIR}/patches/${_name}-${_patch}.patch"
-    DEPENDEES patch
+    DEPENDEES patch ${patch-steps}
     DEPENDERS configure
     COMMENT   "${_comment}"
     WORKING_DIRECTORY <SOURCE_DIR>)
+
+  set_property(GLOBAL APPEND
+    PROPERTY
+      "${current_project}_patch_steps" "${_name}-patch-${_patch}")
+
 endfunction ()
 
 #[==[.md

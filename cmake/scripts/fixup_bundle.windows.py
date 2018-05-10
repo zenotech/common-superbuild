@@ -136,6 +136,11 @@ class Library(object):
         Visual C runtime libraries are ignored.
         '''
         if self._dependencies is None:
+            system_dlls = re.compile(r'[a-z]:\\windows\\system.*\.dll', re.IGNORECASE)
+            if system_dlls.match(self.path):
+                # if this is a system dll, stop traversing dependencies.
+                self._dependencies = {}
+                return self._dependencies
             collection = {}
             msvc_runtimes = re.compile('MSVC[A-Z][0-9]*.dll')
             for dep in self._get_dependencies():
@@ -388,6 +393,7 @@ def main(args):
 
     includes = map(re.compile, opts.include)
     excludes = map(re.compile, opts.exclude)
+    system_dlls = re.compile(r'[a-z]:\\windows\\system.*\.dll', re.IGNORECASE)
 
     def is_excluded(path):
         # Filter by regex
@@ -397,11 +403,9 @@ def main(args):
         for exclude in excludes:
             if exclude.match(path):
                 return True
-
         # System libs
-        if path.startswith('C:\\Windows\\system32'):
+        if system_dlls.match(path):
             return True
-
         return False
 
     if opts.new:
