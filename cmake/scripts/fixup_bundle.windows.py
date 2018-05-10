@@ -136,6 +136,11 @@ class Library(object):
         Visual C runtime libraries are ignored.
         '''
         if self._dependencies is None:
+            system_dlls = re.compile(r'[a-z]:\\windows\\system.*\.dll', re.IGNORECASE)
+            if system_dlls.match(self.path):
+                # if this is a system dll, stop traversing dependencies.
+                self._dependencies = {}
+                return self._dependencies
             collection = {}
             msvc_runtimes = re.compile('MSVC[A-Z][0-9]*.dll')
             for dep in self._get_dependencies():
