@@ -1141,8 +1141,17 @@ endfunction ()
 # Wrapper around ExternalProject's internal calls to gather the CMake flags
 # that would be passed to a project if it were enabled.
 function (_superbuild_write_developer_mode_cache name)
-  set(cmake_args
-    "-DCMAKE_PREFIX_PATH:PATH=\"${superbuild_prefix_path};${CMAKE_PREFIX_PATH}\"")
+  # if CMAKE_PREFIX_PATH is set, then we set the xported CMAKE_PREFIX_PATH flag
+  # to be a list of two things and it needs quotations. Otherwise, there is no
+  # need to add quotations (and doing so results in a developer config file with
+  # too many quotations, resulting in a warning).
+  if (CMAKE_PREFIX_PATH)
+    set(cmake_args
+      "-DCMAKE_PREFIX_PATH:PATH=\"${superbuild_prefix_path};${CMAKE_PREFIX_PATH}\"")
+  else ()
+    set(cmake_args
+      "-DCMAKE_PREFIX_PATH:PATH=${superbuild_prefix_path}")
+  endif ()
   if (debuggable AND NOT CMAKE_BUILD_TYPE_${name} STREQUAL "<same>")
     list(APPEND cmake_args
       "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE_${name}}")
