@@ -42,8 +42,8 @@ superbuild_set_revision(png
 if (WIN32 AND (NOT superbuild_building_prebuilt_python OR superbuild_use_prebuilt_python))
   if (superbuild_is_64bit)
     superbuild_set_revision(python
-      URL     "https://www.paraview.org/files/dependencies/python-2.7.3-win64-20171212.tar.gz"
-      URL_MD5 abe39099bef68b731ab5f28a2b468273)
+      URL     "https://www.paraview.org/files/dependencies/python-2.7.15-win64-20180905.tar.gz"
+      URL_MD5 6cfab07945bf75474d4ed2d2ea799c57)
   else ()
     message(FATAL_ERROR
       "Prebuilt Python binaries for Windows 32 bit are not provided.")
