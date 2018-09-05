@@ -123,8 +123,8 @@ superbuild_set_selectable_source(qt5
 if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
     superbuild_set_revision(numpy
-      URL     "https://www.paraview.org/files/dependencies/numpy-1.8.1-win64-20171211.tar.gz"
-      URL_MD5 47adf8dba068e5ad92e49ab9e3710ac1)
+      URL     "https://www.paraview.org/files/dependencies/numpy-1.15.1-win64-20180906.tar.gz"
+      URL_MD5 d75f1c5c111de3fed8556174fe353f0c)
   else ()
     message(FATAL_ERROR
       "Prebuilt Python binaries for Windows 32 bit are not provided.")
@@ -141,8 +141,8 @@ endif ()
 if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
     superbuild_set_revision(matplotlib
-      URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20180110.tar.gz"
-      URL_MD5 0582f726009fd756d51fee2201ea593a)
+      URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20180905.tar.gz"
+      URL_MD5 0c96b84e87b4db50cdc4d18869ae74ed)
   else ()
     message(FATAL_ERROR
       "Prebuilt Python binaries for Windows 32 bit are not provided.")
@@ -156,8 +156,8 @@ endif ()
 if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
     superbuild_set_revision(pywin32
-      URL     "https://www.paraview.org/files/dependencies/pywin32-220-win64-20171211.tar.gz"
-      URL_MD5 566fcf525a750da23499a36e1512afd9)
+      URL     "https://www.paraview.org/files/dependencies/pywin32-220-win64-20180905.tar.gz"
+      URL_MD5 08a6ab778e459e6752d54083c29dbb13)
   else ()
     message(FATAL_ERROR
       "Prebuilt Python binaries for Windows 32 bit are not provided.")
