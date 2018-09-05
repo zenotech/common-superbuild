@@ -15,7 +15,12 @@ function (superbuild_find_projects var)
     ftjam
     png
     python
+    pythoncycler
+    pythondateutil
+    pythonpyparsing
     pythonsetuptools
+    pythonsix
+    pytz
     pywin32
     matplotlib
     numpy
