@@ -39,7 +39,7 @@ superbuild_set_revision(png
   URL     "https://www.paraview.org/files/dependencies/libpng-1.6.23.tar.gz"
   URL_MD5 a49e4cc48d968c79def53d082809c9f2)
 
-if (WIN32)
+if (WIN32 AND (NOT superbuild_building_prebuilt_python OR superbuild_use_prebuilt_python))
   if (superbuild_is_64bit)
     superbuild_set_revision(python
       URL     "https://www.paraview.org/files/dependencies/python-2.7.3-win64-20171212.tar.gz"

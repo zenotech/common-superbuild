@@ -70,8 +70,6 @@ option(superbuild_use_prebuilt_python "Use a prebuilt-python binary" OFF)
 
 list(APPEND superbuild_project_roots
   "${CMAKE_CURRENT_LIST_DIR}/projects")
-list(APPEND superbuild_version_files
-  "${CMAKE_CURRENT_LIST_DIR}/versions.cmake")
 
 get_filename_component(sb_dir "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)
 add_subdirectory("${sb_dir}" "${CMAKE_CURRENT_BINARY_DIR}/superbuild")
