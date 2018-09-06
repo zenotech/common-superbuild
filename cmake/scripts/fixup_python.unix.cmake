@@ -6,7 +6,8 @@ function (superbuild_unix_install_python_module destination module search_paths 
       file(INSTALL
         FILES       "${search_path}/${module}.py"
         DESTINATION "${destination}/${location}")
-    elseif (EXISTS "${search_path}/${module}.so")
+    endif ()
+    if (EXISTS "${search_path}/${module}.so")
       execute_process(
         COMMAND "${superbuild_python_executable}"
                 "${_superbuild_install_cmake_scripts_dir}/fixup_bundle.unix.py"
@@ -24,7 +25,8 @@ function (superbuild_unix_install_python_module destination module search_paths 
       if (res)
         message(FATAL_ERROR "Failed to install Python module ${module}:\n${err}")
       endif ()
-    elseif (EXISTS "${search_path}/${module}/__init__.py")
+    endif ()
+    if (EXISTS "${search_path}/${module}/__init__.py")
       file(GLOB modules "${search_path}/${module}/*.py" "${search_path}/${module}/*.so")
       foreach (submodule IN LISTS modules)
         get_filename_component(submodule_name "${submodule}" NAME_WE)

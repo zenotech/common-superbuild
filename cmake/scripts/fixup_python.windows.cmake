@@ -6,7 +6,8 @@ function (superbuild_windows_install_python_module destination module search_pat
       file(INSTALL
         FILES       "${search_path}/${module}.py"
         DESTINATION "${destination}/${location}")
-    elseif (EXISTS "${search_path}/${module}.pyd")
+    endif ()
+    if (EXISTS "${search_path}/${module}.pyd")
       execute_process(
         COMMAND "${superbuild_python_executable}"
                 "${_superbuild_install_cmake_scripts_dir}/fixup_bundle.windows.py"
@@ -23,7 +24,8 @@ function (superbuild_windows_install_python_module destination module search_pat
       if (res)
         message(FATAL_ERROR "Failed to install Python module ${module}:\n${err}")
       endif ()
-    elseif (EXISTS "${search_path}/${module}/__init__.py")
+    endif ()
+    if (EXISTS "${search_path}/${module}/__init__.py")
       file(GLOB modules "${search_path}/${module}/*.py" "${search_path}/${module}/*.pyd")
       foreach (submodule IN LISTS modules)
         get_filename_component(submodule_name "${submodule}" NAME_WE)
