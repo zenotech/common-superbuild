@@ -1114,6 +1114,8 @@ function (_superbuild_add_project_internal name)
 
     PROCESS_ENVIRONMENT
       "${build_env}"
+      GIT_CEILING_DIRECTORIES "${CMAKE_BINARY_DIR}/../"
+      CMAKE_PREFIX_PATH "${superbuild_prefix_path}"
     CMAKE_ARGS
       --no-warn-unused-cli
       -DCMAKE_INSTALL_PREFIX:PATH=${superbuild_prefix_path}
