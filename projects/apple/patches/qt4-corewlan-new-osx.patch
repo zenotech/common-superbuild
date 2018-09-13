@@ -8,7 +8,7 @@ diff -Nr -U5 qt-everywhere-opensource-src-4.8.6/src/plugins/bearer/corewlan/core
  
  contains(QT_CONFIG, corewlan) {
 -    isEmpty(QMAKE_MAC_SDK)|contains(QMAKE_MAC_SDK, "/Developer/SDKs/MacOSX10\.[67]\.sdk") {
-+    isEmpty(QMAKE_MAC_SDK)|contains(QMAKE_MAC_SDK, ".*MacOSX10\.([6789]|1[01])\.sdk") {
++    isEmpty(QMAKE_MAC_SDK)|contains(QMAKE_MAC_SDK, ".*MacOSX10\.([6789]|1[012])\.sdk") {
           LIBS += -framework CoreWLAN -framework Security
      }
  }

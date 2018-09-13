@@ -1,13 +1,39 @@
+#[==[.md
+# Specifying revisions
+
+When building a package, its sources must come from somewhere. In order to keep
+the "what to build" (sources) separate from the "how to build" (the project
+files) and separately updatable, the superbuild gathers source information
+separately.
+
+There are multiple ways to specify a revision with the functions in the
+superbuild, but in general, a package will use the first-specified revision
+that is encountered. This is so that a specific project can, for example, use a
+different version of Boost than is provided in the common superbuild
+infrastructure.
+#]==]
+
 include(CMakeParseArguments)
 
-# Sets the arguments to ``ExternalProject_add`` to download the project.
-#
-# Usage:
-#
-#   superbuild_set_revision(<name> <args>...)
-#
-# If this is called multiple times for a single project, only the first one
-# takes effect.
+#[==[.md
+## Simple use case
+
+The simplest use case is when a project just has a given location for its
+sources that isn't configurable at build time by a user.
+
+```
+superbuild_set_revision(<NAME> <ARG>...)
+```
+
+The `superbuild_set_revision` function stores the given `ARG` for use when then
+`NAME` project is built. See the documentation for [ExternalProject][] for the
+supported download location arguments.
+
+Note that validation of the arguments only happens when the project is being
+built.
+
+[ExternalProject]: https://cmake.org/cmake/help/v3.9/module/ExternalProject.html
+#]==]
 function (superbuild_set_revision name)
   get_property(have_revision GLOBAL
     PROPERTY
@@ -20,26 +46,33 @@ function (superbuild_set_revision name)
   endif ()
 endfunction ()
 
-# Sets arguments to ``ExternalProject_add`` to download the project, but adds
-# cache variables so that they may be changed by the user.
-#
-# Usage:
-#
-#   superbuild_set_customizable_revision(<name> <args>...)
-#
-# Adds advanced variables for the following keys:
-#
-#   GIT_REPOSITORY, GIT_TAG, URL, URL_HASH, URL_MD5, and SOURCE_DIR
-#
-# they are named ``${name_UPPER}_${key}``.
-function (superbuild_set_customizable_revision name)
+#[==[.md INTERNAL
+## Customizable revisions
+
+```
+_superbuild_set_customizable_revision(<NAME> <ARG>...)
+```
+
+This is used for `CUSTOMIZABLE` revisions in the
+`superbuild_set_selectable_source` function. The following keys are turned into
+cache variables. Others are ignored.
+
+  - `GIT_REPOSITORY`
+  - `GIT_TAG`
+  - `URL`
+  - `URL_HASH`
+  - `URL_MD5`
+  - `SOURCE_DIR`
+
+The cache variables are named `<NAME>_<KEY>`.
+#]==]
+function (_superbuild_set_customizable_revision name)
   set(keys
     GIT_REPOSITORY GIT_TAG
     URL URL_HASH URL_MD5
     SOURCE_DIR)
   cmake_parse_arguments(_args "" "${keys}" "" ${ARGN})
   set(customized_args)
-  string(TOUPPER "${name}" name_UPPER)
 
   foreach (key IN LISTS keys)
     if (_args_${key})
@@ -48,8 +81,7 @@ function (superbuild_set_customizable_revision name)
       if (key STREQUAL "SOURCE_DIR")
         set(cache_type PATH)
       endif ()
-      superbuild_deprecated_setting(option_default "${option_name}" "${name_UPPER}_${key}" "${_args_${key}}")
-      set("${option_name}" "${option_default}"
+      set("${option_name}" "${_args_${key}}"
         CACHE "${cache_type}" "${key} for project '${name}'")
       if (NOT key STREQUAL "SOURCE_DIR")
         mark_as_advanced(${option_name})
@@ -66,93 +98,79 @@ function (superbuild_set_customizable_revision name)
     ${_args_UNPARSED_ARGUMENTS})
 endfunction ()
 
-# Convenient way to declare a main project's source.
-#
-# Usage:
-#
-#   superbuild_set_external_source(<name>
-#     <git-url> <git-ref>
-#     <tarball-url> <tarball-md5>)
-#
-# Adds options to build the project from a git repository, a tarball, or a
-# source tree (linked from the source tree as
-# ``${CMAKE_SOURCE_DIR}/source-${name}``). Usually relevant for the "primary"
-# project(s) in a single superbuild.
-function (superbuild_set_external_source name git_repo git_tag tarball_url tarball_md5)
-  option("${name}_FROM_GIT" "If enabled, fetch sources from GIT" ON)
-  cmake_dependent_option("${name}_FROM_SOURCE_DIR" "Use an existing source directory" OFF
-    "NOT ${name}_FROM_GIT" OFF)
+#[==[.md
+## User-selectable sources
 
-  set(args)
-  if (${name}_FROM_GIT)
-    set(args
-      GIT_REPOSITORY "${git_repo}"
-      GIT_TAG        "${git_tag}")
-  elseif (${name}_FROM_SOURCE_DIR)
-    set(args
-      SOURCE_DIR "${CMAKE_SOURCE_DIR}/source-${name}")
-  else ()
-    set(args
-      URL     "${tarball_url}"
-      URL_MD5 "${tarball_md5}")
-  endif ()
+Some projects may have different locations for sources that a user might want
+to choose between. To facilitate this, a project may have a "selectable"
+source. This creates a user-facing cache variable `<NAME>_SOURCE_SELECTION`
+which chooses a selection that then indicates where the sources should be
+retrieved. It is an error to choose a selection that does not exist.
 
-  superbuild_set_customizable_revision("${name}"
-    ${args})
+The signature is:
 
-  # Push the cmake_dependent_option to the parent scope.
-  set("${name}_FROM_SOURCE_DIR"
-    "${${name}_FROM_SOURCE_DIR}"
-    PARENT_SCOPE)
-endfunction ()
+```
+superbuild_set_selectable_source(<NAME>
+  [SELECTS_WITH <PARENT>]
+  <SELECT <SELECTION> [DEFAULT] [CUSTOMIZABLE] [FALLBACK]
+    <ARG>...>...)
+```
 
-# A way to provide selections for a project's source.
-#
-# Usage:
-#
-#   superbuild_set_selectable_source(<name>
-#     [SELECTS_WITH <parent_name>]
-#     <SELECT <selection_name> [DEFAULT] [CUSTOMIZABLE] [FALLBACK]
-#       <args...>>...)
-#
-# This may be used to provide multiple ways to build a project:
-#
-#   superbuild_set_selectable_source(myproject
-#     SELECT v1.0
-#       URL     "https://hostname/path/to/myproject-1.0.tar.gz"
-#       URL_MD5 00000000000000000000000000000000
-#     SELECT v2.0 DEFAULT
-#       URL     "https://hostname/path/to/myproject-2.0.tar.gz"
-#       URL_MD5 00000000000000000000000000000000
-#     SELECT git CUSTOMIZABLE
-#       GIT_REPOSITORY  "https://path/to/myproject.git"
-#       GIT_TAG         "origin/master"
-#     SELECT source CUSTOMIZABLE
-#       SOURCE_DIR  "path/to/local/directory")
-#
-#   superbuild_set_selectable_source(myprojectdocs
-#     SELECTS_WITH myproject
-#     SELECT v1.0
-#       URL     "https://hostname/path/to/myprojectdocs-1.0.tar.gz"
-#       URL_MD5 00000000000000000000000000000000
-#     SELECT v2.0
-#       URL     "https://hostname/path/to/myprojectdocs-2.0.tar.gz"
-#       URL_MD5 00000000000000000000000000000000
-#     SELECT git FALLBACK
-#       GIT_REPOSITORY  "https://path/to/myprojectdocs.git"
-#       GIT_TAG         "origin/master")
-#
-# Generally, the ``source`` selection should be used to set up an external
-# directory as the source tree for the project.
-#
-# This will create a variable in the cache named ``${name}_SOURCE_SELECTION``
-# which may be used to select one of the sources.
-#
-# If ``SELECTS_WITH`` is given, the selection of the ``<parent_name>`` will be
-# used as the selection for this project as well. The ``DEFAULT`` keyword may
-# not be used in projects which use ``SELECTS_WITH``. Instead, the ``FALLBACK``
-# keyword may be used to indicate that that selection should be used if there
-# is not a matching selection in this project.
+Each selection is followed by a set of arguments which is used as the source
+arguments for the project if it is used. The default selection is either the
+one marked by the `DEFAULT` argument or the first selection if none is
+specified.
+
+A selection may be `CUSTOMIZABLE` which means that the values to the arguments
+may be edited by the user.
+
+A project may also `SELECTS_WITH` another project. If given, the selection of
+the `PARENT` project will be used as the selection for this project as well if
+it exists. Rather than the `DEFAULT` keyword, a `SELECTS_WITH` project may use
+`FALLBACK` which indicates the selection that should be used if the parent
+project uses a selection that is not valid for the current project.
+
+Some conventions are used for certain selections, but are not enforced.
+Usually, at least the `git` and `source` selections are available for "primary"
+projects within a superbuild. Both of these should be marked as `CUSTOMIZABLE`.
+
+As an example:
+
+```cmake
+superbuild_set_selectable_source(myproject
+  SELECT v1.0
+    URL     "https://hostname/path/to/myproject-1.0.tar.gz"
+    URL_MD5 00000000000000000000000000000000
+  SELECT v2.0 DEFAULT
+    URL     "https://hostname/path/to/myproject-2.0.tar.gz"
+    URL_MD5 00000000000000000000000000000000
+  SELECT git CUSTOMIZABLE
+    GIT_REPOSITORY  "https://path/to/myproject.git"
+    GIT_TAG         "origin/master"
+  SELECT source CUSTOMIZABLE
+    SOURCE_DIR  "path/to/local/directory")
+
+superbuild_set_selectable_source(myprojectdocs
+  SELECTS_WITH myproject
+  SELECT v1.0
+    URL     "https://hostname/path/to/myprojectdocs-1.0.tar.gz"
+    URL_MD5 00000000000000000000000000000000
+  SELECT v2.0
+    URL     "https://hostname/path/to/myprojectdocs-2.0.tar.gz"
+    URL_MD5 00000000000000000000000000000000
+  SELECT git FALLBACK
+    GIT_REPOSITORY  "https://path/to/myprojectdocs.git"
+    GIT_TAG         "origin/master")
+```
+
+In this example, the `myproject` project defaults to the `v2.0` selection. In
+addition, a `v1.0` is available and the other two are `CUSTOMIZABLE` which
+allows a user to set the values with the given arguments. The `myprojectdocs`
+project indicates that it `SELECTS_WITH` `myproject`. This means that if the
+selection for `myproject` exists for `myprojectdocs` as well, it will be used.
+However, if it does not exist, the selection marked as the `FALLBACK` will be
+used instead.
+#]==]
 function (superbuild_set_selectable_source name)
   set(selections)
   set(customizable_selections)
@@ -312,6 +330,11 @@ function (superbuild_set_selectable_source name)
       "The ${name} project did not provide any selections")
   endif ()
 
+  # Allow setting the default selection from the top-level build.
+  if (DEFINED _superbuild_${name}_default_selection)
+    set(default_selection "${_superbuild_${name}_default_selection}")
+  endif ()
+
   # Use the first as the default if one was not specified.
   if (NOT selects_with AND NOT default_selection)
     message(WARNING
@@ -350,7 +373,7 @@ function (superbuild_set_selectable_source name)
     superbuild_set_revision("${name}"
       ${selection_${selection}_args})
   else ()
-    superbuild_set_customizable_revision("${name}"
+    _superbuild_set_customizable_revision("${name}"
       ${selection_${selection}_args})
   endif ()
 endfunction ()

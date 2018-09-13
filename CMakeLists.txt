@@ -40,7 +40,27 @@ endif ()
 
 superbuild_detect_64bit_target()
 
-option(BUILD_SHARED_LIBS "Enable shared libraries" ON)
+# Setup shared library defaults.  If explicitly specified somehow, then default
+# to that.  Otherwise base the default on whether or not shared libs are even
+# supported.
+get_property(superbuild_shared_libs_supported
+  GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS)
+cmake_dependent_option(BUILD_SHARED_LIBS
+  "Build shared libraries (so/dylib/dll)." "${superbuild_shared_libs_supported}"
+  "superbuild_shared_libs_supported" OFF)
+mark_as_advanced(BUILD_SHARED_LIBS)
+
+# Setup PIC defaults.
+cmake_dependent_option(CMAKE_POSITION_INDEPENDENT_CODE
+  "Build with Position Independent Code" ON
+  "superbuild_shared_libs_supported" OFF)
+mark_as_advanced(CMAKE_POSITION_INDEPENDENT_CODE)
+
+# Verify shared libs and PIC compatibility
+if(BUILD_SHARED_LIBS AND NOT CMAKE_POSITION_INDEPENDENT_CODE)
+  message(WARNING "Forcing CMAKE_POSITION_INDEPENDENT_CODE to be ON as required by BUILD_SHARED_LIBS.")
+  set_property(CACHE CMAKE_POSITION_INDEPENDENT_CODE PROPERTY VALUE ON)
+endif()
 
 #-----------------------------------------------------------------------------
 # Setup some standard variables that control various locations and flags.
@@ -61,6 +81,9 @@ set(superbuild_download_location "${CMAKE_BINARY_DIR}/downloads"
   CACHE PATH "Location for downloaded source tarballs")
 mark_as_advanced(superbuild_download_location)
 
+if(BUILD_SHARED_LIBS AND CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+  string(APPEND superbuild_ld_flags " -shared-intel")
+endif()
 superbuild_setup_flags()
 
 # merge in default/user-specified CMake flags.

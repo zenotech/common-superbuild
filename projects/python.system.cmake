@@ -4,7 +4,7 @@ mark_as_advanced(python_FIND_LIBRARIES)
 find_package(PythonInterp 2.7 REQUIRED)
 
 if (python_FIND_LIBRARIES)
-  find_package(PythonLibs   2.7 REQUIRED)
+  find_package(PythonLibs 2.7 REQUIRED)
   if (NOT PYTHON_VERSION_STRING VERSION_EQUAL PYTHONLIBS_VERSION_STRING AND
       NOT PYTHON_I_KNOW_WHAT_IM_DOING)
     message(FATAL_ERROR
@@ -26,3 +26,15 @@ endif()
 
 set(superbuild_python_executable "${PYTHON_EXECUTABLE}"
   CACHE INTERNAL "")
+if (WIN32)
+  set(superbuild_python_pip "${PYTHON_EXECUTABLE};-m;pip"
+    CACHE INTERNAL "")
+else ()
+  if (NOT EXISTS "${superbuild_python_pip}")
+    unset(superbuild_python_pip CACHE)
+  endif ()
+  get_filename_component(python_executable_dir "${PYTHON_EXECUTABLE}" DIRECTORY)
+  find_program(superbuild_python_pip
+    NAMES pip
+    HINTS "${python_executable_dir}")
+endif ()

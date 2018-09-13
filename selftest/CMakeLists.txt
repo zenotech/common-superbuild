@@ -12,20 +12,28 @@ function (superbuild_find_projects var)
     hdf5
     lapack
     matplotlib
+    mpi
     netcdf
     numpy
     png
     python
     pythonautobahn
     pythonconstantly
+    pythoncycler
+    pythondateutil
     pythonhyperlink
     pythonincremental
+    pythonmpi4py
+    pythonpygments
+    pythonpyparsing
     pythonsetuptools
     pythonsix
     pythontwisted
     pythontxaio
     pythonwslink
+    pythonzope
     pythonzopeinterface
+    pytz
     qt4
     qt5
     szip
@@ -40,9 +48,7 @@ function (superbuild_find_projects var)
   if (NOT WIN32)
     list(APPEND projects
       ffmpeg
-      mpi
       libxml2
-      pythonmpi4py
       scipy)
   endif ()
 

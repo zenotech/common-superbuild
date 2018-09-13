@@ -58,7 +58,6 @@ endif ()
 superbuild_add_project(boost
   CAN_USE_SYSTEM
   BUILD_IN_SOURCE 1
-  DEPENDS zlib
   DEPENDS_OPTIONAL cxx11
   "${boost_build_commands}"
   ${boost_extra_arguments})

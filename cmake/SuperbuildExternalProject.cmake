@@ -1,5 +1,10 @@
-# This file implements the logic to inject environment variables into the build
-# steps of projects. It is quite messy.
+#[==[.md INTERNAL
+# `SuperbuildExternalProject`
+
+This file is basically a wrapper around CMake's `ExternalProject` module with
+additional support for managing environments, parallel build settings, download
+management, and output suppression.
+#]==]
 
 if (CMAKE_VERSION VERSION_LESS "3.9")
   # Needed for fixes.
@@ -26,7 +31,7 @@ if (CMAKE_GENERATOR MATCHES "Makefiles")
   set(superbuild_make_program "${CMAKE_MAKE_PROGRAM}")
 endif ()
 
-# Add "PROCESS_ENVIRONMENT" to the list of keywords recognized.
+# Add `PROCESS_ENVIRONMENT` to the list of keywords.
 string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
   _ep_keywords__superbuild_ExternalProject_add "${_ep_keywords_ExternalProject_Add}")
 
@@ -67,6 +72,7 @@ function (_superbuild_ep_strip_extra_arguments name)
   ExternalProject_add("${name}" "${arguments}")
 endfunction ()
 
+# Wraps a command in a CMake script which handles environment management.
 function (_superbuild_ep_wrap_command var target command_name)
   get_property(has_command TARGET "${target}"
     PROPERTY "_EP_${command_name}_COMMAND" SET)
@@ -129,6 +135,7 @@ function (_superbuild_ExternalProject_add name)
     return ()
   endif ()
 
+  # Wrap the three main commands which require environment manipulation.
   _superbuild_ep_wrap_command(configure_command "sb-${name}" CONFIGURE)
   _superbuild_ep_wrap_command(build_command     "sb-${name}" BUILD)
   _superbuild_ep_wrap_command(install_command   "sb-${name}" INSTALL)
@@ -145,7 +152,7 @@ function (_superbuild_ExternalProject_add name)
   list(APPEND args
     "${install_command}")
 
-  # Now strip PROCESS_ENVIRONMENT and commands from arguments.
+  # Now strip `PROCESS_ENVIRONMENT` and commands from arguments.
   set(skip FALSE)
   foreach (arg IN LISTS ARGN)
     if (arg MATCHES "${_ep_keywords__superbuild_ExternalProject_add}")
@@ -182,6 +189,7 @@ function (_superbuild_ExternalProject_add name)
   # empty install, configure, build, etc.
   ExternalProject_add("${name}" "${args}")
 
+  # Hook up the download step with the `download-all` target.
   if (TARGET "${name}-download")
     add_dependencies(download-all
       "${name}-download")
@@ -193,6 +201,7 @@ function (_superbuild_ExternalProject_add name)
     _EP_PROCESS_ENVIRONMENT)
   _ep_replace_location_tags("${name}" process_environment)
 
+  # Configure each CMake script used during the actual build.
   foreach (step IN ITEMS configure build install)
     if (req_${step}_command)
       set(step_command "${original_${step}_command}")
