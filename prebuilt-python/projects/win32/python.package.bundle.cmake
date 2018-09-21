@@ -7,4 +7,6 @@ superbuild_windows_install_python(
   MODULE_DIRECTORIES
           "${superbuild_install_location}/bin/Lib/site-packages"
           "${superbuild_install_location}/Lib/site-packages"
-  SEARCH_DIRECTORIES  "bin")
+          ${python_extra_modules_directories}
+  SEARCH_DIRECTORIES
+          "${superbuild_install_location}/bin")
