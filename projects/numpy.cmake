@@ -3,6 +3,10 @@ if (lapack_enabled)
   list(APPEND numpy_process_environment
     BLAS    "${BLAS_LIBRARIES}"
     LAPACK  "${LAPACK_LIBRARIES}")
+else()
+  list(APPEND numpy_process_environment
+    BLAS    "None"
+    LAPACK  "None")
 endif ()
 
 if (fortran_enabled)
