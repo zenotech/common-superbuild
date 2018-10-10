@@ -975,8 +975,6 @@ function (_superbuild_add_project_internal name)
     list(APPEND cmake_params "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}")
     string(TOUPPER "${CMAKE_BUILD_TYPE}" project_build_type)
   endif ()
-  set(project_c_flags_buildtype "${CMAKE_C_FLAGS_${project_build_type}}")
-  set(project_cxx_flags_buildtype "${CMAKE_CXX_FLAGS_${project_build_type}}")
 
   # Set SDK and target version flags.
   superbuild_osx_pass_version_flags(apple_flags)
@@ -1046,9 +1044,9 @@ function (_superbuild_add_project_internal name)
   if (NOT MSVC)
     list(APPEND build_env
       LDFLAGS "${project_ld_flags}"
-      CPPFLAGS "${project_cpp_flags} ${project_cxx_flags_buildtype}"
-      CXXFLAGS "${project_cxx_flags} ${project_cxx_flags_buildtype}"
-      CFLAGS "${project_c_flags} ${project_c_flags_buildtype}")
+      CPPFLAGS "${project_cpp_flags}"
+      CXXFLAGS "${project_cxx_flags}"
+      CFLAGS "${project_c_flags}")
   endif ()
 
   list(INSERT extra_paths 0
