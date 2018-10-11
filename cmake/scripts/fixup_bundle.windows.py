@@ -143,9 +143,12 @@ class Library(object):
                 return self._dependencies
             collection = {}
             msvc_runtimes = re.compile('MSVC[A-Z][0-9]*.dll')
+            vc_runtimes = re.compile('VC[A-Z][0-9]*\\.dll')
             win_rt_runtimes = re.compile('api-ms-win-crt-.*\\.dll')
             for dep in self._get_dependencies():
                 if msvc_runtimes.match(dep):
+                    continue
+                if vc_runtimes.match(dep):
                     continue
                 if win_rt_runtimes.match(dep):
                     continue
