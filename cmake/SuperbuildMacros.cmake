@@ -308,11 +308,11 @@ work properly out of the box.
 #]==]
 macro (superbuild_add_project_python _name)
   if (WIN32)
-    set(_superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
+    set(superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
     set(_superbuild_python_args
       "--prefix=bin")
   else ()
-    set(_superbuild_python_path <INSTALL_DIR>/lib/python2.7/site-packages)
+    set(superbuild_python_path <INSTALL_DIR>/lib/python2.7/site-packages)
     set(_superbuild_python_args
       "--single-version-externally-managed"
       "--prefix=")
@@ -335,9 +335,7 @@ macro (superbuild_add_project_python _name)
         --skip-build
         --root=<INSTALL_DIR>
         ${_superbuild_python_args}
-        ${${_name}_python_install_args}
-    PROCESS_ENVIRONMENT
-      PYTHONPATH ${_superbuild_python_path})
+        ${${_name}_python_install_args})
 endmacro ()
 
 #[==[.md
@@ -1055,8 +1053,10 @@ function (_superbuild_add_project_internal name)
 
   if (WIN32)
     string(REPLACE ";" "${_superbuild_list_separator}" extra_paths "${extra_paths}")
+    string(REPLACE ";" "${_superbuild_list_separator}" superbuild_python_path "${superbuild_python_path}")
   else ()
     string(REPLACE ";" ":" extra_paths "${extra_paths}")
+    string(REPLACE ";" ":" superbuild_python_path "${superbuild_python_path}")
   endif ()
   list(APPEND build_env
     PATH "${extra_paths}")
@@ -1073,7 +1073,8 @@ function (_superbuild_add_project_internal name)
       ${ld_library_path_argument})
   endif ()
   list(APPEND build_env
-    PKG_CONFIG_PATH "${superbuild_pkg_config_path}")
+    PKG_CONFIG_PATH "${superbuild_pkg_config_path}"
+    PYTHONPATH "${superbuild_python_path}")
 
   set(binary_dir BINARY_DIR "${name}/build")
   list(FIND ARGN "BUILD_IN_SOURCE" in_source)

@@ -276,3 +276,7 @@ superbuild_set_revision(pythonsix
 superbuild_set_revision(pythonpygments
   URL     "https://www.paraview.org/files/dependencies/Pygments-2.2.0.tar.gz"
   URL_MD5 13037baca42f16917cbd5ad2fab50844)
+
+superbuild_set_revision(pythonmako
+  URL     "https://www.paraview.org/files/dependencies/Mako-1.0.7.tar.gz"
+  URL_MD5 5836cc997b1b773ef389bf6629c30e65)
