@@ -303,16 +303,14 @@ libraries.
 superbuild_add_project_python(<NAME> <ARG>...)
 ```
 
-Same as `superbuild_add_project`, but sets `PYTHONPATH` and build commands to
-work properly out of the box.
+Same as `superbuild_add_project`, but sets build commands to
+work properly out of the box for setuputils.
 #]==]
 macro (superbuild_add_project_python _name)
   if (WIN32)
-    set(superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
     set(_superbuild_python_args
       "--prefix=bin")
   else ()
-    set(superbuild_python_path <INSTALL_DIR>/lib/python2.7/site-packages)
     set(_superbuild_python_args
       "--single-version-externally-managed"
       "--prefix=")

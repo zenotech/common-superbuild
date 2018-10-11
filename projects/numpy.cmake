@@ -37,7 +37,6 @@ superbuild_add_project(numpy
       --install-lib=<INSTALL_DIR>/lib/python2.7/site-packages
       --prefix=<INSTALL_DIR>
   PROCESS_ENVIRONMENT
-    PYTHONPATH  <INSTALL_DIR>/lib/python2.7/site-packages
     MKL         "None"
     ATLAS       "None"
     ${numpy_process_environment})
