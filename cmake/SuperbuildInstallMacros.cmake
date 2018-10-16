@@ -569,7 +569,9 @@ endfunction ()
 superbuild_apple_install_utility(<DESTINATION> <NAME> <BINARY>
   [INCLUDE_REGEXES <regex>...]
   [EXCLUDE_REGEXES <regex>...]
-  [SEARCH_DIRECTORIES <library-path>...])
+  [SEARCH_DIRECTORIES <library-path>...]
+  [FRAMEWORK_DEST <framework-dest>]
+  [LIBRARY_DEST <library-dest>])
 ```
 
 Adds a binary to the `bin/` path of the bundle. Required libraries are
@@ -582,11 +584,14 @@ The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, and `SEARCH_DIRECTORIES` arguments
 are the same as those for `superbuild_apple_create_app`.
 #]==]
 function (superbuild_apple_install_utility destination name binary)
+  set(values
+    FRAMEWORK_DEST
+    LIBRARY_DEST)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
     SEARCH_DIRECTORIES)
-  cmake_parse_arguments(_install_utility "" "" "${multivalues}" ${ARGN})
+  cmake_parse_arguments(_install_utility "" "${values}" "${multivalues}" ${ARGN})
 
   set(fixup_bundle_arguments)
 
@@ -604,6 +609,16 @@ function (superbuild_apple_install_utility destination name binary)
     set(fixup_bundle_arguments
       "${fixup_bundle_arguments} --search \"${search_directory}\"")
   endforeach ()
+
+  if (DEFINED _install_utility_FRAMEWORK_DEST)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --framework-dest \"${_install_utility_FRAMEWORK_DEST}\"")
+  endif ()
+
+  if (DEFINED _install_utility_LIBRARY_DEST)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --library-dest \"${_install_utility_LIBRARY_DEST}\"")
+  endif ()
 
   install(CODE
     "execute_process(
