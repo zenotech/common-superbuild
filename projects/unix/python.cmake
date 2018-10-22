@@ -4,7 +4,11 @@ else ()
   set(python_shared_args --disable-shared --enable-static)
 endif ()
 
-set(python_USE_UNICODE "UCS2" CACHE STRING "Enable Unicode support for python")
+if (NOT _python_unicode_default)
+  set(_python_unicode_default "UCS2")
+endif ()
+
+set(python_USE_UNICODE "${_python_unicode_default}" CACHE STRING "Enable Unicode support for python")
 set_property(CACHE python_USE_UNICODE PROPERTY STRINGS "OFF;UCS2;UCS4")
 mark_as_advanced(python_USE_UNICODE)
 
