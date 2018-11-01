@@ -1214,7 +1214,7 @@ endfunction ()
 # Currently "valid" means alphanumeric with a non-numeric prefix.
 function (_superbuild_project_check_name name)
   if (NOT name MATCHES "^[a-zA-Z][a-zA-Z0-9]*$")
-    message(FATAL_ERROR "Invalid project name: ${_name}. "
+    message(FATAL_ERROR "Invalid project name: ${name}. "
                         "Only alphanumerics are allowed.")
   endif ()
 endfunction ()
