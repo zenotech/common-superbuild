@@ -437,7 +437,7 @@ function (superbuild_apply_patch _name _patch _comment)
         "Failed to detect the top-level of the git repository: ${err}.")
       set(out "<unknown>")
     endif ()
-    message(FATAL_ERROR
+    message(WARNING
       "The build tree appears to be inside of the git repository located at "
       "${out}. This interferes with the way the superbuild applies patches to "
       "projects and is not supported. Please relocate the build tree to a "
@@ -1115,7 +1115,6 @@ function (_superbuild_add_project_internal name)
     PROCESS_ENVIRONMENT
       "${build_env}"
       GIT_CEILING_DIRECTORIES "${CMAKE_BINARY_DIR}/../"
-      CMAKE_PREFIX_PATH "${superbuild_prefix_path}"
     CMAKE_ARGS
       --no-warn-unused-cli
       -DCMAKE_INSTALL_PREFIX:PATH=${superbuild_prefix_path}
