@@ -276,7 +276,7 @@ class Library(object):
         library depdencies are not properly specified. As such, it warns when
         it is used.
         '''
-        print 'WARNING: dependency from %s to %s requires a search path' % (self.path, ref)
+        print('WARNING: dependency from %s to %s requires a search path' % (self.path, ref))
         for loc in self._search_paths:
             path = os.path.join(loc, ref)
             if os.path.exists(path):
@@ -418,7 +418,7 @@ def copy_library(destination, libdir, library, sources, dry_run=False):
     if library._is_cached:
         return
 
-    print 'Copying %s ==> %s' % (library.path, libdir)
+    print('Copying %s ==> %s' % (library.path, libdir))
 
     app_dest = os.path.join(destination, libdir)
     binary = os.path.join(app_dest, library.name)
@@ -429,7 +429,7 @@ def copy_library(destination, libdir, library, sources, dry_run=False):
         shutil.copy(library.path, destination)
 
     for symlink in library.symlinks:
-        print 'Creating symlink to %s/%s ==> %s' % (libdir, library.name, symlink)
+        print('Creating symlink to %s/%s ==> %s' % (libdir, library.name, symlink))
         if not dry_run:
             symlink_path = os.path.join(app_dest, symlink)
             if os.path.exists(symlink_path):
@@ -482,7 +482,7 @@ def remove_prefix_rpaths(binary, sources):
             which()
             HAVE_CHRPATH = True
         except RuntimeError:
-            print 'No chrpath found; superbuild rpaths may still exist in the package'
+            print('No chrpath found; superbuild rpaths may still exist in the package')
             HAVE_CHRPATH = False
     if not HAVE_CHRPATH:
         return
@@ -505,7 +505,7 @@ def remove_prefix_rpaths(binary, sources):
         return
 
     if new_path:
-        print 'Updating the rpath in %s: %s -> %s' % (binary, old_path, new_path)
+        print('Updating the rpath in %s: %s -> %s' % (binary, old_path, new_path))
         chrpath = Pipeline([
             'chrpath',
             '--replace',
@@ -513,7 +513,7 @@ def remove_prefix_rpaths(binary, sources):
             binary,
         ])
     else:
-        print 'Removing the rpath in %s' % binary
+        print('Removing the rpath in %s' % binary)
         chrpath = Pipeline([
             'chrpath',
             '--delete',
@@ -606,7 +606,7 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
     app_dest = os.path.join(bundle_dest, binary.bundle_location)
     binary_destination = os.path.join(app_dest, os.path.basename(binary.path))
     installed[binary.path] = (binary, binary_destination)
-    print 'Copying %s ==> %s' % (binary.path, binary.bundle_location)
+    print('Copying %s ==> %s' % (binary.path, binary.bundle_location))
     if not dry_run:
         _os_makedirs(app_dest)
         shutil.copy(binary.path, app_dest)

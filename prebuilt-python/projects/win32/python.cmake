@@ -6,10 +6,10 @@ else ()
 
 if (superbuild_is_64bit)
   set(python_configuration "Release|x64")
-  set(python_executable_dir "<SOURCE_DIR>/PCbuild/amd64")
+  set(python_executable_dir "<SOURCE_DIR>/PC/VS9.0/amd64")
 else ()
   set(python_configuration "Release|Win32")
-  set(python_executable_dir "<SOURCE_DIR>/PCbuild")
+  set(python_executable_dir "<SOURCE_DIR>/PC/VS9.0")
 endif ()
 
 find_program(DEVENV_EXE
@@ -30,7 +30,7 @@ superbuild_add_project(python
     ""
   BUILD_COMMAND
     "${DEVENV_EXE}"
-      PCbuild/pcbuild.sln
+      PC/VS9.0/pcbuild.sln
       /build "${python_configuration}"
       /project python
   # We need to copy pyconfig.h from PC/ to Include.
@@ -64,7 +64,7 @@ foreach (python_project IN LISTS python_projects_to_build)
   superbuild_project_add_step("build-${python_project}"
     COMMAND
       "${DEVENV_EXE}"
-        <SOURCE_DIR>/PCbuild/pcbuild.sln
+        <SOURCE_DIR>/PC/VS9.0/pcbuild.sln
         /build "${python_configuration}"
         /project "${python_project}"
     DEPENDEES build

@@ -538,15 +538,15 @@ class Framework(Library):
         return '@loader_path/..' # FIXME: ???
 
 
-def copy_library(destination, library, dry_run=False):
+def copy_library(destination, library, dry_run=False, library_dest='Libraries', framework_dest='Frameworks'):
     '''Copy a library into the ``.app`` bundle.'''
     if library.is_framework:
-        # Frameworks go into Contents/Frameworks.
-        print 'Copying %s/%s ==> Contents/Frameworks' % (library.framework_path, library.framework_name)
+        # Frameworks go into Contents/<framework_dest>.
+        print 'Copying %s/%s ==> Contents/%s' % (library.framework_path, library.framework_name, framework_dest)
 
-        app_dest = os.path.join(destination, 'Contents', 'Frameworks')
+        app_dest = os.path.join(destination, 'Contents', framework_dest)
         binary = os.path.join(app_dest, library.framework_name, library.framework_library)
-        library.set_installed_id(os.path.join('@executable_path', '..', 'Frameworks', library.framework_name, library.framework_library))
+        library.set_installed_id(os.path.join('@executable_path', '..', framework_dest, library.framework_name, library.framework_library))
         destination = os.path.join(app_dest, library.framework_name)
 
         if not dry_run:
@@ -557,14 +557,14 @@ def copy_library(destination, library, dry_run=False):
             _os_makedirs(app_dest)
             shutil.copytree(os.path.join(library.framework_path, library.framework_name), destination, symlinks=True)
     else:
-        # Libraries go into Contents/Libraries.
-        print 'Copying %s ==> Contents/Libraries' % library.path
+        # Libraries go into Contents/<library_dest>.
+        print 'Copying %s ==> Contents/%s' % (library.path, library_dest)
 
-        app_dest = os.path.join(destination, 'Contents', 'Libraries')
+        app_dest = os.path.join(destination, 'Contents', library_dest)
         binary = os.path.join(app_dest, library.name)
         # FIXME(plugins, frameworks): fix the installed id of the library based
         # on what drags it in.
-        library.set_installed_id(os.path.join('@executable_path', '..', 'Libraries', library.name))
+        library.set_installed_id(os.path.join('@executable_path', '..', library_dest, library.name))
         destination = app_dest
 
         if not dry_run:
@@ -573,7 +573,7 @@ def copy_library(destination, library, dry_run=False):
 
         # Create any symlinks we found for the library as well.
         for symlink in library.symlinks:
-            print 'Creating symlink to Contents/Libraries/%s ==> %s' % (library.name, symlink)
+            print 'Creating symlink to Contents/%s/%s ==> %s' % (library_dest, library.name, symlink)
             if not dry_run:
                 symlink_path = os.path.join(app_dest, symlink)
                 if os.path.exists(symlink_path):
@@ -648,6 +648,12 @@ def _arg_parser():
     parser.add_argument('-t', '--type', metavar='TYPE', type=str, required=True,
                         choices=('executable', 'utility', 'plugin', 'module'),
                         help='the type of binary to package')
+    parser.add_argument('-L', '--library-dest', metavar='PATH', type=str,
+                        default='Libraries',
+                        help='where to place libraries in the bundle')
+    parser.add_argument('-F', '--framework-dest', metavar='PATH', type=str,
+                        default='Frameworks',
+                        help='where to place frameworks in the bundle')
     # This flag is here so that plugins which are built for one application can
     # bring in the required libraries for another application which doesn't
     # have a superset of the libraries required by the plugin provided by its
@@ -660,7 +666,7 @@ def _arg_parser():
     return parser
 
 
-def _install_binary(binary, is_excluded, bundle_dest, installed, manifest, dry_run=False):
+def _install_binary(binary, is_excluded, bundle_dest, installed, manifest, dry_run=False, library_dest='Libraries', framework_dest='Frameworks'):
     '''Install the main binary into the package.'''
     # Start looking at our main executable's dependencies.
     deps = binary.dependencies.values()
@@ -683,7 +689,7 @@ def _install_binary(binary, is_excluded, bundle_dest, installed, manifest, dry_r
         # Add this dependency's dependencies to the pile.
         deps.extend(dep.dependencies.values())
         # Remember what we installed and where.
-        installed[dep.path] = (dep, copy_library(bundle_dest, dep, dry_run=dry_run))
+        installed[dep.path] = (dep, copy_library(bundle_dest, dep, dry_run=dry_run, library_dest=library_dest, framework_dest=framework_dest))
 
     # Install the main executable itself.
     app_dest = os.path.join(bundle_dest, binary.bundle_location)
@@ -798,11 +804,11 @@ def main(args):
             Library.from_manifest(path, installed_id)
 
     installed = {}
-    _install_binary(main_exe, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run)
+    _install_binary(main_exe, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run, library_dest=opts.library_dest, framework_dest=opts.framework_dest)
 
     for plugin in opts.plugins:
         plugin_bin = Plugin(plugin, fake_exe_path=opts.fake_plugin_paths, search_paths=opts.search)
-        _install_binary(plugin_bin, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run)
+        _install_binary(plugin_bin, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run, library_dest=opts.library_dest, framework_dest=opts.framework_dest)
 
     _fix_installed_binaries(installed, dry_run=opts.dry_run)
 

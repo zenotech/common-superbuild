@@ -1,5 +1,5 @@
 set(package_name python)
-set(version 2.7.3)
+set(version 2.7.15)
 include(python.bundle.common)
 
 superbuild_windows_install_program(python

@@ -303,16 +303,14 @@ libraries.
 superbuild_add_project_python(<NAME> <ARG>...)
 ```
 
-Same as `superbuild_add_project`, but sets `PYTHONPATH` and build commands to
-work properly out of the box.
+Same as `superbuild_add_project`, but sets build commands to
+work properly out of the box for setuputils.
 #]==]
 macro (superbuild_add_project_python _name)
   if (WIN32)
-    set(_superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
     set(_superbuild_python_args
       "--prefix=bin")
   else ()
-    set(_superbuild_python_path <INSTALL_DIR>/lib/python2.7/site-packages)
     set(_superbuild_python_args
       "--single-version-externally-managed"
       "--prefix=")
@@ -335,9 +333,7 @@ macro (superbuild_add_project_python _name)
         --skip-build
         --root=<INSTALL_DIR>
         ${_superbuild_python_args}
-        ${${_name}_python_install_args}
-    PROCESS_ENVIRONMENT
-      PYTHONPATH ${_superbuild_python_path})
+        ${${_name}_python_install_args})
 endmacro ()
 
 #[==[.md
@@ -975,8 +971,6 @@ function (_superbuild_add_project_internal name)
     list(APPEND cmake_params "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}")
     string(TOUPPER "${CMAKE_BUILD_TYPE}" project_build_type)
   endif ()
-  set(project_c_flags_buildtype "${CMAKE_C_FLAGS_${project_build_type}}")
-  set(project_cxx_flags_buildtype "${CMAKE_CXX_FLAGS_${project_build_type}}")
 
   # Set SDK and target version flags.
   superbuild_osx_pass_version_flags(apple_flags)
@@ -1046,9 +1040,9 @@ function (_superbuild_add_project_internal name)
   if (NOT MSVC)
     list(APPEND build_env
       LDFLAGS "${project_ld_flags}"
-      CPPFLAGS "${project_cpp_flags} ${project_cxx_flags_buildtype}"
-      CXXFLAGS "${project_cxx_flags} ${project_cxx_flags_buildtype}"
-      CFLAGS "${project_c_flags} ${project_c_flags_buildtype}")
+      CPPFLAGS "${project_cpp_flags}"
+      CXXFLAGS "${project_cxx_flags}"
+      CFLAGS "${project_c_flags}")
   endif ()
 
   list(INSERT extra_paths 0
@@ -1057,8 +1051,10 @@ function (_superbuild_add_project_internal name)
 
   if (WIN32)
     string(REPLACE ";" "${_superbuild_list_separator}" extra_paths "${extra_paths}")
+    string(REPLACE ";" "${_superbuild_list_separator}" superbuild_python_path "${superbuild_python_path}")
   else ()
     string(REPLACE ";" ":" extra_paths "${extra_paths}")
+    string(REPLACE ";" ":" superbuild_python_path "${superbuild_python_path}")
   endif ()
   list(APPEND build_env
     PATH "${extra_paths}")
@@ -1075,7 +1071,8 @@ function (_superbuild_add_project_internal name)
       ${ld_library_path_argument})
   endif ()
   list(APPEND build_env
-    PKG_CONFIG_PATH "${superbuild_pkg_config_path}")
+    PKG_CONFIG_PATH "${superbuild_pkg_config_path}"
+    PYTHONPATH "${superbuild_python_path}")
 
   set(binary_dir BINARY_DIR "${name}/build")
   list(FIND ARGN "BUILD_IN_SOURCE" in_source)
@@ -1218,7 +1215,7 @@ endfunction ()
 # Currently "valid" means alphanumeric with a non-numeric prefix.
 function (_superbuild_project_check_name name)
   if (NOT name MATCHES "^[a-zA-Z][a-zA-Z0-9]*$")
-    message(FATAL_ERROR "Invalid project name: ${_name}. "
+    message(FATAL_ERROR "Invalid project name: ${name}. "
                         "Only alphanumerics are allowed.")
   endif ()
 endfunction ()
