@@ -22,7 +22,7 @@ endif ()
 
 superbuild_add_project(python
   CAN_USE_SYSTEM
-  DEPENDS bzip2 zlib png sqlite
+  DEPENDS bzip2 zlib png
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
