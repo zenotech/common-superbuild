@@ -15,9 +15,3 @@ superbuild_add_project(netcdf
     -DUSE_SZIP:BOOL=OFF
     -DENABLE_DAP:BOOL=OFF
     ${netcdf_libdir})
-
-superbuild_apply_patch(netcdf vtk-tag
-  "Add #define to mark API as VTK-modified")
-
-superbuild_apply_patch(netcdf find-hdf5-hl
-  "Fix use of old, undocumented FindHDF5 variable")
