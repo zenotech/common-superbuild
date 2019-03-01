@@ -413,7 +413,7 @@ function (superbuild_apply_patch _name _patch _comment)
     RESULT_VARIABLE res
     OUTPUT_VARIABLE out
     ERROR_VARIABLE  err
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIRECTORY}"
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     OUTPUT_STRIP_TRAILING_WHITESPACE)
   if (res AND NOT res EQUAL 128)
     message(FATAL_ERROR "Failed to determine if the build tree is inside of a git repository.")
@@ -426,7 +426,7 @@ function (superbuild_apply_patch _name _patch _comment)
       RESULT_VARIABLE res
       OUTPUT_VARIABLE out
       ERROR_VARIABLE  err
-      WORKING_DIRECTORY "${CMAKE_BINARY_DIRECTORY}"
+      WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
       OUTPUT_STRIP_TRAILING_WHITESPACE)
     if (res)
       message(WARNING
