@@ -28,8 +28,8 @@ superbuild_set_revision(szip
   URL_MD5 902f831bcefb69c6b635374424acbead)
 
 superbuild_set_revision(hdf5
-  URL     "https://www.paraview.org/files/dependencies/hdf5-1.8.13.tar.gz"
-  URL_MD5 c03426e9e77d7766944654280b467289)
+  URL     "https://www.paraview.org/files/dependencies/hdf5-1.10.3.tar.bz2"
+  URL_MD5 56c5039103c51a40e493b43c504ce982)
 
 superbuild_set_revision(boost
   URL     "https://www.paraview.org/files/dependencies/boost_1_59_0.tar.bz2"
