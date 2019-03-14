@@ -586,22 +586,6 @@ def copy_library(destination, library, dry_run=False, library_dest='Libraries', 
                     ])
                 ln()
 
-    if not dry_run:
-        # We need to make the library writable first.
-        chmod = Pipeline([
-                'chmod',
-                'u+w',
-                binary,
-            ])
-        chmod()
-        # Set the ID on the binary.
-        install_name_tool = Pipeline([
-                'install_name_tool',
-                '-id', library.installed_id,
-                binary,
-            ])
-        install_name_tool()
-
     return binary
 
 
@@ -632,6 +616,9 @@ def _arg_parser():
     parser.add_argument('-p', '--plugin', metavar='PATH', action='append',
                         default=[], dest='plugins',
                         help='list of plugins to install with an executable')
+    parser.add_argument('--library', metavar='PATH', action='append',
+                        default=[], dest='libraries',
+                        help='list of additional libraries to install with an executable')
     parser.add_argument('-s', '--search', metavar='PATH', action='append',
                         default=[],
                         help='add a directory to search for dependent libraries')
@@ -711,6 +698,22 @@ def _fix_installed_binaries(installed, dry_run=False):
     for binary_info in installed.values():
         binary, installed_path = binary_info
         print 'Fixing binary references in %s' % binary.path
+
+        if not dry_run and binary.installed_id:
+            # We need to make the library writable first.
+            chmod = Pipeline([
+                    'chmod',
+                    'u+w',
+                    installed_path,
+                ])
+            chmod()
+            # Set the ID on the binary.
+            install_name_tool = Pipeline([
+                    'install_name_tool',
+                    '-id', os.path.join(binary.installed_id, os.path.basename(installed_path)),
+                    installed_path,
+                ])
+            install_name_tool()
 
         changes = []
         for old_name, library in binary.dependencies.items():
@@ -809,6 +812,11 @@ def main(args):
     for plugin in opts.plugins:
         plugin_bin = Plugin(plugin, fake_exe_path=opts.fake_plugin_paths, search_paths=opts.search)
         _install_binary(plugin_bin, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run, library_dest=opts.library_dest, framework_dest=opts.framework_dest)
+
+    for library in opts.libraries:
+        library_bin = Module(library, 'Contents/Libraries', search_paths=opts.search)
+        _install_binary(library_bin, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run)
+        library_bin.set_installed_id('@executable_path/../Libraries')
 
     _fix_installed_binaries(installed, dry_run=opts.dry_run)
 
