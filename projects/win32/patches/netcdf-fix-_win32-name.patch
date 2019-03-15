@@ -1,12 +1,12 @@
-diff -Nru5 src/include/nc4internal.h src._win32/include/nc4internal.h
---- src/include/nc4internal.h	2017-02-27 10:05:26.251487500 -0500
-+++ src._win32/include/nc4internal.h	2017-02-27 09:58:37.654095200 -0500
-@@ -62,15 +62,15 @@
- #define X_INT_MIN	(-2147483647-1)
- #define X_INT_MAX	2147483647
- #define X_LONG_MIN	X_INT_MIN
+diff -u -U5 -r netcdf-c-4.6.2/include/nc4internal.h netcdf-c-4.6.2.fix-_win32-name/include/nc4internal.h
+--- netcdf-c-4.6.2/include/nc4internal.h	2018-11-19 14:35:21.000000000 -0500
++++ netcdf-c-4.6.2.fix-_win32-name/include/nc4internal.h	2019-03-15 13:19:14.379925297 -0400
+@@ -64,15 +64,15 @@
  #define X_LONG_MAX	X_INT_MAX
  #define X_UINT_MAX	4294967295U
+ #define X_INT64_MIN	(-9223372036854775807LL-1LL)
+ #define X_INT64_MAX	9223372036854775807LL
+ #define X_UINT64_MAX	18446744073709551615ULL
 -#ifdef WIN32 /* Windows, of course, has to be a *little* different. */
 +#ifdef _WIN32 /* Windows, of course, has to be a *little* different. */
  #define X_FLOAT_MAX	3.402823466e+38f
@@ -17,31 +17,31 @@ diff -Nru5 src/include/nc4internal.h src._win32/include/nc4internal.h
  #define X_FLOAT_MIN	(-X_FLOAT_MAX)
  #define X_DOUBLE_MAX	1.7976931348623157e+308
  #define X_DOUBLE_MIN	(-X_DOUBLE_MAX)
-
- /* These have to do with creating chuncked datasets in HDF5. */
-diff -Nru5 src/libsrc/ncx.h src._win32/libsrc/ncx.h
---- src/libsrc/ncx.h	2017-02-27 10:07:37.301704600 -0500
-+++ src._win32/libsrc/ncx.h	2017-02-27 10:02:08.784493300 -0500
-@@ -95,11 +95,15 @@
- #define X_INT_MAX	2147483647
- #define X_UINT_MAX	4294967295U
- #define X_LONGLONG_MIN	(-9223372036854775807LL-1LL)
- #define X_LONGLONG_MAX	9223372036854775807LL
- #define X_ULONGLONG_MAX	18446744073709551615ULL
-+#ifdef _WIN32 /* Windows, of course, has to be a *little* different. */
+ 
+ /** This is the number of netCDF atomic types. */
+diff -u -U5 -r netcdf-c-4.6.2/libsrc/ncx.h netcdf-c-4.6.2.fix-_win32-name/libsrc/ncx.h
+--- netcdf-c-4.6.2/libsrc/ncx.h	2018-11-19 14:35:21.000000000 -0500
++++ netcdf-c-4.6.2.fix-_win32-name/libsrc/ncx.h	2019-03-15 13:19:44.008029463 -0400
+@@ -106,11 +106,15 @@
+ #define X_INT64_MIN	(-9223372036854775807LL-1LL)
+ #define X_INT64_MAX	9223372036854775807LL
+ #define X_UINT64_MAX	18446744073709551615ULL
  #define X_FLOAT_MAX	3.402823466e+38f
+ #define X_FLOAT_MIN	(-X_FLOAT_MAX)
++#ifdef _WIN32 /* Windows, of course, has to be a *little* different. */
+ #define X_FLT_MAX	X_FLOAT_MAX	/* alias compatible with limits.h */
 +#else
 +#define X_FLOAT_MAX	3.40282347e+38f
-+#endif /* _WIN32 */
- #define X_FLOAT_MIN	(-X_FLOAT_MAX)
- #define X_FLT_MAX	X_FLOAT_MAX	/* alias compatible with limits.h */
++#endif
  #if CRAYFLOAT
  /* ldexp(1. - ldexp(.5 , -46), 1024) */
  #define X_DOUBLE_MAX    1.79769313486230e+308
-diff -Nru5 src/nc_test/tests.h src._win32/nc_test/tests.h
---- src/nc_test/tests.h	2017-02-27 10:05:23.392050500 -0500
-+++ src._win32/nc_test/tests.h	2017-02-27 10:03:10.111914100 -0500
-@@ -33,15 +33,15 @@
+ #else
+ /* scalb(1. - scalb(.5 , -52), 1024) */
+diff -u -U5 -r netcdf-c-4.6.2/nc_test/tests.h netcdf-c-4.6.2.fix-_win32-name/nc_test/tests.h
+--- netcdf-c-4.6.2/nc_test/tests.h	2018-11-19 14:35:21.000000000 -0500
++++ netcdf-c-4.6.2.fix-_win32-name/nc_test/tests.h	2019-03-15 13:19:56.535073506 -0400
+@@ -41,15 +41,15 @@
  #define X_INT_MAX	2147483647
  #if defined(FLT_MAX_EXP) && FLT_MAX_EXP < 128
  /* FLT_MAX < X_FLOAT_MAX */
