@@ -571,6 +571,14 @@ def copy_library(destination, library, dry_run=False, library_dest='Libraries', 
             _os_makedirs(app_dest)
             shutil.copy(library.path, destination)
 
+            # We need to make the library after copying it.
+            chmod = Pipeline([
+                    'chmod',
+                    'u+w',
+                    os.path.join(destination, os.path.basename(library.path)),
+                ])
+            chmod()
+
         # Create any symlinks we found for the library as well.
         for symlink in library.symlinks:
             print 'Creating symlink to Contents/%s/%s ==> %s' % (library_dest, library.name, symlink)
@@ -700,13 +708,6 @@ def _fix_installed_binaries(installed, dry_run=False):
         print 'Fixing binary references in %s' % binary.path
 
         if not dry_run and binary.installed_id:
-            # We need to make the library writable first.
-            chmod = Pipeline([
-                    'chmod',
-                    'u+w',
-                    installed_path,
-                ])
-            chmod()
             # Set the ID on the binary.
             install_name_tool = Pipeline([
                     'install_name_tool',
