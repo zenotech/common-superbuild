@@ -556,6 +556,16 @@ def copy_library(destination, library, dry_run=False, library_dest='Libraries', 
                 shutil.rmtree(destination)
             _os_makedirs(app_dest)
             shutil.copytree(os.path.join(library.framework_path, library.framework_name), destination, symlinks=True)
+
+            # We need to make sure the copied libraries are writable.
+            chmod = Pipeline([
+                'chmod',
+                '-R',
+                'u+w',
+                destination,
+            ])
+            chmod()
+
     else:
         # Libraries go into Contents/<library_dest>.
         print 'Copying %s ==> Contents/%s' % (library.path, library_dest)
