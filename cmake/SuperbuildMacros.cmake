@@ -1092,8 +1092,14 @@ function (_superbuild_add_project_internal name)
       GIT_PROGRESS 1)
   endif ()
 
+  # prepare any separators in supplied environment variable
+  set(converted_cmake_prefix_path "")
+  foreach (_path ${CMAKE_PREFIX_PATH})
+     string(APPEND converted_cmake_prefix_path "${_superbuild_list_separator}${_path}")
+  endforeach()
+  # now ensure superbuild's special directory comes first
   set(prepended_cmake_prefix_path
-    "${superbuild_prefix_path}${_superbuild_list_separator}${CMAKE_PREFIX_PATH}")
+    "${superbuild_prefix_path}${converted_cmake_prefix_path}")
 
   # ARGN needs to be quoted so that empty list items aren't removed if that
   # happens options like INSTALL_COMMAND "" won't work.
