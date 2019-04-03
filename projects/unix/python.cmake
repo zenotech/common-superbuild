@@ -55,6 +55,10 @@ else ()
 endif ()
 
 superbuild_add_extra_cmake_args(
+  -DPython2_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python2.7
+  -DPython2_INCLUDE_DIR:PATH=<INSTALL_DIR>/include/python2.7
+  -DPython2_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython2.7.so
+
   -DPYTHON_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python2.7
   -DPYTHON_INCLUDE_DIR:PATH=<INSTALL_DIR>/include/python2.7
   -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython2.7.so)
