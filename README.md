@@ -6,12 +6,20 @@ added, patches trickled back and forth, but the gap needed to be closed. This
 repository represents the common ground between all of them and aims to do so
 in a flexible way so that such gaps do not grow too large again.
 
+# Updating projects
+
+Existing projects are listed in `versions.cmake`, and generally point to an
+archive in [this spot](https://www.paraview.org/files/dependencies). Ask
+for someone who has permissions to push an updated archive, then update
+`versions.cmake`. `md5sum` can calculate the hash for you.
+
 # Defining projects
 
 Projects are defined under the `projects/` hierarchy. Under this hierarchy,
 files with the name `$project.cmake` are created which define how to build the
 project. Other files which have precedence include `$project.common.cmake`,
-`$project.functions.cmake`, and `$project.system.cmake`.
+`$project.functions.cmake`, and
+`$project.system.cmake`.
 
   * `$project.common.cmake`: for projects which differ greatly based on the
     platform, this is intended to be included by platform-specific files and
