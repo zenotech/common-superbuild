@@ -308,9 +308,13 @@ work properly out of the box for setuputils.
 #]==]
 macro (superbuild_add_project_python _name)
   if (WIN32)
+    set(_superbuild_python_home <INSTALL_DIR>)
+    set(_superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
     set(_superbuild_python_args
       "--prefix=bin")
   else ()
+    set(_superbuild_python_home <INSTALL_DIR>)
+    set(_superbuild_python_path <INSTALL_DIR>/lib/python2.7/site-packages)
     set(_superbuild_python_args
       "--single-version-externally-managed"
       "--prefix=")
@@ -333,7 +337,10 @@ macro (superbuild_add_project_python _name)
         --skip-build
         --root=<INSTALL_DIR>
         ${_superbuild_python_args}
-        ${${_name}_python_install_args})
+        ${${_name}_python_install_args}
+    PROCESS_ENVIRONMENT
+      PYTHONHOME ${_superbuild_python_home}
+      PYTHONPATH ${_superbuild_python_path})
 endmacro ()
 
 #[==[.md
