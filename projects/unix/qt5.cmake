@@ -6,6 +6,10 @@ list(APPEND qt5_extra_options
   -qt-xcb
   -system-libpng
   -fontconfig)
+if (NOT qt5_SOURCE_SELECTION VERSION_LESS "5.12")
+  list(APPEND qt5_extra_options
+    -xkbcommon)
+endif ()
 
 list(APPEND qt5_process_environment PROCESS_ENVIRONMENT PKG_CONFIG_PATH <INSTALL_DIR>/lib/pkgconfig)
 
