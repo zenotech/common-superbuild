@@ -114,6 +114,12 @@ if (WIN32)
 else ()
   set(qt5_10_md5 "7e167b9617e7bd64012daaacb85477af")
 endif ()
+set(qt5_12_ver "5.12.3")
+if (WIN32)
+  set(qt5_12_md5 "5da2e14a9f5db620c578fafd219592d7")
+else ()
+  set(qt5_12_md5 "38017e0ed88b9baba063bd723d9ca8b2")
+endif ()
 superbuild_set_selectable_source(qt5
   SELECT 5.8
     URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-${qt5_8_ver}.${qt5_ext}"
@@ -121,9 +127,12 @@ superbuild_set_selectable_source(qt5
   SELECT 5.9
     URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-${qt5_9_ver}.${qt5_ext}"
     URL_MD5 "${qt5_9_md5}"
-  SELECT 5.10 DEFAULT
+  SELECT 5.10
     URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-${qt5_10_ver}.${qt5_ext}"
-    URL_MD5 "${qt5_10_md5}")
+    URL_MD5 "${qt5_10_md5}"
+  SELECT 5.12 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-${qt5_12_ver}.${qt5_ext}"
+    URL_MD5 "${qt5_12_md5}")
 
 if (WIN32 AND NOT superbuild_building_prebuilt_python)
   if (superbuild_is_64bit)
