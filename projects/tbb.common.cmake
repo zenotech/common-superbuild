@@ -11,7 +11,7 @@ superbuild_add_project(tbb
   BUILD_COMMAND ""
   INSTALL_COMMAND
     ${CMAKE_COMMAND}
-      -Dsource_location:PATH=<SOURCE_DIR>
+      -Dsource_location:PATH=<SOURCE_DIR>/tbb${tbb_ver}
       -Dinstall_location:PATH=<INSTALL_DIR>
       -Dlibdir:STRING=${tbb_libdir}
       -Dlibsuffix:STRING=${tbb_libsuffix}

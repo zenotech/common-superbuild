@@ -195,19 +195,16 @@ superbuild_set_revision(netcdf
   URL_MD5 bf608f460b8ba384f261914356e23927)
 
 # Using Intel Threading Building Blocks 2018 Update 2
-set(tbb_ver "2018_20171205oss")
+set(tbb_ver "2019_20190320oss")
 if (WIN32)
   set(tbb_file "tbb${tbb_ver}_win.zip")
-  set(tbb_md5 "e37abf02d74a638f7a6629c992f23918")
+  set(tbb_md5 "ff50ab026dd84164020af208ece43ac6")
 elseif (APPLE)
-  # using older version on Mac since newer version has issues
-  # with changing install name.
-  set(tbb_ver "44_20150728oss")
-  set(tbb_file "tbb${tbb_ver}_osx.tgz")
-  set(tbb_md5 "a767d7a8b375e6b054e44e2317d806b8")
+  set(tbb_file "tbb${tbb_ver}_mac.tgz")
+  set(tbb_md5 "b6cb90c35a0b7e3fea6c617af9f60eec")
 else ()
   set(tbb_file "tbb${tbb_ver}_lin.tgz")
-  set(tbb_md5 "d637d29f59ee31fe5830a0366e2e973a")
+  set(tbb_md5 "af643ccf8c732cba3811398e2260c54b")
 endif ()
 
 superbuild_set_revision(tbb
