@@ -313,6 +313,7 @@ macro (superbuild_add_project_python _name)
   else ()
     set(_superbuild_python_args
       "--single-version-externally-managed"
+      "--install-lib=lib/python2.7/site-packages"
       "--prefix=")
   endif ()
 
