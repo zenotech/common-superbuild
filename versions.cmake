@@ -190,8 +190,8 @@ superbuild_set_revision(lapack
   URL_MD5 61bf1a8a4469d4bdb7604f5897179478)
 
 superbuild_set_revision(netcdf
-  URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.6.2.tar.gz"
-  URL_MD5 bf608f460b8ba384f261914356e23927)
+  URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.7.0.tar.gz"
+  URL_MD5 37134a12a49e80c45fb58777aa3e9e3b)
 
 # Using Intel Threading Building Blocks 2018 Update 2
 set(tbb_ver "2019_20190320oss")
