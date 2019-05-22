@@ -24,8 +24,8 @@ superbuild_set_revision(ffmpeg
   URL_MD5 72361d3b8717b6db3ad2b9da8df7af5e)
 
 superbuild_set_revision(szip
-  URL     "https://www.paraview.org/files/dependencies/szip-2.1.tar.gz"
-  URL_MD5 902f831bcefb69c6b635374424acbead)
+  URL     "https://www.paraview.org/files/dependencies/szip-2.1.1.tar.gz"
+  URL_MD5 dd579cf0f26d44afd10a0ad7291fc282)
 
 superbuild_set_revision(hdf5
   URL     "https://www.paraview.org/files/dependencies/hdf5-1.10.3.tar.bz2"
