@@ -71,8 +71,8 @@ superbuild_set_revision(fontconfig
   URL_MD5 733f5e2371ca77b69707bd7b30cc2163)
 
 superbuild_set_revision(libxml2
-  URL     "https://www.paraview.org/files/dependencies/libxml2-2.7.8.tar.gz"
-  URL_MD5 8127a65e8c3b08856093099b52599c86)
+  URL     "https://www.paraview.org/files/dependencies/libxml2-2.9.9.tar.gz"
+  URL_MD5 c04a5a0a042eaa157e8e8c9eabe76bd6)
 
 superbuild_set_revision(nlohmannjson
   GIT_REPOSITORY "https://github.com/nlohmann/json.git"
