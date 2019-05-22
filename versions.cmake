@@ -75,9 +75,8 @@ superbuild_set_revision(libxml2
   URL_MD5 c04a5a0a042eaa157e8e8c9eabe76bd6)
 
 superbuild_set_revision(nlohmannjson
-  GIT_REPOSITORY "https://github.com/nlohmann/json.git"
-  GIT_TAG        "v3.6.1"
-)
+  URL     "https://www.paraview.org/files/dependencies/nlohmannjson-3.6.1.tar.gz"
+  URL_MD5 c53592d55e7fec787cf0a406d36098a3)
 
 if (WIN32)
   set(qt4_ver "4.8.4")
