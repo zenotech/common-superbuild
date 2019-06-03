@@ -1,7 +1,7 @@
 set(matplotlib_process_environment)
 if (NOT WIN32)
   set(matplotlib_process_environment
-    PYTHONPATH "<INSTALL_DIR>/lib/python2.7/site-packages")
+    PYTHONPATH "<INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages")
 endif ()
 
 superbuild_add_project(matplotlib

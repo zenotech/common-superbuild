@@ -160,6 +160,11 @@ if (COMMAND superbuild_add_packaging)
       superbuild_python_executable)
   endif ()
 
+  if (superbuild_python_version)
+    set(superbuild_export_variables
+      superbuild_python_version)
+  endif ()
+
   superbuild_add_packaging()
 endif ()
 

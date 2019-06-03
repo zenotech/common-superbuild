@@ -1,7 +1,7 @@
 if (WIN32)
   set(dir "bin/Lib/site-packages")
 else ()
-  set(dir "lib/python2.7/site-packages")
+  set(dir "lib/python${superbuild_python_version}/site-packages")
 endif ()
 
 file(MAKE_DIRECTORY

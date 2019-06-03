@@ -6,4 +6,5 @@ superbuild_add_project(pythonzope
   INSTALL_COMMAND
     "${CMAKE_COMMAND}"
       "-Dinstall_dir=<INSTALL_DIR>"
+      "-Dsuperbuild_python_version=${superbuild_python_version}"
       -P "${CMAKE_CURRENT_LIST_DIR}/scripts/pythonzope.install.cmake")

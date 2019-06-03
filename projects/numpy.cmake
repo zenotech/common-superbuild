@@ -34,7 +34,7 @@ superbuild_add_project(numpy
     ${superbuild_python_executable}
       setup.py
       install
-      --install-lib=<INSTALL_DIR>/lib/python2.7/site-packages
+      --install-lib=<INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages
       --prefix=<INSTALL_DIR>
   PROCESS_ENVIRONMENT
     MKL         "None"

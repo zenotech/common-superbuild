@@ -135,7 +135,7 @@ function (superbuild_setup_flags)
   if (WIN32)
     set(superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
   else ()
-    set(superbuild_python_path <INSTALL_DIR>/lib/python2.7/site-packages)
+    set(superbuild_python_path <INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages)
   endif ()
   _superbuild_make_path_var(superbuild_python_path
     "$ENV{PYTHONPATH}"

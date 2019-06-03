@@ -28,7 +28,7 @@ superbuild_add_project(scipy
       install
       --prefix=<INSTALL_DIR>
   PROCESS_ENVIRONMENT
-    PYTHONPATH "<INSTALL_DIR>/lib/python2.7/site-packages"
+    PYTHONPATH "<INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages"
     ${scipy_process_environment})
 
 # The superbuild setting LDFLAGS (even to empty) causes SciPy to not add its
