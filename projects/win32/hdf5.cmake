@@ -22,11 +22,6 @@ if (NOT superbuild_is_64bit)
 endif ()
 
 if (MSVC)
-  # hdf5 has a bug with MSVC compiler where it doesn't realize its using MSVC
-  # compiler when using nmake or ninja generators. This patch fixes that.
-  superbuild_apply_patch(hdf5 msvc-non-vs-generator
-    "Fix MSVC detection with Makefiles and Ninja generators")
-
   # VS2015 support
   superbuild_apply_patch(hdf5 vs2015-support
     "Support Visual Studio 2015")

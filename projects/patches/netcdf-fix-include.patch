@@ -1,0 +1,13 @@
+diff --git a/libdispatch/nctime.c b/libdispatch/nctime.c
+index 08df27bb..b551baff 100644
+--- a/libdispatch/nctime.c
++++ b/libdispatch/nctime.c
+@@ -23,7 +23,7 @@
+ #include <string.h>
+ #include <stdarg.h>
+ #include <assert.h>
+-#include "ncconfigure.h"
++#include "config.h"
+ #include "nctime.h"
+ 
+ static int cuErrOpts;			     /* Error options */

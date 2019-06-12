@@ -16,28 +16,28 @@ superbuild_set_revision(bzip2
   URL_MD5 00b516f4704d4a7cb50a1d97e6e8e15b)
 
 superbuild_set_revision(zlib
-  URL     "https://www.paraview.org/files/dependencies/zlib-1.2.7.tar.gz"
-  URL_MD5 60df6a37c56e7c1366cca812414f7b85)
+  URL     "https://www.paraview.org/files/dependencies/zlib-1.2.11.tar.xz"
+  URL_MD5 85adef240c5f370b308da8c938951a68)
 
 superbuild_set_revision(ffmpeg
   URL     "https://www.paraview.org/files/dependencies/ffmpeg-2.3.3.tar.bz2"
   URL_MD5 72361d3b8717b6db3ad2b9da8df7af5e)
 
 superbuild_set_revision(szip
-  URL     "https://www.paraview.org/files/dependencies/szip-2.1.tar.gz"
-  URL_MD5 902f831bcefb69c6b635374424acbead)
+  URL     "https://www.paraview.org/files/dependencies/szip-2.1.1.tar.gz"
+  URL_MD5 dd579cf0f26d44afd10a0ad7291fc282)
 
 superbuild_set_revision(hdf5
-  URL     "https://www.paraview.org/files/dependencies/hdf5-1.10.3.tar.bz2"
-  URL_MD5 56c5039103c51a40e493b43c504ce982)
+  URL     "https://www.paraview.org/files/dependencies/hdf5-1.10.5.tar.bz2"
+  URL_MD5 7c19d6b81ee2a3ba7d36f6922b2f90d3)
 
 superbuild_set_revision(boost
   URL     "https://www.paraview.org/files/dependencies/boost_1_59_0.tar.bz2"
   URL_MD5 6aa9a5c6a4ca1016edd0ed1178e3cb87)
 
 superbuild_set_revision(png
-  URL     "https://www.paraview.org/files/dependencies/libpng-1.6.23.tar.gz"
-  URL_MD5 a49e4cc48d968c79def53d082809c9f2)
+  URL     "https://www.paraview.org/files/dependencies/libpng-1.6.37.tar.xz"
+  URL_MD5 015e8e15db1eecde5f2eb9eb5b6e59e9)
 
 if (WIN32 AND (NOT superbuild_building_prebuilt_python OR superbuild_use_prebuilt_python))
   if (superbuild_is_64bit)
@@ -59,9 +59,8 @@ superbuild_set_revision(ftjam
   URL_MD5 ee52f3faff6d31ffb89a2fedb3b0caf6)
 
 superbuild_set_revision(freetype
-  URL     "https://www.paraview.org/files/dependencies/freetype-2.8.1.tar.bz2"
-  URL_MD5 bf0a210b6fe781228fa0e4a80691a521)
-
+  URL     "https://www.paraview.org/files/dependencies/freetype-2.10.0.tar.bz2"
+  URL_MD5 a717e6925b61b9dda946322ecd278a42)
 
 superbuild_set_revision(gperf
   URL     "https://www.paraview.org/files/dependencies/gperf-3.1.tar.gz"
@@ -72,13 +71,12 @@ superbuild_set_revision(fontconfig
   URL_MD5 733f5e2371ca77b69707bd7b30cc2163)
 
 superbuild_set_revision(libxml2
-  URL     "https://www.paraview.org/files/dependencies/libxml2-2.7.8.tar.gz"
-  URL_MD5 8127a65e8c3b08856093099b52599c86)
+  URL     "https://www.paraview.org/files/dependencies/libxml2-2.9.9.tar.gz"
+  URL_MD5 c04a5a0a042eaa157e8e8c9eabe76bd6)
 
 superbuild_set_revision(nlohmannjson
-  GIT_REPOSITORY "https://github.com/nlohmann/json.git"
-  GIT_TAG        "v3.6.1"
-)
+  URL     "https://www.paraview.org/files/dependencies/nlohmannjson-3.6.1.tar.gz"
+  URL_MD5 c53592d55e7fec787cf0a406d36098a3)
 
 if (WIN32)
   set(qt4_ver "4.8.4")
@@ -183,28 +181,28 @@ else ()
 endif ()
 
 superbuild_set_revision(mpi
-  URL     "https://www.paraview.org/files/dependencies/mpich-3.2.tar.gz"
-  URL_MD5 f414cfa77099cd1fa1a5ae4e22db508a)
+  URL     "https://www.paraview.org/files/dependencies/mpich-3.3.tar.gz"
+  URL_MD5 574af413dc0dc7fbb929a761822beb06)
 
 superbuild_set_revision(lapack
   URL     "https://www.paraview.org/files/dependencies/lapack-3.4.2.tgz"
   URL_MD5 61bf1a8a4469d4bdb7604f5897179478)
 
 superbuild_set_revision(netcdf
-  URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.6.2.tar.gz"
-  URL_MD5 bf608f460b8ba384f261914356e23927)
+  URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.7.0.tar.gz"
+  URL_MD5 37134a12a49e80c45fb58777aa3e9e3b)
 
 # Using Intel Threading Building Blocks 2018 Update 2
-set(tbb_ver "2019_20190320oss")
+set(tbb_ver "2019_20190410oss")
 if (WIN32)
   set(tbb_file "tbb${tbb_ver}_win.zip")
-  set(tbb_md5 "ff50ab026dd84164020af208ece43ac6")
+  set(tbb_md5 63fc9feb34ec973b0c8ae439afb30f5e)
 elseif (APPLE)
   set(tbb_file "tbb${tbb_ver}_mac.tgz")
-  set(tbb_md5 "b6cb90c35a0b7e3fea6c617af9f60eec")
+  set(tbb_md5 d1420b7b6e1d2b9c7e737123bd7e8315)
 else ()
   set(tbb_file "tbb${tbb_ver}_lin.tgz")
-  set(tbb_md5 "af643ccf8c732cba3811398e2260c54b")
+  set(tbb_md5 cb95ed04d2522e54d2327afd1c56938f)
 endif ()
 
 superbuild_set_revision(tbb
