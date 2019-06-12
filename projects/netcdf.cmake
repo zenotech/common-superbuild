@@ -17,3 +17,7 @@ superbuild_add_project(netcdf
     -DUSE_SZIP:BOOL=OFF
     -DENABLE_DAP:BOOL=OFF
     ${netcdf_libdir})
+
+# ncconfigure.h is not intended for standalone include
+superbuild_apply_patch(netcdf fix-include
+  "fix include to use config.h instead of ncconfigure.h")
