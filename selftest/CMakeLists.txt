@@ -19,6 +19,7 @@ function (superbuild_find_projects var)
     png
     python
     python2
+    python3
     pythonautobahn
     pythonconstantly
     pythoncycler
@@ -65,8 +66,10 @@ function (superbuild_find_projects var)
 endfunction ()
 
 function (superbuild_sanity_check)
-  include(qt.functions)
+  include(python.functions)
+  superbuild_python_sanity_check()
 
+  include(qt.functions)
   superbuild_qt_sanity_check()
 endfunction ()
 

@@ -1,0 +1,5 @@
+function (superbuild_python_sanity_check)
+  if (python2_enabled AND python3_enabled)
+    message(FATAL_ERROR "python2 and python3 cannot be enabled at the same time.")
+  endif ()
+endfunction ()

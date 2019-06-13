@@ -222,3 +222,8 @@ if (BUILD_TESTING)
     PROPERTY
       TEST_INCLUDE_FILE "${CMAKE_CURRENT_BINARY_DIR}/superbuild_testing_trampoline.cmake")
 endif ()
+
+if (python3_enabled)
+  include(python3.functions)
+  superbuild_python_write_reqs("${CMAKE_BINARY_DIR}/requirements.txt")
+endif ()
