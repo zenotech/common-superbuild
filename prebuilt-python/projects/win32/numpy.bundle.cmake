@@ -1,6 +1,6 @@
 set(package_name numpy)
 set(version 1.15.1)
-include(python.bundle.common)
+include(python2.bundle.common)
 
 set(numpy_egg_name
   "numpy-${version}-py2.7-win-amd64.egg")
@@ -21,4 +21,4 @@ install(
 set(modules numpy)
 list(APPEND python_extra_modules_directories
   "${superbuild_install_location}/${numpy_egg_dir}")
-include(python.package.bundle)
+include(python2.package.bundle)

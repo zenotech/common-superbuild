@@ -41,7 +41,7 @@ superbuild_set_revision(png
 
 if (WIN32 AND (NOT superbuild_building_prebuilt_python OR superbuild_use_prebuilt_python))
   if (superbuild_is_64bit)
-    superbuild_set_revision(python
+    superbuild_set_revision(python2
       URL     "https://www.paraview.org/files/dependencies/python-2.7.15-win64-20180905.tar.gz"
       URL_MD5 6cfab07945bf75474d4ed2d2ea799c57)
   else ()
@@ -49,7 +49,7 @@ if (WIN32 AND (NOT superbuild_building_prebuilt_python OR superbuild_use_prebuil
       "Prebuilt Python binaries for Windows 32 bit are not provided.")
   endif ()
 else()
-  superbuild_set_revision(python
+  superbuild_set_revision(python2
     URL     "https://www.paraview.org/files/dependencies/Python-2.7.15.tar.xz"
     URL_MD5 a80ae3cc478460b922242f43a1b4094d)
 endif()

@@ -1,5 +1,5 @@
-function (superbuild_install_superbuild_python)
-  if (USE_SYSTEM_python)
+function (superbuild_install_superbuild_python2)
+  if (USE_SYSTEM_python2)
     return ()
   endif ()
 

@@ -322,7 +322,7 @@ macro (superbuild_add_project_python _name)
 
   superbuild_add_project("${_name}"
     BUILD_IN_SOURCE 1
-    DEPENDS python ${ARGN}
+    DEPENDS python python2 ${ARGN}
     CONFIGURE_COMMAND
       ""
     BUILD_COMMAND
