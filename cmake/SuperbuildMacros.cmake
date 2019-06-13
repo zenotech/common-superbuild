@@ -46,6 +46,9 @@ include(CMakeParseArguments)
 # anything else can use it that needs it.
 set(_superbuild_list_separator "-+-")
 
+option(SUPERBUILD_DEBUG_CONFIGURE_STEPS "Dump logs of the configure steps" OFF)
+mark_as_advanced(SUPERBUILD_DEBUG_CONFIGURE_STEPS)
+
 #[==[.md
 # Adding a project to the superbuild
 
@@ -981,6 +984,11 @@ function (_superbuild_add_project_internal name)
   list(APPEND cmake_params
     ${apple_flags}
     ${cmake_dep_args})
+
+  if (SUPERBUILD_DEBUG_CONFIGURE_STEPS)
+    list(APPEND cmake_params
+      --trace-expand)
+  endif ()
 
   # Get extra flags added using superbuild_append_flags(), if any.
   set(extra_vars

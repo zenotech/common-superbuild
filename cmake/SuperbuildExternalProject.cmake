@@ -185,6 +185,11 @@ function (_superbuild_ExternalProject_add name)
       LOG_INSTALL 1)
   endif ()
 
+  if (SUPERBUILD_DEBUG_CONFIGURE_STEPS)
+    list(APPEND args
+      LOG_CONFIGURE 1)
+  endif ()
+
   # Quote args to keep empty list elements around so that we properly parse
   # empty install, configure, build, etc.
   ExternalProject_add("${name}" "${args}")
