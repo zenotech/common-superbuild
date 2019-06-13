@@ -17,14 +17,14 @@ include(CMakeParseArguments)
 
 # Find a Python executable to run the `fixup_bundle` scripts.
 if (NOT superbuild_python_executable)
-  find_package(PythonInterp 2.7)
-  if (PYTHONINTERP_FOUND)
+  find_package(Python${python_version} COMPONENTS Interpreter)
+  if (Python${python_version}_EXECUTABLE)
     set(superbuild_python_executable
-      "${PYTHON_EXECUTABLE}")
+      "${Python${python_version}_EXECUTABLE}")
   else ()
     message(FATAL_ERROR
-      "Could not find a Python executable newer than 2.7; one is required "
-      "to create packages on Linux and Windows.")
+      "Could not find a Python executable newer than "
+      "${superbuild_python_version}; one is required to create packages.")
   endif ()
 endif ()
 
