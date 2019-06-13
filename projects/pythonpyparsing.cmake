@@ -1,2 +1,2 @@
 superbuild_add_project_python(pythonpyparsing
-  pythonsetuptools)
+  DEPENDS pythonsetuptools)
