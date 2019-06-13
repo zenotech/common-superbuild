@@ -1103,8 +1103,8 @@ function (_superbuild_add_project_internal name)
 
   # prepare any separators in supplied environment variable
   set(converted_cmake_prefix_path "")
-  foreach (_path ${CMAKE_PREFIX_PATH})
-     string(APPEND converted_cmake_prefix_path "${_superbuild_list_separator}${_path}")
+  foreach (_path IN LISTS CMAKE_PREFIX_PATH)
+    string(APPEND converted_cmake_prefix_path "${_superbuild_list_separator}${_path}")
   endforeach()
   # now ensure superbuild's special directory comes first
   set(prepended_cmake_prefix_path
