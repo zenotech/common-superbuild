@@ -20,13 +20,13 @@ include(CMakeParseArguments)
 
 # Find a Python executable to run the `fixup_bundle` scripts.
 if (NOT superbuild_python_executable)
-  find_package(PythonInterp 2.7)
+  find_package(PythonInterp 3)
   if (PYTHONINTERP_FOUND)
     set(superbuild_python_executable
       "${PYTHON_EXECUTABLE}")
   else ()
     message(FATAL_ERROR
-      "Could not find a Python executable newer than 2.7; one is required "
+      "Could not find a Python executable newer than 3; one is required "
       "to create packages on Linux and Windows.")
   endif ()
 endif ()
@@ -449,7 +449,7 @@ function (superbuild_unix_install_python)
 
     foreach (python_module IN LISTS python_modules)
       superbuild_unix_install_python_module(\"\${CMAKE_INSTALL_PREFIX}\"
-        \"\${python_module}\" \"\${module_directories}\" \"lib/python2.7${_install_python_MODULE_DESTINATION}\")
+        \"\${python_module}\" \"\${module_directories}\" \"lib/python${superbuild_python_version}${_install_python_MODULE_DESTINATION}\")
     endforeach ()"
     COMPONENT superbuild)
 endfunction ()
