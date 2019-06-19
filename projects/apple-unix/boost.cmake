@@ -12,6 +12,12 @@ if (cxx11_enabled)
     cxxflags=${CMAKE_CXX11_STANDARD_COMPILE_OPTION})
 endif ()
 
+if (NOT APPLE)
+  list(APPEND boost_platform_options
+    hardcode-dll-paths=true
+    "dll-path='\\$ORIGIN'")
+endif ()
+
 include(boost.common)
 
 if (APPLE)
