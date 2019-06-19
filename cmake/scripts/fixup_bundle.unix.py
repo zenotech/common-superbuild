@@ -492,7 +492,7 @@ def remove_prefix_rpaths(binary, location, sources):
         '--list',
         binary,
     ])
-    old_path = chrpath().split('=')[1]
+    old_path = chrpath().strip().split('=')[1]
 
     path_to_root = ''
     for _ in location.split('/'):
