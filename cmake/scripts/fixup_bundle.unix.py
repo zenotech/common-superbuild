@@ -451,7 +451,7 @@ def copy_library(destination, libdir, library, sources, dry_run=False):
             ])
         chmod()
         if library.rpaths or library.runpaths:
-            remove_prefix_rpaths(binary, sources)
+            remove_prefix_rpaths(binary, libdir, sources)
 
     return binary
 
@@ -467,7 +467,7 @@ def is_subdir(path, directory):
 HAVE_CHRPATH = None
 
 
-def remove_prefix_rpaths(binary, sources):
+def remove_prefix_rpaths(binary, location, sources):
     '''Remove rpaths which reference the build machine.'''
     if not sources:
         return
@@ -492,12 +492,17 @@ def remove_prefix_rpaths(binary, sources):
         '--list',
         binary,
     ])
-    old_path = chrpath().split('=')[1]
+    old_path = chrpath().strip().split('=')[1]
 
+    path_to_root = ''
+    for _ in location.split('/'):
+        path_to_root = os.path.join(path_to_root, '..')
     new_paths = []
     for path in old_path.split(':'):
         for source in sources:
-            if not is_subdir(path, source):
+            if is_subdir(path, source):
+                path = path.replace(source, os.path.join('$ORIGIN', path_to_root))
+            if path not in new_paths:
                 new_paths.append(path)
 
     new_path = ':'.join(new_paths)
@@ -618,7 +623,7 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
             ])
         chmod()
         if binary.rpaths or binary.runpaths:
-            remove_prefix_rpaths(binary_destination, sources)
+            remove_prefix_rpaths(binary_destination, binary.bundle_location, sources)
 
 
 def _update_manifest(manifest, installed, path, libdir):
