@@ -16,6 +16,7 @@ endif ()
 
 superbuild_add_project(mpi
   CAN_USE_SYSTEM
+  DEPENDS libxml2
   DEPENDS_OPTIONAL fortran
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND
