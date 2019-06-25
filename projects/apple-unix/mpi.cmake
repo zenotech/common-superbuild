@@ -25,6 +25,7 @@ superbuild_add_project(mpi
       ${mpi_shared_args}
       ${mpi_fortran_flags}
       --disable-mpe
+      --disable-libxml2
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND
