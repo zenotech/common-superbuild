@@ -22,3 +22,9 @@ superbuild_add_project(tbb
 
 superbuild_add_extra_cmake_args(
   -DTBB_ROOT:PATH=<INSTALL_DIR>)
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  # see discussion at https://github.com/intel/tbb/issues/158
+  superbuild_apply_patch(tbb disable-futex
+    "Disable futex to avoid problems on Intel compiler")
+endif ()
