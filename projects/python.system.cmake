@@ -18,7 +18,8 @@ endif()
 superbuild_add_extra_cmake_args(
   -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE})
 
-set(superbuild_python_version "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
+set(superbuild_python_version "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}"
+  CACHE INTERNAL "")
 
 if (python_FIND_LIBRARIES)
   superbuild_add_extra_cmake_args(

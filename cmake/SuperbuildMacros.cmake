@@ -311,6 +311,10 @@ macro (superbuild_add_project_python _name)
     set(_superbuild_python_args
       "--prefix=bin")
   else ()
+    if (superbuild_build_phase AND NOT superbuild_python_version)
+      message(FATAL_ERROR
+        "missing a python version")
+    endif ()
     set(_superbuild_python_args
       "--single-version-externally-managed"
       "--install-lib=lib/python${superbuild_python_version}/site-packages"
