@@ -15,7 +15,8 @@ else ()
     CACHE INTERNAL "")
 endif ()
 
-set(superbuild_python_version "2.7")
+set(superbuild_python_version "2.7"
+  CACHE INTERNAL "")
 
 superbuild_add_extra_cmake_args(
   -DPython2_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python.exe

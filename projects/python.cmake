@@ -8,7 +8,9 @@ superbuild_add_dummy_project(python
 
 set(python_version)
 if (python2_enabled)
-  set(python_version 2)
+  set(python_version 2
+    CACHE INTERNAL "")
 elseif (python3_enabled)
-  set(python_version 3)
+  set(python_version 3
+    CACHE INTERNAL "")
 endif ()

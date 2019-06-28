@@ -13,7 +13,8 @@ if (python2_FIND_LIBRARIES)
   endif ()
 endif()
 
-set(superbuild_python_version "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
+set(superbuild_python_version "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}"
+  CACHE INTERNAL "")
 
 # This will add PYTHON_LIBRARY, PYTHON_EXECUTABLE, PYTHON_INCLUDE_DIR
 # variables. User can set/override these to change the Python being used.
