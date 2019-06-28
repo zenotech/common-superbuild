@@ -1,5 +1,5 @@
 if (ENABLE_python3 OR python3_enabled)
-  include(matplotlib.system)
+  include(numpy.system)
 else ()
   set(numpy_process_environment)
   if (lapack_enabled)
