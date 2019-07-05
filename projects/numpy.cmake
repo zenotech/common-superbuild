@@ -21,7 +21,7 @@ endif ()
 
 superbuild_add_project(numpy
   CAN_USE_SYSTEM
-  DEPENDS python
+  DEPENDS python pythonsetuptools
   DEPENDS_OPTIONAL fortran lapack
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND ""
