@@ -132,16 +132,6 @@ function (superbuild_setup_flags)
     "$ENV{PKG_CONFIG_PATH}")
   set(superbuild_pkg_config_path "${superbuild_pkg_config_path}" PARENT_SCOPE)
 
-  if (WIN32)
-    set(superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
-  else ()
-    set(superbuild_python_path <INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages)
-  endif ()
-  _superbuild_make_path_var(superbuild_python_path
-    "$ENV{PYTHONPATH}"
-    ${superbuild_python_path})
-  set(superbuild_python_path "${superbuild_python_path}" PARENT_SCOPE)
-
   if (CMAKE_CROSSCOMPILING)
     return ()
   endif ()

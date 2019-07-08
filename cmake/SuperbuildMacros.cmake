@@ -1085,6 +1085,15 @@ function (_superbuild_add_project_internal name)
   list(REMOVE_DUPLICATES extra_paths)
 
   if (WIN32)
+    set(superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
+  else ()
+    set(superbuild_python_path <INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages)
+  endif ()
+  _superbuild_make_path_var(superbuild_python_path
+    "$ENV{PYTHONPATH}"
+    ${superbuild_python_path})
+
+  if (WIN32)
     string(REPLACE ";" "${_superbuild_list_separator}" extra_paths "${extra_paths}")
     string(REPLACE ";" "${_superbuild_list_separator}" superbuild_python_path "${superbuild_python_path}")
   else ()
