@@ -495,8 +495,9 @@ def remove_prefix_rpaths(binary, location, sources):
     old_path = chrpath().strip().split('=')[1]
 
     path_to_root = ''
-    for _ in location.split('/'):
-        path_to_root = os.path.join(path_to_root, '..')
+    for part in location.split('/'):
+        if part:
+            path_to_root = os.path.join(path_to_root, '..')
     new_paths = []
     for path in old_path.split(':'):
         for source in sources:
