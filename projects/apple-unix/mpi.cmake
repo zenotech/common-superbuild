@@ -33,6 +33,12 @@ superbuild_add_project(mpi
   PROCESS_ENVIRONMENT
     ${mpi_environment})
 
+if (UNIX AND NOT APPLE)
+  superbuild_append_flags(ld_flags
+    "-Wl,-rpath,${superbuild_install_location}/lib"
+    PROJECT_ONLY)
+endif ()
+
 if (NOT USE_SYSTEM_mpi)
   set(MPI_C_COMPILER <INSTALL_DIR>/bin/mpicc)
   set(MPI_CXX_COMPILER <INSTALL_DIR>/bin/mpic++)
