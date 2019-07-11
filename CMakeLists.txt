@@ -155,18 +155,19 @@ endif ()
 if (COMMAND superbuild_add_packaging)
   include(SuperbuildPackageMacros)
 
+  set(superbuild_export_variables)
   if (superbuild_python_executable)
-    set(superbuild_export_variables
+    list(APPEND superbuild_export_variables
       superbuild_python_executable)
   endif ()
 
   if (python_version)
-    set(superbuild_export_variables
+    list(APPEND superbuild_export_variables
       python_version)
   endif ()
 
   if (superbuild_python_version)
-    set(superbuild_export_variables
+    list(APPEND superbuild_export_variables
       superbuild_python_version)
   endif ()
 
