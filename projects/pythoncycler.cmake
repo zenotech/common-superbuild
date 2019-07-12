@@ -1,2 +1,3 @@
 superbuild_add_project_python(pythoncycler
-  pythonsetuptools pythonsix)
+  PACKAGE cycler
+  DEPENDS pythonsetuptools pythonsix)

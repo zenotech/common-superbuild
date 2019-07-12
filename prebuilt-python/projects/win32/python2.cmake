@@ -22,7 +22,7 @@ if (NOT DEVENV_EXE)
     "compile the actual Python project itself.")
 endif ()
 
-superbuild_add_project(python
+superbuild_add_project(python2
   DEFAULT_ON
   DEPENDS bzip2 zlib
   BUILD_IN_SOURCE 1
@@ -39,7 +39,7 @@ superbuild_add_project(python
       -Dsource_location:PATH=<SOURCE_DIR>
       -Doutput_location:PATH=${python_executable_dir}
       -Dinstall_location:PATH=<INSTALL_DIR>
-      -P "${CMAKE_CURRENT_LIST_DIR}/scripts/python.install.cmake")
+      -P "${CMAKE_CURRENT_LIST_DIR}/scripts/python2.install.cmake")
 
 set(python_projects_to_build
   _ctypes

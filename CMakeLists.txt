@@ -155,9 +155,20 @@ endif ()
 if (COMMAND superbuild_add_packaging)
   include(SuperbuildPackageMacros)
 
+  set(superbuild_export_variables)
   if (superbuild_python_executable)
-    set(superbuild_export_variables
+    list(APPEND superbuild_export_variables
       superbuild_python_executable)
+  endif ()
+
+  if (python_version)
+    list(APPEND superbuild_export_variables
+      python_version)
+  endif ()
+
+  if (superbuild_python_version)
+    list(APPEND superbuild_export_variables
+      superbuild_python_version)
   endif ()
 
   superbuild_add_packaging()
@@ -211,4 +222,9 @@ if (BUILD_TESTING)
     DIRECTORY "${CMAKE_CURRENT_LIST_DIR}"
     PROPERTY
       TEST_INCLUDE_FILE "${CMAKE_CURRENT_BINARY_DIR}/superbuild_testing_trampoline.cmake")
+endif ()
+
+if (python3_enabled)
+  include(python3.functions)
+  superbuild_python_write_reqs("${CMAKE_BINARY_DIR}/requirements.txt")
 endif ()

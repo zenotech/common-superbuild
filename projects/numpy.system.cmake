@@ -1,2 +1,1 @@
-# Nothing to do; assuming numpy will be available at runtime in the Python
-# environment.
+superbuild_require_python_package(numpy "numpy")

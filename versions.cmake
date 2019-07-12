@@ -41,7 +41,7 @@ superbuild_set_revision(png
 
 if (WIN32 AND (NOT superbuild_building_prebuilt_python OR superbuild_use_prebuilt_python))
   if (superbuild_is_64bit)
-    superbuild_set_revision(python
+    superbuild_set_revision(python2
       URL     "https://www.paraview.org/files/dependencies/python-2.7.15-win64-20180905.tar.gz"
       URL_MD5 6cfab07945bf75474d4ed2d2ea799c57)
   else ()
@@ -49,7 +49,7 @@ if (WIN32 AND (NOT superbuild_building_prebuilt_python OR superbuild_use_prebuil
       "Prebuilt Python binaries for Windows 32 bit are not provided.")
   endif ()
 else()
-  superbuild_set_revision(python
+  superbuild_set_revision(python2
     URL     "https://www.paraview.org/files/dependencies/Python-2.7.15.tar.xz"
     URL_MD5 a80ae3cc478460b922242f43a1b4094d)
 endif()
@@ -228,17 +228,6 @@ superbuild_set_revision(pythoncycler
 superbuild_set_revision(pythonsetuptools
   URL     "https://www.paraview.org/files/dependencies/setuptools-23.0.0.tar.gz"
   URL_MD5 100a90664040f8ff232fbac02a4c5652)
-
-set(mpi4py_ver "3.0.0")
-if (WIN32)
-  superbuild_set_revision(pythonmpi4py
-    URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp27m-win_amd64.whl"
-    URL_MD5 9b95d5644b3d18819a39f4db858756ac)
-else ()
-  superbuild_set_revision(pythonmpi4py
-    URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}.tar.gz"
-    URL_MD5 bfe19f20cef5e92f6e49e50fb627ee70)
-endif ()
 
 superbuild_set_revision(pythonautobahn
   URL     "https://www.paraview.org/files/dependencies/autobahn-17.10.1.tar.gz"

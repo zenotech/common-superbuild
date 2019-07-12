@@ -1,9 +1,9 @@
 set(package_name matplotlib)
 set(version 1.1.1)
-include(python.bundle.common)
+include(python2.bundle.common)
 
 set(modules matplotlib)
-include(python.package.bundle)
+include(python2.package.bundle)
 
 install(
   DIRECTORY   "${superbuild_install_location}/lib/site-packages/matplotlib/mpl-data/"

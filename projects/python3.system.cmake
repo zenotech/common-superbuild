@@ -1,10 +1,10 @@
-option(python_FIND_LIBRARIES "Require system Python development files" ON)
-mark_as_advanced(python_FIND_LIBRARIES)
+option(python3_FIND_LIBRARIES "Require system Python development files" ON)
+mark_as_advanced(python3_FIND_LIBRARIES)
 
-find_package(PythonInterp 2.7 REQUIRED)
+find_package(PythonInterp 3.3 REQUIRED)
 
-if (python_FIND_LIBRARIES)
-  find_package(PythonLibs 2.7 REQUIRED)
+if (python3_FIND_LIBRARIES)
+  find_package(PythonLibs 3.3 REQUIRED)
   if (NOT PYTHON_VERSION_STRING VERSION_EQUAL PYTHONLIBS_VERSION_STRING AND
       NOT PYTHON_I_KNOW_WHAT_IM_DOING)
     message(FATAL_ERROR
@@ -13,7 +13,8 @@ if (python_FIND_LIBRARIES)
   endif ()
 endif()
 
-set(superbuild_python_version "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")
+set(superbuild_python_version "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}"
+  CACHE INTERNAL "")
 
 # This will add PYTHON_LIBRARY, PYTHON_EXECUTABLE, PYTHON_INCLUDE_DIR
 # variables. User can set/override these to change the Python being used.
@@ -35,8 +36,8 @@ else ()
   if (NOT EXISTS "${superbuild_python_pip}")
     unset(superbuild_python_pip CACHE)
   endif ()
-  get_filename_component(python_executable_dir "${PYTHON_EXECUTABLE}" DIRECTORY)
+  get_filename_component(python3_executable_dir "${PYTHON_EXECUTABLE}" DIRECTORY)
   find_program(superbuild_python_pip
     NAMES pip
-    HINTS "${python_executable_dir}")
+    HINTS "${python3_executable_dir}")
 endif ()

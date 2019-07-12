@@ -1,6 +1,6 @@
 set(package_name python)
 set(version 2.7.15)
-include(python.bundle.common)
+include(python2.bundle.common)
 
 superbuild_windows_install_program(python
   "bin"
@@ -20,5 +20,5 @@ install(
   FILES       "${superbuild_install_location}/lib/python27.lib"
   DESTINATION "bin/libs")
 
-include(python.functions)
-superbuild_install_superbuild_python()
+include(python2.functions)
+superbuild_install_superbuild_python2()

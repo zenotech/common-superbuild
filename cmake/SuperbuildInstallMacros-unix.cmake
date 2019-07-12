@@ -335,14 +335,14 @@ modules (or packages) are searched for at install time in the paths given to
 the `MODULE_DIRECTORIES` argument.
 
 Modules are placed in the `MODULE_DESTINATION` under the expected Python module
-paths in the package (`lib/python2.7`). By default, `/site-packages` is used.
+paths in the package (`lib/python${superbuild_python_version}`). By default,
+`/site-packages` is used.
 
 The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, `LOADER_PATHS`, and
 `SEARCH_DIRECTORIES` arguments used when installing compiled Python modules
 through an internal `superbuild_unix_install_plugin` call.
 
-Note that modules in the list which cannot be found are ignored. This function
-also assumes Python 2.7 for now.
+Note that modules in the list which cannot be found are ignored.
 #]==]
 function (superbuild_unix_install_python)
   set(values
@@ -415,7 +415,7 @@ function (superbuild_unix_install_python)
 
     foreach (python_module IN LISTS python_modules)
       superbuild_unix_install_python_module(\"\${CMAKE_INSTALL_PREFIX}\"
-        \"\${python_module}\" \"\${module_directories}\" \"lib/python2.7${_install_python_MODULE_DESTINATION}\")
+        \"\${python_module}\" \"\${module_directories}\" \"lib/python${superbuild_python_version}${_install_python_MODULE_DESTINATION}\")
     endforeach ()"
     COMPONENT superbuild)
 endfunction ()

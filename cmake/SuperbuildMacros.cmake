@@ -310,35 +310,61 @@ Same as `superbuild_add_project`, but sets build commands to
 work properly out of the box for setuputils.
 #]==]
 macro (superbuild_add_project_python _name)
-  if (WIN32)
-    set(_superbuild_python_args
-      "--prefix=bin")
+  cmake_parse_arguments(_superbuild_python_project
+    ""
+    "PACKAGE"
+    ""
+    ${ARGN})
+
+  if (ENABLE_python3 OR python3_enabled)
+    if (NOT DEFINED _superbuild_python_project_PACKAGE)
+      message(FATAL_ERROR
+        "Python3 requires that projects have a package specified")
+    endif ()
+
+    superbuild_require_python_package("${_name}" "${_superbuild_python_project_PACKAGE}")
   else ()
-    set(_superbuild_python_args
-      "--single-version-externally-managed"
-      "--install-lib=lib/python2.7/site-packages"
-      "--prefix=")
+    if (WIN32)
+      set(_superbuild_python_args
+        "--prefix=bin")
+    else ()
+      set(_superbuild_python_args
+        "--single-version-externally-managed"
+        "--install-lib=lib/python${superbuild_python_version}/site-packages"
+        "--prefix=")
+    endif ()
+
+    superbuild_add_project("${_name}"
+      BUILD_IN_SOURCE 1
+      DEPENDS python python2 ${_superbuild_python_project_UNPARSED_ARGUMENTS}
+      CONFIGURE_COMMAND
+        ""
+      BUILD_COMMAND
+        "${superbuild_python_executable}"
+          setup.py
+          build
+          ${${_name}_python_build_args}
+      INSTALL_COMMAND
+        "${superbuild_python_executable}"
+          setup.py
+          install
+          --skip-build
+          --root=<INSTALL_DIR>
+          ${_superbuild_python_args}
+          ${${_name}_python_install_args})
+  endif ()
+endmacro ()
+
+function (superbuild_require_python_package _name package)
+  if (superbuild_build_phase)
+    set_property(GLOBAL APPEND
+      PROPERTY
+        _superbuild_python_packages "${package}")
   endif ()
 
-  superbuild_add_project("${_name}"
-    BUILD_IN_SOURCE 1
-    DEPENDS python ${ARGN}
-    CONFIGURE_COMMAND
-      ""
-    BUILD_COMMAND
-      "${superbuild_python_executable}"
-        setup.py
-        build
-        ${${_name}_python_build_args}
-    INSTALL_COMMAND
-      "${superbuild_python_executable}"
-        setup.py
-        install
-        --skip-build
-        --root=<INSTALL_DIR>
-        ${_superbuild_python_args}
-        ${${_name}_python_install_args})
-endmacro ()
+  superbuild_add_dummy_project("${_name}"
+    "${ARGN}")
+endfunction ()
 
 #[==[.md
 ### Wheels
@@ -1059,6 +1085,15 @@ function (_superbuild_add_project_internal name)
   list(REMOVE_DUPLICATES extra_paths)
 
   if (WIN32)
+    set(superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
+  else ()
+    set(superbuild_python_path <INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages)
+  endif ()
+  _superbuild_make_path_var(superbuild_python_path
+    "$ENV{PYTHONPATH}"
+    ${superbuild_python_path})
+
+  if (WIN32)
     string(REPLACE ";" "${_superbuild_list_separator}" extra_paths "${extra_paths}")
     string(REPLACE ";" "${_superbuild_list_separator}" superbuild_python_path "${superbuild_python_path}")
   else ()
@@ -1103,8 +1138,8 @@ function (_superbuild_add_project_internal name)
 
   # prepare any separators in supplied environment variable
   set(converted_cmake_prefix_path "")
-  foreach (_path ${CMAKE_PREFIX_PATH})
-     string(APPEND converted_cmake_prefix_path "${_superbuild_list_separator}${_path}")
+  foreach (_path IN LISTS CMAKE_PREFIX_PATH)
+    string(APPEND converted_cmake_prefix_path "${_superbuild_list_separator}${_path}")
   endforeach()
   # now ensure superbuild's special directory comes first
   set(prepended_cmake_prefix_path
