@@ -3,7 +3,7 @@
 '''
 A tool to install PE-COFF binaries into in installation prefix.
 '''
-
+from __future__ import print_function
 
 import json
 import os
@@ -265,7 +265,7 @@ def copy_library(destination, bundle_dest, library, dry_run=False):
     if library._is_cached:
         return
 
-    print 'Copying %s ==> %s' % (library.path, bundle_dest)
+    print('Copying %s ==> %s' % (library.path, bundle_dest))
 
     app_dest = os.path.join(destination, bundle_dest)
     binary = os.path.join(app_dest, library.name)
@@ -355,7 +355,7 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
     app_dest = os.path.join(bundle_dest, binary.bundle_location)
     binary_destination = os.path.join(app_dest, os.path.basename(binary.path))
     installed[binary.path] = (binary, binary_destination)
-    print 'Copying %s ==> %s' % (binary.path, binary.bundle_location)
+    print('Copying %s ==> %s' % (binary.path, binary.bundle_location))
     if not dry_run:
         _os_makedirs(app_dest)
         shutil.copy(binary.path, app_dest)

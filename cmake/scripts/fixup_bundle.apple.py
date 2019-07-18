@@ -6,7 +6,7 @@ A tool to install Mach-O binaries into an ``.app`` bundle.
 Other bundle types (particularly ``.framework`` and ``.plugin`` bundles) are
 not supported yet.
 '''
-
+from __future__ import print_function
 
 import json
 import os
@@ -342,7 +342,7 @@ class Library(object):
         library depdencies are not properly specified. As such, it warns when
         it is used.
         '''
-        print 'WARNING: dependency from %s to %s requires a search path' % (self.path, ref)
+        print('WARNING: dependency from %s to %s requires a search path' % (self.path, ref))
         for loc in self._search_paths:
             path = os.path.join(loc, ref)
             if os.path.exists(path):
@@ -542,7 +542,7 @@ def copy_library(destination, library, dry_run=False, library_dest='Libraries', 
     '''Copy a library into the ``.app`` bundle.'''
     if library.is_framework:
         # Frameworks go into Contents/<framework_dest>.
-        print 'Copying %s/%s ==> Contents/%s' % (library.framework_path, library.framework_name, framework_dest)
+        print('Copying %s/%s ==> Contents/%s' % (library.framework_path, library.framework_name, framework_dest))
 
         app_dest = os.path.join(destination, 'Contents', framework_dest)
         binary = os.path.join(app_dest, library.framework_name, library.framework_library)
@@ -568,7 +568,7 @@ def copy_library(destination, library, dry_run=False, library_dest='Libraries', 
 
     else:
         # Libraries go into Contents/<library_dest>.
-        print 'Copying %s ==> Contents/%s' % (library.path, library_dest)
+        print('Copying %s ==> Contents/%s' % (library.path, library_dest))
 
         app_dest = os.path.join(destination, 'Contents', library_dest)
         binary = os.path.join(app_dest, library.name)
@@ -591,7 +591,7 @@ def copy_library(destination, library, dry_run=False, library_dest='Libraries', 
 
         # Create any symlinks we found for the library as well.
         for symlink in library.symlinks:
-            print 'Creating symlink to Contents/%s/%s ==> %s' % (library_dest, library.name, symlink)
+            print('Creating symlink to Contents/%s/%s ==> %s' % (library_dest, library.name, symlink))
             if not dry_run:
                 symlink_path = os.path.join(app_dest, symlink)
                 if os.path.exists(symlink_path):
@@ -701,7 +701,7 @@ def _install_binary(binary, is_excluded, bundle_dest, installed, manifest, dry_r
     binary_destination = os.path.join(app_dest, os.path.basename(binary.path))
     installed[binary.path] = (binary, binary_destination)
     binary.set_installed_id(binary_destination)
-    print 'Copying %s ==> %s' % (binary.path, binary.bundle_location)
+    print('Copying %s ==> %s' % (binary.path, binary.bundle_location))
     if not dry_run:
         _os_makedirs(app_dest)
         shutil.copy(binary.path, app_dest)
@@ -715,7 +715,7 @@ def _fix_installed_binaries(installed, dry_run=False):
     # Go through all of the binaries installed and fix up references to other things.
     for binary_info in installed.values():
         binary, installed_path = binary_info
-        print 'Fixing binary references in %s' % binary.path
+        print('Fixing binary references in %s' % binary.path)
 
         if not dry_run and binary.installed_id:
             # Set the ID on the binary.
