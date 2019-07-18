@@ -1,4 +1,4 @@
-if (python3_enabled)
+if (ENABLE_python3 OR python3_enabled)
   include(numpy.system)
 else ()
   superbuild_add_project(numpy

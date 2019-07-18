@@ -844,6 +844,14 @@ function (superbuild_process_dependencies)
       set("${project}_built_by_superbuild" FALSE)
     endif ()
 
+    # dummy projects are similar to system, in that they are not built by
+    # superbuild and hence we mark them as such.
+    get_property(is_dummy GLOBAL
+      PROPERTY "${project}_is_dummy")
+    if (is_dummy)
+      set("${project}_built_by_superbuild" FALSE)
+    endif ()
+
     get_property(allow_developer_mode GLOBAL
       PROPERTY "${project}_developer_mode" SET)
     if (allow_developer_mode)
@@ -887,8 +895,6 @@ function (superbuild_process_dependencies)
     set(current_project "${project}")
 
     set(is_buildable_project FALSE)
-    get_property(is_dummy GLOBAL
-      PROPERTY "${project}_is_dummy")
     if (can_use_system AND USE_SYSTEM_${project})
       # Project from the system environment.
 
@@ -918,6 +924,12 @@ function (superbuild_process_dependencies)
     elseif (is_dummy)
       # This project isn't built, just used as a graph node to represent a
       # group of dependencies.
+
+      # append to the system_projects list so we treat these similar to
+      # externally built projects.
+      list(APPEND system_projects
+        "${project}")
+
       include("${project}")
       _superbuild_add_dummy_project_internal("${project}")
     else ()

@@ -1,4 +1,4 @@
-if (python3_enabled)
+if (ENABLE_python3 OR python3_enabled)
   superbuild_require_python_package(pywin32 "pywin32")
 else ()
   superbuild_add_project(pywin32
