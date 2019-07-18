@@ -40,7 +40,7 @@ class Pipeline(object):
         stdout, stderr = command.communicate()
         if command.returncode:
             raise RuntimeError('failed to execute pipeline:\n%s' % stderr)
-        return stdout
+        return stdout.decode('utf-8')
 
 
 class Library(object):
@@ -674,7 +674,7 @@ def _arg_parser():
 def _install_binary(binary, is_excluded, bundle_dest, installed, manifest, dry_run=False, library_dest='Libraries', framework_dest='Frameworks'):
     '''Install the main binary into the package.'''
     # Start looking at our main executable's dependencies.
-    deps = binary.dependencies.values()
+    deps = list(binary.dependencies.values())
     while deps:
         dep = deps.pop(0)
 
