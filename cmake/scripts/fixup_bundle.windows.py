@@ -3,7 +3,7 @@
 '''
 A tool to install PE-COFF binaries into in installation prefix.
 '''
-
+from __future__ import print_function
 
 import json
 import os
@@ -37,7 +37,7 @@ class Pipeline(object):
         stdout, stderr = command.communicate()
         if command.returncode:
             raise RuntimeError('failed to execute pipeline:\n%s' % stderr)
-        return stdout
+        return stdout.decode('utf-8')
 
 
 class Library(object):
@@ -265,7 +265,7 @@ def copy_library(destination, bundle_dest, library, dry_run=False):
     if library._is_cached:
         return
 
-    print 'Copying %s ==> %s' % (library.path, bundle_dest)
+    print('Copying %s ==> %s' % (library.path, bundle_dest))
 
     app_dest = os.path.join(destination, bundle_dest)
     binary = os.path.join(app_dest, library.name)
@@ -329,7 +329,7 @@ def _arg_parser():
 def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, manifest, dry_run=False):
     '''Install the main binary into the package.'''
     # Start looking at our main executable's dependencies.
-    deps = binary.dependencies.values()
+    deps = list(binary.dependencies.values())
     while deps:
         dep = deps.pop(0)
 
@@ -355,7 +355,7 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
     app_dest = os.path.join(bundle_dest, binary.bundle_location)
     binary_destination = os.path.join(app_dest, os.path.basename(binary.path))
     installed[binary.path] = (binary, binary_destination)
-    print 'Copying %s ==> %s' % (binary.path, binary.bundle_location)
+    print('Copying %s ==> %s' % (binary.path, binary.bundle_location))
     if not dry_run:
         _os_makedirs(app_dest)
         shutil.copy(binary.path, app_dest)
@@ -397,8 +397,8 @@ def main(args):
     if not opts.dry_run and opts.clean and os.path.exists(bundle_dest):
         shutil.rmtree(bundle_dest)
 
-    includes = map(re.compile, opts.include)
-    excludes = map(re.compile, opts.exclude)
+    includes = list(map(re.compile, opts.include))
+    excludes = list(map(re.compile, opts.exclude))
     system_dlls = re.compile(r'[a-z]:\\windows\\system.*\.dll', re.IGNORECASE)
 
     def is_excluded(path):

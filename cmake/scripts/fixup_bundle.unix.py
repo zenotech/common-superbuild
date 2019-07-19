@@ -659,8 +659,8 @@ def main(args):
     if not opts.dry_run and opts.clean and os.path.exists(bundle_dest):
         shutil.rmtree(bundle_dest)
 
-    includes = map(re.compile, opts.include)
-    excludes = map(re.compile, opts.exclude)
+    includes = list(map(re.compile, opts.include))
+    excludes = list(map(re.compile, opts.exclude))
 
     def is_excluded(path):
         # Filter by regex
