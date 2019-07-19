@@ -1,5 +1,7 @@
 if (ENABLE_python3 OR python3_enabled)
-  include(matplotlib.system)
+  superbuild_add_project_python(matplotlib
+    PACKAGE matplotlib
+    DEPENDS numpy png freetype zlib pythondateutil pytz pythonpyparsing pythoncycler pythonsetuptools cxx11 pythonkiwisolver)
 else ()
   set(matplotlib_process_environment)
   if (NOT WIN32)

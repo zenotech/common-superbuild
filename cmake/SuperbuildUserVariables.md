@@ -54,6 +54,12 @@ This defaults to the number of CPUs on the machine. It is used as the `-j`
 argument for `Makefiles`-based CMake generators. If the number of CPUs cannot
 be determined, a reasonably beefy machine is assumed (8 cores).
 
+### `SUPERBUILD_SKIP_PYTHON_PROJECTS`
+
+If set, Python projects are not actually built by the superbuild instead it
+merely results in the generation of a `requirements.txt` file which all the
+Python packages enabled.
+
 ### `SUPPRESS_<PROJECT>_OUTPUT`
 
 If set, output from the build and install steps of the given project will be

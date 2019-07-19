@@ -291,6 +291,10 @@ function (superbuild_add_dummy_project _name)
       "${_name}_is_dummy" TRUE)
 endfunction ()
 
+option(SUPERBUILD_SKIP_PYTHON_PROJECTS
+  "When ON, Python projects will not be built but only result in generation of a requirements.txt file" OFF)
+mark_as_advanced(SUPERBUILD_SKIP_PYTHON_PROJECTS)
+
 #[==[.md
 ## Python projects
 
@@ -316,12 +320,12 @@ macro (superbuild_add_project_python _name)
     ""
     ${ARGN})
 
-  if (ENABLE_python3 OR python3_enabled)
-    if (NOT DEFINED _superbuild_python_project_PACKAGE)
-      message(FATAL_ERROR
-        "Python3 requires that projects have a package specified")
-    endif ()
+  if (NOT DEFINED _superbuild_python_project_PACKAGE)
+    message(FATAL_ERROR
+      "Python requires that projects have a package specified")
+  endif ()
 
+  if (SUPERBUILD_SKIP_PYTHON_PROJECTS)
     superbuild_require_python_package("${_name}" "${_superbuild_python_project_PACKAGE}")
   else ()
     if (WIN32)
@@ -334,9 +338,16 @@ macro (superbuild_add_project_python _name)
         "--prefix=")
     endif ()
 
+    set (extra_dependencies)
+    if (ENABLE_python3 OR python3_enabled)
+      set(extra_dependencies "python3")
+    else()
+      set(extra_dependencies "python2")
+    endif()
+
     superbuild_add_project("${_name}"
       BUILD_IN_SOURCE 1
-      DEPENDS python python2 ${_superbuild_python_project_UNPARSED_ARGUMENTS}
+      DEPENDS python ${extra_dependencies} ${_superbuild_python_project_UNPARSED_ARGUMENTS}
       CONFIGURE_COMMAND
         ""
       BUILD_COMMAND

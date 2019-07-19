@@ -1,4 +1,4 @@
-if (ENABLE_python3 OR python3_enabled)
+if (SUPERBUILD_SKIP_PYTHON_PROJECTS)
   include(numpy.system)
 else ()
   set(numpy_process_environment)

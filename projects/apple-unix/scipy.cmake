@@ -1,4 +1,4 @@
-if (ENABLE_python3 OR python3_enabled)
+if (SUPERBUILD_SKIP_PYTHON_PROJECTS)
   superbuild_require_python_package(scipy "scipy")
 else ()
   set(scipy_process_environment)
