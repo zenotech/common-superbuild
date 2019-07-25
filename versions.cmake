@@ -290,3 +290,7 @@ superbuild_set_revision(pythonmako
 superbuild_set_revision(pythonkiwisolver
   URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.1.0.tar.gz"
   URL_MD5 fc8a614367f7ba0d34a02fd08c535afc)
+
+superbuild_set_revision(ffi
+  URL     "https://www.paraview.org/files/dependencies/libffi-3.2.1.tar.gz"
+  URL_MD5 83b89587607e3eb65c70d361f13bab43)

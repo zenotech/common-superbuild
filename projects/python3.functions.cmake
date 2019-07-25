@@ -240,9 +240,19 @@ function (superbuild_install_superbuild_python3)
       MODULES             ${modules} ${_install_superbuild_python_MODULES}
       MODULE_DIRECTORIES  "${superbuild_install_location}/lib/python${superbuild_python_version}"
                           "${superbuild_install_location}/lib/python${superbuild_python_version}/lib-dynload")
-    install(
-      DIRECTORY   "${superbuild_install_location}/lib/python${superbuild_python_version}/lib-dynload/"
-      DESTINATION "lib/python${superbuild_python_version}/lib-dynload"
-      COMPONENT   "superbuild")
+
+    # fixup and install everything under lib-dynload.
+    # fixup is needed to ensure that any dependencies for these libraries are
+    # installed. this also ensures rpaths etc are fixed up correctly.
+    file(GLOB so_names
+        RELATIVE
+        "${superbuild_install_location}/lib/python${superbuild_python_version}/lib-dynload"
+        "${superbuild_install_location}/lib/python${superbuild_python_version}/lib-dynload/*.so")
+    foreach (so_name IN LISTS so_names)
+        superbuild_unix_install_plugin("${so_name}"
+            "lib"
+            "lib/python${superbuild_python_version}/lib-dynload"
+            LOADER_PATHS "${superbuild_install_location}/lib")
+    endforeach ()
   endif ()
 endfunction ()
