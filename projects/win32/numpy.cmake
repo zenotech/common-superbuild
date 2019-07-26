@@ -1,5 +1,5 @@
 if (ENABLE_python3 OR python3_enabled)
-  include(numpy.system)
+  include(projects/numpy.cmake)
 else ()
   superbuild_add_project(numpy
     DEPENDS python python2

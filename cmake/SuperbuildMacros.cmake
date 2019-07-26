@@ -329,8 +329,13 @@ macro (superbuild_add_project_python _name)
     superbuild_require_python_package("${_name}" "${_superbuild_python_project_PACKAGE}")
   else ()
     if (WIN32)
-      set(_superbuild_python_args
-        "--prefix=bin")
+      if (python3_enabled OR ENABLE_python3)
+        set(_superbuild_python_args
+          "--prefix=Python")
+      else  ()
+        set(_superbuild_python_args
+          "--prefix=bin")
+      endif ()
     else ()
       set(_superbuild_python_args
         "--single-version-externally-managed"
@@ -1107,7 +1112,12 @@ function (_superbuild_add_project_internal name)
   list(REMOVE_DUPLICATES extra_paths)
 
   if (WIN32)
-    set(superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
+    if (python3_enabled OR ENABLE_python3)
+      # With Python3 on Windows, Python in installed under a different root.
+      set(superbuild_python_path <INSTALL_DIR>/Python/Lib/site-packages)
+    else ()
+      set(superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
+    endif()
   else ()
     set(superbuild_python_path <INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages)
   endif ()

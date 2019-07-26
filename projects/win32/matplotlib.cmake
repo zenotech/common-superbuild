@@ -1,5 +1,5 @@
 if (ENABLE_python3 OR python3_enabled)
-  include(matplotlib.system)
+  include(projects/matplotlib.cmake)
 else ()
   superbuild_add_project(matplotlib
     DEPENDS python python2 numpy

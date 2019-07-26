@@ -54,9 +54,15 @@ else()
     URL_MD5 a80ae3cc478460b922242f43a1b4094d)
 endif()
 
-superbuild_set_revision(python3
+if (WIN32)
+  superbuild_set_revision(python3
+    URL "https://www.paraview.org/files/dependencies/Python-3.7.4-win64.tar.xz"
+    URL_MD5 06f1fff29fc75a950c48bfea86b8753c)
+else()
+  superbuild_set_revision(python3
     URL     "https://www.paraview.org/files/dependencies/Python-3.7.4.tar.xz"
     URL_MD5 d33e4aae66097051c2eca45ee3604803)
+endif()
 
 superbuild_set_revision(ftjam
   URL     "https://www.paraview.org/files/dependencies/ftjam-2.5.2-win32.tar.bz2"
@@ -136,7 +142,7 @@ superbuild_set_selectable_source(qt5
     URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-${qt5_12_ver}.${qt5_ext}"
     URL_MD5 "${qt5_12_md5}")
 
-if (WIN32 AND NOT superbuild_building_prebuilt_python)
+if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
   if (superbuild_is_64bit)
     superbuild_set_revision(numpy
       URL     "https://www.paraview.org/files/dependencies/numpy-1.15.1-win64-20180906.tar.gz"
@@ -154,7 +160,7 @@ else ()
     URL_MD5 136c5ee1bc4b259a12a7efe331b15d64)
 endif ()
 
-if (WIN32 AND NOT superbuild_building_prebuilt_python)
+if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
   if (superbuild_is_64bit)
     superbuild_set_revision(matplotlib
       URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20180905.tar.gz"
