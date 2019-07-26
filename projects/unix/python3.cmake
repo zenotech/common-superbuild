@@ -11,6 +11,8 @@ superbuild_add_project(python3
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
       --with-ensurepip=install
+      --with-pymalloc
+      --without-pydebug
       ${python3_shared_args}
   BUILD_COMMAND
     $(MAKE)
