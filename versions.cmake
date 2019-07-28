@@ -256,8 +256,8 @@ superbuild_set_revision(pythonincremental
   URL_MD5 602746e0d438e075a5a9e0678140bba2)
 
 superbuild_set_revision(pythontwisted
-  URL     "https://www.paraview.org/files/dependencies/Twisted-17.9.0.tar.bz2"
-  URL_MD5 6dbedb918f0c7288a4c670f59393ecf8)
+  URL     "https://www.paraview.org/files/dependencies/Twisted-19.2.1.tar.bz2"
+  URL_MD5 528b7856938edc2a752c244aebd94981)
 
 superbuild_set_revision(pythontxaio
   URL     "https://www.paraview.org/files/dependencies/txaio-2.8.2.tar.gz"
@@ -290,6 +290,10 @@ superbuild_set_revision(pythonmako
 superbuild_set_revision(pythonkiwisolver
   URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.1.0.tar.gz"
   URL_MD5 fc8a614367f7ba0d34a02fd08c535afc)
+
+superbuild_set_revision(pythonattrs
+  URL     "https://www.paraview.org/files/dependencies/attrs-19.1.0.tar.gz"
+  URL_MD5 2be7bce157988928f5ff2bb50a0b510d)
 
 superbuild_set_revision(ffi
   URL     "https://www.paraview.org/files/dependencies/libffi-3.2.1.tar.gz"
