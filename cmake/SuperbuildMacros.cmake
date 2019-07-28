@@ -359,7 +359,6 @@ macro (superbuild_add_project_python _name)
         "${superbuild_python_executable}"
           setup.py
           install
-          --skip-build
           --root=<INSTALL_DIR>
           ${_superbuild_python_args}
           ${${_name}_python_install_args})
