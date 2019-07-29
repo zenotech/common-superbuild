@@ -229,10 +229,17 @@ function (superbuild_install_superbuild_python3)
     superbuild_windows_install_python(
       MODULE_DESTINATION  "/"
       MODULES             ${modules} ${_install_superbuild_python_MODULES}
-      MODULE_DIRECTORIES  "${superbuild_install_location}/bin/Lib"
-      SEARCH_DIRECTORIES  "${superbuild_install_location}/bin"
-                          "${superbuild_install_location}/lib${_install_superbuild_python_LIBSUFFIX}"
-      EXCLUDE_REGEXES     "MSVCR90.dll")
+      MODULE_DIRECTORIES  "${superbuild_install_location}/Python/Lib"
+      SEARCH_DIRECTORIES  "${superbuild_install_location}/Python"
+                          "${superbuild_install_location}/Python/libs${_install_superbuild_python_LIBSUFFIX}"
+      EXCLUDE_REGEXES     "vcruntime[0-9]+.dll")
+
+    # install everyting under `DLLs`
+    install(
+      DIRECTORY "${superbuild_install_location}/Python/DLLs"
+      DESTINATION "bin"
+      COMPONENT "superbuild")
+
   else ()
     superbuild_unix_install_python(
       MODULE_DESTINATION  "/"
