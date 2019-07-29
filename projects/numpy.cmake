@@ -21,10 +21,16 @@ endif ()
 
 set(numpy_python_build_args
   "--fcompiler=${numpy_fortran_compiler}")
+
+set(numpy_depends_optional)
+if (NOT WIN32)
+  set(numpy_depends_optional fortran lapack)
+endif()
+
 superbuild_add_project_python(numpy
   PACKAGE numpy
   CAN_USE_SYSTEM
-  DEPENDS_OPTIONAL fortran lapack
+  DEPENDS_OPTIONAL ${numpy_depends_optional}
   PROCESS_ENVIRONMENT
     MKL         "None"
     ATLAS       "None"
