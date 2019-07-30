@@ -38,7 +38,7 @@ function (superbuild_apple_install_python_module destination module search_paths
         message(FATAL_ERROR "Failed to install Python module ${module} into ${bundle_name}:\n${err}")
       endif ()
     endif ()
-    if (EXISTS "${search_path}/${module}/__init__.py")
+    if (IS_DIRECTORY "${search_path}/${module}")
       file(GLOB modules "${search_path}/${module}/*.py" "${search_path}/${module}/*.so")
       foreach (submodule IN LISTS modules)
         get_filename_component(submodule_name "${submodule}" NAME)
@@ -46,12 +46,14 @@ function (superbuild_apple_install_python_module destination module search_paths
         superbuild_apple_install_python_module("${destination}"
           "${submodule_name}" "${search_path}/${module}" "${location}/${module}")
       endforeach ()
-      file(GLOB packages "${search_path}/${module}/*/__init__.py")
+      file(GLOB packages "${search_path}/${module}/*")
       foreach (subpackage IN LISTS packages)
-        get_filename_component(subpackage "${subpackage}" DIRECTORY)
-        get_filename_component(subpackage_name "${subpackage}" NAME)
-        superbuild_apple_install_python_module("${destination}"
-          "${subpackage_name}" "${search_path}/${module}" "${location}/${module}")
+        if (IS_DIRECTORY "${subpackage}" AND
+            NOT (subpackage STREQUAL "__pycache__" OR subpackage MATCHES ".*dSYM$"))
+          get_filename_component(subpackage_name "${subpackage}" NAME)
+          superbuild_apple_install_python_module("${destination}"
+            "${subpackage_name}" "${search_path}/${module}" "${location}/${module}")
+        endif ()
       endforeach ()
     endif ()
   endforeach ()
