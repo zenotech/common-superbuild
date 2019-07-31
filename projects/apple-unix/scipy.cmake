@@ -1,4 +1,4 @@
-if (ENABLE_python3 OR python3_enabled)
+if (SUPERBUILD_SKIP_PYTHON_PROJECTS)
   superbuild_require_python_package(scipy "scipy")
 else ()
   set(scipy_process_environment)
@@ -40,6 +40,7 @@ else ()
     # Scipy does not link libpython directly, but instead looks for them at load
     # time.
     superbuild_append_flags(ld_flags "-undefined dynamic_lookup" PROJECT_ONLY)
+    superbuild_append_flags(ld_flags "-headerpad_max_install_names" PROJECT_ONLY)
   elseif (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
     superbuild_append_flags(ld_flags "-shared" PROJECT_ONLY)
   endif ()

@@ -1,5 +1,7 @@
 if (ENABLE_python3 OR python3_enabled)
-  superbuild_require_python_package(pythonzope "zope")
+  superbuild_add_project_python(pythonzope
+    PACKAGE zope
+    DEPENDS pythonsetuptools)
 else ()
   superbuild_add_project(pythonzope
     CONFIGURE_COMMAND

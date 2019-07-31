@@ -54,6 +54,16 @@ else()
     URL_MD5 a80ae3cc478460b922242f43a1b4094d)
 endif()
 
+if (WIN32)
+  superbuild_set_revision(python3
+    URL "https://www.paraview.org/files/dependencies/Python-3.7.4-win64.tar.xz"
+    URL_MD5 06f1fff29fc75a950c48bfea86b8753c)
+else()
+  superbuild_set_revision(python3
+    URL     "https://www.paraview.org/files/dependencies/Python-3.7.4.tar.xz"
+    URL_MD5 d33e4aae66097051c2eca45ee3604803)
+endif()
+
 superbuild_set_revision(ftjam
   URL     "https://www.paraview.org/files/dependencies/ftjam-2.5.2-win32.tar.bz2"
   URL_MD5 ee52f3faff6d31ffb89a2fedb3b0caf6)
@@ -132,7 +142,7 @@ superbuild_set_selectable_source(qt5
     URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-${qt5_12_ver}.${qt5_ext}"
     URL_MD5 "${qt5_12_md5}")
 
-if (WIN32 AND NOT superbuild_building_prebuilt_python)
+if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
   if (superbuild_is_64bit)
     superbuild_set_revision(numpy
       URL     "https://www.paraview.org/files/dependencies/numpy-1.15.1-win64-20180906.tar.gz"
@@ -143,14 +153,14 @@ if (WIN32 AND NOT superbuild_building_prebuilt_python)
   endif ()
 else ()
   superbuild_set_revision(numpy
-    URL     "https://www.paraview.org/files/dependencies/numpy-1.15.1.zip"
-    URL_MD5 898004d5be091fde59ae353e3008fe9b)
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.16.4.tar.gz"
+    URL_MD5 6edf7334d04d8e8849ad058ccd3b3803)
   superbuild_set_revision(scipy
-    URL     "https://www.paraview.org/files/dependencies/scipy-0.15.1.tar.gz"
-    URL_MD5 be56cd8e60591d6332aac792a5880110)
+    URL     "https://www.paraview.org/files/dependencies/scipy-1.2.2.tar.xz"
+    URL_MD5 136c5ee1bc4b259a12a7efe331b15d64)
 endif ()
 
-if (WIN32 AND NOT superbuild_building_prebuilt_python)
+if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
   if (superbuild_is_64bit)
     superbuild_set_revision(matplotlib
       URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20180905.tar.gz"
@@ -160,9 +170,15 @@ if (WIN32 AND NOT superbuild_building_prebuilt_python)
       "Prebuilt Python binaries for Windows 32 bit are not provided.")
   endif ()
 else ()
-  superbuild_set_revision(matplotlib
-    URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1_notests.tar.gz"
-    URL_MD5 30ee59119599331bf1f3b6e838fee9a8)
+  if (ENABLE_python3 OR python3_enabled)
+    superbuild_set_revision(matplotlib
+      URL "https://www.paraview.org/files/dependencies/matplotlib-3.1.1-no-jquery.tar.xz"
+      URL_MD5 20f4c3a9ba1df1d6f7b2a509f617ddb1)
+  else()
+    superbuild_set_revision(matplotlib
+      URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1_notests.tar.gz"
+      URL_MD5 30ee59119599331bf1f3b6e838fee9a8)
+  endif()
 endif ()
 
 if (WIN32 AND NOT superbuild_building_prebuilt_python)
@@ -246,8 +262,8 @@ superbuild_set_revision(pythonincremental
   URL_MD5 602746e0d438e075a5a9e0678140bba2)
 
 superbuild_set_revision(pythontwisted
-  URL     "https://www.paraview.org/files/dependencies/Twisted-17.9.0.tar.bz2"
-  URL_MD5 6dbedb918f0c7288a4c670f59393ecf8)
+  URL     "https://www.paraview.org/files/dependencies/Twisted-19.2.1.tar.bz2"
+  URL_MD5 528b7856938edc2a752c244aebd94981)
 
 superbuild_set_revision(pythontxaio
   URL     "https://www.paraview.org/files/dependencies/txaio-2.8.2.tar.gz"
@@ -276,3 +292,15 @@ superbuild_set_revision(pythonpygments
 superbuild_set_revision(pythonmako
   URL     "https://www.paraview.org/files/dependencies/Mako-1.0.7.tar.gz"
   URL_MD5 5836cc997b1b773ef389bf6629c30e65)
+
+superbuild_set_revision(pythonkiwisolver
+  URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.1.0.tar.gz"
+  URL_MD5 fc8a614367f7ba0d34a02fd08c535afc)
+
+superbuild_set_revision(pythonattrs
+  URL     "https://www.paraview.org/files/dependencies/attrs-19.1.0.tar.gz"
+  URL_MD5 2be7bce157988928f5ff2bb50a0b510d)
+
+superbuild_set_revision(ffi
+  URL     "https://www.paraview.org/files/dependencies/libffi-3.0.5.tar.gz"
+  URL_MD5 29544f542140da929221805e332407b9)

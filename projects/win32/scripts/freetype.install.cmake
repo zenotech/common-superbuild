@@ -6,4 +6,4 @@ file(INSTALL
   DESTINATION "${install_location}/include/")
 file(INSTALL
   "${source_location}/include/freetype"
-  DESTINATION "${install_location}/include/freetype2/")
+  DESTINATION "${install_location}/include/")

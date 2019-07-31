@@ -1,5 +1,21 @@
 if (ENABLE_python3 OR python3_enabled)
-  include(matplotlib.system)
+  set(matplotlib_args)
+  if (WIN32)
+    set(matplotlib_args
+      CONFIGURE_COMMAND
+        "${CMAKE_COMMAND}"
+        "-Dinstall_location=<INSTALL_DIR>"
+        "-Dskip_configure=TRUE"
+        -P "${CMAKE_CURRENT_LIST_DIR}/scripts/matplotlib.patch.cmake"
+
+      PROCESS_ENVIRONMENT
+        CL "/I<INSTALL_DIR>/include"
+        LINK "/LIBPATH:<INSTALL_DIR>/lib")
+  endif()
+  superbuild_add_project_python(matplotlib
+    PACKAGE matplotlib
+    DEPENDS numpy png freetype zlib pythondateutil pytz pythonpyparsing pythoncycler pythonsetuptools cxx11 pythonkiwisolver
+    ${matplotlib_args})
 else ()
   set(matplotlib_process_environment)
   if (NOT WIN32)
