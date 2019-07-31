@@ -181,7 +181,7 @@ else ()
   endif()
 endif ()
 
-if (WIN32 AND NOT superbuild_building_prebuilt_python)
+if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
   if (superbuild_is_64bit)
     superbuild_set_revision(pywin32
       URL     "https://www.paraview.org/files/dependencies/pywin32-220-win64-20180905.tar.gz"
@@ -190,6 +190,10 @@ if (WIN32 AND NOT superbuild_building_prebuilt_python)
     message(FATAL_ERROR
       "Prebuilt Python binaries for Windows 32 bit are not provided.")
   endif ()
+elseif (ENABLE_python3 OR python3_enabled)
+  superbuild_set_revision(pywin32
+    URL "https://www.paraview.org/files/dependencies/pywin32-224-amd64.tar.xz"
+    URL_MD5 1a79e2571d276eeb26f54d944daf39e4)
 else ()
   superbuild_set_revision(pywin32
     URL     "https://www.paraview.org/files/dependencies/pywin32-220.zip"
