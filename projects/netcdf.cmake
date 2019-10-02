@@ -21,3 +21,5 @@ superbuild_add_project(netcdf
 # ncconfigure.h is not intended for standalone include
 superbuild_apply_patch(netcdf fix-include
   "fix include to use config.h instead of ncconfigure.h")
+superbuild_apply_patch(netcdf fix-size-uchar
+  "fix check on size of uchar: test for existence first")
