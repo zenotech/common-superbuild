@@ -1007,6 +1007,9 @@ function (_superbuild_add_project_internal name)
   set(cmake_params)
   # Pass down C and CXX flags from this project.
   foreach (flag IN ITEMS
+      CMAKE_C_COMPILER_LAUNCHER
+      CMAKE_CXX_COMPILER_LAUNCHER
+
       CMAKE_C_FLAGS_DEBUG
       CMAKE_C_FLAGS_MINSIZEREL
       CMAKE_C_FLAGS_RELEASE
