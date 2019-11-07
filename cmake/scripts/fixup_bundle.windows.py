@@ -52,7 +52,7 @@ class Library(object):
     the magic of the ``PATH`` environment variable.
     '''
 
-    def __init__(self, path, parent=None, search_paths=None):
+    def __init__(self, path, parent=None, ignore=[], search_paths=None):
         # This is the actual path to a physical file
         self._path = os.path.normpath(path)
 
@@ -62,6 +62,7 @@ class Library(object):
             self._search_paths = search_paths
 
         self._parent = parent
+        self._ignore = ignore
         self._dependencies = None
         self._is_cached = False
 
@@ -155,7 +156,9 @@ class Library(object):
                     continue
                 if win_rt_runtimes.match(dep):
                     continue
-                deplib = Library.from_reference(dep, self)
+                if dep in self._ignore:
+                    continue
+                deplib = Library.from_reference(dep, self, ignore=self._ignore)
                 if deplib is not None:
                     collection[dep] = deplib
             self._dependencies = collection
@@ -178,7 +181,7 @@ class Library(object):
     __search_cache = None
 
     @classmethod
-    def from_reference(cls, ref, loader):
+    def from_reference(cls, ref, loader, **kwargs):
         '''Create a library representation given a name and a loading binary.'''
         paths = []
 
@@ -197,17 +200,17 @@ class Library(object):
         for path in paths:
             libpath = os.path.join(path, ref)
             if os.path.exists(libpath):
-                return cls.from_path(libpath, parent=loader)
+                return cls.from_path(libpath, parent=loader, **kwargs)
 
         search_path = loader._find_library(ref)
         if os.path.exists(search_path):
-            return cls.from_path(search_path, parent=loader)
+            return cls.from_path(search_path, parent=loader, **kwargs)
         raise RuntimeError('Unable to find the %s library from %s: %s' % (ref, loader.path, ', '.join(paths)))
 
     __cache = {}
 
     @classmethod
-    def from_path(cls, path, parent=None):
+    def from_path(cls, path, parent=None, **kwargs):
         '''Create a library representation from a path.'''
         if not os.path.exists(path):
             raise RuntimeError('%s does not exist' % path)
@@ -219,7 +222,7 @@ class Library(object):
                 search_paths = parent._search_paths
 
             cls.__cache[path] = Library(path, parent=parent,
-                                        search_paths=search_paths)
+                                        search_paths=search_paths, **kwargs)
 
         return cls.__cache[path]
 
@@ -303,6 +306,9 @@ def _arg_parser():
     parser.add_argument('-e', '--exclude', metavar='REGEX', action='append',
                         default=[],
                         help='regular expression to exclude from the bundle')
+    parser.add_argument('-I', '--ignore', metavar='DLLNAME', action='append',
+                        default=[],
+                        help='DLL names to ignore in the dependency list')
     parser.add_argument('-s', '--search', metavar='PATH', action='append',
                         default=[],
                         help='add a directory to search for dependent libraries')
@@ -381,13 +387,13 @@ def main(args):
     opts = parser.parse_args(args)
 
     if opts.type == 'executable':
-        main_exe = Executable(opts.binary, search_paths=opts.search)
+        main_exe = Executable(opts.binary, ignore=opts.ignore, search_paths=opts.search)
         libdir = main_exe.bundle_location
     elif opts.type == 'module':
         if opts.location is None:
             raise RuntimeError('Modules require a location')
 
-        main_exe = Module(opts.binary, opts.location,
+        main_exe = Module(opts.binary, opts.location, ignore=opts.ignore,
                           search_paths=opts.search)
         if opts.libdir is None:
             libdir = main_exe.bundle_location
