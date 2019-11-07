@@ -27,6 +27,7 @@ _superbuild_windows_install_binary(
   [LOCATION <location>]
   [INCLUDE_REGEXES <include-regex>...]
   [EXCLUDE_REGEXES <exclude-regex>...]
+  [IGNORE_DLLNAMES <ignore-name>...]
   [BINARY_LIBDIR <binary_libdirs>...]
   [SEARCH_DIRECTORIES <search-directory>...])
 ```
@@ -66,6 +67,9 @@ By default, Microsoft's C runtime libraries are ignored when installing. The
 expressions to either force-include or force-exclude from installation.
 Inclusion overrides exclusion. The provided regular expressions are also
 expected to match the full path of the library.
+
+DLL names listed in `IGNORE_DLLNAMES` will be ignored if found in a dependency
+list.
 #]==]
 function (_superbuild_windows_install_binary)
   set(options
@@ -79,6 +83,7 @@ function (_superbuild_windows_install_binary)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
+    IGNORE_DLLNAMES
     BINARY_LIBDIR
     SEARCH_DIRECTORIES)
   cmake_parse_arguments(_install_binary "${options}" "${values}" "${multivalues}" ${ARGN})
@@ -147,6 +152,11 @@ function (_superbuild_windows_install_binary)
   foreach (exclude_regex IN LISTS _install_binary_EXCLUDE_REGEXES)
     set(fixup_bundle_arguments
       "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
+  endforeach ()
+
+  foreach (ignore_dllname IN LISTS _install_binary_IGNORE_DLLNAMES)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --ignore \"${ignore_dllname}\"")
   endforeach ()
 
   foreach(binary_libdir IN LISTS _install_binary_BINARY_LIBDIR)
@@ -274,6 +284,7 @@ superbuild_windows_install_python(
   [MODULE_DESTINATION <destination>]
   [INCLUDE_REGEXES <include-regex>...]
   [EXCLUDE_REGEXES <exclude-regex>...]
+  [IGNORE_DLLNAMES <ignore-name>...]
   [SEARCH_DIRECTORIES <library-path>...])
 ```
 
@@ -284,8 +295,9 @@ the `MODULE_DIRECTORIES` argument.
 Modules are placed in the `MODULE_DESTINATION` under the expected Python module
 paths in the package (`bin/Lib`). By default, `/site-packages` is used.
 
-The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, and `SEARCH_DIRECTORIES` used when
-installing compiled Python modules through `superbuild_windows_install_plugin`.
+The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, `IGNORE_DLLNAMES`, and
+`SEARCH_DIRECTORIES` used when installing compiled Python modules through
+`superbuild_windows_install_plugin`.
 
 Note that modules in the list which cannot be found are ignored.
 #]==]
@@ -295,6 +307,7 @@ function (superbuild_windows_install_python)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
+    IGNORE_DLLNAMES
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
@@ -322,6 +335,11 @@ function (superbuild_windows_install_python)
   foreach (exclude_regex IN LISTS _install_python_EXCLUDE_REGEXES)
     list(APPEND fixup_bundle_arguments
       --exclude "${exclude_regex}")
+  endforeach ()
+
+  foreach (ignore_dllname IN LISTS _install_python_IGNORE_DLLNAMES)
+    list(APPEND fixup_bundle_arguments
+      --ignore "${ignore_dllname}")
   endforeach ()
 
   foreach (search_directory IN LISTS _install_python_SEARCH_DIRECTORIES)
