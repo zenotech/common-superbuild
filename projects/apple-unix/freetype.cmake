@@ -17,6 +17,16 @@ superbuild_add_project(freetype
   INSTALL_COMMAND
     $(MAKE) install)
 
+# https://savannah.nongnu.org/bugs/?57206
+superbuild_project_add_step(create-docs-reference-markdown
+  COMMAND   "${CMAKE_COMMAND}"
+            -E make_directory
+            <SOURCE_DIR>/docs/reference/markdown
+  DEPENDEES download
+  DEPENDERS configure
+  COMMENT   "Create docs/reference/markdown directory"
+  WORKING_DIRECTORY <BINARY_DIR>)
+
 if (APPLE AND __BUILDBOT_INSTALL_LOCATION)
   superbuild_project_add_step(clean-build
     COMMAND   make
