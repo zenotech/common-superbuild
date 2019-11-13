@@ -7,6 +7,7 @@ function (superbuild_find_projects var)
     boost
     bzip2
     cxx11
+    ffi
     fortran
     freetype
     hdf5
@@ -20,12 +21,14 @@ function (superbuild_find_projects var)
     python
     python2
     python3
+    pythonattrs
     pythonautobahn
     pythonconstantly
     pythoncycler
     pythondateutil
     pythonhyperlink
     pythonincremental
+    pythonkiwisolver
     pythonmpi4py
     pythonpygments
     pythonpyparsing
