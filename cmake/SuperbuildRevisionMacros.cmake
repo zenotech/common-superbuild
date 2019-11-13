@@ -366,14 +366,11 @@ function (superbuild_set_selectable_source name)
       "The ${selection} source selection for ${name} does not exist.")
   endif ()
 
-  # See if the selection is customizable.
-  list(FIND customizable_selections "${selection}" idx)
-
-  if (idx EQUAL "-1")
-    superbuild_set_revision("${name}"
+  if (selection IN_LIST customizable_selections)
+    _superbuild_set_customizable_revision("${name}"
       ${selection_${selection}_args})
   else ()
-    _superbuild_set_customizable_revision("${name}"
+    superbuild_set_revision("${name}"
       ${selection_${selection}_args})
   endif ()
 endfunction ()
