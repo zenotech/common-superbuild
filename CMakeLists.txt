@@ -43,12 +43,18 @@ superbuild_detect_64bit_target()
 # Setup shared library defaults.  If explicitly specified somehow, then default
 # to that.  Otherwise base the default on whether or not shared libs are even
 # supported.
-get_property(superbuild_shared_libs_supported
-  GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS)
-cmake_dependent_option(BUILD_SHARED_LIBS
-  "Build shared libraries (so/dylib/dll)." "${superbuild_shared_libs_supported}"
-  "superbuild_shared_libs_supported" OFF)
-mark_as_advanced(BUILD_SHARED_LIBS)
+if (NOT _superbuild_no_static_everywhere)
+  if (NOT DEFINED BUILD_SHARED_LIBS)
+    get_property(superbuild_shared_libs_supported
+      GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS)
+    cmake_dependent_option(BUILD_SHARED_LIBS
+      "Build shared libraries (so/dylib/dll)." "${superbuild_shared_libs_supported}"
+      "superbuild_shared_libs_supported" OFF)
+    mark_as_advanced(BUILD_SHARED_LIBS)
+  endif ()
+else ()
+  set(BUILD_SHARED_LIBS ON)
+endif ()
 
 # Setup PIC defaults.
 cmake_dependent_option(CMAKE_POSITION_INDEPENDENT_CODE
@@ -58,7 +64,9 @@ mark_as_advanced(CMAKE_POSITION_INDEPENDENT_CODE)
 
 # Verify shared libs and PIC compatibility
 if(BUILD_SHARED_LIBS AND NOT CMAKE_POSITION_INDEPENDENT_CODE)
-  message(WARNING "Forcing CMAKE_POSITION_INDEPENDENT_CODE to be ON as required by BUILD_SHARED_LIBS.")
+  if (NOT _superbuild_no_static_everywhere)
+    message(WARNING "Forcing CMAKE_POSITION_INDEPENDENT_CODE to be ON as required by BUILD_SHARED_LIBS.")
+  endif ()
   set_property(CACHE CMAKE_POSITION_INDEPENDENT_CODE PROPERTY VALUE ON)
 endif()
 
