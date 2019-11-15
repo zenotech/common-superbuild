@@ -70,7 +70,8 @@ following extensions:
     may be specified to indicate that this platform *must* use the system's
     version rather than a custom built one. Usually only used in
     platform-specific files.
-  - `DEFAULT_ON` If present, the project will default to be built.
+  - `DEFAULT_ON` If present, the project will default to be built. May be set
+    externally using the `_superbuild_default_${NAME}` variable.
   - `DEVELOPER_MODE` If present, the project will offer an option to build it
     in "developer" mode. Developer mode enables and builds all dependent
     projects, but skips the project itself. Instead, a file named
