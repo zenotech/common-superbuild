@@ -1993,7 +1993,7 @@ endif()
     set(stderr_log "${logbase}-err.log")
   endif()
   set(code "
-cmake_minimum_required(VERSION 3.15)
+#cmake_minimum_required(VERSION 3.15)
 ${code_cygpath_make}
 set(command \"${command}\")
 set(log_merged \"${log_merged}\")
