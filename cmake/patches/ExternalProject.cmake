@@ -1120,7 +1120,7 @@ if(NOT \"${gitclone_infofile}\" IS_NEWER_THAN \"${gitclone_stampfile}\")
 endif()
 
 execute_process(
-  COMMAND \${CMAKE_COMMAND} -E rm -rf \"${source_dir}\"
+  COMMAND \${CMAKE_COMMAND} -E remove_directory \"${source_dir}\"
   RESULT_VARIABLE error_code
   )
 if(error_code)
