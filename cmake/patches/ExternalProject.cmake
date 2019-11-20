@@ -3186,9 +3186,13 @@ endfunction()
 
 
 function(ExternalProject_Add name)
-  cmake_policy(GET CMP0097 _EP_CMP0097
-    PARENT_SCOPE # undocumented, do not use outside of CMake
-    )
+  if (POLICY CMP0097)
+    cmake_policy(GET CMP0097 _EP_CMP0097
+      PARENT_SCOPE # undocumented, do not use outside of CMake
+      )
+  else ()
+    set(_EP_CMP0097 "")
+  endif ()
 
   _ep_get_configuration_subdir_suffix(cfgdir)
 
