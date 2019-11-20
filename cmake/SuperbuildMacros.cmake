@@ -998,7 +998,8 @@ function (_superbuild_add_dummy_project_internal name)
     UPDATE_COMMAND    ""
     CONFIGURE_COMMAND ""
     BUILD_COMMAND     ""
-    INSTALL_COMMAND   "")
+    INSTALL_COMMAND   ""
+    LIST_SEPARATOR    "${_superbuild_list_separator}")
 endfunction ()
 
 # Implementation of building an actual project.
