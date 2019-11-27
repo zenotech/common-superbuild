@@ -7,7 +7,6 @@ function (superbuild_find_projects var)
     cxx11
     freetype
     png
-    qt4
     qt5
     zlib)
 
@@ -25,12 +24,6 @@ function (superbuild_find_projects var)
   set("${var}"
     ${projects}
     PARENT_SCOPE)
-endfunction ()
-
-function (superbuild_sanity_check)
-  include(qt.functions)
-
-  superbuild_qt_sanity_check()
 endfunction ()
 
 set(qt_install_location ""

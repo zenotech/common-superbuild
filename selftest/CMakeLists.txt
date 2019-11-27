@@ -40,7 +40,6 @@ function (superbuild_find_projects var)
     pythonzope
     pythonzopeinterface
     pytz
-    qt4
     qt5
     szip
     tbb
@@ -71,9 +70,6 @@ endfunction ()
 function (superbuild_sanity_check)
   include(python.functions)
   superbuild_python_sanity_check()
-
-  include(qt.functions)
-  superbuild_qt_sanity_check()
 endfunction ()
 
 get_filename_component(sb_dir "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)
