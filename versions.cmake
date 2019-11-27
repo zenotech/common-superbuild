@@ -89,17 +89,6 @@ superbuild_set_revision(nlohmannjson
   URL_MD5 c53592d55e7fec787cf0a406d36098a3)
 
 if (WIN32)
-  set(qt4_ver "4.8.4")
-  set(qt4_md5 "89c5ecba180cae74c66260ac732dc5cb")
-else ()
-  set(qt4_ver "4.8.6")
-  set(qt4_md5 "2edbe4d6c2eff33ef91732602f3518eb")
-endif ()
-superbuild_set_revision(qt4
-  URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-${qt4_ver}.tar.gz"
-  URL_MD5 "${qt4_md5}")
-
-if (WIN32)
   set(qt5_ext "zip")
 else ()
   set(qt5_ext "tar.xz")
