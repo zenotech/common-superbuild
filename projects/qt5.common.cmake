@@ -17,8 +17,18 @@ if (WIN32)
   set(qt5_configure_ext ".bat")
 endif ()
 
+set(qt5_make_options)
+if (CMAKE_C_COMPILER_LAUNCHER)
+  list(APPEND qt5_make_options
+    "CC=${CMAKE_C_COMPILER_LAUNCHER} ${CMAKE_C_COMPILER}")
+endif ()
+if (CMAKE_CXX_COMPILER_LAUNCHER)
+  list(APPEND qt5_make_options
+    "CXX=${CMAKE_CXX_COMPILER_LAUNCHER} ${CMAKE_CXX_COMPILER}")
+endif ()
+
 set(qt5_build_commands
-  BUILD_COMMAND   $(MAKE)
+  BUILD_COMMAND   $(MAKE) ${qt5_make_options}
   INSTALL_COMMAND make install)
 if (WIN32)
   if ((NOT CMAKE_GENERATOR MATCHES "^NMake.*$") OR
@@ -86,7 +96,8 @@ superbuild_add_project(qt5
       ${qt5_extra_options}
       ${qt5_EXTRA_CONFIGURATION_OPTIONS}
   ${qt5_build_commands}
-  ${qt5_process_environment})
+  PROCESS_ENVIRONMENT
+    ${qt5_process_environment})
 
 superbuild_add_extra_cmake_args(
   -DPARAVIEW_QT_VERSION:STRING=5

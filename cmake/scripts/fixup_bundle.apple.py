@@ -6,7 +6,7 @@ A tool to install Mach-O binaries into an ``.app`` bundle.
 Other bundle types (particularly ``.framework`` and ``.plugin`` bundles) are
 not supported yet.
 '''
-
+from __future__ import print_function
 
 import json
 import os
@@ -40,7 +40,7 @@ class Pipeline(object):
         stdout, stderr = command.communicate()
         if command.returncode:
             raise RuntimeError('failed to execute pipeline:\n%s' % stderr)
-        return stdout
+        return stdout.decode('utf-8')
 
 
 class Library(object):
@@ -342,7 +342,7 @@ class Library(object):
         library depdencies are not properly specified. As such, it warns when
         it is used.
         '''
-        print 'WARNING: dependency from %s to %s requires a search path' % (self.path, ref)
+        print('WARNING: dependency from %s to %s requires a search path' % (self.path, ref))
         for loc in self._search_paths:
             path = os.path.join(loc, ref)
             if os.path.exists(path):
@@ -542,7 +542,7 @@ def copy_library(destination, library, dry_run=False, library_dest='Libraries', 
     '''Copy a library into the ``.app`` bundle.'''
     if library.is_framework:
         # Frameworks go into Contents/<framework_dest>.
-        print 'Copying %s/%s ==> Contents/%s' % (library.framework_path, library.framework_name, framework_dest)
+        print('Copying %s/%s ==> Contents/%s' % (library.framework_path, library.framework_name, framework_dest))
 
         app_dest = os.path.join(destination, 'Contents', framework_dest)
         binary = os.path.join(app_dest, library.framework_name, library.framework_library)
@@ -556,9 +556,19 @@ def copy_library(destination, library, dry_run=False, library_dest='Libraries', 
                 shutil.rmtree(destination)
             _os_makedirs(app_dest)
             shutil.copytree(os.path.join(library.framework_path, library.framework_name), destination, symlinks=True)
+
+            # We need to make sure the copied libraries are writable.
+            chmod = Pipeline([
+                'chmod',
+                '-R',
+                'u+w',
+                destination,
+            ])
+            chmod()
+
     else:
         # Libraries go into Contents/<library_dest>.
-        print 'Copying %s ==> Contents/%s' % (library.path, library_dest)
+        print('Copying %s ==> Contents/%s' % (library.path, library_dest))
 
         app_dest = os.path.join(destination, 'Contents', library_dest)
         binary = os.path.join(app_dest, library.name)
@@ -571,9 +581,17 @@ def copy_library(destination, library, dry_run=False, library_dest='Libraries', 
             _os_makedirs(app_dest)
             shutil.copy(library.path, destination)
 
+            # We need to make the library after copying it.
+            chmod = Pipeline([
+                    'chmod',
+                    'u+w',
+                    os.path.join(destination, os.path.basename(library.path)),
+                ])
+            chmod()
+
         # Create any symlinks we found for the library as well.
         for symlink in library.symlinks:
-            print 'Creating symlink to Contents/%s/%s ==> %s' % (library_dest, library.name, symlink)
+            print('Creating symlink to Contents/%s/%s ==> %s' % (library_dest, library.name, symlink))
             if not dry_run:
                 symlink_path = os.path.join(app_dest, symlink)
                 if os.path.exists(symlink_path):
@@ -585,22 +603,6 @@ def copy_library(destination, library, dry_run=False, library_dest='Libraries', 
                         symlink_path,
                     ])
                 ln()
-
-    if not dry_run:
-        # We need to make the library writable first.
-        chmod = Pipeline([
-                'chmod',
-                'u+w',
-                binary,
-            ])
-        chmod()
-        # Set the ID on the binary.
-        install_name_tool = Pipeline([
-                'install_name_tool',
-                '-id', library.installed_id,
-                binary,
-            ])
-        install_name_tool()
 
     return binary
 
@@ -632,6 +634,9 @@ def _arg_parser():
     parser.add_argument('-p', '--plugin', metavar='PATH', action='append',
                         default=[], dest='plugins',
                         help='list of plugins to install with an executable')
+    parser.add_argument('--library', metavar='PATH', action='append',
+                        default=[], dest='libraries',
+                        help='list of additional libraries to install with an executable')
     parser.add_argument('-s', '--search', metavar='PATH', action='append',
                         default=[],
                         help='add a directory to search for dependent libraries')
@@ -669,7 +674,7 @@ def _arg_parser():
 def _install_binary(binary, is_excluded, bundle_dest, installed, manifest, dry_run=False, library_dest='Libraries', framework_dest='Frameworks'):
     '''Install the main binary into the package.'''
     # Start looking at our main executable's dependencies.
-    deps = binary.dependencies.values()
+    deps = list(binary.dependencies.values())
     while deps:
         dep = deps.pop(0)
 
@@ -696,7 +701,7 @@ def _install_binary(binary, is_excluded, bundle_dest, installed, manifest, dry_r
     binary_destination = os.path.join(app_dest, os.path.basename(binary.path))
     installed[binary.path] = (binary, binary_destination)
     binary.set_installed_id(binary_destination)
-    print 'Copying %s ==> %s' % (binary.path, binary.bundle_location)
+    print('Copying %s ==> %s' % (binary.path, binary.bundle_location))
     if not dry_run:
         _os_makedirs(app_dest)
         shutil.copy(binary.path, app_dest)
@@ -710,7 +715,16 @@ def _fix_installed_binaries(installed, dry_run=False):
     # Go through all of the binaries installed and fix up references to other things.
     for binary_info in installed.values():
         binary, installed_path = binary_info
-        print 'Fixing binary references in %s' % binary.path
+        print('Fixing binary references in %s' % binary.path)
+
+        if not dry_run and binary.installed_id:
+            # Set the ID on the binary.
+            install_name_tool = Pipeline([
+                    'install_name_tool',
+                    '-id', os.path.join(binary.installed_id, os.path.basename(installed_path)),
+                    installed_path,
+                ])
+            install_name_tool()
 
         changes = []
         for old_name, library in binary.dependencies.items():
@@ -764,8 +778,8 @@ def main(args):
     if not opts.dry_run and opts.clean and os.path.exists(bundle_dest):
         shutil.rmtree(bundle_dest)
 
-    includes = map(re.compile, opts.include)
-    excludes = map(re.compile, opts.exclude)
+    includes = list(map(re.compile, opts.include))
+    excludes = list(map(re.compile, opts.exclude))
 
     def is_excluded(path):
         # Filter by regex
@@ -809,6 +823,11 @@ def main(args):
     for plugin in opts.plugins:
         plugin_bin = Plugin(plugin, fake_exe_path=opts.fake_plugin_paths, search_paths=opts.search)
         _install_binary(plugin_bin, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run, library_dest=opts.library_dest, framework_dest=opts.framework_dest)
+
+    for library in opts.libraries:
+        library_bin = Module(library, 'Contents/Libraries', search_paths=opts.search)
+        _install_binary(library_bin, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run)
+        library_bin.set_installed_id('@executable_path/../Libraries')
 
     _fix_installed_binaries(installed, dry_run=opts.dry_run)
 

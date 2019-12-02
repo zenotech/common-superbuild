@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(prebuilt-python)
+project(prebuilt-python2)
 
 if (NOT WIN32 OR NOT MSVC90)
   message(FATAL_ERROR "This project requires Visual Studio 2008 to work")
@@ -15,6 +15,7 @@ function (superbuild_find_projects var)
     ftjam
     png
     python
+    python2
     pythoncycler
     pythondateutil
     pythonpyparsing
@@ -32,8 +33,8 @@ function (superbuild_find_projects var)
 endfunction ()
 
 function (superbuild_sanity_check)
-  if (NOT python_enabled)
-    message(FATAL_ERROR "The python project must be enabled.")
+  if (NOT python2_enabled)
+    message(FATAL_ERROR "The python2 project must be enabled.")
   endif ()
 endfunction ()
 

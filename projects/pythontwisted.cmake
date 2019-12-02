@@ -1,5 +1,8 @@
 superbuild_add_project_python(pythontwisted
-  DEPENDS pythonsetuptools pythonconstantly pythonhyperlink pythonincremental pythonzopeinterface)
+  PACKAGE twisted
+  DEPENDS pythonsetuptools pythonconstantly pythonhyperlink pythonincremental pythonzopeinterface pythonattrs)
 
-superbuild_apply_patch(pythontwisted macos-ssl
-  "Fix issues with using really old OpenSSL on macOS")
+if (NOT (ENABLE_python3 OR python3_enabled))
+  superbuild_apply_patch(pythontwisted macos-ssl
+    "Fix issues with using really old OpenSSL on macOS")
+endif ()

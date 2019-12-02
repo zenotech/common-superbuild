@@ -7,6 +7,7 @@ function (superbuild_find_projects var)
     boost
     bzip2
     cxx11
+    ffi
     fortran
     freetype
     hdf5
@@ -14,15 +15,20 @@ function (superbuild_find_projects var)
     matplotlib
     mpi
     netcdf
+    nlohmannjson
     numpy
     png
     python
+    python2
+    python3
+    pythonattrs
     pythonautobahn
     pythonconstantly
     pythoncycler
     pythondateutil
     pythonhyperlink
     pythonincremental
+    pythonkiwisolver
     pythonmpi4py
     pythonpygments
     pythonpyparsing
@@ -34,7 +40,6 @@ function (superbuild_find_projects var)
     pythonzope
     pythonzopeinterface
     pytz
-    qt4
     qt5
     szip
     tbb
@@ -63,9 +68,8 @@ function (superbuild_find_projects var)
 endfunction ()
 
 function (superbuild_sanity_check)
-  include(qt.functions)
-
-  superbuild_qt_sanity_check()
+  include(python.functions)
+  superbuild_python_sanity_check()
 endfunction ()
 
 get_filename_component(sb_dir "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)

@@ -1,1 +1,2 @@
-superbuild_add_project_python(pythonsetuptools)
+superbuild_add_project_python(pythonsetuptools
+  PACKAGE setuptools)

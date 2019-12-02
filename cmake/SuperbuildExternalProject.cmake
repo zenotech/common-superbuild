@@ -6,7 +6,7 @@ additional support for managing environments, parallel build settings, download
 management, and output suppression.
 #]==]
 
-if (CMAKE_VERSION VERSION_LESS "3.9")
+if (CMAKE_VERSION VERSION_LESS "3.17")
   # Needed for fixes.
   include("${CMAKE_CURRENT_LIST_DIR}/patches/ExternalProject.cmake")
 else ()
@@ -183,6 +183,11 @@ function (_superbuild_ExternalProject_add name)
     list(APPEND args
       LOG_BUILD   1
       LOG_INSTALL 1)
+  endif ()
+
+  if (SUPERBUILD_DEBUG_CONFIGURE_STEPS)
+    list(APPEND args
+      LOG_CONFIGURE 1)
   endif ()
 
   # Quote args to keep empty list elements around so that we properly parse

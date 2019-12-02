@@ -25,12 +25,19 @@ superbuild_add_project(mpi
       ${mpi_shared_args}
       ${mpi_fortran_flags}
       --disable-mpe
+      --disable-libxml2
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND
     $(MAKE) install
   PROCESS_ENVIRONMENT
     ${mpi_environment})
+
+if (UNIX AND NOT APPLE)
+  superbuild_append_flags(ld_flags
+    "-Wl,-rpath,${superbuild_install_location}/lib"
+    PROJECT_ONLY)
+endif ()
 
 if (NOT USE_SYSTEM_mpi)
   set(MPI_C_COMPILER <INSTALL_DIR>/bin/mpicc)

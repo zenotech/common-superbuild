@@ -1,5 +1,5 @@
-if (CMAKE_MINIMUM_REQUIRED_VERSION VERSION_LESS "3.0")
-  cmake_minimum_required(VERSION 3.0)
+if (CMAKE_MINIMUM_REQUIRED_VERSION VERSION_LESS "3.8")
+  cmake_minimum_required(VERSION 3.8)
 endif ()
 
 if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
@@ -43,12 +43,18 @@ superbuild_detect_64bit_target()
 # Setup shared library defaults.  If explicitly specified somehow, then default
 # to that.  Otherwise base the default on whether or not shared libs are even
 # supported.
-get_property(superbuild_shared_libs_supported
-  GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS)
-cmake_dependent_option(BUILD_SHARED_LIBS
-  "Build shared libraries (so/dylib/dll)." "${superbuild_shared_libs_supported}"
-  "superbuild_shared_libs_supported" OFF)
-mark_as_advanced(BUILD_SHARED_LIBS)
+if (NOT _superbuild_no_static_everywhere)
+  if (NOT DEFINED BUILD_SHARED_LIBS)
+    get_property(superbuild_shared_libs_supported
+      GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS)
+    cmake_dependent_option(BUILD_SHARED_LIBS
+      "Build shared libraries (so/dylib/dll)." "${superbuild_shared_libs_supported}"
+      "superbuild_shared_libs_supported" OFF)
+    mark_as_advanced(BUILD_SHARED_LIBS)
+  endif ()
+else ()
+  set(BUILD_SHARED_LIBS ON)
+endif ()
 
 # Setup PIC defaults.
 cmake_dependent_option(CMAKE_POSITION_INDEPENDENT_CODE
@@ -58,7 +64,9 @@ mark_as_advanced(CMAKE_POSITION_INDEPENDENT_CODE)
 
 # Verify shared libs and PIC compatibility
 if(BUILD_SHARED_LIBS AND NOT CMAKE_POSITION_INDEPENDENT_CODE)
-  message(WARNING "Forcing CMAKE_POSITION_INDEPENDENT_CODE to be ON as required by BUILD_SHARED_LIBS.")
+  if (NOT _superbuild_no_static_everywhere)
+    message(WARNING "Forcing CMAKE_POSITION_INDEPENDENT_CODE to be ON as required by BUILD_SHARED_LIBS.")
+  endif ()
   set_property(CACHE CMAKE_POSITION_INDEPENDENT_CODE PROPERTY VALUE ON)
 endif()
 
@@ -155,9 +163,20 @@ endif ()
 if (COMMAND superbuild_add_packaging)
   include(SuperbuildPackageMacros)
 
+  set(superbuild_export_variables)
   if (superbuild_python_executable)
-    set(superbuild_export_variables
+    list(APPEND superbuild_export_variables
       superbuild_python_executable)
+  endif ()
+
+  if (python_version)
+    list(APPEND superbuild_export_variables
+      python_version)
+  endif ()
+
+  if (superbuild_python_version)
+    list(APPEND superbuild_export_variables
+      superbuild_python_version)
   endif ()
 
   superbuild_add_packaging()
@@ -211,4 +230,9 @@ if (BUILD_TESTING)
     DIRECTORY "${CMAKE_CURRENT_LIST_DIR}"
     PROPERTY
       TEST_INCLUDE_FILE "${CMAKE_CURRENT_BINARY_DIR}/superbuild_testing_trampoline.cmake")
+endif ()
+
+if (python3_enabled)
+  include(python3.functions)
+  superbuild_python_write_reqs("${CMAKE_BINARY_DIR}/requirements.txt")
 endif ()

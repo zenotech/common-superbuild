@@ -19,23 +19,19 @@ if (fortran_enabled)
   set(numpy_fortran_compiler "${CMAKE_Fortran_COMPILER}")
 endif ()
 
-superbuild_add_project(numpy
+set(numpy_python_build_args
+  "--fcompiler=${numpy_fortran_compiler}")
+
+set(numpy_depends_optional)
+if (NOT WIN32)
+  set(numpy_depends_optional fortran lapack)
+endif()
+
+superbuild_add_project_python(numpy
+  PACKAGE numpy
   CAN_USE_SYSTEM
-  DEPENDS python pythonsetuptools
-  DEPENDS_OPTIONAL fortran lapack
-  BUILD_IN_SOURCE 1
-  CONFIGURE_COMMAND ""
-  BUILD_COMMAND
-    ${superbuild_python_executable}
-      setup.py
-      build
-      "--fcompiler=${numpy_fortran_compiler}"
-  INSTALL_COMMAND
-    ${superbuild_python_executable}
-      setup.py
-      install
-      --install-lib=<INSTALL_DIR>/lib/python2.7/site-packages
-      --prefix=<INSTALL_DIR>
+  DEPENDS pythonsetuptools
+  DEPENDS_OPTIONAL ${numpy_depends_optional}
   PROCESS_ENVIRONMENT
     MKL         "None"
     ATLAS       "None"

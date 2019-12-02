@@ -1,5 +1,7 @@
 set(boost_platform_options)
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT
+    (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang" AND
+      CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 10.0.1.10010046))
   # Set the platform to be clang if using it.
   list(APPEND boost_platform_options
     toolset=clang)
@@ -8,6 +10,12 @@ endif ()
 if (cxx11_enabled)
   list(APPEND boost_platform_options
     cxxflags=${CMAKE_CXX11_STANDARD_COMPILE_OPTION})
+endif ()
+
+if (NOT APPLE)
+  list(APPEND boost_platform_options
+    hardcode-dll-paths=true
+    "dll-path='\\$ORIGIN'")
 endif ()
 
 include(boost.common)

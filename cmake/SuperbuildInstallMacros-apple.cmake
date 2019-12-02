@@ -18,6 +18,7 @@ superbuild_apple_create_app(<DESTINATION> <NAME> <BINARY>
   [EXCLUDE_REGEXES <regex>...]
   [SEARCH_DIRECTORIES <library-path>...]
   [PLUGINS <plugin>...]
+  [ADDITIONAL_LIBRARIES <library-path>...]
   [FAKE_PLUGIN_PATHS] [CLEAN])
 ```
 
@@ -41,6 +42,10 @@ binaries. If `FAKE_PLUGIN_PATHS` is given, the plugin is treated as its own
 `@executable_path` which is useful when packaging plugins which may be used for
 multiple applications and may require additional libraries depending on the
 application.
+
+Additional libraries may be listed under the ``ADDITIONAL_LIBRARIES`` keyword
+and will be installed to the ``Libraries/`` directory in the bundle. These are
+full paths to the libraries.
 #]==]
 function (superbuild_apple_create_app destination name binary)
   set(options
@@ -50,7 +55,8 @@ function (superbuild_apple_create_app destination name binary)
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
     SEARCH_DIRECTORIES
-    PLUGINS)
+    PLUGINS
+    ADDITIONAL_LIBRARIES)
   cmake_parse_arguments(_create_app "${options}" "" "${multivalues}" ${ARGN})
 
   set(fixup_bundle_arguments)
@@ -88,6 +94,11 @@ function (superbuild_apple_create_app destination name binary)
   foreach (plugin IN LISTS _create_app_PLUGINS)
     set(fixup_bundle_arguments
       "${fixup_bundle_arguments} --plugin \"${plugin}\"")
+  endforeach ()
+
+  foreach (library IN LISTS _create_app_ADDITIONAL_LIBRARIES)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --library \"${library}\"")
   endforeach ()
 
   install(CODE

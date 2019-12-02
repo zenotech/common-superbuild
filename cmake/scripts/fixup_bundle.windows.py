@@ -3,7 +3,7 @@
 '''
 A tool to install PE-COFF binaries into in installation prefix.
 '''
-
+from __future__ import print_function
 
 import json
 import os
@@ -37,7 +37,7 @@ class Pipeline(object):
         stdout, stderr = command.communicate()
         if command.returncode:
             raise RuntimeError('failed to execute pipeline:\n%s' % stderr)
-        return stdout
+        return stdout.decode('utf-8')
 
 
 class Library(object):
@@ -52,7 +52,7 @@ class Library(object):
     the magic of the ``PATH`` environment variable.
     '''
 
-    def __init__(self, path, parent=None, search_paths=None):
+    def __init__(self, path, parent=None, ignore=[], search_paths=None):
         # This is the actual path to a physical file
         self._path = os.path.normpath(path)
 
@@ -62,6 +62,7 @@ class Library(object):
             self._search_paths = search_paths
 
         self._parent = parent
+        self._ignore = ignore
         self._dependencies = None
         self._is_cached = False
 
@@ -144,15 +145,20 @@ class Library(object):
             collection = {}
             msvc_runtimes = re.compile('MSVC[A-Z][0-9]*\\.dll')
             vc_runtimes = re.compile('VC[A-Z][0-9]*\\.dll')
+            win_core_runtimes = re.compile('api-ms-win-core-.*\\.dll')
             win_rt_runtimes = re.compile('api-ms-win-crt-.*\\.dll')
             for dep in self._get_dependencies():
                 if msvc_runtimes.match(dep):
                     continue
                 if vc_runtimes.match(dep):
                     continue
+                if win_core_runtimes.match(dep):
+                    continue
                 if win_rt_runtimes.match(dep):
                     continue
-                deplib = Library.from_reference(dep, self)
+                if dep in self._ignore:
+                    continue
+                deplib = Library.from_reference(dep, self, ignore=self._ignore)
                 if deplib is not None:
                     collection[dep] = deplib
             self._dependencies = collection
@@ -175,7 +181,7 @@ class Library(object):
     __search_cache = None
 
     @classmethod
-    def from_reference(cls, ref, loader):
+    def from_reference(cls, ref, loader, **kwargs):
         '''Create a library representation given a name and a loading binary.'''
         paths = []
 
@@ -194,17 +200,17 @@ class Library(object):
         for path in paths:
             libpath = os.path.join(path, ref)
             if os.path.exists(libpath):
-                return cls.from_path(libpath, parent=loader)
+                return cls.from_path(libpath, parent=loader, **kwargs)
 
         search_path = loader._find_library(ref)
         if os.path.exists(search_path):
-            return cls.from_path(search_path, parent=loader)
+            return cls.from_path(search_path, parent=loader, **kwargs)
         raise RuntimeError('Unable to find the %s library from %s: %s' % (ref, loader.path, ', '.join(paths)))
 
     __cache = {}
 
     @classmethod
-    def from_path(cls, path, parent=None):
+    def from_path(cls, path, parent=None, **kwargs):
         '''Create a library representation from a path.'''
         if not os.path.exists(path):
             raise RuntimeError('%s does not exist' % path)
@@ -216,7 +222,7 @@ class Library(object):
                 search_paths = parent._search_paths
 
             cls.__cache[path] = Library(path, parent=parent,
-                                        search_paths=search_paths)
+                                        search_paths=search_paths, **kwargs)
 
         return cls.__cache[path]
 
@@ -265,7 +271,7 @@ def copy_library(destination, bundle_dest, library, dry_run=False):
     if library._is_cached:
         return
 
-    print 'Copying %s ==> %s' % (library.path, bundle_dest)
+    print('Copying %s ==> %s' % (library.path, bundle_dest))
 
     app_dest = os.path.join(destination, bundle_dest)
     binary = os.path.join(app_dest, library.name)
@@ -300,6 +306,9 @@ def _arg_parser():
     parser.add_argument('-e', '--exclude', metavar='REGEX', action='append',
                         default=[],
                         help='regular expression to exclude from the bundle')
+    parser.add_argument('-I', '--ignore', metavar='DLLNAME', action='append',
+                        default=[],
+                        help='DLL names to ignore in the dependency list')
     parser.add_argument('-s', '--search', metavar='PATH', action='append',
                         default=[],
                         help='add a directory to search for dependent libraries')
@@ -329,7 +338,7 @@ def _arg_parser():
 def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, manifest, dry_run=False):
     '''Install the main binary into the package.'''
     # Start looking at our main executable's dependencies.
-    deps = binary.dependencies.values()
+    deps = list(binary.dependencies.values())
     while deps:
         dep = deps.pop(0)
 
@@ -355,7 +364,7 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
     app_dest = os.path.join(bundle_dest, binary.bundle_location)
     binary_destination = os.path.join(app_dest, os.path.basename(binary.path))
     installed[binary.path] = (binary, binary_destination)
-    print 'Copying %s ==> %s' % (binary.path, binary.bundle_location)
+    print('Copying %s ==> %s' % (binary.path, binary.bundle_location))
     if not dry_run:
         _os_makedirs(app_dest)
         shutil.copy(binary.path, app_dest)
@@ -378,13 +387,13 @@ def main(args):
     opts = parser.parse_args(args)
 
     if opts.type == 'executable':
-        main_exe = Executable(opts.binary, search_paths=opts.search)
+        main_exe = Executable(opts.binary, ignore=opts.ignore, search_paths=opts.search)
         libdir = main_exe.bundle_location
     elif opts.type == 'module':
         if opts.location is None:
             raise RuntimeError('Modules require a location')
 
-        main_exe = Module(opts.binary, opts.location,
+        main_exe = Module(opts.binary, opts.location, ignore=opts.ignore,
                           search_paths=opts.search)
         if opts.libdir is None:
             libdir = main_exe.bundle_location
@@ -397,8 +406,8 @@ def main(args):
     if not opts.dry_run and opts.clean and os.path.exists(bundle_dest):
         shutil.rmtree(bundle_dest)
 
-    includes = map(re.compile, opts.include)
-    excludes = map(re.compile, opts.exclude)
+    includes = list(map(re.compile, opts.include))
+    excludes = list(map(re.compile, opts.exclude))
     system_dlls = re.compile(r'[a-z]:\\windows\\system.*\.dll', re.IGNORECASE)
 
     def is_excluded(path):

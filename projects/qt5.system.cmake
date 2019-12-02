@@ -11,3 +11,7 @@ foreach (qt5_component IN LISTS qt5_components)
   superbuild_add_extra_cmake_args(
     -DQt5${qt5_component}_DIR:PATH=${Qt5_DIR}/../Qt5${qt5_component})
 endforeach ()
+
+if (APPLE)
+  get_filename_component(qt5_rpath "${Qt5_DIR}/../.." REALPATH)
+endif ()

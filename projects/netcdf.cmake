@@ -9,15 +9,17 @@ superbuild_add_project(netcdf
 
   CMAKE_ARGS
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
+    -DNC_FIND_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DBUILD_TESTING:BOOL=OFF
+    -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib
     -DENABLE_TESTS:BOOL=OFF
     -DBUILD_UTILITIES:BOOL=OFF
     -DUSE_SZIP:BOOL=OFF
     -DENABLE_DAP:BOOL=OFF
     ${netcdf_libdir})
 
-superbuild_apply_patch(netcdf vtk-tag
-  "Add #define to mark API as VTK-modified")
-
-superbuild_apply_patch(netcdf find-hdf5-hl
-  "Fix use of old, undocumented FindHDF5 variable")
+# ncconfigure.h is not intended for standalone include
+superbuild_apply_patch(netcdf fix-include
+  "fix include to use config.h instead of ncconfigure.h")
+superbuild_apply_patch(netcdf fix-size-uchar
+  "fix check on size of uchar: test for existence first")

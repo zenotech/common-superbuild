@@ -15,8 +15,8 @@ elseif (NOT MSVC_VERSION VERSION_GREATER 1900)
   set(msvc_ver 14.0)
 elseif (NOT MSVC_VERSION VERSION_GREATER 1910)
   set(msvc_ver 14.1)
-elseif (NOT MSVC_VERSION VERSION_GREATER 1920)
-  set(msvc_ver 15.0)
+elseif (NOT MSVC_VERSION VERSION_GREATER 1930)
+  set(msvc_ver 14.2)
 else ()
   message(FATAL_ERROR "Unrecognized MSVC version: ${MSVC_VERSION}")
 endif ()
@@ -37,8 +37,10 @@ include(boost.common)
 # This patch is applied so that a rogue junction is not left inside of the
 # build tree for dashboard machines. CMake cannot delete such files, so we just
 # remove the code which creates such things here.
-superbuild_apply_patch(boost no-junction-test
-  "Assume junctions work on Windows")
+if (NOT boost_no_junction_patch_necessary)
+  superbuild_apply_patch(boost no-junction-test
+    "Assume junctions work on Windows")
+endif ()
 
 superbuild_project_add_step(boost-copylibs
   COMMAND   "${CMAKE_COMMAND}"

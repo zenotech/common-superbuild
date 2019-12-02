@@ -1,2 +1,3 @@
 superbuild_add_project_python(pythondateutil
-  pythonsetuptools)
+  PACKAGE dateutil
+  DEPENDS pythonsetuptools)

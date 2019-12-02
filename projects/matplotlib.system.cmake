@@ -1,2 +1,1 @@
-# Nothing to do; assuming matplotlib will be available at runtime in the Python
-# environment.
+superbuild_require_python_package(matplotlib "matplotlib")
