@@ -11,7 +11,8 @@ if (NOT qt5_SOURCE_SELECTION VERSION_LESS "5.12")
     -xkbcommon)
 endif ()
 
-list(APPEND qt5_process_environment PROCESS_ENVIRONMENT PKG_CONFIG_PATH <INSTALL_DIR>/lib/pkgconfig)
+list(APPEND qt5_process_environment
+  PKG_CONFIG_PATH <INSTALL_DIR>/lib/pkgconfig)
 
 include(qt5.common)
 
