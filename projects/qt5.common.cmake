@@ -27,6 +27,13 @@ if (CMAKE_CXX_COMPILER_LAUNCHER)
     "CXX=${CMAKE_CXX_COMPILER_LAUNCHER} ${CMAKE_CXX_COMPILER}")
 endif ()
 
+option(qt5_SKIP_PCH "Skip PCH" OFF)
+mark_as_advanced(qt5_SKIP_PCH)
+if (qt5_SKIP_PCH)
+  list(APPEND qt5_options
+    -no-pch)
+endif ()
+
 set(qt5_build_commands
   BUILD_COMMAND   $(MAKE) ${qt5_make_options}
   INSTALL_COMMAND make install)
