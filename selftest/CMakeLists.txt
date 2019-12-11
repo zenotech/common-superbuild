@@ -10,6 +10,7 @@ function (superbuild_find_projects var)
     ffi
     fortran
     freetype
+    gperf
     hdf5
     lapack
     matplotlib
