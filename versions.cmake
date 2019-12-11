@@ -77,8 +77,8 @@ superbuild_set_revision(gperf
   URL_MD5 9e251c0a618ad0824b51117d5d9db87e)
 
 superbuild_set_revision(fontconfig
-  URL     "https://www.paraview.org/files/dependencies/fontconfig-2.12.6.tar.bz2"
-  URL_MD5 733f5e2371ca77b69707bd7b30cc2163)
+  URL     "https://www.paraview.org/files/dependencies/fontconfig-2.13.1.tar.bz2"
+  URL_MD5 36cdea1058ef13cbbfdabe6cb019dc1c)
 
 superbuild_set_revision(libxml2
   URL     "https://www.paraview.org/files/dependencies/libxml2-2.9.9.tar.gz"
