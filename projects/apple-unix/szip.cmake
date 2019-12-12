@@ -8,7 +8,7 @@ superbuild_add_project(szip
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       ${szip_shared_args}
-      --enable-encoding
+      --disable-encoding
       --prefix=<INSTALL_DIR>
   BUILD_COMMAND
     $(MAKE)
