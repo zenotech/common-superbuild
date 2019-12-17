@@ -297,3 +297,7 @@ superbuild_set_revision(pythonattrs
 superbuild_set_revision(ffi
   URL     "https://www.paraview.org/files/dependencies/libffi-3.0.5.tar.gz"
   URL_MD5 29544f542140da929221805e332407b9)
+
+superbuild_set_revision(utillinux
+  URL     "https://www.paraview.org/files/dependencies/util-linux-2.34.tar.xz"
+  URL_MD5 a78cbeaed9c39094b96a48ba8f891d50)
