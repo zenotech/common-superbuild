@@ -368,10 +368,10 @@ class Library(object):
         paths.append(os.path.join(os.path.dirname(loader.path), ref))
         for path in paths:
             if os.path.exists(path):
-                return cls.from_path(path, parent=loader)
+                return cls.from_path(os.path.realpath(path), parent=loader)
         search_path = loader._find_library(ref)
         if os.path.exists(search_path):
-            return cls.from_path(search_path, parent=loader)
+            return cls.from_path(os.path.realpath(search_path), parent=loader)
         raise RuntimeError('Unable to find the %s library from %s' % (ref, loader.path))
 
     __cache = {}
