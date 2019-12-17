@@ -77,8 +77,8 @@ superbuild_set_revision(gperf
   URL_MD5 9e251c0a618ad0824b51117d5d9db87e)
 
 superbuild_set_revision(fontconfig
-  URL     "https://www.paraview.org/files/dependencies/fontconfig-2.12.6.tar.bz2"
-  URL_MD5 733f5e2371ca77b69707bd7b30cc2163)
+  URL     "https://www.paraview.org/files/dependencies/fontconfig-2.13.1.tar.bz2"
+  URL_MD5 36cdea1058ef13cbbfdabe6cb019dc1c)
 
 superbuild_set_revision(libxml2
   URL     "https://www.paraview.org/files/dependencies/libxml2-2.9.9.tar.gz"
@@ -297,3 +297,7 @@ superbuild_set_revision(pythonattrs
 superbuild_set_revision(ffi
   URL     "https://www.paraview.org/files/dependencies/libffi-3.0.5.tar.gz"
   URL_MD5 29544f542140da929221805e332407b9)
+
+superbuild_set_revision(utillinux
+  URL     "https://www.paraview.org/files/dependencies/util-linux-2.34.tar.xz"
+  URL_MD5 a78cbeaed9c39094b96a48ba8f891d50)
