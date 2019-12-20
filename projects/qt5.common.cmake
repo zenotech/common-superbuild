@@ -63,8 +63,8 @@ else ()
   list(APPEND qt5_options "-no-openssl")
 endif ()
 
-# Add option to build qtsvg
-option(qt5_ENABLE_SVG "Build Qt5 SVG library." OFF)
+# Add option to build qtsvg, on by default for svg icon support
+option(qt5_ENABLE_SVG "Build Qt5 SVG library." ON)
 mark_as_advanced(qt5_ENABLE_SVG)
 if (NOT qt5_ENABLE_SVG)
   list(APPEND qt5_options
