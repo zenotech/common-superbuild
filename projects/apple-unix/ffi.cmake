@@ -8,6 +8,7 @@ superbuild_add_project(ffi
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
+      --disable-multi-os-directory
       --disable-docs
       ${ffi_shared_args}
   BUILD_COMMAND
