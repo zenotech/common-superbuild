@@ -19,12 +19,15 @@ set(superbuild_python_version "${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}"
 # This will add PYTHON_LIBRARY, PYTHON_EXECUTABLE, PYTHON_INCLUDE_DIR
 # variables. User can set/override these to change the Python being used.
 superbuild_add_extra_cmake_args(
-  -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE})
+  -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}
+  -DPython2_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE})
 
 if (python_FIND_LIBRARIES)
   superbuild_add_extra_cmake_args(
     -DPYTHON_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR}
-    -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY})
+    -DPYTHON_LIBRARY:FILEPATH=${PYTHON_LIBRARY}
+    -DPython2_INCLUDE_DIR:PATH=${PYTHON_INCLUDE_DIR}
+    -DPython2_LIBRARY:FILEPATH=${PYTHON_LIBRARY})
 endif()
 
 set(superbuild_python_executable "${PYTHON_EXECUTABLE}"
