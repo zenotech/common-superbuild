@@ -6,7 +6,7 @@ endif ()
 
 superbuild_add_project(freetype
   CAN_USE_SYSTEM
-  DEPENDS zlib
+  DEPENDS zlib png
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
