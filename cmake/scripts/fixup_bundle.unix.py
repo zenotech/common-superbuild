@@ -121,7 +121,8 @@ class Library(object):
                 if not symlink_dir == dirname:
                     continue
                 symlink_bases.append(symlink_base)
-            symlink_bases.remove(self.name)
+            if self.name in symlink_bases:
+                symlink_bases.remove(self.name)
             self._symlinks = symlink_bases
 
         return self._symlinks
