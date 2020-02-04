@@ -29,6 +29,10 @@ The `superbuild_set_revision` function stores the given `ARG` for use when then
 `NAME` project is built. See the documentation for [ExternalProject][] for the
 supported download location arguments.
 
+If `<NAME>_SKIP_VERIFICATION` is defined and evaluates to TRUE, then URL_MD5 and
+URL_HASH arguments passed to this function are skipped thus avoiding any archive
+verification for the project.
+
 Note that validation of the arguments only happens when the project is being
 built.
 
@@ -40,9 +44,16 @@ function (superbuild_set_revision name)
       "${name}_revision" SET)
 
   if (NOT have_revision)
+    if (${name}_SKIP_VERIFICATION)
+      set(keys URL_HASH URL_MD5)
+      cmake_parse_arguments(_args "" "${keys}" "" ${ARGN})
+      set(args "${_args_UNPARSED_ARGUMENTS}")
+    else()
+      set(args "${ARGN}")
+    endif()
     set_property(GLOBAL
       PROPERTY
-        "${name}_revision" "${ARGN}")
+        "${name}_revision" "${args}")
   endif ()
 endfunction ()
 
