@@ -32,6 +32,9 @@ function (superbuild_install_qt5_plugin_paths output)
     if (EXISTS "${qt5_base_libdir}/qt5")
       # This is the layout for Linux distributions.
       set(qt5_base_libdir "${qt5_base_libdir}/qt5")
+    elseif (EXISTS "${qt5_base_libdir}/../plugins")
+      # This is the layout for Qt binaries.
+      set(qt5_base_libdir "${qt5_base_libdir}/..")
     elseif (EXISTS "${qt5_base_libdir}/../libexec/qt5")
       # This is the layout for MacPorts.
       set(qt5_base_libdir "${qt5_base_libdir}/../libexec/qt5")
