@@ -16,6 +16,8 @@ if (ENABLE_python3 OR python3_enabled)
     PACKAGE matplotlib
     DEPENDS numpy png freetype zlib pythondateutil pytz pythonpyparsing pythoncycler pythonsetuptools cxx11 pythonkiwisolver
     ${matplotlib_args})
+  superbuild_apply_patch(matplotlib nostatic
+    "Disable static builds")
 else ()
   set(matplotlib_process_environment)
   if (NOT WIN32)

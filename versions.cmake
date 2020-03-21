@@ -132,8 +132,8 @@ if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND
 else ()
   if (ENABLE_python3 OR python3_enabled)
     superbuild_set_revision(matplotlib
-      URL "https://www.paraview.org/files/dependencies/matplotlib-3.1.1-no-jquery.tar.xz"
-      URL_MD5 20f4c3a9ba1df1d6f7b2a509f617ddb1)
+      URL "https://www.paraview.org/files/dependencies/matplotlib-3.2.1.tar.gz"
+      URL_MD5 9186b1e9f1fc7d555f2abf64b35dea5b)
   else()
     superbuild_set_revision(matplotlib
       URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1_notests.tar.gz"
