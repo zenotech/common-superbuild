@@ -88,48 +88,19 @@ superbuild_set_revision(nlohmannjson
   URL     "https://www.paraview.org/files/dependencies/nlohmannjson-3.6.1.tar.gz"
   URL_MD5 c53592d55e7fec787cf0a406d36098a3)
 
-if (WIN32)
-  set(qt5_ext "zip")
-else ()
-  set(qt5_ext "tar.xz")
-endif ()
-set(qt5_8_ver "5.8.0")
-if (WIN32)
-  set(qt5_8_md5 "1e372fabc9d97a32877cb4adb377e7c8")
-else ()
-  set(qt5_8_md5 "66660cd3d9e1a6fed36e88adcb72e9fe")
-endif ()
-set(qt5_9_ver "5.9.2")
-if (WIN32)
-  set(qt5_9_md5 "d5239e19f6b80dcf44f4dd2de04c7d3d")
-else ()
-  set(qt5_9_md5 "738d1b98106e1bd39f00cc228beb522a")
-endif ()
-set(qt5_10_ver "5.10.1")
-if (WIN32)
-  set(qt5_10_md5 "60c4ea41950857c65015fb6cffcb2497")
-else ()
-  set(qt5_10_md5 "7e167b9617e7bd64012daaacb85477af")
-endif ()
-set(qt5_12_ver "5.12.3")
-if (WIN32)
-  set(qt5_12_md5 "5da2e14a9f5db620c578fafd219592d7")
-else ()
-  set(qt5_12_md5 "38017e0ed88b9baba063bd723d9ca8b2")
-endif ()
 superbuild_set_selectable_source(qt5
   SELECT 5.8
-    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-${qt5_8_ver}.${qt5_ext}"
-    URL_MD5 "${qt5_8_md5}"
+    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-5.8.0.tar.xz"
+    URL_MD5 "66660cd3d9e1a6fed36e88adcb72e9fe"
   SELECT 5.9
-    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-${qt5_9_ver}.${qt5_ext}"
-    URL_MD5 "${qt5_9_md5}"
+    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-5.9.2.tar.xz"
+    URL_MD5 "738d1b98106e1bd39f00cc228beb522a"
   SELECT 5.10
-    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-${qt5_10_ver}.${qt5_ext}"
-    URL_MD5 "${qt5_10_md5}"
+    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.10.1.tar.xz"
+    URL_MD5 "7e167b9617e7bd64012daaacb85477af"
   SELECT 5.12 DEFAULT
-    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-${qt5_12_ver}.${qt5_ext}"
-    URL_MD5 "${qt5_12_md5}")
+    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.12.2.tar.xz"
+    URL_MD5 "38017e0ed88b9baba063bd723d9ca8b2")
 
 if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
   if (superbuild_is_64bit)
