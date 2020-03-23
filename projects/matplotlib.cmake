@@ -18,6 +18,8 @@ if (ENABLE_python3 OR python3_enabled)
     ${matplotlib_args})
   superbuild_apply_patch(matplotlib nostatic
     "Disable static builds")
+  superbuild_apply_patch(matplotlib no-jquery
+    "Disable jquery download")
 else ()
   set(matplotlib_process_environment)
   if (NOT WIN32)
