@@ -1,3 +1,16 @@
+# Check to see if the build path is too short for the packages.
+if (numpy_enabled AND UNIX AND NOT APPLE)
+  string(LENGTH "${CMAKE_BINARY_DIR}" numpy_bindir_len)
+  # Emperically determined. If longer paths still have the issue, raise this limit.
+  if (numpy_bindir_len LESS 24)
+    message(WARNING
+      "Note that your build tree (${CMAKE_BINARY_DIR}) is too short for "
+      "packaging (due to limited RPATH space in the header). Please use a "
+      "longer build directory to avoid this problem. You may ignore it if you "
+      "are not building packages.")
+  endif ()
+endif ()
+
 set(numpy_process_environment)
 if (lapack_enabled)
   list(APPEND numpy_process_environment
