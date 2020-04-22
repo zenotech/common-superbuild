@@ -56,6 +56,7 @@ function (superbuild_find_projects var)
     list(APPEND projects
       ffmpeg
       libxml2
+      pkgconf
       scipy)
   endif ()
 
