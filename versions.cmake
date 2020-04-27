@@ -206,8 +206,8 @@ superbuild_set_revision(pythoncycler
   URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)
 
 superbuild_set_revision(pythonsetuptools
-  URL     "https://www.paraview.org/files/dependencies/setuptools-23.0.0.tar.gz"
-  URL_MD5 100a90664040f8ff232fbac02a4c5652)
+  URL     "https://www.paraview.org/files/dependencies/setuptools-46.1.3.zip"
+  URL_MD5 562328cde5a33564c0ebf16699a27b65)
 
 superbuild_set_revision(pythonautobahn
   URL     "https://www.paraview.org/files/dependencies/autobahn-17.10.1.tar.gz"
