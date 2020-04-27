@@ -242,8 +242,8 @@ superbuild_set_revision(pythonzope
   URL_MD5 9a63e8c8b614dc6d6944fcbd9c105f45)
 
 superbuild_set_revision(pythonzopeinterface
-  URL     "https://www.paraview.org/files/dependencies/zope.interface-4.4.3.tar.gz"
-  URL_MD5 8700a4f527c1203b34b10c2b4e7a6912)
+  URL     "https://www.paraview.org/files/dependencies/zope.interface-5.1.0.tar.gz"
+  URL_MD5 53bccb21aab8894a68f40ee2f202465d)
 
 superbuild_set_revision(pythonsix
   URL     "https://www.paraview.org/files/dependencies/six-1.11.0.tar.gz"
