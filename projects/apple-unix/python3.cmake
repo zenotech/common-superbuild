@@ -45,11 +45,11 @@ set(superbuild_python_version "3.7"
 superbuild_add_extra_cmake_args(
   -DPython3_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python${superbuild_python_version}m
   -DPython3_INCLUDE_DIR:PATH=<INSTALL_DIR>/include/python${superbuild_python_version}m
-  -DPython3_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}m.so
-  -DPython3_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}m.so
+  -DPython3_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}m${CMAKE_SHARED_LIBRARY_SUFFIX}
+  -DPython3_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}m${CMAKE_SHARED_LIBRARY_SUFFIX}
 
   -DPYTHON_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python${superbuild_python_version}m
   -DPYTHON_INCLUDE_DIR:PATH=<INSTALL_DIR>/include/python${superbuild_python_version}m
-  -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}m.so
-  -DPYTHON_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}m.so
+  -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}m${CMAKE_SHARED_LIBRARY_SUFFIX}
+  -DPYTHON_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}m${CMAKE_SHARED_LIBRARY_SUFFIX}
 )
