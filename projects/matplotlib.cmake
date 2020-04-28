@@ -12,14 +12,33 @@ if (ENABLE_python3 OR python3_enabled)
         CL "/I<INSTALL_DIR>/include"
         LINK "/LIBPATH:<INSTALL_DIR>/lib")
   endif()
+
+  set(matplotlib_depends)
+  if (APPLE)
+    list(APPEND matplotlib_depends
+      pkgconf)
+  endif ()
+
+  if (pkgconf_enabled)
+    list(APPEND matplotlib_process_environment
+      PKG_CONFIG "${superbuild_pkgconf}")
+  endif ()
+
   superbuild_add_project_python(matplotlib
     PACKAGE matplotlib
     DEPENDS numpy png freetype zlib pythondateutil pytz pythonpyparsing pythoncycler pythonsetuptools cxx11 pythonkiwisolver
+            ${matplotlib_depends}
+    PROCESS_ENVIRONMENT
+      "${matplotlib_process_environment}"
     ${matplotlib_args})
+  superbuild_apply_patch(matplotlib nostatic
+    "Disable static builds")
+  superbuild_apply_patch(matplotlib no-jquery
+    "Disable jquery download")
 else ()
   set(matplotlib_process_environment)
   if (NOT WIN32)
-    set(matplotlib_process_environment
+    list(APPEND matplotlib_process_environment
       PYTHONPATH "<INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages")
   endif ()
 

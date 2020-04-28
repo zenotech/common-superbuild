@@ -120,25 +120,25 @@ else ()
     URL_MD5 136c5ee1bc4b259a12a7efe331b15d64)
 endif ()
 
-if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
-  if (superbuild_is_64bit)
-    superbuild_set_revision(matplotlib
-      URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20180905.tar.gz"
-      URL_MD5 0c96b84e87b4db50cdc4d18869ae74ed)
-  else ()
-    message(FATAL_ERROR
-      "Prebuilt Python binaries for Windows 32 bit are not provided.")
-  endif ()
+if (ENABLE_python3 OR python3_enabled)
+  superbuild_set_revision(matplotlib
+    URL "https://www.paraview.org/files/dependencies/matplotlib-3.2.1.tar.gz"
+    URL_MD5 9186b1e9f1fc7d555f2abf64b35dea5b)
 else ()
-  if (ENABLE_python3 OR python3_enabled)
-    superbuild_set_revision(matplotlib
-      URL "https://www.paraview.org/files/dependencies/matplotlib-3.1.1-no-jquery.tar.xz"
-      URL_MD5 20f4c3a9ba1df1d6f7b2a509f617ddb1)
-  else()
+  if (WIN32 AND NOT superbuild_building_prebuilt_python)
+    if (superbuild_is_64bit)
+      superbuild_set_revision(matplotlib
+        URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20180905.tar.gz"
+        URL_MD5 0c96b84e87b4db50cdc4d18869ae74ed)
+    else ()
+      message(FATAL_ERROR
+        "Prebuilt Python binaries for Windows 32 bit are not provided.")
+    endif ()
+  else ()
     superbuild_set_revision(matplotlib
       URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1_notests.tar.gz"
       URL_MD5 30ee59119599331bf1f3b6e838fee9a8)
-  endif()
+  endif ()
 endif ()
 
 if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
@@ -206,8 +206,8 @@ superbuild_set_revision(pythoncycler
   URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)
 
 superbuild_set_revision(pythonsetuptools
-  URL     "https://www.paraview.org/files/dependencies/setuptools-23.0.0.tar.gz"
-  URL_MD5 100a90664040f8ff232fbac02a4c5652)
+  URL     "https://www.paraview.org/files/dependencies/setuptools-46.1.3.zip"
+  URL_MD5 562328cde5a33564c0ebf16699a27b65)
 
 superbuild_set_revision(pythonautobahn
   URL     "https://www.paraview.org/files/dependencies/autobahn-17.10.1.tar.gz"
@@ -242,8 +242,8 @@ superbuild_set_revision(pythonzope
   URL_MD5 9a63e8c8b614dc6d6944fcbd9c105f45)
 
 superbuild_set_revision(pythonzopeinterface
-  URL     "https://www.paraview.org/files/dependencies/zope.interface-4.4.3.tar.gz"
-  URL_MD5 8700a4f527c1203b34b10c2b4e7a6912)
+  URL     "https://www.paraview.org/files/dependencies/zope.interface-5.1.0.tar.gz"
+  URL_MD5 53bccb21aab8894a68f40ee2f202465d)
 
 superbuild_set_revision(pythonsix
   URL     "https://www.paraview.org/files/dependencies/six-1.11.0.tar.gz"
@@ -272,3 +272,7 @@ superbuild_set_revision(ffi
 superbuild_set_revision(utillinux
   URL     "https://www.paraview.org/files/dependencies/util-linux-2.34.tar.xz"
   URL_MD5 a78cbeaed9c39094b96a48ba8f891d50)
+
+superbuild_set_revision(pkgconf
+  URL     "https://www.paraview.org/files/dependencies/pkgconf-1.6.3.tar.xz"
+  URL_MD5 f93fb1be95a5cb62e43c219c82b5791a)
