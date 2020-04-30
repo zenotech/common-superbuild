@@ -287,7 +287,7 @@ function (superbuild_apple_install_python destination name)
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
-  cmake_parse_arguments(_install_python "" "" "${multivalues}" ${ARGN})
+  cmake_parse_arguments(_install_python "" "PYTHON_DESTINATION" "${multivalues}" ${ARGN})
 
   if (NOT _install_python_MODULES)
     message(FATAL_ERROR "No modules specified.")
@@ -295,6 +295,10 @@ function (superbuild_apple_install_python destination name)
 
   if (NOT _install_python_MODULE_DIRECTORIES)
     message(FATAL_ERROR "No modules search paths specified.")
+  endif ()
+
+  if (NOT _install_python_PYTHON_DESTINATION)
+    set(_install_python_PYTHON_DESTINATION "Contents/Python")
   endif ()
 
   set(fixup_bundle_arguments)
@@ -316,7 +320,7 @@ function (superbuild_apple_install_python destination name)
 
     foreach (python_module IN LISTS python_modules)
       superbuild_apple_install_python_module(\"\${bundle_destination}/\${bundle_name}\"
-        \"\${python_module}\" \"\${module_directories}\" \"Contents/Python\")
+        \"\${python_module}\" \"\${module_directories}\" \"${_install_python_PYTHON_DESTINATION}\")
     endforeach ()"
     COMPONENT superbuild)
 endfunction ()
