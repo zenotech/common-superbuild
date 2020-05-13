@@ -1,12 +1,18 @@
-set(boost_platform_options)
+set(boost_toolset_option)
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT
     (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang" AND
       CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 10.0.1.10010046))
-  # Set the platform to be clang if using it.
-  list(APPEND boost_platform_options
+  # Set the toolset to be clang if using it.
+  list(APPEND boost_toolset_option
     toolset=clang)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  # Set the toolset to be GCC if using it.
+  list(APPEND boost_toolset_option
+    toolset=gcc)
 endif ()
 
+set(boost_platform_options
+  ${boost_toolset_option})
 if (cxx11_enabled)
   list(APPEND boost_platform_options
     cxxflags=${CMAKE_CXX11_STANDARD_COMPILE_OPTION})

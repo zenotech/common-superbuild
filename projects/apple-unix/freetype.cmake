@@ -6,10 +6,11 @@ endif ()
 
 superbuild_add_project(freetype
   CAN_USE_SYSTEM
-  DEPENDS zlib
+  DEPENDS zlib png
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
+      --with-harfbuzz=no
       ${shared_args}
       --with-sysroot=<INSTALL_DIR>
   BUILD_COMMAND

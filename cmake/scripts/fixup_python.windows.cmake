@@ -8,6 +8,12 @@ function (superbuild_windows_install_python_module destination module search_pat
         DESTINATION "${destination}/${location}")
     endif ()
 
+    if (EXISTS "${search_path}/${module}.zip")
+      file(INSTALL
+        FILES       "${search_path}/${module}.zip"
+        DESTINATION "${destination}/${location}")
+    endif()
+
     if (EXISTS "${search_path}/${module}.pyd")
       set(module_pyd "${search_path}/${module}.pyd")
     else ()

@@ -26,10 +26,17 @@ foreach (boost_library IN LISTS boost_libraries)
     --with-${boost_library})
 endforeach ()
 
+set(boost_bootstrap_toolset)
+if (boost_toolset_option)
+  set(boost_bootstrap_toolset
+    "--with-${boost_toolset_option}")
+endif ()
+
 if (WIN32)
   set(boost_build_commands
     CONFIGURE_COMMAND
       <SOURCE_DIR>/bootstrap.bat
+        ${boost_bootstrap_toolset}
     BUILD_COMMAND
       <SOURCE_DIR>/b2
         ${boost_options}
@@ -42,6 +49,7 @@ else ()
   set(boost_build_commands
     CONFIGURE_COMMAND
       <SOURCE_DIR>/bootstrap.sh
+        ${boost_bootstrap_toolset}
     BUILD_COMMAND
       <SOURCE_DIR>/b2
         ${boost_options}

@@ -28,13 +28,16 @@ function (superbuild_install_qt5_plugin_paths output)
         "Installing plugins from a system Qt5 requires `Qt5_DIR` to be set.")
     endif ()
 
-    set(qt5_base_libdir "${Qt5_DIR}/../../..")
+    set(qt5_base_libdir "${Qt5_DIR}/../..")
     if (EXISTS "${qt5_base_libdir}/qt5")
       # This is the layout for Linux distributions.
       set(qt5_base_libdir "${qt5_base_libdir}/qt5")
-    elseif (EXISTS "${qt5_base_libdir}/libexec/qt5")
+    elseif (EXISTS "${qt5_base_libdir}/../plugins")
+      # This is the layout for Qt binaries.
+      set(qt5_base_libdir "${qt5_base_libdir}/..")
+    elseif (EXISTS "${qt5_base_libdir}/../libexec/qt5")
       # This is the layout for MacPorts.
-      set(qt5_base_libdir "${qt5_base_libdir}/libexec/qt5")
+      set(qt5_base_libdir "${qt5_base_libdir}/../libexec/qt5")
     endif ()
   else ()
     set(qt5_base_libdir "${superbuild_install_location}")

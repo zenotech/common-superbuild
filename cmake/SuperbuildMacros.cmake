@@ -86,6 +86,9 @@ following extensions:
   - `SELECTABLE` If present, this project's `ENABLE_` option will be visible
     (and all non-selectable projects will be hidden). May be set externally
     with the `_superbuild_${NAME}_selectable` flag.
+  - `BUILD_SHARED_LIBS_INDEPENDENT` If present, an option to change the build
+    shared flags setting for the project will be exposed. By default, the value
+    of `<same>` is used to match the superbuild's configuration.
   - `HELP_STRING`
     Set the description string for the option to enable the project.
   - `DEPENDS_OPTIONAL <project>...`
@@ -109,6 +112,7 @@ function (superbuild_add_project name)
   set(allow_developer_mode FALSE)
   set(debuggable FALSE)
   set(selectable FALSE)
+  set(build_shared_libs_independent FALSE)
   set(help_string)
   set(depends)
   set(optional_depends)
@@ -138,6 +142,9 @@ function (superbuild_add_project name)
       set(grab)
     elseif (arg STREQUAL "SELECTABLE")
       set(selectable TRUE)
+      set(grab)
+    elseif (arg STREQUAL "BUILD_SHARED_LIBS_INDEPENDENT")
+      set(build_shared_libs_independent TRUE)
       set(grab)
     elseif (arg STREQUAL "HELP_STRING")
       set(grab help_string)
@@ -260,6 +267,12 @@ function (superbuild_add_project name)
       set_property(GLOBAL
         PROPERTY
           "${project}_selectable" TRUE)
+    endif ()
+
+    if (build_shared_libs_independent)
+      set_property(GLOBAL
+        PROPERTY
+          "${name}_build_shared_libs_independent" TRUE)
     endif ()
 
     set_property(GLOBAL
@@ -907,6 +920,24 @@ function (superbuild_process_dependencies)
       endif ()
     endif ()
 
+    get_property(build_shared_libs_independent GLOBAL
+      PROPERTY "${project}_build_shared_libs_independent" SET)
+    if (build_shared_libs_independent)
+      set("BUILD_SHARED_LIBS_${project}" "<same>"
+        CACHE STRING "The build type for the ${project} project.")
+      set_property(CACHE "BUILD_SHARED_LIBS_${project}"
+        PROPERTY
+          STRINGS "<same>;ON;OFF")
+
+      get_property(build_shared_libs_options
+        CACHE     "BUILD_SHARED_LIBS_${project}"
+        PROPERTY  STRINGS)
+      if (NOT BUILD_SHARED_LIBS_${project} IN_LIST build_shared_libs_options)
+        string(REPLACE ";" ", " build_shared_libs_options "${build_shared_libs_options}")
+        message(FATAL_ERROR "BUILD_SHARED_LIBS_${project} must be one of: ${build_shared_libs_options}.")
+      endif ()
+    endif ()
+
     set(current_project "${project}")
 
     set(is_buildable_project FALSE)
@@ -1031,6 +1062,15 @@ function (_superbuild_add_project_internal name)
   else ()
     list(APPEND cmake_params "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}")
     string(TOUPPER "${CMAKE_BUILD_TYPE}" project_build_type)
+  endif ()
+
+  # Handle the BUILD_SHARED_LIBS_INDEPENDENT flag setting.
+  if (build_shared_libs_independent)
+    if (NOT BUILD_SHARED_LIBS_${name} STREQUAL "<same>")
+      list(APPEND cmake_params "-DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS_${name}}")
+    else ()
+      list(APPEND cmake_params "-DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}")
+    endif ()
   endif ()
 
   # Set SDK and target version flags.

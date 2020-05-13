@@ -7,6 +7,13 @@ function (superbuild_apple_install_python_module destination module search_paths
         FILES       "${search_path}/${module}.py"
         DESTINATION "${destination}/${location}")
     endif ()
+
+    if (EXISTS "${search_path}/${module}.zip")
+      file(INSTALL
+        FILES       "${search_path}/${module}.zip"
+        DESTINATION "${destination}/${location}")
+    endif()
+
     if (EXISTS "${search_path}/${module}.so")
       set(module_so "${search_path}/${module}.so")
     else ()

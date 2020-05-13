@@ -5,6 +5,7 @@ if (UNIX AND NOT APPLE)
 endif ()
 
 superbuild_add_project(netcdf
+  CAN_USE_SYSTEM
   DEPENDS hdf5 zlib
 
   CMAKE_ARGS

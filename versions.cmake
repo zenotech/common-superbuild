@@ -77,8 +77,8 @@ superbuild_set_revision(gperf
   URL_MD5 9e251c0a618ad0824b51117d5d9db87e)
 
 superbuild_set_revision(fontconfig
-  URL     "https://www.paraview.org/files/dependencies/fontconfig-2.12.6.tar.bz2"
-  URL_MD5 733f5e2371ca77b69707bd7b30cc2163)
+  URL     "https://www.paraview.org/files/dependencies/fontconfig-2.13.1.tar.bz2"
+  URL_MD5 36cdea1058ef13cbbfdabe6cb019dc1c)
 
 superbuild_set_revision(libxml2
   URL     "https://www.paraview.org/files/dependencies/libxml2-2.9.9.tar.gz"
@@ -88,48 +88,19 @@ superbuild_set_revision(nlohmannjson
   URL     "https://www.paraview.org/files/dependencies/nlohmannjson-3.6.1.tar.gz"
   URL_MD5 c53592d55e7fec787cf0a406d36098a3)
 
-if (WIN32)
-  set(qt5_ext "zip")
-else ()
-  set(qt5_ext "tar.xz")
-endif ()
-set(qt5_8_ver "5.8.0")
-if (WIN32)
-  set(qt5_8_md5 "1e372fabc9d97a32877cb4adb377e7c8")
-else ()
-  set(qt5_8_md5 "66660cd3d9e1a6fed36e88adcb72e9fe")
-endif ()
-set(qt5_9_ver "5.9.2")
-if (WIN32)
-  set(qt5_9_md5 "d5239e19f6b80dcf44f4dd2de04c7d3d")
-else ()
-  set(qt5_9_md5 "738d1b98106e1bd39f00cc228beb522a")
-endif ()
-set(qt5_10_ver "5.10.1")
-if (WIN32)
-  set(qt5_10_md5 "60c4ea41950857c65015fb6cffcb2497")
-else ()
-  set(qt5_10_md5 "7e167b9617e7bd64012daaacb85477af")
-endif ()
-set(qt5_12_ver "5.12.3")
-if (WIN32)
-  set(qt5_12_md5 "5da2e14a9f5db620c578fafd219592d7")
-else ()
-  set(qt5_12_md5 "38017e0ed88b9baba063bd723d9ca8b2")
-endif ()
 superbuild_set_selectable_source(qt5
   SELECT 5.8
-    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-${qt5_8_ver}.${qt5_ext}"
-    URL_MD5 "${qt5_8_md5}"
+    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-5.8.0.tar.xz"
+    URL_MD5 "66660cd3d9e1a6fed36e88adcb72e9fe"
   SELECT 5.9
-    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-${qt5_9_ver}.${qt5_ext}"
-    URL_MD5 "${qt5_9_md5}"
+    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-5.9.2.tar.xz"
+    URL_MD5 "738d1b98106e1bd39f00cc228beb522a"
   SELECT 5.10
-    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-${qt5_10_ver}.${qt5_ext}"
-    URL_MD5 "${qt5_10_md5}"
+    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.10.1.tar.xz"
+    URL_MD5 "7e167b9617e7bd64012daaacb85477af"
   SELECT 5.12 DEFAULT
-    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-${qt5_12_ver}.${qt5_ext}"
-    URL_MD5 "${qt5_12_md5}")
+    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.12.3.tar.xz"
+    URL_MD5 "38017e0ed88b9baba063bd723d9ca8b2")
 
 if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
   if (superbuild_is_64bit)
@@ -149,25 +120,25 @@ else ()
     URL_MD5 136c5ee1bc4b259a12a7efe331b15d64)
 endif ()
 
-if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
-  if (superbuild_is_64bit)
-    superbuild_set_revision(matplotlib
-      URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20180905.tar.gz"
-      URL_MD5 0c96b84e87b4db50cdc4d18869ae74ed)
-  else ()
-    message(FATAL_ERROR
-      "Prebuilt Python binaries for Windows 32 bit are not provided.")
-  endif ()
+if (ENABLE_python3 OR python3_enabled)
+  superbuild_set_revision(matplotlib
+    URL "https://www.paraview.org/files/dependencies/matplotlib-3.2.1.tar.gz"
+    URL_MD5 9186b1e9f1fc7d555f2abf64b35dea5b)
 else ()
-  if (ENABLE_python3 OR python3_enabled)
-    superbuild_set_revision(matplotlib
-      URL "https://www.paraview.org/files/dependencies/matplotlib-3.1.1-no-jquery.tar.xz"
-      URL_MD5 20f4c3a9ba1df1d6f7b2a509f617ddb1)
-  else()
+  if (WIN32 AND NOT superbuild_building_prebuilt_python)
+    if (superbuild_is_64bit)
+      superbuild_set_revision(matplotlib
+        URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20180905.tar.gz"
+        URL_MD5 0c96b84e87b4db50cdc4d18869ae74ed)
+    else ()
+      message(FATAL_ERROR
+        "Prebuilt Python binaries for Windows 32 bit are not provided.")
+    endif ()
+  else ()
     superbuild_set_revision(matplotlib
       URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1_notests.tar.gz"
       URL_MD5 30ee59119599331bf1f3b6e838fee9a8)
-  endif()
+  endif ()
 endif ()
 
 if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
@@ -235,8 +206,8 @@ superbuild_set_revision(pythoncycler
   URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)
 
 superbuild_set_revision(pythonsetuptools
-  URL     "https://www.paraview.org/files/dependencies/setuptools-23.0.0.tar.gz"
-  URL_MD5 100a90664040f8ff232fbac02a4c5652)
+  URL     "https://www.paraview.org/files/dependencies/setuptools-46.1.3.zip"
+  URL_MD5 562328cde5a33564c0ebf16699a27b65)
 
 superbuild_set_revision(pythonautobahn
   URL     "https://www.paraview.org/files/dependencies/autobahn-17.10.1.tar.gz"
@@ -271,8 +242,8 @@ superbuild_set_revision(pythonzope
   URL_MD5 9a63e8c8b614dc6d6944fcbd9c105f45)
 
 superbuild_set_revision(pythonzopeinterface
-  URL     "https://www.paraview.org/files/dependencies/zope.interface-4.4.3.tar.gz"
-  URL_MD5 8700a4f527c1203b34b10c2b4e7a6912)
+  URL     "https://www.paraview.org/files/dependencies/zope.interface-5.1.0.tar.gz"
+  URL_MD5 53bccb21aab8894a68f40ee2f202465d)
 
 superbuild_set_revision(pythonsix
   URL     "https://www.paraview.org/files/dependencies/six-1.11.0.tar.gz"
@@ -295,5 +266,13 @@ superbuild_set_revision(pythonattrs
   URL_MD5 2be7bce157988928f5ff2bb50a0b510d)
 
 superbuild_set_revision(ffi
-  URL     "https://www.paraview.org/files/dependencies/libffi-3.0.5.tar.gz"
-  URL_MD5 29544f542140da929221805e332407b9)
+  URL     "https://www.paraview.org/files/dependencies/libffi-3.3.tar.gz"
+  URL_MD5 6313289e32f1d38a9df4770b014a2ca7)
+
+superbuild_set_revision(utillinux
+  URL     "https://www.paraview.org/files/dependencies/util-linux-2.34.tar.xz"
+  URL_MD5 a78cbeaed9c39094b96a48ba8f891d50)
+
+superbuild_set_revision(pkgconf
+  URL     "https://www.paraview.org/files/dependencies/pkgconf-1.6.3.tar.xz"
+  URL_MD5 f93fb1be95a5cb62e43c219c82b5791a)

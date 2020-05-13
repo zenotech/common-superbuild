@@ -8,6 +8,7 @@ superbuild_add_project(ffi
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
+      --disable-multi-os-directory
       --disable-docs
       ${ffi_shared_args}
   BUILD_COMMAND
@@ -15,3 +16,6 @@ superbuild_add_project(ffi
   INSTALL_COMMAND
     make install
   BUILD_IN_SOURCE 1)
+
+superbuild_apply_patch(ffi powerpc.h-fix-build-failure-with-powerpc7
+  "Check for __HAVE_FLOAT128 before using _Float128")

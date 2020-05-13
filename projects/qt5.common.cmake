@@ -27,6 +27,13 @@ if (CMAKE_CXX_COMPILER_LAUNCHER)
     "CXX=${CMAKE_CXX_COMPILER_LAUNCHER} ${CMAKE_CXX_COMPILER}")
 endif ()
 
+option(qt5_SKIP_PCH "Skip PCH" OFF)
+mark_as_advanced(qt5_SKIP_PCH)
+if (qt5_SKIP_PCH)
+  list(APPEND qt5_options
+    -no-pch)
+endif ()
+
 set(qt5_build_commands
   BUILD_COMMAND   $(MAKE) ${qt5_make_options}
   INSTALL_COMMAND make install)
@@ -56,8 +63,8 @@ else ()
   list(APPEND qt5_options "-no-openssl")
 endif ()
 
-# Add option to build qtsvg
-option(qt5_ENABLE_SVG "Build Qt5 SVG library." OFF)
+# Add option to build qtsvg, on by default for svg icon support
+option(qt5_ENABLE_SVG "Build Qt5 SVG library." ON)
 mark_as_advanced(qt5_ENABLE_SVG)
 if (NOT qt5_ENABLE_SVG)
   list(APPEND qt5_options

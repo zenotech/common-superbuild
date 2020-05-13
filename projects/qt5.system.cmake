@@ -1,3 +1,7 @@
+if (qt5_ENABLE_SVG)
+  list(APPEND qt5_components Svg)
+endif ()
+
 find_package(Qt5 REQUIRED
   COMPONENTS
     Core

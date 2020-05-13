@@ -10,6 +10,7 @@ function (superbuild_find_projects var)
     ffi
     fortran
     freetype
+    gperf
     hdf5
     lapack
     matplotlib
@@ -43,6 +44,7 @@ function (superbuild_find_projects var)
     qt5
     szip
     tbb
+    utillinux
     zlib)
 
   if (WIN32)
@@ -54,6 +56,7 @@ function (superbuild_find_projects var)
     list(APPEND projects
       ffmpeg
       libxml2
+      pkgconf
       scipy)
   endif ()
 
