@@ -42,7 +42,7 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
   list(FIND build_type_options "${CMAKE_BUILD_TYPE}" idx)
   if (idx EQUAL "-1")
     string(REPLACE ";" ", " build_type_options "${build_type_options}")
-    message(FATAL_ERROR "CMAKE_BUILD_TYPE must be one of: ${build_type_options}.")
+    message(FATAL_ERROR "CMAKE_BUILD_TYPE must be one of: ${build_type_options} (found ${CMAKE_BUILD_TYPE}).")
   endif ()
 
   if (CMAKE_BUILD_TYPE STREQUAL "Debug")
