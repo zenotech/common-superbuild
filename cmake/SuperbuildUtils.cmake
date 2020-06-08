@@ -8,8 +8,9 @@ superbuild. Some may be of use to corner-case project builds.
 include("SuperbuildUtils-apple")
 include("SuperbuildUtils-unix")
 
+get_property(multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 # TODO: In 3.9.0, use the GENERATOR_IS_MULTI_CONFIG global property.
-if (NOT CMAKE_CONFIGURATION_TYPES)
+if (NOT multi_config)
   set(_superbuild_build_type_force)
   if (NOT CMAKE_BUILD_TYPE)
     set(_superbuild_build_type_force FORCE)
