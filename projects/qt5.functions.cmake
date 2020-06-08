@@ -13,11 +13,10 @@ function (superbuild_install_qt5_plugin_paths output)
         "/usr/local/lib/cmake/Qt5"
         "/usr/local/lib64/cmake/Qt5")
     endif ()
-    list(FIND qt5_no_package_paths "${Qt5_DIR}" idx)
 
     # The package will not be installing Qt5 since it is provided by the
     # system; do not install the plugins.
-    if (NOT idx EQUAL "-1")
+    if (Qt5_DIR IN_LIST qt5_no_package_paths)
       return ()
     endif ()
   endif ()

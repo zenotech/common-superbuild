@@ -39,8 +39,7 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
   get_property(build_type_options
     CACHE     CMAKE_BUILD_TYPE
     PROPERTY  STRINGS)
-  list(FIND build_type_options "${CMAKE_BUILD_TYPE}" idx)
-  if (idx EQUAL "-1")
+  if (NOT CMAKE_BUILD_TYPE IN_LIST build_type_options)
     string(REPLACE ";" ", " build_type_options "${build_type_options}")
     message(FATAL_ERROR "CMAKE_BUILD_TYPE must be one of: ${build_type_options} (found ${CMAKE_BUILD_TYPE}).")
   endif ()
