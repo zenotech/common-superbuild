@@ -8,8 +8,9 @@ superbuild. Some may be of use to corner-case project builds.
 include("SuperbuildUtils-apple")
 include("SuperbuildUtils-unix")
 
+get_property(multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 # TODO: In 3.9.0, use the GENERATOR_IS_MULTI_CONFIG global property.
-if (NOT CMAKE_CONFIGURATION_TYPES)
+if (NOT multi_config)
   set(_superbuild_build_type_force)
   if (NOT CMAKE_BUILD_TYPE)
     set(_superbuild_build_type_force FORCE)
@@ -39,10 +40,9 @@ if (NOT CMAKE_CONFIGURATION_TYPES)
   get_property(build_type_options
     CACHE     CMAKE_BUILD_TYPE
     PROPERTY  STRINGS)
-  list(FIND build_type_options "${CMAKE_BUILD_TYPE}" idx)
-  if (idx EQUAL "-1")
+  if (NOT CMAKE_BUILD_TYPE IN_LIST build_type_options)
     string(REPLACE ";" ", " build_type_options "${build_type_options}")
-    message(FATAL_ERROR "CMAKE_BUILD_TYPE must be one of: ${build_type_options}.")
+    message(FATAL_ERROR "CMAKE_BUILD_TYPE must be one of: ${build_type_options} (found ${CMAKE_BUILD_TYPE}).")
   endif ()
 
   if (CMAKE_BUILD_TYPE STREQUAL "Debug")
