@@ -16,6 +16,7 @@ function (superbuild_install_superbuild_python3)
 
   set(options)
   set(values
+    DESTINATION_SUBDIR
     BUNDLE
     LIBSUFFIX)
   set(multivalues
@@ -242,8 +243,13 @@ function (superbuild_install_superbuild_python3)
       COMPONENT "superbuild")
 
   elseif (APPLE)
+    if (_install_superbuild_python_DESTINATION_SUBDIR)
+      set(_install_superbuild_python_suffix
+        "/${_install_superbuild_python_DESTINATION_SUBDIR}")
+    endif ()
+
     superbuild_apple_install_python(
-      "\${CMAKE_INSTALL_PREFIX}"
+      "\${CMAKE_INSTALL_PREFIX}${_install_superbuild_python_suffix}"
       "${_install_superbuild_python_BUNDLE}"
       MODULES             ${modules} ${_install_superbuild_python_MODULES}
       MODULE_DIRECTORIES  "${superbuild_install_location}/lib/python${superbuild_python_version}"
@@ -257,7 +263,7 @@ function (superbuild_install_superbuild_python3)
       "${superbuild_install_location}/lib/python${superbuild_python_version}/lib-dynload/*.so")
     foreach (so_name IN LISTS so_names)
       superbuild_apple_install_module(
-        "\${CMAKE_INSTALL_PREFIX}"
+        "\${CMAKE_INSTALL_PREFIX}${_install_superbuild_python_suffix}"
         "${_install_superbuild_python_BUNDLE}"
         "${so_name}"
         "Contents/Libraries/lib/python${superbuild_python_version}"
