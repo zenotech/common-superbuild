@@ -99,8 +99,8 @@ superbuild_set_selectable_source(qt5
     URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.10.1.tar.xz"
     URL_MD5 "7e167b9617e7bd64012daaacb85477af"
   SELECT 5.12 DEFAULT
-    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.12.3.tar.xz"
-    URL_MD5 "38017e0ed88b9baba063bd723d9ca8b2")
+    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.12.9.tar.xz"
+    URL_MD5 "fa2646280cf38180689c29c393cddd05")
 
 if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
   if (superbuild_is_64bit)
