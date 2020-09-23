@@ -15,6 +15,13 @@ else ()
       FC ${CMAKE_Fortran_COMPILER})
   endif ()
 
+  # Set `-fallow-argument-mismatch` for gfortran 10+.
+  if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
+      NOT CMAKE_Fortran_COMPILER_VERSION VERSION_LESS "10")
+    list(APPEND scipy_process_environment
+      FFLAGS -fallow-argument-mismatch)
+  endif ()
+
   superbuild_add_project(scipy
     DEPENDS python fortran numpy lapack
     BUILD_IN_SOURCE 1
