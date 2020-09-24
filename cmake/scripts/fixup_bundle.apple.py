@@ -69,7 +69,7 @@ class Library(object):
     The logic in this script includes neither of these behaviors.
     '''
 
-    def __init__(self, path, parent=None, search_paths=None):
+    def __init__(self, path, parent=None, search_paths=None, ignores=None):
         # This is the actual path to a physical file
         self._path = os.path.normpath(path)
 
@@ -77,6 +77,11 @@ class Library(object):
             self._search_paths = []
         else:
             self._search_paths = search_paths
+
+        if ignores is None:
+            self._ignores = []
+        else:
+            self._ignores = ignores
 
         self._parent = parent
         self._symlinks = None
@@ -109,6 +114,13 @@ class Library(object):
     def name(self):
         '''The name of the library.'''
         return os.path.basename(self.path)
+
+    @property
+    def ignores(self):
+        '''Regular expressions of IDs to ignore from this library.'''
+        if self.parent is None:
+            return self._ignores
+        return self.parent.ignores
 
     @property
     def installed_id(self):
@@ -370,6 +382,10 @@ class Library(object):
         for path in paths:
             if os.path.exists(path):
                 return cls.from_path(os.path.realpath(path), parent=loader)
+        if loader.ignores:
+            for ignore in loader.ignores:
+                if ignore.match(ref):
+                    return None
         search_path = loader._find_library(ref)
         if os.path.exists(search_path):
             return cls.from_path(os.path.realpath(search_path), parent=loader)
@@ -629,6 +645,9 @@ def _arg_parser():
     parser.add_argument('-i', '--include', metavar='REGEX', action='append',
                         default=[],
                         help='regular expression to include in the bundle (before exclusions)')
+    parser.add_argument('-I', '--ignore', metavar='REGEX', action='append',
+                        default=[],
+                        help='regular expression to ignore references')
     parser.add_argument('-e', '--exclude', metavar='REGEX', action='append',
                         default=[],
                         help='regular expression to exclude from the bundle')
@@ -757,21 +776,23 @@ def main(args):
     parser = _arg_parser()
     opts = parser.parse_args(args)
 
+    ignores = list(map(re.compile, opts.ignore))
+
     if opts.type == 'executable':
-        main_exe = Executable(opts.binary, search_paths=opts.search)
+        main_exe = Executable(opts.binary, search_paths=opts.search, ignores=ignores)
     elif opts.type == 'utility':
-        main_exe = Utility(opts.binary, search_paths=opts.search)
+        main_exe = Utility(opts.binary, search_paths=opts.search, ignores=ignores)
     elif opts.type == 'plugin':
-        main_exe = Plugin(opts.binary, search_paths=opts.search)
+        main_exe = Plugin(opts.binary, search_paths=opts.search, ignores=ignores)
     elif opts.type == 'module':
         if opts.location is None:
             raise RuntimeError('Modules require a location')
 
         main_exe = Module(opts.binary, opts.location,
                           fake_exe_path=opts.fake_plugin_paths,
-                          search_paths=opts.search)
+                          search_paths=opts.search, ignores=ignores)
     elif opts.type == 'framework':
-        main_exe = Framework(opts.binary, search_paths=opts.search)
+        main_exe = Framework(opts.binary, search_paths=opts.search, ignores=ignores)
 
     bundle_dest = os.path.join(opts.destination, opts.bundle)
 
