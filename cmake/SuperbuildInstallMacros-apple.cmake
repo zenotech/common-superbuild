@@ -308,6 +308,9 @@ Note that modules in the list which cannot be found are ignored.
 #]==]
 function (superbuild_apple_install_python destination name)
   set(multivalues
+    INCLUDE_REGEXES
+    EXCLUDE_REGEXES
+    IGNORE_REGEXES
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
@@ -326,6 +329,21 @@ function (superbuild_apple_install_python destination name)
   endif ()
 
   set(fixup_bundle_arguments)
+
+  foreach (include_regex IN LISTS _install_python_INCLUDE_REGEXES)
+    list(APPEND fixup_bundle_arguments
+      --include "${include_regex}")
+  endforeach ()
+
+  foreach (exclude_regex IN LISTS _install_python_EXCLUDE_REGEXES)
+    list(APPEND fixup_bundle_arguments
+      --exclude "${exclude_regex}")
+  endforeach ()
+
+  foreach (ignore_regex IN LISTS _install_python_IGNORE_REGEXES)
+    list(APPEND fixup_bundle_arguments
+      --ignore "${ignore_regex}")
+  endforeach ()
 
   foreach (search_directory IN LISTS _install_python_SEARCH_DIRECTORIES)
     list(APPEND fixup_bundle_arguments
