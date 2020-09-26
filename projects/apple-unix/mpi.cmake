@@ -14,6 +14,13 @@ if (fortran_enabled)
     FC ${CMAKE_Fortran_COMPILER})
 endif ()
 
+# Set `-fallow-argument-mismatch` for gfortran 10+.
+if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
+    NOT CMAKE_Fortran_COMPILER_VERSION VERSION_LESS "10")
+  list(APPEND mpi_environment
+    FFLAGS -fallow-argument-mismatch)
+endif ()
+
 superbuild_add_project(mpi
   CAN_USE_SYSTEM
   DEPENDS_OPTIONAL fortran
@@ -43,3 +50,7 @@ if (NOT USE_SYSTEM_mpi)
   set(MPI_C_COMPILER <INSTALL_DIR>/bin/mpicc)
   set(MPI_CXX_COMPILER <INSTALL_DIR>/bin/mpic++)
 endif ()
+
+# https://github.com/pmodels/mpich/pull/4726
+superbuild_apply_patch(mpi gfortran10
+  "Support gfortran10")
