@@ -190,8 +190,8 @@ superbuild_set_revision(tbb
   URL_MD5 "${tbb_md5}")
 
 superbuild_set_revision(pytz
-  URL     "https://www.paraview.org/files/dependencies/pytz-2016.10.tar.bz2"
-  URL_MD5 88b1d6c50c764579292edce3493c8a3a)
+  URL     "https://www.paraview.org/files/dependencies/pytz-2020.1.tar.gz"
+  URL_MD5 0349106ac02f2bfe565dd6d5594e3a15)
 
 superbuild_set_revision(pythondateutil
   URL     "https://www.paraview.org/files/dependencies/python-dateutil-2.6.0.tar.gz"
@@ -204,6 +204,10 @@ superbuild_set_revision(pythonpyparsing
 superbuild_set_revision(pythoncycler
   URL     "https://www.paraview.org/files/dependencies/cycler-0.10.0.tar.gz"
   URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)
+
+superbuild_set_revision(pythoncython
+  URL     "https://www.paraview.org/files/dependencies/Cython-0.29.21.tar.gz"
+  URL_MD5 12c5e45af71dcc6dff28cdcbcbef6f39)
 
 superbuild_set_revision(pythonsetuptools
   URL     "https://www.paraview.org/files/dependencies/setuptools-46.1.3.zip"
@@ -264,6 +268,10 @@ superbuild_set_revision(pythonkiwisolver
 superbuild_set_revision(pythonattrs
   URL     "https://www.paraview.org/files/dependencies/attrs-19.1.0.tar.gz"
   URL_MD5 2be7bce157988928f5ff2bb50a0b510d)
+
+superbuild_set_revision(pythonpandas
+  URL     "https://www.paraview.org/files/dependencies/pandas-1.1.2.tar.gz"
+  URL_MD5 b4ce7c64f549ed48b47877fc64281031)
 
 superbuild_set_revision(ffi
   URL     "https://www.paraview.org/files/dependencies/libffi-3.3.tar.gz"
