@@ -578,13 +578,16 @@ def _arg_parser():
     parser.add_argument('-t', '--type', metavar='TYPE', type=str, required=True,
                         choices=('executable', 'module'),
                         help='the type of binary to package')
+    parser.add_argument('-k', '--has-symlinks', action='store_true',
+                        default=False,
+                        help='Look for symlinks of the main binary')
     parser.add_argument('binary', metavar='BINARY', type=str,
                         help='the binary to package')
 
     return parser
 
 
-def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, manifest, sources, dry_run=False):
+def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, manifest, sources, dry_run=False, look_for_symlinks=False):
     '''Install the main binary into the package.'''
     # Start looking at our main executable's dependencies.
     deps = list(binary.dependencies.values())
@@ -626,6 +629,21 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
         chmod()
         if binary.rpaths or binary.runpaths:
             remove_prefix_rpaths(binary_destination, binary.bundle_location, sources)
+
+    if look_for_symlinks:
+        for symlink in binary.symlinks:
+            print('Creating symlink to %s ==> %s' % (binary_destination, symlink))
+            if not dry_run:
+                symlink_path = os.path.join(app_dest, symlink)
+                if os.path.exists(symlink_path):
+                    os.remove(symlink_path)
+                ln = Pipeline([
+                        'ln',
+                        '-s',
+                        binary.name,
+                        symlink_path,
+                    ])
+                ln()
 
 
 def _update_manifest(manifest, installed, path, libdir):
@@ -704,7 +722,7 @@ def main(args):
     cur_manifest = manifest.setdefault(opts.libdir, [])
 
     installed = {}
-    _install_binary(main_exe, is_excluded, bundle_dest, opts.libdir, installed, manifest, opts.source, dry_run=opts.dry_run)
+    _install_binary(main_exe, is_excluded, bundle_dest, opts.libdir, installed, manifest, opts.source, dry_run=opts.dry_run, look_for_symlinks=opts.has_symlinks)
 
     if not opts.dry_run:
         _update_manifest(manifest, installed, opts.manifest, opts.libdir)
