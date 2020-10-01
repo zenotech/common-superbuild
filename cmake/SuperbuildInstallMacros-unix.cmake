@@ -23,6 +23,7 @@ _superbuild_unix_install_binary(
   BINARY <path>
   TYPE <module|executable>
   [CLEAN]
+  [HAS_SYMLINKS]
   [DESTINATION <destination>]
   [LOCATION <location>]
   [INCLUDE_REGEXES <include-regex>...]
@@ -45,6 +46,9 @@ configure time.
 
 The `BINARY` argument is the path to the actual executable to install. It must
 be an absolute path.
+
+If `HAS_SYMLINKS` is given, symlinks of the main binary are searched for and
+installed.
 
 The `TYPE` argument specifies whether an executable or module (e.g., plugin or
 standalone library) is being installed. For a module, the `LOCATION` argument
@@ -71,6 +75,7 @@ regular expressions are also expected to match the full path of the library.
 #]==]
 function (_superbuild_unix_install_binary)
   set(options
+    HAS_SYMLINKS
     CLEAN)
   set(values
     DESTINATION
@@ -136,6 +141,11 @@ function (_superbuild_unix_install_binary)
       set(fixup_bundle_arguments
         "${fixup_bundle_arguments} --clean --new")
     endif ()
+  endif ()
+
+  if (_install_binary_HAS_SYMLINKS)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --has-symlinks")
   endif ()
 
   if (_install_binary_LOCATION)
