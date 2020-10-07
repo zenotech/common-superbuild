@@ -56,12 +56,12 @@ endif()
 
 if (WIN32)
   superbuild_set_revision(python3
-    URL "https://www.paraview.org/files/dependencies/Python-3.7.4-win64-no-ssl.tar.xz"
-    URL_MD5 c73455c755f2c79031fc92036040a90b)
+    URL "https://www.paraview.org/files/dependencies/python-win64-3.8.6-no-ssl.tar.xz"
+    URL_MD5 8cece55f80ef13ae8e839595e1c090d2)
 else()
   superbuild_set_revision(python3
-    URL     "https://www.paraview.org/files/dependencies/Python-3.7.4.tar.xz"
-    URL_MD5 d33e4aae66097051c2eca45ee3604803)
+    URL     "https://www.paraview.org/files/dependencies/Python-3.8.6.tar.xz"
+    URL_MD5 69e73c49eeb1a853cefd26d18c9d069d)
 endif()
 
 superbuild_set_revision(ftjam
