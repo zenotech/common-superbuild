@@ -113,8 +113,8 @@ if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND
   endif ()
 else ()
   superbuild_set_revision(numpy
-    URL     "https://www.paraview.org/files/dependencies/numpy-1.16.4.tar.gz"
-    URL_MD5 6edf7334d04d8e8849ad058ccd3b3803)
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.19.2.tar.gz"
+    URL_MD5 471156268abd8686e39e811003726ab1)
   superbuild_set_revision(scipy
     URL     "https://www.paraview.org/files/dependencies/scipy-1.2.2.tar.xz"
     URL_MD5 136c5ee1bc4b259a12a7efe331b15d64)
