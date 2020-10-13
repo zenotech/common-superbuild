@@ -14,13 +14,6 @@ superbuild_add_extra_cmake_args(
   -DHDF5_HL_LIB:FILEPATH=<INSTALL_DIR>/lib/hdf5_hl.lib
   -DHDF5_INCLUDE_DIR:FILEPATH=<INSTALL_DIR>/include)
 
-if (NOT superbuild_is_64bit)
-  # On 32-bit Windows, H5public.h ends up redefining ssize_t. This patch ensures
-  # that the old definition is undef-ed before redefining it.
-  superbuild_apply_patch(hdf5 fix-ssize_t-redefine
-    "Fix ssize_t redefinition on 32-bit Windows")
-endif ()
-
 if (MSVC)
   # VS2015 support
   superbuild_apply_patch(hdf5 vs2015-support
