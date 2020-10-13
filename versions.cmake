@@ -85,8 +85,8 @@ superbuild_set_revision(libxml2
   URL_MD5 10942a1dc23137a8aa07f0639cbfece5)
 
 superbuild_set_revision(nlohmannjson
-  URL     "https://www.paraview.org/files/dependencies/nlohmannjson-3.6.1.tar.gz"
-  URL_MD5 c53592d55e7fec787cf0a406d36098a3)
+  URL     "https://www.paraview.org/files/dependencies/nlohmannjson-v3.9.1.tar.gz"
+  URL_MD5 e386222fb57dd2fcb8a7879fc016d037)
 
 superbuild_set_selectable_source(qt5
   SELECT 5.8
