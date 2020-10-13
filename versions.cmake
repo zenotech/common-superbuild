@@ -270,8 +270,8 @@ superbuild_set_revision(pythonattrs
   URL_MD5 2be7bce157988928f5ff2bb50a0b510d)
 
 superbuild_set_revision(pythonpandas
-  URL     "https://www.paraview.org/files/dependencies/pandas-1.1.2.tar.gz"
-  URL_MD5 b4ce7c64f549ed48b47877fc64281031)
+  URL     "https://www.paraview.org/files/dependencies/pandas-1.1.3.tar.gz"
+  URL_MD5 f10372d83a1c55cae217e8c05bf9bc5d)
 
 superbuild_set_revision(ffi
   URL     "https://www.paraview.org/files/dependencies/libffi-3.3.tar.gz"
