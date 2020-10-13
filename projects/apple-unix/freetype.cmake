@@ -19,10 +19,10 @@ superbuild_add_project(freetype
     $(MAKE) install)
 
 # https://savannah.nongnu.org/bugs/?57206
-superbuild_project_add_step(create-docs-reference-markdown
+superbuild_project_add_step(create-docs-markdown
   COMMAND   "${CMAKE_COMMAND}"
             -E make_directory
-            <SOURCE_DIR>/docs/reference/markdown
+            <SOURCE_DIR>/docs/markdown
   DEPENDEES download
   DEPENDERS configure
   COMMENT   "Create docs/reference/markdown directory"

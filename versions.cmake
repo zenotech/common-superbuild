@@ -12,8 +12,8 @@ include(CMakeDependentOption)
 
 # NOTE: if updating bzip2 version, fix patch in bzip2.cmake
 superbuild_set_revision(bzip2
-  URL     "https://www.paraview.org/files/dependencies/bzip2-1.0.6.tar.gz"
-  URL_MD5 00b516f4704d4a7cb50a1d97e6e8e15b)
+  URL     "https://www.paraview.org/files/dependencies/bzip2-1.0.8.tar.gz"
+  URL_MD5 67e051268d0c475ea773822f7500d0e5)
 
 superbuild_set_revision(zlib
   URL     "https://www.paraview.org/files/dependencies/zlib-1.2.11.tar.xz"
@@ -28,8 +28,8 @@ superbuild_set_revision(szip
   URL_MD5 dd579cf0f26d44afd10a0ad7291fc282)
 
 superbuild_set_revision(hdf5
-  URL     "https://www.paraview.org/files/dependencies/hdf5-1.10.5.tar.bz2"
-  URL_MD5 7c19d6b81ee2a3ba7d36f6922b2f90d3)
+  URL     "https://www.paraview.org/files/dependencies/hdf5-1.12.0.tar.bz2"
+  URL_MD5  1fa68c4b11b6ef7a9d72ffa55995f898)
 
 superbuild_set_revision(boost
   URL     "https://www.paraview.org/files/dependencies/boost_1_59_0.tar.bz2"
@@ -69,8 +69,8 @@ superbuild_set_revision(ftjam
   URL_MD5 ee52f3faff6d31ffb89a2fedb3b0caf6)
 
 superbuild_set_revision(freetype
-  URL     "https://www.paraview.org/files/dependencies/freetype-2.10.0.tar.bz2"
-  URL_MD5 a717e6925b61b9dda946322ecd278a42)
+  URL     "https://www.paraview.org/files/dependencies/freetype-2.10.2.tar.xz"
+  URL_MD5 7c0d5a39f232d7eb9f9d7da76bf08074)
 
 superbuild_set_revision(gperf
   URL     "https://www.paraview.org/files/dependencies/gperf-3.1.tar.gz"
@@ -81,12 +81,12 @@ superbuild_set_revision(fontconfig
   URL_MD5 36cdea1058ef13cbbfdabe6cb019dc1c)
 
 superbuild_set_revision(libxml2
-  URL     "https://www.paraview.org/files/dependencies/libxml2-2.9.9.tar.gz"
-  URL_MD5 c04a5a0a042eaa157e8e8c9eabe76bd6)
+  URL     "https://www.paraview.org/files/dependencies/libxml2-2.9.10.tar.gz"
+  URL_MD5 10942a1dc23137a8aa07f0639cbfece5)
 
 superbuild_set_revision(nlohmannjson
-  URL     "https://www.paraview.org/files/dependencies/nlohmannjson-3.6.1.tar.gz"
-  URL_MD5 c53592d55e7fec787cf0a406d36098a3)
+  URL     "https://www.paraview.org/files/dependencies/nlohmannjson-v3.9.1.tar.gz"
+  URL_MD5 e386222fb57dd2fcb8a7879fc016d037)
 
 superbuild_set_selectable_source(qt5
   SELECT 5.8
@@ -113,11 +113,11 @@ if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND
   endif ()
 else ()
   superbuild_set_revision(numpy
-    URL     "https://www.paraview.org/files/dependencies/numpy-1.16.4.tar.gz"
-    URL_MD5 6edf7334d04d8e8849ad058ccd3b3803)
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.19.2.tar.gz"
+    URL_MD5 471156268abd8686e39e811003726ab1)
   superbuild_set_revision(scipy
-    URL     "https://www.paraview.org/files/dependencies/scipy-1.2.2.tar.xz"
-    URL_MD5 136c5ee1bc4b259a12a7efe331b15d64)
+    URL     "https://www.paraview.org/files/dependencies/scipy-1.5.2.tar.xz"
+    URL_MD5 5bc188f21054a2ecff74fae40dd298da)
 endif ()
 
 if (ENABLE_python3 OR python3_enabled)
@@ -266,12 +266,12 @@ superbuild_set_revision(pythonkiwisolver
   URL_MD5 fc8a614367f7ba0d34a02fd08c535afc)
 
 superbuild_set_revision(pythonattrs
-  URL     "https://www.paraview.org/files/dependencies/attrs-19.1.0.tar.gz"
-  URL_MD5 2be7bce157988928f5ff2bb50a0b510d)
+  URL     "https://www.paraview.org/files/dependencies/attrs-20.2.0.tar.gz"
+  URL_MD5 7be95e1b35e9385d71a0017a48217efc)
 
 superbuild_set_revision(pythonpandas
-  URL     "https://www.paraview.org/files/dependencies/pandas-1.1.2.tar.gz"
-  URL_MD5 b4ce7c64f549ed48b47877fc64281031)
+  URL     "https://www.paraview.org/files/dependencies/pandas-1.1.3.tar.gz"
+  URL_MD5 f10372d83a1c55cae217e8c05bf9bc5d)
 
 superbuild_set_revision(ffi
   URL     "https://www.paraview.org/files/dependencies/libffi-3.3.tar.gz"
@@ -284,3 +284,7 @@ superbuild_set_revision(utillinux
 superbuild_set_revision(pkgconf
   URL     "https://www.paraview.org/files/dependencies/pkgconf-1.6.3.tar.xz"
   URL_MD5 f93fb1be95a5cb62e43c219c82b5791a)
+
+superbuild_set_revision(pybind11
+  URL     "http://www.paraview.org/files/dependencies/pybind11-2.5.0.tar.gz"
+  URL_MD5 1ad2c611378fb440e8550a7eb6b31b89)

@@ -15,7 +15,9 @@ set(numpy_process_environment)
 if (lapack_enabled)
   list(APPEND numpy_process_environment
     BLAS    "${BLAS_LIBRARIES}"
-    LAPACK  "${LAPACK_LIBRARIES}")
+    LAPACK  "${LAPACK_LIBRARIES}"
+    NPY_BLAS_ORDER openblas
+    NPY_LAPACK_ORDER openblas,lapack)
 else()
   list(APPEND numpy_process_environment
     BLAS    "None"
@@ -43,6 +45,8 @@ endif()
 superbuild_add_project_python(numpy
   PACKAGE numpy
   CAN_USE_SYSTEM
+  DEPENDS
+    pythoncython
   DEPENDS_OPTIONAL ${numpy_depends_optional}
   PROCESS_ENVIRONMENT
     MKL         "None"
