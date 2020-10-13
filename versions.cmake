@@ -284,3 +284,7 @@ superbuild_set_revision(utillinux
 superbuild_set_revision(pkgconf
   URL     "https://www.paraview.org/files/dependencies/pkgconf-1.6.3.tar.xz"
   URL_MD5 f93fb1be95a5cb62e43c219c82b5791a)
+
+superbuild_set_revision(pybind11
+  URL     "http://www.paraview.org/files/dependencies/pybind11-2.5.0.tar.gz"
+  URL_MD5 1ad2c611378fb440e8550a7eb6b31b89)

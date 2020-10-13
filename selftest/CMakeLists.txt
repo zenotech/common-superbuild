@@ -58,6 +58,7 @@ function (superbuild_find_projects var)
       ffmpeg
       libxml2
       pkgconf
+      pybind11
       scipy)
   endif ()
 
