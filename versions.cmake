@@ -69,8 +69,8 @@ superbuild_set_revision(ftjam
   URL_MD5 ee52f3faff6d31ffb89a2fedb3b0caf6)
 
 superbuild_set_revision(freetype
-  URL     "https://www.paraview.org/files/dependencies/freetype-2.10.0.tar.bz2"
-  URL_MD5 a717e6925b61b9dda946322ecd278a42)
+  URL     "https://www.paraview.org/files/dependencies/freetype-2.10.2.tar.xz"
+  URL_MD5 7c0d5a39f232d7eb9f9d7da76bf08074)
 
 superbuild_set_revision(gperf
   URL     "https://www.paraview.org/files/dependencies/gperf-3.1.tar.gz"
