@@ -266,8 +266,8 @@ superbuild_set_revision(pythonkiwisolver
   URL_MD5 fc8a614367f7ba0d34a02fd08c535afc)
 
 superbuild_set_revision(pythonattrs
-  URL     "https://www.paraview.org/files/dependencies/attrs-19.1.0.tar.gz"
-  URL_MD5 2be7bce157988928f5ff2bb50a0b510d)
+  URL     "https://www.paraview.org/files/dependencies/attrs-20.2.0.tar.gz"
+  URL_MD5 7be95e1b35e9385d71a0017a48217efc)
 
 superbuild_set_revision(pythonpandas
   URL     "https://www.paraview.org/files/dependencies/pandas-1.1.3.tar.gz"
