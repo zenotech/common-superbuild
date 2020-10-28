@@ -1219,9 +1219,15 @@ function (_superbuild_add_project_internal name)
   set(prepended_cmake_prefix_path
     "${superbuild_prefix_path}${converted_cmake_prefix_path}")
 
+  set(no_progress OFF)
+  if (CMAKE_GENERATOR MATCHES "Ninja")
+    set(no_progress ON)
+  endif ()
+
   # ARGN needs to be quoted so that empty list items aren't removed if that
   # happens options like INSTALL_COMMAND "" won't work.
   _superbuild_ExternalProject_add(${name} "${ARGN}"
+    DOWNLOAD_NO_PROGRESS "${no_progress}"
     PREFIX        "${name}"
     DOWNLOAD_DIR  "${superbuild_download_location}"
     STAMP_DIR     "${name}/stamp"
