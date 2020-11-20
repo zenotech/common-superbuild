@@ -17,11 +17,11 @@ if (ENABLE_python3 OR python3_enabled)
   if (APPLE)
     list(APPEND matplotlib_depends
       pkgconf)
-  endif ()
 
-  if (pkgconf_enabled)
-    list(APPEND matplotlib_process_environment
-      PKG_CONFIG "${superbuild_pkgconf}")
+    if (pkgconf_enabled)
+      list(APPEND matplotlib_process_environment
+        PKG_CONFIG "${superbuild_pkgconf}")
+    endif ()
   endif ()
 
   superbuild_add_project_python(matplotlib
