@@ -26,6 +26,8 @@ superbuild_add_project(ffmpeg
       --disable-ffprobe
       --disable-ffserver
       --disable-network
+      --disable-vaapi
+      --disable-vdpau
       --disable-yasm
       ${ffmpeg_shared_args}
       --cc=${CMAKE_C_COMPILER}
