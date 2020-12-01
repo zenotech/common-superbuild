@@ -509,6 +509,12 @@ function (superbuild_apply_patch _name _patch _comment)
     PROPERTY
       "${current_project}_patch_steps")
 
+  set(_independent)
+  if (NOT CMAKE_VERSION VERSION_LESS "3.19")
+    list(APPEND _independent
+      INDEPENDENT 1)
+  endif ()
+
   superbuild_project_add_step("${_name}-patch-${_patch}"
     COMMAND   "${GIT_EXECUTABLE}"
               apply
@@ -518,13 +524,13 @@ function (superbuild_apply_patch _name _patch _comment)
               "${CMAKE_CURRENT_LIST_DIR}/patches/${_name}-${_patch}.patch"
     DEPENDEES patch ${patch-steps}
     DEPENDERS configure
+    ${_independent}
     COMMENT   "${_comment}"
     WORKING_DIRECTORY <SOURCE_DIR>)
 
   set_property(GLOBAL APPEND
     PROPERTY
       "${current_project}_patch_steps" "${_name}-patch-${_patch}")
-
 endfunction ()
 
 #[==[.md
