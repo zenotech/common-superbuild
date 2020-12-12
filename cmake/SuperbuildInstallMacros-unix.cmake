@@ -21,7 +21,7 @@ be passed as the remaining arguments to the function.
 _superbuild_unix_install_binary(
   LIBDIR <libdir>
   BINARY <path>
-  TYPE <module|executable>
+  TYPE <module|executable|plugin>
   [CLEAN]
   [HAS_SYMLINKS]
   [DESTINATION <destination>]
@@ -209,6 +209,16 @@ function (_superbuild_unix_install_module path subdir libdir)
     ${ARGN})
 endfunction ()
 
+# A convenience function for installing a plugin.
+function (_superbuild_unix_install_plugin path subdir libdir)
+  _superbuild_unix_install_binary(
+    BINARY      "${path}"
+    LOCATION    "${subdir}"
+    LIBDIR      "${libdir}"
+    TYPE        plugin
+    ${ARGN})
+endfunction ()
+
 #[==[.md
 ### Forwarding executables
 
@@ -304,14 +314,14 @@ The following arguments are set by calling this function:
 #]==]
 function (superbuild_unix_install_plugin name libdir paths)
   if (IS_ABSOLUTE "${name}")
-    _superbuild_unix_install_module("${name}" "${paths}" "${libdir}" ${ARGN})
+    _superbuild_unix_install_plugin("${name}" "${paths}" "${libdir}" ${ARGN})
     return ()
   endif ()
 
   set(found FALSE)
   foreach (path IN LISTS paths)
     if (EXISTS "${superbuild_install_location}/${path}/${name}")
-      _superbuild_unix_install_module("${superbuild_install_location}/${path}/${name}" "${path}" "${libdir}" ${ARGN})
+      _superbuild_unix_install_plugin("${superbuild_install_location}/${path}/${name}" "${path}" "${libdir}" ${ARGN})
       set(found TRUE)
       break ()
     endif ()
