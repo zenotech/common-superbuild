@@ -395,6 +395,14 @@ class Module(Library):
         else:
             self._extra_loader_paths = loader_paths
         self._bundle_location = bundle_location
+        self._is_plugin = False
+
+    @property
+    def is_plugin(self):
+        return self._is_plugin
+
+    def set_is_plugin(self):
+        self._is_plugin = True
 
     @property
     def extra_loader_paths(self):
@@ -576,7 +584,7 @@ def _arg_parser():
     parser.add_argument('-m', '--manifest', metavar='PATH', type=str, required=True,
                         help='manifest for the application bundle')
     parser.add_argument('-t', '--type', metavar='TYPE', type=str, required=True,
-                        choices=('executable', 'module'),
+                        choices=('executable', 'module', 'plugin'),
                         help='the type of binary to package')
     parser.add_argument('-k', '--has-symlinks', action='store_true',
                         default=False,
@@ -591,6 +599,13 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
     '''Install the main binary into the package.'''
     # Start looking at our main executable's dependencies.
     deps = list(binary.dependencies.values())
+
+    # If the main binary is a plugin, place new dependencies beside it. The
+    # manifest contains the list of libraries already installed into `lib` and
+    # will be skipped when copying dependencies.
+    if isinstance(binary, Module) and binary.is_plugin:
+        dep_libdir = binary.bundle_location
+
     while deps:
         dep = deps.pop(0)
 
@@ -664,13 +679,15 @@ def main(args):
 
     if opts.type == 'executable':
         main_exe = Executable(opts.binary, search_paths=opts.search)
-    elif opts.type == 'module':
+    elif opts.type in ('module', 'plugin'):
         if opts.location is None:
             raise RuntimeError('Modules require a location')
 
         main_exe = Module(opts.binary, opts.location,
                           loader_paths=opts.loader_path,
                           search_paths=opts.search)
+        if opts.type == 'plugin':
+            main_exe.set_is_plugin()
 
     bundle_dest = opts.destination
 
