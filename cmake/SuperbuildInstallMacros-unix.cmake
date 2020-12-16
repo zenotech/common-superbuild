@@ -290,10 +290,52 @@ function (superbuild_unix_install_program name libdir)
 endfunction ()
 
 #[==[.md
+### Modules
+
+Modules include libraries that are linked to, but need to be installed separately.
+
+```
+superbuild_unix_install_module(<PATH> <LIBRARY DIR> <SEARCH PATHS> [<ARG>...])
+```
+
+Installs a library at `PATH` into `bin/` and its dependent libraries into
+`LIBRARY DIR` under the install destination. If the path is not absolute, it is
+searched for underneath `superbuild_install_location` with the given `PATH`
+under each path in the `SEARCH PATHS` argument.
+
+Note that `SEARCH PATHS` is a CMake list passed as a single argument.
+
+The following arguments are set by calling this function:
+
+  - `BINARY`
+  - `LIBDIR`
+  - `TYPE` (`module`)
+#]==]
+function (superbuild_unix_install_module name libdir paths)
+  if (IS_ABSOLUTE "${name}")
+    _superbuild_unix_install_module("${name}" "${paths}" "${libdir}" ${ARGN})
+    return ()
+  endif ()
+
+  set(found FALSE)
+  foreach (path IN LISTS paths)
+    if (EXISTS "${superbuild_install_location}/${path}/${name}")
+      _superbuild_unix_install_module("${superbuild_install_location}/${path}/${name}" "${path}" "${libdir}" ${ARGN})
+      set(found TRUE)
+      break ()
+    endif ()
+  endforeach ()
+
+  if (NOT found)
+    string(REPLACE ";" ", " paths_list "${paths}")
+    message(FATAL_ERROR "Unable to find the ${name} plugin in ${paths_list}")
+  endif ()
+endfunction ()
+
+#[==[.md
 ### Plugins
 
-Plugins include libraries that are meant to be loaded at runtime. It also
-includes libraries that are linked to, but need to be installed separately.
+Plugins include libraries that are meant to be loaded at runtime.
 
 ```
 superbuild_unix_install_plugin(<PATH> <LIBRARY DIR> <SEARCH PATHS> [<ARG>...])
@@ -310,7 +352,7 @@ The following arguments are set by calling this function:
 
   - `BINARY`
   - `LIBDIR`
-  - `TYPE` (`module`)
+  - `TYPE` (`plugin`)
 #]==]
 function (superbuild_unix_install_plugin name libdir paths)
   if (IS_ABSOLUTE "${name}")
