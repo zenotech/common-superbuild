@@ -284,7 +284,7 @@ function (superbuild_install_superbuild_python3)
       RELATIVE "${superbuild_install_location}/lib/python${superbuild_python_version}/lib-dynload"
       "${superbuild_install_location}/lib/python${superbuild_python_version}/lib-dynload/*.so")
     foreach (so_name IN LISTS so_names)
-      superbuild_unix_install_plugin("${so_name}"
+      superbuild_unix_install_module("${so_name}"
         "lib"
         "lib/python${superbuild_python_version}/lib-dynload"
         LOADER_PATHS "${superbuild_install_location}/lib")
