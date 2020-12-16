@@ -5,6 +5,7 @@ superbuild_add_project_python(pythonpandas
     pythoncython
     pythondateutil
     pythonsetuptools
+    pythonsix
     pytz
     zlib
   DEPENDS_OPTIONAL
