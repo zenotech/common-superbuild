@@ -230,8 +230,8 @@ superbuild_set_revision(pythonincremental
   URL_MD5 602746e0d438e075a5a9e0678140bba2)
 
 superbuild_set_revision(pythontwisted
-  URL     "https://www.paraview.org/files/dependencies/Twisted-19.2.1.tar.bz2"
-  URL_MD5 528b7856938edc2a752c244aebd94981)
+  URL     "https://www.paraview.org/files/dependencies/twisted-19.7.0.tar.gz"
+  URL_MD5 f307687d4315db3534d02aba97ba5ed0)
 
 superbuild_set_revision(pythontxaio
   URL     "https://www.paraview.org/files/dependencies/txaio-2.8.2.tar.gz"
