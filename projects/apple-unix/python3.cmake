@@ -4,6 +4,12 @@ else ()
   set(python3_shared_args --disable-shared --enable-static)
 endif ()
 
+set(python3_environment)
+if (APPLE)
+  list(APPEND python3_environment
+    MACOSX_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}")
+endif ()
+
 superbuild_add_project(python3
   CAN_USE_SYSTEM
   DEPENDS bzip2 zlib png ffi sqlite
@@ -17,7 +23,9 @@ superbuild_add_project(python3
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND
-    make install)
+    make install
+  PROCESS_ENVIRONMENT
+    ${python3_environment})
 
 if (NOT CMAKE_CROSSCOMPILING)
   # Pass the -rpath flag when building python to avoid issues running the
