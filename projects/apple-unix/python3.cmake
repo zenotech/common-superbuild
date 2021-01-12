@@ -5,7 +5,7 @@ else ()
 endif ()
 
 set(python3_environment)
-if (APPLE)
+if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
   list(APPEND python3_environment
     MACOSX_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}")
 endif ()
