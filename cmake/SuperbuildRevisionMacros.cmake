@@ -187,6 +187,14 @@ However, if it does not exist, the selection marked as the `FALLBACK` will be
 used instead.
 #]==]
 function (superbuild_set_selectable_source name)
+  get_property(have_revision GLOBAL
+    PROPERTY
+      "${name}_revision" SET)
+
+  if (have_revision)
+    return ()
+  endif ()
+
   set(selections)
   set(customizable_selections)
   set(promote_selections)
