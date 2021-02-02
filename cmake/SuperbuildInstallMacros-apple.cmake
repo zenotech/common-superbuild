@@ -16,6 +16,7 @@ self-contained and relocatable.
 superbuild_apple_create_app(<DESTINATION> <NAME> <BINARY>
   [INCLUDE_REGEXES <regex>...]
   [EXCLUDE_REGEXES <regex>...]
+  [IGNORE_REGEXES <regex>...]
   [SEARCH_DIRECTORIES <library-path>...]
   [PLUGINS <plugin>...]
   [ADDITIONAL_LIBRARIES <library-path>...]
@@ -31,7 +32,8 @@ use `@executable_path` or `@loader_path` as necessary.
 To exclude libraries from the bundle, use Python regular expressions as
 arguments to the `EXCLUDE_REGEXES` keyword. To include any otherwise-excluded
 libraries, use `INCLUDE_REGEXES`. System libraries and frameworks are excluded
-by default.
+by default. References can be ignored if they match any of the given
+`IGNORE_REGEXES`.
 
 The `CLEAN` argument starts a new bundle, otherwise the bundle is left as-is
 (and is expected to have been created by this call).
@@ -54,6 +56,7 @@ function (superbuild_apple_create_app destination name binary)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
+    IGNORE_REGEXES
     SEARCH_DIRECTORIES
     PLUGINS
     ADDITIONAL_LIBRARIES)
@@ -84,6 +87,11 @@ function (superbuild_apple_create_app destination name binary)
   foreach (exclude_regex IN LISTS _create_app_EXCLUDE_REGEXES)
     set(fixup_bundle_arguments
       "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
+  endforeach ()
+
+  foreach (ignore_regex IN LISTS _create_app_IGNORE_REGEXES)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --ignore \"${ignore_regex}\"")
   endforeach ()
 
   foreach (search_directory IN LISTS _create_app_SEARCH_DIRECTORIES)
@@ -126,6 +134,7 @@ endfunction ()
 superbuild_apple_install_utility(<DESTINATION> <NAME> <BINARY>
   [INCLUDE_REGEXES <regex>...]
   [EXCLUDE_REGEXES <regex>...]
+  [IGNORE_REGEXES <regex>...]
   [SEARCH_DIRECTORIES <library-path>...]
   [FRAMEWORK_DEST <framework-dest>]
   [LIBRARY_DEST <library-dest>])
@@ -137,8 +146,9 @@ installed and fixed up using `@executable_path`.
 A previous call must have been made with matching `DESTINATION` and `NAME`
 arguments; this call will not create a new application bundle.
 
-The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, and `SEARCH_DIRECTORIES` arguments
-are the same as those for `superbuild_apple_create_app`.
+The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, `IGNORE_REGEXES`, and
+`SEARCH_DIRECTORIES` arguments are the same as those for
+`superbuild_apple_create_app`.
 #]==]
 function (superbuild_apple_install_utility destination name binary)
   set(values
@@ -147,6 +157,7 @@ function (superbuild_apple_install_utility destination name binary)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
+    IGNORE_REGEXES
     SEARCH_DIRECTORIES)
   cmake_parse_arguments(_install_utility "" "${values}" "${multivalues}" ${ARGN})
 
@@ -160,6 +171,11 @@ function (superbuild_apple_install_utility destination name binary)
   foreach (exclude_regex IN LISTS _install_utility_EXCLUDE_REGEXES)
     set(fixup_bundle_arguments
       "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
+  endforeach ()
+
+  foreach (ignore_regex IN LISTS _install_utility_IGNORE_REGEXES)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --ignore \"${ignore_regex}\"")
   endforeach ()
 
   foreach (search_directory IN LISTS _install_utility_SEARCH_DIRECTORIES)
@@ -202,6 +218,7 @@ endfunction ()
 superbuild_apple_install_module(<DESTINATION> <NAME> <BINARY> <LOCATION>
   [INCLUDE_REGEXES <regex>...]
   [EXCLUDE_REGEXES <regex>...]
+  [IGNORE_REGEXES <regex>...]
   [SEARCH_DIRECTORIES <library-path>...])
 ```
 
@@ -213,13 +230,15 @@ modules and the like.
 A previous call must have been made with matching `DESTINATION` and `NAME`
 arguments; this call will not create a new application bundle.
 
-The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, and `SEARCH_DIRECTORIES` arguments
-are the same as those for `superbuild_apple_create_app`.
+The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, `IGNORE_REGEXES`, and
+`SEARCH_DIRECTORIES` arguments are the same as those for
+`superbuild_apple_create_app`.
 #]==]
 function (superbuild_apple_install_module destination name binary location)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
+    IGNORE_REGEXES
     SEARCH_DIRECTORIES)
   cmake_parse_arguments(_install_module "" "" "${multivalues}" ${ARGN})
 
@@ -233,6 +252,11 @@ function (superbuild_apple_install_module destination name binary location)
   foreach (exclude_regex IN LISTS _install_module_EXCLUDE_REGEXES)
     set(fixup_bundle_arguments
       "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
+  endforeach ()
+
+  foreach (ignore_regex IN LISTS _install_module_IGNORE_REGEXES)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --ignore \"${ignore_regex}\"")
   endforeach ()
 
   foreach (search_directory IN LISTS _install_module_SEARCH_DIRECTORIES)
@@ -284,6 +308,9 @@ Note that modules in the list which cannot be found are ignored.
 #]==]
 function (superbuild_apple_install_python destination name)
   set(multivalues
+    INCLUDE_REGEXES
+    EXCLUDE_REGEXES
+    IGNORE_REGEXES
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
@@ -302,6 +329,21 @@ function (superbuild_apple_install_python destination name)
   endif ()
 
   set(fixup_bundle_arguments)
+
+  foreach (include_regex IN LISTS _install_python_INCLUDE_REGEXES)
+    list(APPEND fixup_bundle_arguments
+      --include "${include_regex}")
+  endforeach ()
+
+  foreach (exclude_regex IN LISTS _install_python_EXCLUDE_REGEXES)
+    list(APPEND fixup_bundle_arguments
+      --exclude "${exclude_regex}")
+  endforeach ()
+
+  foreach (ignore_regex IN LISTS _install_python_IGNORE_REGEXES)
+    list(APPEND fixup_bundle_arguments
+      --ignore "${ignore_regex}")
+  endforeach ()
 
   foreach (search_directory IN LISTS _install_python_SEARCH_DIRECTORIES)
     list(APPEND fixup_bundle_arguments

@@ -4,6 +4,15 @@ else ()
   set(ffmpeg_shared_args --disable-shared --enable-static)
 endif ()
 
+set(ffmpeg_c_flags "${superbuild_c_flags}")
+if (APPLE AND CMAKE_OSX_SYSROOT)
+  string(APPEND ffmpeg_c_flags " --sysroot=${CMAKE_OSX_SYSROOT}")
+endif ()
+set(ffmpeg_ld_flags "${superbuild_ld_flags}")
+if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
+  string(APPEND ffmpeg_ld_flags " -isysroot ${CMAKE_OSX_SYSROOT} -mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
+endif ()
+
 superbuild_add_project(ffmpeg
   DEPENDS zlib
   CONFIGURE_COMMAND
@@ -17,11 +26,13 @@ superbuild_add_project(ffmpeg
       --disable-ffprobe
       --disable-ffserver
       --disable-network
+      --disable-vaapi
+      --disable-vdpau
       --disable-yasm
       ${ffmpeg_shared_args}
       --cc=${CMAKE_C_COMPILER}
-      "--extra-cflags=${superbuild_c_flags}"
-      "--extra-ldflags=${superbuild_ld_flags}"
+      "--extra-cflags=${ffmpeg_c_flags}"
+      "--extra-ldflags=${ffmpeg_ld_flags}"
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND

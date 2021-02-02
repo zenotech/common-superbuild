@@ -37,12 +37,27 @@ string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
 
 add_custom_target(download-all)
 
+set(old_policy_114 1)
+if (POLICY CMP0114)
+  cmake_policy(GET CMP0114 cmp0114_state)
+  if (cmp0114_state STREQUAL "NEW")
+    set(old_policy_114 0)
+  endif ()
+endif ()
+
 set(_superbuild_independent_step_targets
   download
-  update)
-set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-  PROPERTY
-    EP_INDEPENDENT_STEP_TARGETS "${_superbuild_independent_step_targets}")
+  update
+  patch)
+if (old_policy_114)
+  set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    PROPERTY
+      EP_INDEPENDENT_STEP_TARGETS "${_superbuild_independent_step_targets}")
+else ()
+  set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    PROPERTY
+      EP_STEP_TARGETS "${_superbuild_independent_step_targets}")
+endif ()
 
 option(SUPERBUILD_OFFLINE_BUILD "Do not update git repositories during the build" OFF)
 if (SUPERBUILD_OFFLINE_BUILD)

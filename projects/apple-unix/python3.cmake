@@ -4,9 +4,15 @@ else ()
   set(python3_shared_args --disable-shared --enable-static)
 endif ()
 
+set(python3_environment)
+if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
+  list(APPEND python3_environment
+    MACOSX_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}")
+endif ()
+
 superbuild_add_project(python3
   CAN_USE_SYSTEM
-  DEPENDS bzip2 zlib png ffi
+  DEPENDS bzip2 zlib png ffi sqlite
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
@@ -17,7 +23,9 @@ superbuild_add_project(python3
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND
-    make install)
+    make install
+  PROCESS_ENVIRONMENT
+    ${python3_environment})
 
 if (NOT CMAKE_CROSSCOMPILING)
   # Pass the -rpath flag when building python to avoid issues running the
@@ -39,17 +47,17 @@ else ()
     CACHE INTERNAL "")
 endif ()
 
-set(superbuild_python_version "3.7"
+set(superbuild_python_version "3.8"
   CACHE INTERNAL "")
 
 superbuild_add_extra_cmake_args(
-  -DPython3_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python${superbuild_python_version}m
-  -DPython3_INCLUDE_DIR:PATH=<INSTALL_DIR>/include/python${superbuild_python_version}m
-  -DPython3_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}m${CMAKE_SHARED_LIBRARY_SUFFIX}
-  -DPython3_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}m${CMAKE_SHARED_LIBRARY_SUFFIX}
+  -DPython3_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python${superbuild_python_version}
+  -DPython3_INCLUDE_DIR:PATH=<INSTALL_DIR>/include/python${superbuild_python_version}
+  -DPython3_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}${CMAKE_SHARED_LIBRARY_SUFFIX}
+  -DPython3_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}${CMAKE_SHARED_LIBRARY_SUFFIX}
 
-  -DPYTHON_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python${superbuild_python_version}m
-  -DPYTHON_INCLUDE_DIR:PATH=<INSTALL_DIR>/include/python${superbuild_python_version}m
-  -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}m${CMAKE_SHARED_LIBRARY_SUFFIX}
-  -DPYTHON_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}m${CMAKE_SHARED_LIBRARY_SUFFIX}
+  -DPYTHON_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python${superbuild_python_version}
+  -DPYTHON_INCLUDE_DIR:PATH=<INSTALL_DIR>/include/python${superbuild_python_version}
+  -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}${CMAKE_SHARED_LIBRARY_SUFFIX}
+  -DPYTHON_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}${CMAKE_SHARED_LIBRARY_SUFFIX}
 )

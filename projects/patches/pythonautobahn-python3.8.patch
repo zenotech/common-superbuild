@@ -1,0 +1,32 @@
+From 897c349952ead7f69f6e720183a2b4c17987a64b Mon Sep 17 00:00:00 2001
+From: Omer Akram <om26er@gmail.com>
+Date: Fri, 18 Oct 2019 12:58:08 +0100
+Subject: [PATCH] Add py38 compatibility (#1259)
+
+* add python 3.8 compatibility
+
+* dont update examples for now
+
+* use perf_counter instead
+
+* minor change
+---
+ autobahn/util.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/autobahn/util.py b/autobahn/util.py
+index 519b714a..c248459d 100644
+--- a/autobahn/util.py
++++ b/autobahn/util.py
+@@ -463,7 +463,10 @@ def generate_serial_number():
+     # first call to this function, as a floating point number, based on the
+     # Win32 function QueryPerformanceCounter(). The resolution is typically
+     # better than one microsecond
+-    _rtime = time.clock
++    if sys.version_info >= (3, 8):
++        _rtime = time.perf_counter
++    else:
++        _rtime = time.clock
+     _ = _rtime()  # this starts wallclock
+ else:
+     # On Unix-like platforms, this used the first available from this list:

@@ -20,19 +20,19 @@ else ()
     CACHE INTERNAL "")
 endif ()
 
-set(superbuild_python_version "3.7"
+set(superbuild_python_version "3.8"
   CACHE INTERNAL "")
 
 superbuild_add_extra_cmake_args(
   -DPython3_EXECUTABLE:FILEPATH=<INSTALL_DIR>/Python/python.exe
   -DPython3_INCLUDE_DIR:PATH=<INSTALL_DIR>/Python/include/
-  -DPython3_LIBRARY:FILEPATH=<INSTALL_DIR>/Python/libs/python37.lib
-  -DPython3_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/Python/libs/python37.lib
+  -DPython3_LIBRARY:FILEPATH=<INSTALL_DIR>/Python/libs/python38.lib
+  -DPython3_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/Python/libs/python38.lib
   -DPython3_FIND_REGISTRY:STRING=NEVER
 
   -DPYTHON_EXECUTABLE:FILEPATH=<INSTALL_DIR>/Python/python.exe
   -DPYTHON_INCLUDE_DIR:PATH=<INSTALL_DIR>/Python/include/
-  -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/Python/libs/python37.lib
-  -DPYTHON_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/Python/libs/python37.lib
+  -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/Python/libs/python38.lib
+  -DPYTHON_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/Python/libs/python38.lib
   -DPYTHON_FIND_REGISTRY:STRING=NEVER
 )

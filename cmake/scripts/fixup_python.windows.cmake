@@ -45,21 +45,30 @@ function (superbuild_windows_install_python_module destination module search_pat
       endif ()
     endif ()
     if (IS_DIRECTORY "${search_path}/${module}")
-      file(GLOB modules "${search_path}/${module}/*.py" "${search_path}/${module}/*.pyd")
-      foreach (submodule IN LISTS modules)
-        get_filename_component(submodule_name "${submodule}" NAME)
-        string(REGEX REPLACE "\\.(py|pyd)$" "" submodule_name "${submodule_name}")
-        superbuild_windows_install_python_module("${destination}"
-          "${submodule_name}" "${search_path}/${module}" "${location}/${module}")
-      endforeach ()
-      file(GLOB packages "${search_path}/${module}/*")
-      foreach (subpackage IN LISTS packages)
-        if (IS_DIRECTORY "${subpackage}" AND NOT subpackage STREQUAL "__pycache__")
-          get_filename_component(subpackage_name "${subpackage}" NAME)
-          superbuild_windows_install_python_module("${destination}"
-            "${subpackage_name}" "${search_path}/${module}" "${location}/${module}")
+      file(GLOB contents RELATIVE "${search_path}/${module}" "${search_path}/${module}/*")
+      foreach (item_name IN LISTS contents)
+        set(item_path "${search_path}/${module}/${item_name}")
+        if (IS_DIRECTORY "${item_path}")
+          if (NOT item_name STREQUAL "__pycache__")
+            superbuild_windows_install_python_module("${destination}"
+              "${item_name}" "${search_path}/${module}" "${location}/${module}")
+          endif()
+        else()
+          # not a directory, check if it's a Python module or arbitrary artifact
+          # file.
+          if (item_name MATCHES "\\.(py|pyd)$")
+            # it's a Python module; install it by a recursive call.
+            string(REGEX REPLACE "\\.(py|pyd)$" "" item_name "${item_name}")
+            superbuild_windows_install_python_module("${destination}"
+              "${item_name}" "${search_path}/${module}" "${location}/${module}")
+          else()
+            # an artifact file; install it.
+            file(INSTALL
+              FILES       "${search_path}/${module}/${item_name}"
+              DESTINATION "${destination}/${location}/${module}")
+          endif()
         endif ()
-      endforeach ()
+      endforeach()
     endif ()
   endforeach ()
 endfunction ()

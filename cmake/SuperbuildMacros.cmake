@@ -108,18 +108,14 @@ function (superbuild_add_project name)
 
   set(can_use_system FALSE)
   set(must_use_system FALSE)
-  set(default "${_superbuild_default_${name}}")
   set(allow_developer_mode FALSE)
   set(debuggable FALSE)
+  set(default OFF)
   set(selectable FALSE)
   set(build_shared_libs_independent FALSE)
   set(help_string)
   set(depends)
   set(optional_depends)
-
-  if (DEFINED "_superbuild_${name}_selectable")
-    set(selectable "${_superbuild_${name}_selectable}")
-  endif ()
 
   set(ep_arguments)
   set(grab)
@@ -143,9 +139,6 @@ function (superbuild_add_project name)
     elseif (arg STREQUAL "SELECTABLE")
       set(selectable TRUE)
       set(grab)
-    elseif (arg STREQUAL "BUILD_SHARED_LIBS_INDEPENDENT")
-      set(build_shared_libs_independent TRUE)
-      set(grab)
     elseif (arg STREQUAL "HELP_STRING")
       set(grab help_string)
     elseif (arg STREQUAL "DEPENDS")
@@ -161,6 +154,14 @@ function (superbuild_add_project name)
         "${arg}")
     endif ()
   endforeach ()
+
+  # Allow projects to override default values for args
+  if (DEFINED "_superbuild_default_${name}")
+    set(default "${_superbuild_default_${name}}")
+  endif ()
+  if (DEFINED "_superbuild_${name}_selectable")
+    set(selectable "${_superbuild_${name}_selectable}")
+  endif ()
 
   # Allow projects to override the help string specified in the project file.
   if (DEFINED "_superbuild_help_string_${name}")
@@ -189,15 +190,13 @@ function (superbuild_add_project name)
     set(missing_deps)
     set(missing_deps_optional)
     foreach (dep IN LISTS depends)
-      list(FIND all_projects "${dep}" idx)
-      if (idx EQUAL -1)
+      if (NOT dep IN_LIST all_projects)
         list(APPEND missing_deps
           "${dep}")
       endif ()
     endforeach ()
     foreach (dep IN LISTS optional_depends)
-      list(FIND all_projects "${dep}" idx)
-      if (idx EQUAL -1)
+      if (NOT dep IN_LIST all_projects)
         list(APPEND missing_deps_optional
           "${dep}")
       endif ()
@@ -511,6 +510,12 @@ function (superbuild_apply_patch _name _patch _comment)
     PROPERTY
       "${current_project}_patch_steps")
 
+  set(_independent)
+  if (NOT CMAKE_VERSION VERSION_LESS "3.19")
+    list(APPEND _independent
+      INDEPENDENT 1)
+  endif ()
+
   superbuild_project_add_step("${_name}-patch-${_patch}"
     COMMAND   "${GIT_EXECUTABLE}"
               apply
@@ -520,13 +525,13 @@ function (superbuild_apply_patch _name _patch _comment)
               "${CMAKE_CURRENT_LIST_DIR}/patches/${_name}-${_patch}.patch"
     DEPENDEES patch ${patch-steps}
     DEPENDERS configure
+    ${_independent}
     COMMENT   "${_comment}"
     WORKING_DIRECTORY <SOURCE_DIR>)
 
   set_property(GLOBAL APPEND
     PROPERTY
       "${current_project}_patch_steps" "${_name}-patch-${_patch}")
-
 endfunction ()
 
 #[==[.md
@@ -1221,9 +1226,15 @@ function (_superbuild_add_project_internal name)
   set(prepended_cmake_prefix_path
     "${superbuild_prefix_path}${converted_cmake_prefix_path}")
 
+  set(no_progress OFF)
+  if (CMAKE_GENERATOR MATCHES "Ninja")
+    set(no_progress ON)
+  endif ()
+
   # ARGN needs to be quoted so that empty list items aren't removed if that
   # happens options like INSTALL_COMMAND "" won't work.
   _superbuild_ExternalProject_add(${name} "${ARGN}"
+    DOWNLOAD_NO_PROGRESS "${no_progress}"
     PREFIX        "${name}"
     DOWNLOAD_DIR  "${superbuild_download_location}"
     STAMP_DIR     "${name}/stamp"
@@ -1265,13 +1276,11 @@ endfunction ()
 # Wrapper around ExternalProject's internal calls to gather the CMake flags
 # that would be passed to a project if it were enabled.
 function (_superbuild_write_developer_mode_cache name)
-  # if CMAKE_PREFIX_PATH is set, then we set the xported CMAKE_PREFIX_PATH flag
-  # to be a list of two things and it needs quotations. Otherwise, there is no
-  # need to add quotations (and doing so results in a developer config file with
-  # too many quotations, resulting in a warning).
+  # if CMAKE_PREFIX_PATH is set, then we set the exported CMAKE_PREFIX_PATH
+  # flag to be a list of two things and it needs quotations.
   if (CMAKE_PREFIX_PATH)
     set(cmake_args
-      "-DCMAKE_PREFIX_PATH:PATH=\"${superbuild_prefix_path};${CMAKE_PREFIX_PATH}\"")
+      "-DCMAKE_PREFIX_PATH:PATH=${superbuild_prefix_path};${CMAKE_PREFIX_PATH}")
   else ()
     set(cmake_args
       "-DCMAKE_PREFIX_PATH:PATH=${superbuild_prefix_path}")

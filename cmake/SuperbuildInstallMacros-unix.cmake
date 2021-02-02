@@ -21,8 +21,9 @@ be passed as the remaining arguments to the function.
 _superbuild_unix_install_binary(
   LIBDIR <libdir>
   BINARY <path>
-  TYPE <module|executable>
+  TYPE <module|executable|plugin>
   [CLEAN]
+  [HAS_SYMLINKS]
   [DESTINATION <destination>]
   [LOCATION <location>]
   [INCLUDE_REGEXES <include-regex>...]
@@ -45,6 +46,9 @@ configure time.
 
 The `BINARY` argument is the path to the actual executable to install. It must
 be an absolute path.
+
+If `HAS_SYMLINKS` is given, symlinks of the main binary are searched for and
+installed.
 
 The `TYPE` argument specifies whether an executable or module (e.g., plugin or
 standalone library) is being installed. For a module, the `LOCATION` argument
@@ -71,6 +75,7 @@ regular expressions are also expected to match the full path of the library.
 #]==]
 function (_superbuild_unix_install_binary)
   set(options
+    HAS_SYMLINKS
     CLEAN)
   set(values
     DESTINATION
@@ -138,6 +143,11 @@ function (_superbuild_unix_install_binary)
     endif ()
   endif ()
 
+  if (_install_binary_HAS_SYMLINKS)
+    set(fixup_bundle_arguments
+      "${fixup_bundle_arguments} --has-symlinks")
+  endif ()
+
   if (_install_binary_LOCATION)
     set(fixup_bundle_arguments
       "${fixup_bundle_arguments} --location \"${_install_binary_LOCATION}\"")
@@ -196,6 +206,16 @@ function (_superbuild_unix_install_module path subdir libdir)
     LOCATION    "${subdir}"
     LIBDIR      "${libdir}"
     TYPE        module
+    ${ARGN})
+endfunction ()
+
+# A convenience function for installing a plugin.
+function (_superbuild_unix_install_plugin path subdir libdir)
+  _superbuild_unix_install_binary(
+    BINARY      "${path}"
+    LOCATION    "${subdir}"
+    LIBDIR      "${libdir}"
+    TYPE        plugin
     ${ARGN})
 endfunction ()
 
@@ -270,10 +290,52 @@ function (superbuild_unix_install_program name libdir)
 endfunction ()
 
 #[==[.md
+### Modules
+
+Modules include libraries that are linked to, but need to be installed separately.
+
+```
+superbuild_unix_install_module(<PATH> <LIBRARY DIR> <SEARCH PATHS> [<ARG>...])
+```
+
+Installs a library at `PATH` into `bin/` and its dependent libraries into
+`LIBRARY DIR` under the install destination. If the path is not absolute, it is
+searched for underneath `superbuild_install_location` with the given `PATH`
+under each path in the `SEARCH PATHS` argument.
+
+Note that `SEARCH PATHS` is a CMake list passed as a single argument.
+
+The following arguments are set by calling this function:
+
+  - `BINARY`
+  - `LIBDIR`
+  - `TYPE` (`module`)
+#]==]
+function (superbuild_unix_install_module name libdir paths)
+  if (IS_ABSOLUTE "${name}")
+    _superbuild_unix_install_module("${name}" "${paths}" "${libdir}" ${ARGN})
+    return ()
+  endif ()
+
+  set(found FALSE)
+  foreach (path IN LISTS paths)
+    if (EXISTS "${superbuild_install_location}/${path}/${name}")
+      _superbuild_unix_install_module("${superbuild_install_location}/${path}/${name}" "${path}" "${libdir}" ${ARGN})
+      set(found TRUE)
+      break ()
+    endif ()
+  endforeach ()
+
+  if (NOT found)
+    string(REPLACE ";" ", " paths_list "${paths}")
+    message(FATAL_ERROR "Unable to find the ${name} plugin in ${paths_list}")
+  endif ()
+endfunction ()
+
+#[==[.md
 ### Plugins
 
-Plugins include libraries that are meant to be loaded at runtime. It also
-includes libraries that are linked to, but need to be installed separately.
+Plugins include libraries that are meant to be loaded at runtime.
 
 ```
 superbuild_unix_install_plugin(<PATH> <LIBRARY DIR> <SEARCH PATHS> [<ARG>...])
@@ -290,18 +352,18 @@ The following arguments are set by calling this function:
 
   - `BINARY`
   - `LIBDIR`
-  - `TYPE` (`module`)
+  - `TYPE` (`plugin`)
 #]==]
 function (superbuild_unix_install_plugin name libdir paths)
   if (IS_ABSOLUTE "${name}")
-    _superbuild_unix_install_module("${name}" "${paths}" "${libdir}" ${ARGN})
+    _superbuild_unix_install_plugin("${name}" "${paths}" "${libdir}" ${ARGN})
     return ()
   endif ()
 
   set(found FALSE)
   foreach (path IN LISTS paths)
     if (EXISTS "${superbuild_install_location}/${path}/${name}")
-      _superbuild_unix_install_module("${superbuild_install_location}/${path}/${name}" "${path}" "${libdir}" ${ARGN})
+      _superbuild_unix_install_plugin("${superbuild_install_location}/${path}/${name}" "${path}" "${libdir}" ${ARGN})
       set(found TRUE)
       break ()
     endif ()
