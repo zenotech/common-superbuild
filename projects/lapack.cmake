@@ -22,6 +22,6 @@ superbuild_add_project(lapack
     -DBUILD_TESTING:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
     -DCMAKE_INSTALL_LIBDIR:STRING=lib
-    ${EXTRA_ARGS})
+    ${EXTRA_ARGS}
   PROCESS_ENVIRONMENT
     ${lapack_environment})
