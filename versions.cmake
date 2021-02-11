@@ -218,8 +218,8 @@ superbuild_set_revision(pythonsetuptools
   URL_MD5 562328cde5a33564c0ebf16699a27b65)
 
 superbuild_set_revision(pythonautobahn
-  URL     "https://www.paraview.org/files/dependencies/autobahn-17.10.1.tar.gz"
-  URL_MD5 f8c8d74bf73644719b751e6fb11dc4a3)
+  URL     "https://www.paraview.org/files/dependencies/autobahn-21.1.1.tar.gz"
+  URL_MD5 f0c5bebdc24eab1e8ee5811ae73075b8)
 
 superbuild_set_revision(pythonconstantly
   URL     "https://www.paraview.org/files/dependencies/constantly-15.1.0.tar.gz"
