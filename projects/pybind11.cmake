@@ -5,7 +5,7 @@ endif ()
 
 superbuild_add_project(pybind11
   DEFAULT_ON
-  DEPENDS python cxx11
+  DEPENDS python cxx11 pythonsetuptools
   DEPENDS_OPTIONAL python2 python3
   CMAKE_ARGS
     -DPYBIND11_TEST:BOOL=OFF)
