@@ -223,9 +223,33 @@ superbuild_set_revision(pythonwheel
   URL     "https://www.paraview.org/files/dependencies/wheel-0.36.2-nounicodedist.tar.gz"
   URL_MD5 20cbaac2ac5493ee7395145a2d708640)
 
+superbuild_set_revision(pythonpycparser
+  URL     "https://www.paraview.org/files/dependencies/pycparser-2.20.tar.gz"
+  URL_MD5 b8f88de737db8c346ee8d31c07c7a25a)
+
+superbuild_set_revision(pythontoml
+  URL     "https://www.paraview.org/files/dependencies/toml-0.10.2.tar.gz"
+  URL_MD5 59bce5d8d67e858735ec3f399ec90253)
+
+superbuild_set_revision(pythonsetuptoolsscm
+  URL     "https://www.paraview.org/files/dependencies/setuptools_scm-5.0.1.tar.gz"
+  URL_MD5 c11bf23d80224691a46ee5deb84c42db)
+
+superbuild_set_revision(pythonsetuptoolsrust
+  URL     "https://www.paraview.org/files/dependencies/setuptools-rust-0.11.6.tar.gz"
+  URL_MD5 319d2968f076f37279c866e51bcccbcc)
+
 superbuild_set_revision(pythonautobahn
   URL     "https://www.paraview.org/files/dependencies/autobahn-21.1.1.tar.gz"
   URL_MD5 f0c5bebdc24eab1e8ee5811ae73075b8)
+
+superbuild_set_revision(pythoncffi
+  URL     "https://www.paraview.org/files/dependencies/cffi-1.14.5.tar.gz"
+  URL_MD5 272cb183bf0365530e3c0d8f446cd89d)
+
+superbuild_set_revision(pythonsemanticversion
+  URL     "https://www.paraview.org/files/dependencies/semantic_version-2.8.5.tar.gz"
+  URL_MD5 76d7364def7ee487b6153d40b13de904)
 
 superbuild_set_revision(pythonconstantly
   URL     "https://www.paraview.org/files/dependencies/constantly-15.1.0.tar.gz"
@@ -302,3 +326,48 @@ superbuild_set_revision(pybind11
 superbuild_set_revision(sqlite
   URL     "https://www.paraview.org/files/dependencies/sqlite-autoconf-3350200.tar.gz"
   URL_MD5 454e0899d99a7b28825db3d807526774)
+
+set(pythoncryptography_version "3.4.7")
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "64")
+    set(pythoncryptography_file
+      "cryptography-${pythoncryptography_version}-cp36-abi3-win_amd64.whl")
+    set(pythoncryptography_md5
+      "4ac946949ecb278b028c2fcf5d1cbc2b")
+  endif ()
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
+    set(pythoncryptography_file
+      "cryptography-${pythoncryptography_version}-cp36-abi3-macosx_10_10_x86_64.whl")
+    set(pythoncryptography_md5
+      "f5e574ea0e46b25157a29d09fc6e76b3")
+  elseif (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
+    set(pythoncryptography_file
+      "cryptography-${pythoncryptography_version}-cp36-abi3-macosx_11_0_arm64.whl")
+    set(pythoncryptography_md5
+      "cd55873ce4a9aa985a0573efdc4244e1")
+  endif ()
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
+    set(pythoncryptography_file
+      "cryptography-${pythoncryptography_version}-cp36-abi3-manylinux2010_x86_64.whl")
+    set(pythoncryptography_md5
+      "37e6016ff0dd06e168d908ee800a071b")
+  endif ()
+endif ()
+if (NOT pythoncryptography_file)
+  message(WARNING
+    "The Python cryptography package is being built from source due to the "
+    "lack of a suitable wheel file. This needs a Rust compiler. Please see "
+    "https://rustup.rs/ for instructions on obtaining a toolchain.")
+  set(pythoncryptography_file
+    "cryptography-${pythoncryptography_version}.tar.gz")
+  set(pythoncryptography_md5
+    "f24fb11c6d5beb18cbfe216b9e58c27e")
+  set_property(GLOBAL
+    PROPERTY
+      pythoncryptography_source 1)
+endif ()
+superbuild_set_revision(pythoncryptography
+  URL     "https://www.paraview.org/files/dependencies/${pythoncryptography_file}"
+  URL_MD5 "${pythoncryptography_md5}")

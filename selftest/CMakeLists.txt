@@ -22,7 +22,9 @@ function (superbuild_find_projects var)
     python3
     pythonattrs
     pythonautobahn
+    pythoncffi
     pythonconstantly
+    pythoncryptography
     pythoncycler
     pythoncython
     pythondateutil
@@ -30,10 +32,15 @@ function (superbuild_find_projects var)
     pythonincremental
     pythonkiwisolver
     pythonmpi4py
+    pythonpycparser
     pythonpygments
     pythonpyparsing
+    pythonsemanticversion
     pythonsetuptools
+    pythonsetuptoolsscm
+    pythonsetuptoolsrust
     pythonsix
+    pythontoml
     pythontwisted
     pythontxaio
     pythonwheel
