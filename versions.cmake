@@ -60,8 +60,8 @@ if (WIN32)
     URL_MD5 8cece55f80ef13ae8e839595e1c090d2)
 else()
   superbuild_set_revision(python3
-    URL     "https://www.paraview.org/files/dependencies/Python-3.8.6.tar.xz"
-    URL_MD5 69e73c49eeb1a853cefd26d18c9d069d)
+    URL     "https://www.paraview.org/files/dependencies/Python-3.8.8.tar.xz"
+    URL_MD5 23e6b769857233c1ac07b6be7442eff4)
 endif()
 
 superbuild_set_revision(ftjam
