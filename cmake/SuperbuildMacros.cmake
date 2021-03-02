@@ -120,6 +120,8 @@ function (superbuild_add_project name)
   set(ep_arguments)
   set(grab)
 
+  _ep_get_add_keywords(keywords)
+
   foreach (arg IN LISTS ARGN)
     if (arg STREQUAL "CAN_USE_SYSTEM")
       set(can_use_system TRUE)
@@ -145,7 +147,7 @@ function (superbuild_add_project name)
       set(grab depends)
     elseif (arg STREQUAL "DEPENDS_OPTIONAL")
       set(grab optional_depends)
-    elseif (arg MATCHES "${_ep_keywords__superbuild_ExternalProject_add}")
+    elseif (arg IN_LIST keywords)
       set(grab ep_arguments)
       list(APPEND ep_arguments
         "${arg}")
