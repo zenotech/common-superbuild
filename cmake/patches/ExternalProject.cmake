@@ -2219,7 +2219,11 @@ function(ExternalProject_Add_StepTargets name)
         )
     endif()
   elseif(cmp0114 STREQUAL "")
+    if (POLICY CMP0114)
     cmake_policy(GET_WARNING CMP0114 _cmp0114_warning)
+    else ()
+    set(_cmp0114_warning "Policy CMP0114 is not available for this version of CMake.")
+    endif ()
     string(APPEND _cmp0114_warning "\n"
       "ExternalProject target '${name}' would depend on the targets for "
       "step(s) '${steps}' under policy CMP0114, but this is being left out "
@@ -2431,7 +2435,11 @@ function(ExternalProject_Add_Step name step)
       get_property(warned TARGET ${name} PROPERTY _EP_CMP0114_WARNED_INDEPENDENT_STEP_TARGETS)
       if(NOT warned)
         set_property(TARGET ${name} PROPERTY _EP_CMP0114_WARNED_INDEPENDENT_STEP_TARGETS 1)
+        if (POLICY CMP0114)
         cmake_policy(GET_WARNING CMP0114 _cmp0114_warning)
+        else ()
+        set(_cmp0114_warning "Policy CMP0114 is not available for this version of CMake.")
+        endif ()
         string(APPEND _cmp0114_warning "\n"
           "ExternalProject '${name}' option INDEPENDENT_STEP_TARGETS is set to\n"
           "  ${independent_step_targets}\n"
@@ -3957,9 +3965,13 @@ function(ExternalProject_Add name)
   cmake_policy(GET CMP0097 _EP_CMP0097
     PARENT_SCOPE # undocumented, do not use outside of CMake
     )
+  if (POLICY CMP0114)
   cmake_policy(GET CMP0114 cmp0114
     PARENT_SCOPE # undocumented, do not use outside of CMake
     )
+  else ()
+  set(cmp0114 OLD)
+  endif ()
   if(CMAKE_XCODE_BUILD_SYSTEM VERSION_GREATER_EQUAL 12 AND NOT cmp0114 STREQUAL "NEW")
     message(AUTHOR_WARNING
       "Policy CMP0114 is not set to NEW.  "
