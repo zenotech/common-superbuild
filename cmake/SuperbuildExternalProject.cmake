@@ -6,7 +6,7 @@ additional support for managing environments, parallel build settings, download
 management, and output suppression.
 #]==]
 
-if (CMAKE_VERSION VERSION_LESS "3.17")
+if (CMAKE_VERSION VERSION_LESS "3.20")
   # Needed for fixes.
   include("${CMAKE_CURRENT_LIST_DIR}/patches/ExternalProject.cmake")
 else ()
@@ -30,10 +30,6 @@ set(superbuild_make_program "make")
 if (CMAKE_GENERATOR MATCHES "Makefiles")
   set(superbuild_make_program "${CMAKE_MAKE_PROGRAM}")
 endif ()
-
-# Add `PROCESS_ENVIRONMENT` to the list of keywords.
-string(REPLACE ")" "|PROCESS_ENVIRONMENT)"
-  _ep_keywords__superbuild_ExternalProject_add "${_ep_keywords_ExternalProject_Add}")
 
 add_custom_target(download-all)
 
@@ -72,10 +68,12 @@ function (_superbuild_ep_strip_extra_arguments name)
   set(arguments)
   set(accumulate FALSE)
 
+  _ep_get_add_keywords(keywords)
+
   foreach (arg IN LISTS ARGN)
     if (arg STREQUAL "PROCESS_ENVIRONMENT")
       set(skip TRUE)
-    elseif (arg MATCHES "${_ep_keywords_ExternalProject_Add}")
+    elseif (arg IN_LIST keywords)
       set(skip FALSE)
     endif ()
 
@@ -141,7 +139,10 @@ endfunction ()
 function (_superbuild_ExternalProject_add name)
   # Create a temporary target so we can query target properties.
   add_custom_target("sb-${name}")
-  _ep_parse_arguments(_superbuild_ExternalProject_add "sb-${name}" _EP_ "${ARGN}")
+  _ep_get_add_keywords(keywords)
+  list(APPEND keywords
+    PROCESS_ENVIRONMENT)
+  _ep_parse_arguments("${keywords}" "sb-${name}" _EP_ "${ARGN}")
 
   get_property(has_process_environment TARGET "sb-${name}"
     PROPERTY _EP_PROCESS_ENVIRONMENT SET)
@@ -168,10 +169,15 @@ function (_superbuild_ExternalProject_add name)
     "${install_command}")
 
   # Now strip `PROCESS_ENVIRONMENT` and commands from arguments.
+  set(skippable_args
+    PROCESS_ENVIRONMENT
+    BUILD_COMMAND
+    INSTALL_COMMAND
+    CONFIGURE_COMMAND)
   set(skip FALSE)
   foreach (arg IN LISTS ARGN)
-    if (arg MATCHES "${_ep_keywords__superbuild_ExternalProject_add}")
-      if (arg MATCHES "^(PROCESS_ENVIRONMENT|BUILD_COMMAND|INSTALL_COMMAND|CONFIGURE_COMMAND)$")
+    if (arg IN_LIST keywords)
+      if (arg IN_LIST skippable_args)
         set(skip TRUE)
       else ()
         set(skip FALSE)
