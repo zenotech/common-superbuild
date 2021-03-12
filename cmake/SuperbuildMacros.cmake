@@ -425,6 +425,7 @@ macro (superbuild_add_project_python_wheel _name)
       ${superbuild_python_pip}
         install
         --no-index
+        --no-deps
         --prefix=<INSTALL_DIR>
         "<DOWNLOADED_FILE>")
 endmacro ()
