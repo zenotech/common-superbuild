@@ -38,6 +38,7 @@ function (superbuild_find_projects var)
     pythonsix
     pythontwisted
     pythontxaio
+    pythonwheel
     pythonwslink
     pythonzope
     pythonzopeinterface

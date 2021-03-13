@@ -217,6 +217,12 @@ superbuild_set_revision(pythonsetuptools
   URL     "https://www.paraview.org/files/dependencies/setuptools-46.1.3.zip"
   URL_MD5 562328cde5a33564c0ebf16699a27b65)
 
+superbuild_set_revision(pythonwheel
+  # PyPI source tarball with 'unicode.dist' test excised from it (CMake has
+  # issues extracting non-UTF-8 names in tarballs).
+  URL     "https://www.paraview.org/files/dependencies/wheel-0.36.2-nounicodedist.tar.gz"
+  URL_MD5 20cbaac2ac5493ee7395145a2d708640)
+
 superbuild_set_revision(pythonautobahn
   URL     "https://www.paraview.org/files/dependencies/autobahn-21.1.1.tar.gz"
   URL_MD5 f0c5bebdc24eab1e8ee5811ae73075b8)
