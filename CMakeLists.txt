@@ -71,7 +71,7 @@ if(BUILD_SHARED_LIBS AND NOT CMAKE_POSITION_INDEPENDENT_CODE)
   if (NOT _superbuild_no_static_everywhere)
     message(WARNING "Forcing CMAKE_POSITION_INDEPENDENT_CODE to be ON as required by BUILD_SHARED_LIBS.")
   endif ()
-  set_property(CACHE CMAKE_POSITION_INDEPENDENT_CODE PROPERTY VALUE ON)
+  set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 endif()
 
 #-----------------------------------------------------------------------------
