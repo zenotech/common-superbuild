@@ -122,6 +122,8 @@ function (superbuild_add_project name)
   set(grab)
 
   _ep_get_add_keywords(keywords)
+  list(APPEND keywords
+    PROCESS_ENVIRONMENT)
 
   foreach (arg IN LISTS ARGN)
     if (arg STREQUAL "CAN_USE_SYSTEM")
@@ -148,8 +150,6 @@ function (superbuild_add_project name)
       set(grab depends)
     elseif (arg STREQUAL "DEPENDS_OPTIONAL")
       set(grab optional_depends)
-    elseif (arg STREQUAL "PROCESS_ENVIRONMENT")
-      set(grab process_environment)
     elseif (arg IN_LIST keywords)
       set(grab ep_arguments)
       list(APPEND ep_arguments
