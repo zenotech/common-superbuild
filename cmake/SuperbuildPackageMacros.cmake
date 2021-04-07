@@ -53,6 +53,20 @@ function (superbuild_add_extra_package_test name generator)
     string(APPEND superbuild_extra_variables
       "set(\"${variable}\" \"${${variable}}\")\n")
   endforeach ()
+  get_property(projects_with_plugins GLOBAL PROPERTY sb_projects_with_plugins)
+  string(APPEND superbuild_extra_variables
+    "set(\"projects_with_plugins\" \"${projects_with_plugins}\")\n")
+  foreach (project IN LISTS projects_with_plugins)
+    get_property(plugin_files GLOBAL PROPERTY "${project}_plugin_files")
+    get_property(plugin_omit GLOBAL PROPERTY "${project}_plugins_omit")
+
+    string(APPEND superbuild_extra_variables
+      "set(\"${project}_plugin_files\" \"${plugin_files}\")\n")
+    if (plugin_omit)
+      string(APPEND superbuild_extra_variables
+        "set(\"${project}_plugin_omit\" \"${plugin_omit}\")\n")
+    endif ()
+  endforeach ()
 
   set(cpack_source_dir "${CMAKE_BINARY_DIR}/cpack/${name}/${generator}")
   # Create a build directory so that the installation variant doesn't conflict.

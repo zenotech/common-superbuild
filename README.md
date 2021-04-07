@@ -71,6 +71,27 @@ followed:
     exists, the idea is that time will not be needed to rediscover the reason
     it exists.
 
+## ParaView Plugins
+
+ParaView plugins are prevalent in superbuilds. There are support APIs in the
+[SuperbuildPluginMacros][plugin-macros] module.
+
+Projects which provide ParaView XML files may use the
+`superbuild_declare_paraview_xml_files` function to describe what plugin XML
+files will be installed by the project. Packaging may access this information
+via the following variables:
+
+  - `projects_with_plugins`: A list of projects with associated plugin XML
+    variables set.
+  - `${project}_plugin_files`: A list of plugin XML files provided by the
+    project.
+  - `${project}_plugin_omit`: A list of plugins to omit from the XML files
+    (usually because they are static).
+
+Projects which consume plugins may use the
+`superbuild_omit_plugins_from_project` function to exclude plugins from a
+project.
+
 ## Examples
 
 *TODO*: Add some examples of projects.
@@ -267,5 +288,6 @@ flags use `superbuild_ld_flags`, `superbuild_cpp_flags`,
 
 [install-macros]: cmake/SuperbuildInstallMacros.cmake
 [package-macros]: cmake/SuperbuildPackageMacros.cmake
+[plugin-macros]: cmake/SuperbuildPluginMacros.cmake
 [revision-macros]: cmake/SuperbuildRevisionMacros.cmake
 [version-macros]: cmake/SuperbuildVersionMacros.cmake

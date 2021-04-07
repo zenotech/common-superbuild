@@ -147,6 +147,7 @@ if (COMMAND superbuild_setup_variables)
 endif ()
 
 include(SuperbuildMacros)
+include(SuperbuildPluginMacros)
 
 superbuild_find_projects(superbuild_projects)
 if (NOT superbuild_projects)
