@@ -211,6 +211,10 @@ In addition, variables may be exported to the bundle project by setting the
 See the [SuperbuildInstallMacros][install-macros] file for documentation on
 the variables available in `$project.bundle.cmake` files.
 
+Package suffixes may be computed using the `superbuild_package_suffix`
+function, though this only supports basic information (version, platform, and
+pointer size).
+
 ### `superbuild_add_tests` (function)
 
 This function, if defined, will enable testing for the superbuild itself.

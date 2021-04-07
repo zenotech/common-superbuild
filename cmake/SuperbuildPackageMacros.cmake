@@ -86,6 +86,45 @@ function (superbuild_add_extra_package_test name generator)
       ${ARGN})
 endfunction ()
 
+function (superbuild_package_suffix package_suffix)
+  # Set suffix to be used for generating archives. This ensures that the package
+  # files have decent names that we can directly upload to the website.
+  set(package_suffix_items)
+  if (APPLE)
+    list(APPEND package_suffix_items
+      "OSX${CMAKE_OSX_DEPLOYMENT_TARGET}")
+  else ()
+    list(APPEND package_suffix_items
+      "${CMAKE_SYSTEM_NAME}")
+  endif ()
+  if (superbuild_is_64bit)
+    list(APPEND package_suffix_items
+      "64bit")
+  else ()
+    list(APPEND package_suffix_items
+      "32bit")
+  endif ()
+
+  string(REPLACE ";" "-" package_suffix_default "${package_suffix_items}")
+
+  # package_suffix: A string that can be set to the suffix you want to use
+  # for all the generated packages. By default, it is determined by the features
+  # enabled.
+  set("${package_suffix}" "<default>"
+    CACHE STRING "String to use as a suffix for generated packages")
+  mark_as_advanced("${package_suffix}")
+
+  if (NOT package_suffix OR "${${package_suffix}}" STREQUAL "<default>")
+    set("${package_suffix}" ${package_suffix_default} PARENT_SCOPE)
+  elseif (NOT "${${package_suffix}}" STREQUAL package_suffix_default)
+    message(WARNING
+      "The suffix for the package (${${package_suffix}}) does not match the "
+      "suggested suffix based on build options (${package_suffix_default}). "
+      "Set it to '<default>' or an empty string to use the default suffix. "
+      "Using the provided suffix.")
+  endif ()
+endfunction()
+
 #[==[.md
 In addition to packages, a package may be used as a template for the `install`
 target of the superbuild.
