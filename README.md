@@ -96,6 +96,22 @@ project.
 
 *TODO*: Add some examples of projects.
 
+# Packages
+
+Superbuilds may set the `superbuild_project_roots` variable to a list of paths
+in which to discover packages (represented as a directory) for the project.
+These packages may provide a `<package>.configure.cmake` file which is included
+if it is selected as the primary package.
+
+The default package is `<none>`, but may be set via the
+`superbuild_package_default` variable.
+
+Users may select a different default via the exposed `SUPERBUILD_PACKAGE_MODE`
+cache variable.
+
+Packages may set the `superbuild_extra_package_projects` variable to a list of
+projects to include in the project as well.
+
 # Using the superbuild infrastructure
 
 To create a new superbuild, a repository should be created which contains the

@@ -128,6 +128,13 @@ endforeach ()
 list(INSERT CMAKE_MODULE_PATH 0
   ${project_path})
 
+if (superbuild_package_roots)
+  include(SuperbuildPackageMacros)
+
+  _superbuild_package_discover()
+  _superbuild_package_select()
+endif ()
+
 if (CMAKE_CROSSCOMPILING AND
     COMMAND superbuild_cross_prepare_target)
   superbuild_cross_prepare_target()
@@ -150,6 +157,8 @@ include(SuperbuildMacros)
 include(SuperbuildPluginMacros)
 
 superbuild_find_projects(superbuild_projects)
+list(APPEND superbuild_projects ${superbuild_extra_package_projects})
+
 if (NOT superbuild_projects)
   message(FATAL_ERROR "No projects are configured!")
 endif ()

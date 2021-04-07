@@ -199,3 +199,76 @@ function (superbuild_enable_install_target default)
       COMPONENT install)
   endif ()
 endfunction ()
+
+function (_superbuild_package_discover)
+  set(_superbuild_package_list)
+  set(_duplicate_package_list)
+  set(_package_path)
+  foreach (root IN LISTS superbuild_package_roots)
+    list(APPEND _package_path "${root}")
+    file(GLOB children RELATIVE "${root}" "${root}/*")
+    foreach (child IN LISTS children)
+      if (IS_DIRECTORY "${root}/${child}")
+        if (NOT child IN_LIST _superbuild_package_list)
+          message(STATUS "found package: ${child}")
+          list(PREPEND _superbuild_package_list "${child}")
+          list(APPEND _package_path "${root}/${child}")
+          foreach (platform IN LISTS platforms)
+            list(APPEND _package_path "${root}/${child}/${platform}")
+          endforeach ()
+        else ()
+          list(APPEND _duplicate_package_list "${child}")
+        endif ()
+      endif ()
+    endforeach ()
+  endforeach ()
+
+  if (_duplicate_package_list)
+    list(REMOVE_DUPLICATES _duplicate_package_list)
+    string(REPLACE ";" " " dup_list "${_duplicate_package_list}")
+    message(FATAL_ERROR "Detected duplicate packages: ${dup_list}")
+  endif ()
+
+  set(_superbuild_package_list
+    "${_superbuild_package_list}"
+    PARENT_SCOPE)
+  set(_superbuild_package_roots
+    "${_package_path}"
+    PARENT_SCOPE)
+endfunction ()
+
+macro (_superbuild_package_select)
+  if (_superbuild_package_list)
+    list(INSERT CMAKE_MODULE_PATH 0
+      "${_superbuild_package_roots}")
+
+    # Select a default if there was not one set
+    if (NOT _superbuild_package_default)
+      set(_superbuild_package_default "<none>")
+    endif ()
+    message(STATUS "Default package: ${_superbuild_package_default}")
+    if (_superbuild_package_list)
+      list(APPEND _superbuild_package_list "<custom>;<none>")
+    endif ()
+
+    set(SUPERBUILD_PACKAGE_MODE "${_superbuild_package_default}"
+      CACHE STRING "Superbuild packaging mode")
+    if (NOT SUPERBUILD_PACKAGE_MODE IN_LIST _superbuild_package_list)
+      message(FATAL_ERROR "SUPERBUILD_PACKAGE_MODE is not valid: ${SUPERBUILD_PACKAGE_MODE}")
+    endif ()
+    set_property(CACHE SUPERBUILD_PACKAGE_MODE
+      PROPERTY
+        STRINGS "${_superbuild_package_list}")
+
+    # TODO: Allow custom combinations of packages
+    if (SUPERBUILD_PACKAGE_MODE STREQUAL "<custom>")
+      set(SUPERBUILD_PACKAGE_MODE "<none>")
+      message(WARNING
+        "<custom> is currently not enabled for SUPERBUILD_PACKAGE_MODE. Setting it to <none>")
+    endif ()
+
+    if (NOT SUPERBUILD_PACKAGE_MODE STREQUAL "<none>")
+      include("${SUPERBUILD_PACKAGE_MODE}.configure" OPTIONAL)
+    endif ()
+  endif ()
+endmacro ()

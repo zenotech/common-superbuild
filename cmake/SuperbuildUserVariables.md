@@ -48,6 +48,10 @@ repository, a reconfigure will not trigger a `git fetch` unless the source
 directory does not exist at all. This is useful when performing builds on
 machines with limited network access.
 
+### `SUPERBUILD_PACKAGE_MODE`
+
+For projects which support it, the package to build for this project.
+
 ### `SUPERBUILD_PROJECT_PARALLELISM`
 
 This defaults to the number of CPUs on the machine. It is used as the `-j`
