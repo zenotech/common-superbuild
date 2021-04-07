@@ -99,10 +99,10 @@ endif()
 superbuild_setup_flags()
 
 # merge in default/user-specified CMake flags.
-set(superbuild_ld_flags "${CMAKE_SHARED_LINKER_FLAGS} ${superbuild_ld_flags}")
-set(superbuild_cpp_flags "${CMAKE_CXX_FLAGS} ${superbuild_cpp_flags}")
-set(superbuild_cxx_flags "${CMAKE_CXX_FLAGS} ${superbuild_cxx_flags}")
-set(superbuild_c_flags "${CMAKE_C_FLAGS} ${superbuild_c_flags}")
+string(PREPEND superbuild_ld_flags "${CMAKE_SHARED_LINKER_FLAGS} ")
+string(PREPEND superbuild_cpp_flags "${CMAKE_CXX_FLAGS} ")
+string(PREPEND superbuild_cxx_flags "${CMAKE_CXX_FLAGS} ")
+string(PREPEND superbuild_c_flags "${CMAKE_C_FLAGS} ")
 
 foreach (var IN ITEMS ld_flags cpp_flags cxx_flags c_flags)
   string(STRIP "${superbuild_${var}}" "superbuild_${var}")

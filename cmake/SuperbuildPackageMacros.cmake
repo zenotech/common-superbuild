@@ -50,8 +50,8 @@ property is the `RESOURCE_LOCK` property.
 function (superbuild_add_extra_package_test name generator)
   set(superbuild_extra_variables)
   foreach (variable IN LISTS superbuild_export_variables)
-    set(superbuild_extra_variables
-      "${superbuild_extra_variables}set(\"${variable}\" \"${${variable}}\")\n")
+    string(APPEND superbuild_extra_variables
+      "set(\"${variable}\" \"${${variable}}\")\n")
   endforeach ()
 
   set(cpack_source_dir "${CMAKE_BINARY_DIR}/cpack/${name}/${generator}")
