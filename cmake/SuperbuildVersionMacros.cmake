@@ -29,6 +29,55 @@ a Git checkout, it reads a file in the source tree if available and if all else
 fails, falls back to a static string.
 #]==]
 
+# Set a variable in the parent scope properly while still making it available
+# in the current scope..
+macro (_superbuild_set_up variable value)
+  set("${variable}" "${value}"
+    PARENT_SCOPE)
+  set("${variable}" "${value}")
+endmacro ()
+
+function (_superbuild_parse_version var version)
+  # Split the version number into fields.
+  if (version MATCHES "([0-9]+)\\.([0-9]+)\\.([0-9]+)-?(.*)")
+    set(full "${CMAKE_MATCH_0}")
+    set(major "${CMAKE_MATCH_1}")
+    set(minor "${CMAKE_MATCH_2}")
+    set(patch "${CMAKE_MATCH_3}")
+    set(patch_extra "${CMAKE_MATCH_4}")
+  elseif (version MATCHES "([0-9]+)\\.([0-9]+)-?(.*)")
+    set(full "${CMAKE_MATCH_0}")
+    set(major "${CMAKE_MATCH_1}")
+    set(minor "${CMAKE_MATCH_2}")
+    set(patch "")
+    set(patch_extra "${CMAKE_MATCH_3}")
+  elseif (version MATCHES "([0-9]+)-?(.*)")
+    set(full "${CMAKE_MATCH_0}")
+    set(major "${CMAKE_MATCH_1}")
+    set(minor "")
+    set(patch "")
+    set(patch_extra "${CMAKE_MATCH_2}")
+  else ()
+    message(FATAL_ERROR
+      "Failed to determine the version for ${var}; got ${version}")
+  endif ()
+
+  # Set variables in the parent scope if they're available.
+  if (full)
+    set("${var}_VERSION" "${major}.${minor}" PARENT_SCOPE)
+    set("${var}_VERSION_MAJOR" "${major}" PARENT_SCOPE)
+    set("${var}_VERSION_MINOR" "${minor}" PARENT_SCOPE)
+    set("${var}_VERSION_PATCH" "${patch}" PARENT_SCOPE)
+    set("${var}_VERSION_PATCH_EXTRA" "${patch_extra}" PARENT_SCOPE)
+    set("${var}_VERSION_FULL" "${full}" PARENT_SCOPE)
+    if (patch_extra)
+      set("${var}_VERSION_IS_RELEASE" FALSE PARENT_SCOPE)
+    else ()
+      set("${var}_VERSION_IS_RELEASE" TRUE PARENT_SCOPE)
+    endif ()
+  endif ()
+endfunction()
+
 function (_superbuild_detect_version_git var source_dir default version_file)
   set(major)
   set(minor)
@@ -73,56 +122,17 @@ function (_superbuild_detect_version_git var source_dir default version_file)
     endif ()
   endif ()
 
-  # Split the version number into fields.
-  if (output MATCHES "([0-9]+)\\.([0-9]+)\\.([0-9]+)-?(.*)")
-    message(STATUS "Determined source version for ${project}: ${CMAKE_MATCH_0}")
-    set(full "${CMAKE_MATCH_0}")
-    set(major "${CMAKE_MATCH_1}")
-    set(minor "${CMAKE_MATCH_2}")
-    set(patch "${CMAKE_MATCH_3}")
-    set(patch_extra "${CMAKE_MATCH_4}")
-  elseif (output MATCHES "([0-9]+)\\.([0-9]+)-?(.*)")
-    message(STATUS "Determined source version for ${project}: ${CMAKE_MATCH_0}")
-    set(full "${CMAKE_MATCH_0}")
-    set(major "${CMAKE_MATCH_1}")
-    set(minor "${CMAKE_MATCH_2}")
-    set(patch "")
-    set(patch_extra "${CMAKE_MATCH_3}")
-  elseif (output MATCHES "([0-9]+)-?(.*)")
-    message(STATUS "Determined source version for ${project}: ${CMAKE_MATCH_0}")
-    set(full "${CMAKE_MATCH_0}")
-    set(major "${CMAKE_MATCH_1}")
-    set(minor "")
-    set(patch "")
-    set(patch_extra "${CMAKE_MATCH_2}")
-  else ()
-    message(FATAL_ERROR
-      "Failed to determine the version for ${var}; got ${output}")
-  endif ()
+  _superbuild_parse_version(parsed ${output})
+  message(STATUS "Determined source version for ${var}: ${parsed_VERSION_FULL}")
 
-  # Set variables in the parent scope if they're available.
-  if (full)
-    set("${var}_VERSION" "${major}.${minor}" PARENT_SCOPE)
-    set("${var}_VERSION_MAJOR" "${major}" PARENT_SCOPE)
-    set("${var}_VERSION_MINOR" "${minor}" PARENT_SCOPE)
-    set("${var}_VERSION_PATCH" "${patch}" PARENT_SCOPE)
-    set("${var}_VERSION_PATCH_EXTRA" "${patch_extra}" PARENT_SCOPE)
-    set("${var}_VERSION_FULL" "${full}" PARENT_SCOPE)
-    if (patch_extra)
-      set("${var}_VERSION_IS_RELEASE" FALSE PARENT_SCOPE)
-    else ()
-      set("${var}_VERSION_IS_RELEASE" TRUE PARENT_SCOPE)
-    endif ()
-  endif ()
+  set("${var}_VERSION"             "${parsed_VERSION}" PARENT_SCOPE)
+  set("${var}_VERSION_MAJOR"       "${parsed_VERSION_MAJOR}" PARENT_SCOPE)
+  set("${var}_VERSION_MINOR"       "${parsed_VERSION_MINOR}" PARENT_SCOPE)
+  set("${var}_VERSION_PATCH"       "${parsed_VERSION_PATCH}" PARENT_SCOPE)
+  set("${var}_VERSION_PATCH_EXTRA" "${parsed_VERSION_PATCH_EXTRA}" PARENT_SCOPE)
+  set("${var}_VERSION_FULL"        "${parsed_VERSION_FULL}" PARENT_SCOPE)
+  set("${var}_VERSION_IS_RELEASE"  "${parsed_VERSION_IS_RELEASE}" PARENT_SCOPE)
 endfunction ()
-
-# Set a variable in the parent scope properly while still making it available
-# in the current scope..
-macro (_superbuild_set_up variable value)
-  set("${variable}" "${value}"
-    PARENT_SCOPE)
-  set("${variable}" "${value}")
-endmacro ()
 
 #[==[.md
 ```
