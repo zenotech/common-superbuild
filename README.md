@@ -167,6 +167,15 @@ called (see the [SuperbuildVersionMacros][version-macros] file for its
 documentation) so that the application's version information is available at
 all times.
 
+There is additionally the `superbuild_configure_project_version` function which
+can extract more detailed version information from the project based on the
+source selection in use. Special selection names:
+
+  - `source`: Local revision information will be extracted
+  - `git`: The repository's web hosting will be queried for version
+    information of the relevant commit.
+  - any other: Assumed to be the version number in question.
+
 ## `superbuild_sanity_check` (function)
 
 This function, if defined, is called after setting up the entire build. At
