@@ -18,6 +18,9 @@ superbuild_add_project(freetype
   INSTALL_COMMAND
     $(MAKE) install)
 
+superbuild_apply_patch(freetype 64bit-inode
+  "Support 64bit inode filesystems")
+
 # https://savannah.nongnu.org/bugs/?57206
 superbuild_project_add_step(create-docs-markdown
   COMMAND   "${CMAKE_COMMAND}"
