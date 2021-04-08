@@ -6,7 +6,7 @@ additional support for managing environments, parallel build settings, download
 management, and output suppression.
 #]==]
 
-if (CMAKE_VERSION VERSION_LESS "3.20")
+if (TRUE OR CMAKE_VERSION VERSION_LESS "3.21") # Patches haven't landed yet.
   # Needed for fixes.
   include("${CMAKE_CURRENT_LIST_DIR}/patches/ExternalProject.cmake")
 else ()
