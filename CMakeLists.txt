@@ -99,10 +99,10 @@ endif()
 superbuild_setup_flags()
 
 # merge in default/user-specified CMake flags.
-set(superbuild_ld_flags "${CMAKE_SHARED_LINKER_FLAGS} ${superbuild_ld_flags}")
-set(superbuild_cpp_flags "${CMAKE_CXX_FLAGS} ${superbuild_cpp_flags}")
-set(superbuild_cxx_flags "${CMAKE_CXX_FLAGS} ${superbuild_cxx_flags}")
-set(superbuild_c_flags "${CMAKE_C_FLAGS} ${superbuild_c_flags}")
+string(PREPEND superbuild_ld_flags "${CMAKE_SHARED_LINKER_FLAGS} ")
+string(PREPEND superbuild_cpp_flags "${CMAKE_CXX_FLAGS} ")
+string(PREPEND superbuild_cxx_flags "${CMAKE_CXX_FLAGS} ")
+string(PREPEND superbuild_c_flags "${CMAKE_C_FLAGS} ")
 
 foreach (var IN ITEMS ld_flags cpp_flags cxx_flags c_flags)
   string(STRIP "${superbuild_${var}}" "superbuild_${var}")
@@ -128,6 +128,13 @@ endforeach ()
 list(INSERT CMAKE_MODULE_PATH 0
   ${project_path})
 
+if (superbuild_package_roots)
+  include(SuperbuildPackageMacros)
+
+  _superbuild_package_discover()
+  _superbuild_package_select()
+endif ()
+
 if (CMAKE_CROSSCOMPILING AND
     COMMAND superbuild_cross_prepare_target)
   superbuild_cross_prepare_target()
@@ -147,8 +154,11 @@ if (COMMAND superbuild_setup_variables)
 endif ()
 
 include(SuperbuildMacros)
+include(SuperbuildPluginMacros)
 
 superbuild_find_projects(superbuild_projects)
+list(APPEND superbuild_projects ${superbuild_extra_package_projects})
+
 if (NOT superbuild_projects)
   message(FATAL_ERROR "No projects are configured!")
 endif ()

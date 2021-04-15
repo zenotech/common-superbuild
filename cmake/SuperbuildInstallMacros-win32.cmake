@@ -118,12 +118,12 @@ function (_superbuild_windows_install_binary)
   endif()
 
   set(fixup_bundle_arguments)
-  set(fixup_bundle_arguments
-    "${fixup_bundle_arguments} --destination ${_install_binary_DESTINATION}")
-  set(fixup_bundle_arguments
-    "${fixup_bundle_arguments} --type ${_install_binary_TYPE}")
-  set(fixup_bundle_arguments
-    "${fixup_bundle_arguments} --libdir ${_install_binary_LIBDIR}")
+  string(APPEND fixup_bundle_arguments
+    " --destination ${_install_binary_DESTINATION}")
+  string(APPEND fixup_bundle_arguments
+    " --type ${_install_binary_TYPE}")
+  string(APPEND fixup_bundle_arguments
+    " --libdir ${_install_binary_LIBDIR}")
 
   get_property(superbuild_has_cleaned GLOBAL PROPERTY
     superbuild_has_cleaned)
@@ -131,42 +131,42 @@ function (_superbuild_windows_install_binary)
     set_property(GLOBAL PROPERTY
       superbuild_has_cleaned TRUE)
     if (superbuild_is_install_target)
-      set(fixup_bundle_arguments
-        "${fixup_bundle_arguments} --new")
+      string(APPEND fixup_bundle_arguments
+        " --new")
     else ()
-      set(fixup_bundle_arguments
-        "${fixup_bundle_arguments} --clean --new")
+      string(APPEND fixup_bundle_arguments
+        " --clean --new")
     endif ()
   endif ()
 
   if (_install_binary_LOCATION)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --location \"${_install_binary_LOCATION}\"")
+    string(APPEND fixup_bundle_arguments
+      " --location \"${_install_binary_LOCATION}\"")
   endif ()
 
   foreach (include_regex IN LISTS _install_binary_INCLUDE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --include \"${include_regex}\"")
+    string(APPEND fixup_bundle_arguments
+      " --include \"${include_regex}\"")
   endforeach ()
 
   foreach (exclude_regex IN LISTS _install_binary_EXCLUDE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
+    string(APPEND fixup_bundle_arguments
+      " --exclude \"${exclude_regex}\"")
   endforeach ()
 
   foreach (ignore_dllname IN LISTS _install_binary_IGNORE_DLLNAMES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --ignore \"${ignore_dllname}\"")
+    string(APPEND fixup_bundle_arguments
+      " --ignore \"${ignore_dllname}\"")
   endforeach ()
 
   foreach(binary_libdir IN LISTS _install_binary_BINARY_LIBDIR)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --binary-libdir \"${binary_libdir}\"")
+    string(APPEND fixup_bundle_arguments
+      " --binary-libdir \"${binary_libdir}\"")
   endforeach()
 
   foreach (search_directory IN LISTS _install_binary_SEARCH_DIRECTORIES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --search \"${search_directory}\"")
+    string(APPEND fixup_bundle_arguments
+      " --search \"${search_directory}\"")
   endforeach ()
 
   install(CODE
