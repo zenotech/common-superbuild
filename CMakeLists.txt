@@ -128,13 +128,6 @@ endforeach ()
 list(INSERT CMAKE_MODULE_PATH 0
   ${project_path})
 
-if (superbuild_package_roots)
-  include(SuperbuildPackageMacros)
-
-  _superbuild_package_discover()
-  _superbuild_package_select()
-endif ()
-
 if (CMAKE_CROSSCOMPILING AND
     COMMAND superbuild_cross_prepare_target)
   superbuild_cross_prepare_target()
@@ -151,6 +144,13 @@ endforeach ()
 
 if (COMMAND superbuild_setup_variables)
   superbuild_setup_variables()
+endif ()
+
+if (superbuild_package_roots)
+  include(SuperbuildPackageMacros)
+
+  _superbuild_package_discover()
+  _superbuild_package_select()
 endif ()
 
 include(SuperbuildMacros)
