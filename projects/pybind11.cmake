@@ -4,7 +4,6 @@ if (MSVC AND (MSVC_VERSION LESS 1900) AND pybind11_enabled)
 endif ()
 
 superbuild_add_project(pybind11
-  DEFAULT_ON
   DEPENDS python cxx11
   DEPENDS_OPTIONAL python2 python3
   CMAKE_ARGS
