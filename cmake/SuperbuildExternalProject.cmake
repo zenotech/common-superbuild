@@ -26,9 +26,17 @@ set(SUPERBUILD_PROJECT_PARALLELISM "${superbuild_cpu_count}"
   CACHE STRING "Number of jobs to use when compiling subprojects")
 mark_as_advanced(SUPERBUILD_PROJECT_PARALLELISM)
 
-set(superbuild_make_program "make")
 if (CMAKE_GENERATOR MATCHES "Makefiles")
   set(superbuild_make_program "${CMAKE_MAKE_PROGRAM}")
+else ()
+  find_program(SUPERBUILD_MAKE_PROGRAM
+    NAMES gmake make
+    DOC "Path to the `make` executable to use")
+  if (SUPERBUILD_MAKE_PROGRAM)
+    set(superbuild_make_program "${SUPERBUILD_MAKE_PROGRAM}")
+  else ()
+    set(superbuild_make_program "make")
+  endif ()
 endif ()
 
 add_custom_target(download-all)
