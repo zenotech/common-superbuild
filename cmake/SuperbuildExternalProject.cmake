@@ -26,6 +26,11 @@ set(SUPERBUILD_PROJECT_PARALLELISM "${superbuild_cpu_count}"
   CACHE STRING "Number of jobs to use when compiling subprojects")
 mark_as_advanced(SUPERBUILD_PROJECT_PARALLELISM)
 
+include(CMakeDependentOption)
+cmake_dependent_option(SUPERBUILD_USE_JOBSERVER "Whether to use the top-level jobserver or not" OFF
+  "CMAKE_GENERATOR MATCHES Makefiles" OFF)
+mark_as_advanced(SUPERBUILD_USE_JOBSERVER)
+
 if (CMAKE_GENERATOR MATCHES "Makefiles")
   set(superbuild_make_program "${CMAKE_MAKE_PROGRAM}")
 else ()
@@ -120,7 +125,11 @@ function (_superbuild_ep_wrap_command var target command_name)
   # Replace $(MAKE) usage.
   set(submake_regex "^\\$\\(MAKE\\)")
   if (command MATCHES "${submake_regex}")
-    string(REGEX REPLACE "${submake_regex}" "${superbuild_make_program};-j${SUPERBUILD_PROJECT_PARALLELISM}" command "${command}")
+    set(submake_command "${superbuild_make_program}")
+    if (NOT SUPERBUILD_USE_JOBSERVER)
+      list(APPEND submake_command "-j${SUPERBUILD_PROJECT_PARALLELISM}")
+    endif ()
+    string(REGEX REPLACE "${submake_regex}" "${submake_command}" command "${command}")
   endif ()
 
   if (command)

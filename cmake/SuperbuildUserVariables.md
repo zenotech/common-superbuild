@@ -64,6 +64,13 @@ If set, Python projects are not actually built by the superbuild instead it
 merely results in the generation of a `requirements.txt` file which all the
 Python packages enabled.
 
+### `SUPERBUILD_USE_JOBSERVER`
+
+If using a `Makefiles` generator, `make`-using projects may be configured to
+use the number of jobs given at the top-level rather than per project. Note
+that when this is set, the top-level build is no longer implicitly parallel, so
+a `-j` flag is required to get a parallel build.
+
 ### `SUPPRESS_<PROJECT>_OUTPUT`
 
 If set, output from the build and install steps of the given project will be
