@@ -1,3 +1,8 @@
+if (tbb_enabled AND CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm64")
+  message(FATAL_ERROR
+    "The TBB does not support non-x86_64 processors yet")
+endif ()
+
 if (NOT tbb_libsuffix)
   set(tbb_libsuffix ${CMAKE_SHARED_LIBRARY_SUFFIX})
   if (WIN32)
