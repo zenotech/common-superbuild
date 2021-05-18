@@ -371,3 +371,15 @@ endif ()
 superbuild_set_revision(pythoncryptography
   URL     "https://www.paraview.org/files/dependencies/${pythoncryptography_file}"
   URL_MD5 "${pythoncryptography_md5}")
+
+set(openssl_version 1.1.1k)
+if (WIN32)
+  # Obtained from https://kb.firedaemon.com/support/solutions/articles/4000121705
+  superbuild_set_revision(openssl
+    URL     "https://www.paraview.org/files/dependencies/openssl-${openssl_version}.zip"
+    URL_MD5 0c08d59e229e2ac3cb941158b4d35915)
+else ()
+  superbuild_set_revision(openssl
+    URL     "https://www.paraview.org/files/dependencies/openssl-${openssl_version}.tar.gz"
+    URL_MD5 c4e7d95f782b08116afa27b30393dd27)
+endif ()
