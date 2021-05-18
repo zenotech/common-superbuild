@@ -60,7 +60,8 @@ function (superbuild_find_projects var)
       libxml2
       pkgconf
       pybind11
-      scipy)
+      scipy
+      sqlite)
   endif ()
 
   if (UNIX AND NOT APPLE)
