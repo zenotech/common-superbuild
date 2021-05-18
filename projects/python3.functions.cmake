@@ -228,6 +228,11 @@ function (superbuild_install_superbuild_python3)
     zipfile
     )
 
+  if (openssl_enabled)
+    list(APPEND modules
+      _ssl)
+  endif ()
+
   if (WIN32)
     superbuild_windows_install_python(
       MODULE_DESTINATION  "/"
