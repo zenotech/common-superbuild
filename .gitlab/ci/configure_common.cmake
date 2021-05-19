@@ -1,0 +1,85 @@
+set(BUILD_TESTING ON CACHE BOOL "")
+
+function (enable_project name)
+  set("ENABLE_${name}" ON CACHE BOOL "")
+  set("SUPPRESS_${name}_OUTPUT" ON CACHE BOOL "")
+endfunction ()
+
+if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "python2")
+  enable_project(python2)
+else ()
+  enable_project(python3)
+endif ()
+
+enable_project(bzip2)
+enable_project(cxx11)
+enable_project(ffi)
+enable_project(freetype)
+enable_project(gperf)
+enable_project(hdf5)
+enable_project(matplotlib)
+enable_project(netcdf)
+enable_project(nlohmannjson)
+enable_project(numpy)
+enable_project(png)
+enable_project(python)
+enable_project(pythonattrs)
+enable_project(pythonautobahn)
+enable_project(pythonconstantly)
+enable_project(pythoncycler)
+enable_project(pythoncython)
+enable_project(pythondateutil)
+enable_project(pythonhyperlink)
+enable_project(pythonincremental)
+enable_project(pythonkiwisolver)
+enable_project(pythonpygments)
+enable_project(pythonpyparsing)
+enable_project(pythonsetuptools)
+enable_project(pythonsix)
+enable_project(pythontwisted)
+enable_project(pythontxaio)
+enable_project(pythonwheel)
+enable_project(pythonwslink)
+enable_project(pythonzope)
+enable_project(pythonzopeinterface)
+enable_project(pytz)
+enable_project(qt5)
+enable_project(szip)
+enable_project(utillinux)
+enable_project(zlib)
+
+# Fortran doesn't work on Windows right now.
+if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "windows")
+  enable_project(fortran)
+  enable_project(lapack)
+  enable_project(scipy)
+endif ()
+
+# MPI isn't well-supported on macOS.
+if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos")
+  enable_project(mpi)
+  enable_project(pythonmpi4py)
+endif ()
+
+# Platform-specific bits.
+enable_project(ffmpeg)
+enable_project(fontconfig)
+enable_project(ftjam)
+enable_project(libxml2)
+enable_project(pkgconf)
+enable_project(pybind11)
+
+# qt5 things
+set(qt5_SOURCE_SELECTION            "5.12" CACHE STRING "")
+# the gold linker seems to fail with internal error on centos7 builds
+# disabling
+set(qt5_EXTRA_CONFIGURATION_OPTIONS "-no-use-gold-linker" CACHE STRING "")
+
+# Default to Release builds.
+if ("$ENV{CMAKE_BUILD_TYPE}" STREQUAL "")
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "")
+else ()
+  set(CMAKE_BUILD_TYPE "$ENV{CMAKE_BUILD_TYPE}" CACHE STRING "")
+endif ()
+
+include("${CMAKE_CURRENT_LIST_DIR}/configure_sccache.cmake")
