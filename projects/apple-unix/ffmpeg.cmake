@@ -14,7 +14,7 @@ if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
 endif ()
 
 superbuild_add_project(ffmpeg
-  DEPENDS zlib
+  DEPENDS zlib pkgconf
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
