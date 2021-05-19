@@ -79,6 +79,19 @@ function (superbuild_sanity_check)
   superbuild_python_sanity_check()
 endfunction ()
 
+# Disable Qt modules that generally aren't necessary.
+set(qt5_skip_modules
+  qtconnectivity
+  qtgamepad
+  qtlocation
+  qtmultimedia
+  qtsensors
+  qtserialport
+  qtwayland
+  qtwebchannel
+  qtwebengine
+  qtwebsockets)
+
 get_filename_component(sb_dir "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)
 add_subdirectory("${sb_dir}" "${CMAKE_CURRENT_BINARY_DIR}/superbuild")
 
