@@ -6,6 +6,7 @@ include:
     # OS builds.
     - local: .gitlab/os-linux.yml
     - local: .gitlab/os-macos.yml
+    - local: .gitlab/os-windows.yml
 
 stages:
     - build
@@ -50,3 +51,16 @@ build:macos:
         - .cmake_build_artifacts
         - .macos_builder_tags
         - .run_manually
+
+# Windows
+
+## Normal build
+
+build:windows-vs2019:
+    extends:
+        - .windows_vs2019
+        - .cmake_build_windows
+        - .cmake_build_artifacts
+        - .windows_builder_tags
+        - .run_manually
+    timeout: 2 hours

@@ -9,6 +9,11 @@
             "group": "master",
             "site": "gitlab-ci",
             "buildname": "[macos]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
+            "buildname": "[windows_vs2019]"
         }
     ]
 }
