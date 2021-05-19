@@ -4,6 +4,11 @@
             "group": "master",
             "site": "gitlab-ci",
             "buildname": "[linux]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
+            "buildname": "[macos]"
         }
     ]
 }
