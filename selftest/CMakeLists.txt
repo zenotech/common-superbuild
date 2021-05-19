@@ -7,10 +7,8 @@ function (superbuild_find_projects var)
     boost
     bzip2
     cxx11
-    ffi
     fortran
     freetype
-    gperf
     hdf5
     lapack
     matplotlib
@@ -46,7 +44,6 @@ function (superbuild_find_projects var)
     qt5
     szip
     tbb
-    utillinux
     zlib)
 
   if (WIN32)
@@ -56,11 +53,15 @@ function (superbuild_find_projects var)
 
   if (NOT WIN32)
     list(APPEND projects
+      ffi
       ffmpeg
+      gperf
       libxml2
       pkgconf
       pybind11
-      scipy)
+      scipy
+      sqlite
+      utillinux)
   endif ()
 
   if (UNIX AND NOT APPLE)
@@ -78,5 +79,20 @@ function (superbuild_sanity_check)
   superbuild_python_sanity_check()
 endfunction ()
 
+# Disable Qt modules that generally aren't necessary.
+set(qt5_skip_modules
+  qtconnectivity
+  qtgamepad
+  qtlocation
+  qtmultimedia
+  qtsensors
+  qtserialport
+  qtwayland
+  qtwebchannel
+  qtwebengine
+  qtwebsockets)
+
 get_filename_component(sb_dir "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)
 add_subdirectory("${sb_dir}" "${CMAKE_CURRENT_BINARY_DIR}/superbuild")
+
+include(CTest)
