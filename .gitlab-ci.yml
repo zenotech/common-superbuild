@@ -44,9 +44,17 @@ build:linux:
 
 ## Normal build
 
-build:macos:
+build:macos-arm64:
     extends:
-        - .macos
+        - .macos_arm64
+        - .cmake_build_macos
+        - .cmake_build_artifacts
+        - .macos_arm64_builder_tags
+        - .run_manually
+
+build:macos-x86_64:
+    extends:
+        - .macos_x86_64
         - .cmake_build_macos
         - .cmake_build_artifacts
         - .macos_builder_tags
