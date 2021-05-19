@@ -7,10 +7,8 @@ function (superbuild_find_projects var)
     boost
     bzip2
     cxx11
-    ffi
     fortran
     freetype
-    gperf
     hdf5
     lapack
     matplotlib
@@ -46,7 +44,6 @@ function (superbuild_find_projects var)
     qt5
     szip
     tbb
-    utillinux
     zlib)
 
   if (WIN32)
@@ -56,12 +53,15 @@ function (superbuild_find_projects var)
 
   if (NOT WIN32)
     list(APPEND projects
+      ffi
       ffmpeg
+      gperf
       libxml2
       pkgconf
       pybind11
       scipy
-      sqlite)
+      sqlite
+      utillinux)
   endif ()
 
   if (UNIX AND NOT APPLE)
