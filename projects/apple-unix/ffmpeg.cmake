@@ -24,13 +24,12 @@ superbuild_add_project(ffmpeg
       --disable-doc
       --disable-ffplay
       --disable-ffprobe
-      --disable-ffserver
       --disable-network
       --disable-vaapi
       --disable-vdpau
-      --disable-yasm
+      --disable-x86asm
+      --pkg-config=${superbuild_pkgconf}
       ${ffmpeg_shared_args}
-      --cc=${CMAKE_C_COMPILER}
       "--extra-cflags=${ffmpeg_c_flags}"
       "--extra-ldflags=${ffmpeg_ld_flags}"
   BUILD_COMMAND
