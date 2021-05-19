@@ -38,7 +38,7 @@
 
 .macos_arm64_builder_tags:
     tags:
-        - paraview
+        # - paraview # paraview doesn't yet have arm64 hardware to test.
         - macos-arm64
         - shell
         - xcode-12.4
