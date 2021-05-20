@@ -117,8 +117,8 @@ else ()
       URL     "https://www.paraview.org/files/dependencies/numpy-1.16.4.tar.gz"
       URL_MD5 6edf7334d04d8e8849ad058ccd3b3803
     SELECT python3 DEFAULT
-      URL     "https://www.paraview.org/files/dependencies/numpy-1.19.2.tar.gz"
-      URL_MD5 471156268abd8686e39e811003726ab1)
+      URL     "https://www.paraview.org/files/dependencies/numpy-1.20.3.zip"
+      URL_MD5 949d9114af9accc25ede1daa359c4227)
   superbuild_set_revision(scipy
     URL     "https://www.paraview.org/files/dependencies/scipy-1.6.0.tar.gz"
     URL_MD5 550fcf08700e0bf0f32dc5c06c0f793a)
