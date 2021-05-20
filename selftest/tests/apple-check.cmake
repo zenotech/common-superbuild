@@ -48,6 +48,19 @@ function (check_binary path)
             item MATCHES "minos ${deployment_target}")
       set(ok 1)
       set(found_mode "")
+
+    # XXX(scipy): SciPy is special for some reason. 10.9 binaries are OK here.
+    elseif (path MATCHES "/scipy/")
+      if (found_mode STREQUAL "LC_VERSION_MIN_MACOSX" AND
+              item MATCHES "version 10.9")
+        set(ok 1)
+        set(found_mode "")
+      elseif (found_mode STREQUAL "LC_BUILD_VERSION" AND
+              item MATCHES "minos 10.9")
+        set(ok 1)
+        set(found_mode "")
+      endif ()
+
     elseif (found_mode)
       list(APPEND found_lines "${item}")
     endif ()
