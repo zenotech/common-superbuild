@@ -96,3 +96,5 @@ get_filename_component(sb_dir "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)
 add_subdirectory("${sb_dir}" "${CMAKE_CURRENT_BINARY_DIR}/superbuild")
 
 include(CTest)
+enable_testing()
+add_subdirectory(tests)

@@ -45,6 +45,7 @@
         - sccache --show-stats
         - "$LAUNCHER ctest -VV -S .gitlab/ci/ctest_configure.cmake"
         - "$LAUNCHER ctest -VV -S .gitlab/ci/ctest_build.cmake"
+        - "$LAUNCHER ctest -V --output-on-failure -S .gitlab/ci/ctest_test.cmake"
         - sccache --show-stats
 
     cache:

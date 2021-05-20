@@ -71,6 +71,7 @@
         - sccache --show-stats
         - ctest -VV -S .gitlab/ci/ctest_configure.cmake
         - ctest -VV -S .gitlab/ci/ctest_build.cmake
+        - ctest -V --output-on-failure -S .gitlab/ci/ctest_test.cmake
         - sccache --show-stats
 
     cache:
