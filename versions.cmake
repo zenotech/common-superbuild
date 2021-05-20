@@ -32,8 +32,8 @@ superbuild_set_revision(hdf5
   URL_MD5  1fa68c4b11b6ef7a9d72ffa55995f898)
 
 superbuild_set_revision(boost
-  URL     "https://www.paraview.org/files/dependencies/boost_1_59_0.tar.bz2"
-  URL_MD5 6aa9a5c6a4ca1016edd0ed1178e3cb87)
+  URL     "https://www.paraview.org/files/dependencies/boost_1_71_0.tar.bz2"
+  URL_MD5 4cdf9b5c2dc01fb2b7b733d5af30e558)
 
 superbuild_set_revision(png
   URL     "https://www.paraview.org/files/dependencies/libpng-1.6.37.tar.xz"
