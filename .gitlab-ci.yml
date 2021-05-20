@@ -71,4 +71,3 @@ build:windows-vs2019:
         - .cmake_build_artifacts
         - .windows_builder_tags
         - .run_manually
-    timeout: 2 hours

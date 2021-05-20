@@ -54,4 +54,3 @@
             # Cache downloaded tarballs.
             - build/downloads/
     interruptible: true
-    timeout: 2 hours
