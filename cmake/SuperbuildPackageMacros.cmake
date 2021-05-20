@@ -111,13 +111,8 @@ function (superbuild_package_suffix package_suffix)
     list(APPEND package_suffix_items
       "${CMAKE_SYSTEM_NAME}")
   endif ()
-  if (superbuild_is_64bit)
-    list(APPEND package_suffix_items
-      "64bit")
-  else ()
-    list(APPEND package_suffix_items
-      "32bit")
-  endif ()
+  list(APPEND package_suffix_items
+    "64bit")
 
   string(REPLACE ";" "-" package_suffix_default "${package_suffix_items}")
 
