@@ -16,3 +16,9 @@ superbuild_add_project(libxml2
   INSTALL_COMMAND
     $(MAKE) install
   BUILD_IN_SOURCE 1)
+
+if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
+  superbuild_append_flags(c_flags
+    "-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}"
+    PROJECT_ONLY)
+endif ()

@@ -35,6 +35,12 @@ if (NOT CMAKE_CROSSCOMPILING)
     PROJECT_ONLY)
 endif ()
 
+if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
+  superbuild_append_flags(c_flags
+    "-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}"
+    PROJECT_ONLY)
+endif ()
+
 if (python3_enabled)
   set(superbuild_python_executable "${superbuild_install_location}/bin/python3"
     CACHE INTERNAL "")
