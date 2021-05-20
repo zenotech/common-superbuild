@@ -11,6 +11,7 @@ else ()
   enable_project(python3)
 endif ()
 
+enable_project(boost)
 enable_project(bzip2)
 enable_project(cxx11)
 enable_project(ffi)
