@@ -56,8 +56,8 @@ endif()
 
 if (WIN32)
   superbuild_set_revision(python3
-    URL "https://www.paraview.org/files/dependencies/python-win64-3.8.6-no-ssl.tar.xz"
-    URL_MD5 8cece55f80ef13ae8e839595e1c090d2)
+    URL     "https://www.paraview.org/files/dependencies/python-3.9.5-windows-x86_64.zip"
+    URL_MD5 c41556099961c9e0d4d6afd419045bac)
 else()
   superbuild_set_revision(python3
     URL     "https://www.paraview.org/files/dependencies/Python-3.9.5.tar.xz"
