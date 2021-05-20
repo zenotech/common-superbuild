@@ -13,3 +13,12 @@ superbuild_add_project(sqlite
       "CFLAGS=${sqlite_extra_build_flags}"
   INSTALL_COMMAND
     make install)
+
+if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
+  superbuild_append_flags(c_flags
+    "-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}"
+    PROJECT_ONLY)
+  superbuild_append_flags(ld_flags
+    "-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}"
+    PROJECT_ONLY)
+endif ()

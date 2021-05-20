@@ -368,9 +368,17 @@ macro (superbuild_add_project_python _name)
       set(extra_dependencies "python2")
     endif()
 
+    set(environment)
+    if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
+      list(APPEND environment
+        MACOSX_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}")
+    endif ()
+
     superbuild_add_project("${_name}"
       BUILD_IN_SOURCE 1
       DEPENDS python ${extra_dependencies} ${_superbuild_python_project_UNPARSED_ARGUMENTS}
+      PROCESS_ENVIRONMENT
+        ${environment}
       CONFIGURE_COMMAND
         ""
       BUILD_COMMAND
@@ -1325,6 +1333,7 @@ function (_superbuild_add_project_internal name)
       -DCMAKE_C_FLAGS:STRING=${project_c_flags}
       -DCMAKE_CXX_FLAGS:STRING=${project_cxx_flags}
       -DCMAKE_SHARED_LINKER_FLAGS:STRING=${project_ld_flags}
+      -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${CMAKE_OSX_DEPLOYMENT_TARGET}
       ${cmake_params}
 
     LIST_SEPARATOR "${_superbuild_list_separator}")
