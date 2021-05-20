@@ -61,6 +61,18 @@ function (check_binary path)
         set(found_mode "")
       endif ()
 
+    # XXX(cryptography): cryptography uses wheels, so allow its target version.
+    elseif (path MATCHES "/cryptography/")
+      if (found_mode STREQUAL "LC_VERSION_MIN_MACOSX" AND
+          item MATCHES "version 10.10")
+        set(ok 1)
+        set(found_mode "")
+      elseif (found_mode STREQUAL "LC_BUILD_VERSION" AND
+              item MATCHES "minos 10.10")
+        set(ok 1)
+        set(found_mode "")
+      endif ()
+
     elseif (found_mode)
       list(APPEND found_lines "${item}")
     endif ()
