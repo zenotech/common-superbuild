@@ -18,6 +18,15 @@ superbuild_add_project(freetype
   INSTALL_COMMAND
     $(MAKE) install)
 
+if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
+  superbuild_append_flags(c_flags
+    "-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}"
+    PROJECT_ONLY)
+  superbuild_append_flags(ld_flags
+    "-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}"
+    PROJECT_ONLY)
+endif ()
+
 superbuild_apply_patch(freetype 64bit-inode
   "Support 64bit inode filesystems")
 
