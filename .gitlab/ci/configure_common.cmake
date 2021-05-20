@@ -5,6 +5,11 @@ function (enable_project name)
   set("SUPPRESS_${name}_OUTPUT" ON CACHE BOOL "")
 endfunction ()
 
+if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "openssl")
+  set(SUPERBUILD_ENABLE_OPENSSL ON CACHE BOOL "")
+  enable_project(openssl)
+endif ()
+
 if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "python2")
   enable_project(python2)
 else ()

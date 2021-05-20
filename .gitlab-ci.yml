@@ -40,6 +40,14 @@ build:linux:
         - .linux_builder_tags
         - .run_manually
 
+build:linux-openssl:
+    extends:
+        - .linux_openssl
+        - .cmake_build_linux
+        - .cmake_build_artifacts
+        - .linux_builder_tags
+        - .run_manually
+
 # macOS
 
 ## Normal build
@@ -60,6 +68,14 @@ build:macos-x86_64:
         - .macos_builder_tags
         - .run_manually
 
+build:macos-x86_64-openssl:
+    extends:
+        - .macos_x86_64_openssl
+        - .cmake_build_macos
+        - .cmake_build_artifacts
+        - .macos_builder_tags
+        - .run_manually
+
 # Windows
 
 ## Normal build
@@ -67,6 +83,14 @@ build:macos-x86_64:
 build:windows-vs2019:
     extends:
         - .windows_vs2019
+        - .cmake_build_windows
+        - .cmake_build_artifacts
+        - .windows_builder_tags
+        - .run_manually
+
+build:windows-openssl-vs2019:
+    extends:
+        - .windows_openssl_vs2019
         - .cmake_build_windows
         - .cmake_build_artifacts
         - .windows_builder_tags

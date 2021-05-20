@@ -14,6 +14,12 @@
     variables:
         CMAKE_CONFIGURATION: linux
 
+.linux_openssl:
+    extends: .fedora33
+
+    variables:
+        CMAKE_CONFIGURATION: linux_openssl
+
 ## Tags
 
 .linux_builder_tags:
