@@ -20,8 +20,8 @@ superbuild_set_revision(zlib
   URL_MD5 85adef240c5f370b308da8c938951a68)
 
 superbuild_set_revision(ffmpeg
-  URL     "https://www.paraview.org/files/dependencies/ffmpeg-2.3.3.tar.bz2"
-  URL_MD5 72361d3b8717b6db3ad2b9da8df7af5e)
+  URL     "https://www.paraview.org/files/dependencies/ffmpeg-4.4.tar.xz"
+  URL_MD5 7b9d5b652d20e8c5405304ad72636d4a)
 
 superbuild_set_revision(szip
   URL     "https://www.paraview.org/files/dependencies/szip-2.1.1.tar.gz"
@@ -60,8 +60,8 @@ if (WIN32)
     URL_MD5 8cece55f80ef13ae8e839595e1c090d2)
 else()
   superbuild_set_revision(python3
-    URL     "https://www.paraview.org/files/dependencies/Python-3.8.8.tar.xz"
-    URL_MD5 23e6b769857233c1ac07b6be7442eff4)
+    URL     "https://www.paraview.org/files/dependencies/Python-3.9.5.tar.xz"
+    URL_MD5 71f7ada6bec9cdbf4538adc326120cfd)
 endif()
 
 superbuild_set_revision(ftjam
@@ -117,8 +117,8 @@ else ()
       URL     "https://www.paraview.org/files/dependencies/numpy-1.16.4.tar.gz"
       URL_MD5 6edf7334d04d8e8849ad058ccd3b3803
     SELECT python3 DEFAULT
-      URL     "https://www.paraview.org/files/dependencies/numpy-1.19.2.tar.gz"
-      URL_MD5 471156268abd8686e39e811003726ab1)
+      URL     "https://www.paraview.org/files/dependencies/numpy-1.20.3.zip"
+      URL_MD5 949d9114af9accc25ede1daa359c4227)
   superbuild_set_revision(scipy
     URL     "https://www.paraview.org/files/dependencies/scipy-1.6.0.tar.gz"
     URL_MD5 550fcf08700e0bf0f32dc5c06c0f793a)
