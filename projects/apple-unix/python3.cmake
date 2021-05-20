@@ -47,7 +47,7 @@ else ()
     CACHE INTERNAL "")
 endif ()
 
-set(superbuild_python_version "3.8"
+set(superbuild_python_version "3.9"
   CACHE INTERNAL "")
 
 superbuild_add_extra_cmake_args(
