@@ -39,16 +39,6 @@ superbuild_set_revision(png
   URL     "https://www.paraview.org/files/dependencies/libpng-1.6.37.tar.xz"
   URL_MD5 015e8e15db1eecde5f2eb9eb5b6e59e9)
 
-if (WIN32 AND (NOT superbuild_building_prebuilt_python OR superbuild_use_prebuilt_python))
-  superbuild_set_revision(python2
-    URL     "https://www.paraview.org/files/dependencies/python-2.7.15-win64-20180905.tar.gz"
-    URL_MD5 6cfab07945bf75474d4ed2d2ea799c57)
-else()
-  superbuild_set_revision(python2
-    URL     "https://www.paraview.org/files/dependencies/Python-2.7.15.tar.xz"
-    URL_MD5 a80ae3cc478460b922242f43a1b4094d)
-endif()
-
 if (WIN32)
   superbuild_set_revision(python3
     URL     "https://www.paraview.org/files/dependencies/python-3.9.5-windows-x86_64.zip"
@@ -93,22 +83,12 @@ superbuild_set_selectable_source(qt5
     URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.12.9.tar.xz"
     URL_MD5 "fa2646280cf38180689c29c393cddd05")
 
-if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
-  superbuild_set_revision(numpy
-    URL     "https://www.paraview.org/files/dependencies/numpy-1.15.1-win64-20180906.tar.gz"
-    URL_MD5 d75f1c5c111de3fed8556174fe353f0c)
-else ()
-  superbuild_set_selectable_source(numpy
-    SELECT python2
-      URL     "https://www.paraview.org/files/dependencies/numpy-1.16.4.tar.gz"
-      URL_MD5 6edf7334d04d8e8849ad058ccd3b3803
-    SELECT python3 DEFAULT
-      URL     "https://www.paraview.org/files/dependencies/numpy-1.21.1.zip"
-      URL_MD5 1d016e05851a4ba85307f3246eb569aa)
-  superbuild_set_revision(scipy
-    URL     "https://www.paraview.org/files/dependencies/scipy-1.7.1.tar.gz"
-    URL_MD5 8ac74369cdcabc097f602682c951197c)
-endif ()
+superbuild_set_revision(numpy
+  URL     "https://www.paraview.org/files/dependencies/numpy-1.21.1.zip"
+  URL_MD5 1d016e05851a4ba85307f3246eb569aa)
+superbuild_set_revision(scipy
+  URL     "https://www.paraview.org/files/dependencies/scipy-1.7.1.tar.gz"
+  URL_MD5 8ac74369cdcabc097f602682c951197c)
 
 superbuild_set_revision(qhull
   URL     "https://www.paraview.org/files/dependencies/qhull-2020-src-8.0.2.tgz"
@@ -122,35 +102,13 @@ superbuild_set_revision(pythonpillow
   URL     "https://www.paraview.org/files/dependencies/Pillow-8.3.1.tar.gz"
   URL_MD5 e42fc66e41b5309436a573af49cec47c)
 
-if (ENABLE_python3 OR python3_enabled)
-  superbuild_set_revision(matplotlib
-    URL "https://www.paraview.org/files/dependencies/matplotlib-3.4.2.tar.gz"
-    URL_MD5 e34749a5f0661b8af74a1dc327fb74f6)
-else ()
-  if (WIN32 AND NOT superbuild_building_prebuilt_python)
-    superbuild_set_revision(matplotlib
-      URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1-win64-20180905.tar.gz"
-      URL_MD5 0c96b84e87b4db50cdc4d18869ae74ed)
-  else ()
-    superbuild_set_revision(matplotlib
-      URL     "https://www.paraview.org/files/dependencies/matplotlib-1.1.1_notests.tar.gz"
-      URL_MD5 30ee59119599331bf1f3b6e838fee9a8)
-  endif ()
-endif ()
+superbuild_set_revision(matplotlib
+  URL "https://www.paraview.org/files/dependencies/matplotlib-3.4.2.tar.gz"
+  URL_MD5 e34749a5f0661b8af74a1dc327fb74f6)
 
-if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND NOT python3_enabled)
-  superbuild_set_revision(pywin32
-    URL     "https://www.paraview.org/files/dependencies/pywin32-220-win64-20180905.tar.gz"
-    URL_MD5 08a6ab778e459e6752d54083c29dbb13)
-elseif (ENABLE_python3 OR python3_enabled)
-  superbuild_set_revision(pywin32
-    URL "https://www.paraview.org/files/dependencies/pywin32-301-cp39-cp39-win_amd64.whl"
-    URL_MD5 3fe9793d6bee6e9b6515bc744f7585df)
-else ()
-  superbuild_set_revision(pywin32
-    URL     "https://www.paraview.org/files/dependencies/pywin32-220.zip"
-    URL_MD5 9c386839c1485b2047c03fab66e69b9e)
-endif ()
+superbuild_set_revision(pywin32
+  URL "https://www.paraview.org/files/dependencies/pywin32-301-cp39-cp39-win_amd64.whl"
+  URL_MD5 3fe9793d6bee6e9b6515bc744f7585df)
 
 superbuild_set_revision(mpi
   URL     "https://www.paraview.org/files/dependencies/mpich-3.4.2.tar.gz"
