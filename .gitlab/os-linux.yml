@@ -3,7 +3,7 @@
 ## Base images
 
 .fedora33:
-    image: "kitware/paraview:ci-csb-fedora33-20210519"
+    image: "kitware/paraview:ci-csb-fedora33-20210521"
 
     variables:
         GIT_CLONE_PATH: $CI_BUILDS_DIR/gitlab-kitware-sciviz-ci
