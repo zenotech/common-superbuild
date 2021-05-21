@@ -11,7 +11,7 @@ superbuild_add_project(python3
 if (python3_enabled)
   set(superbuild_python_executable "${superbuild_install_location}/Python/python.exe"
     CACHE INTERNAL "")
-  set(superbuild_python_pip "${superbuild_install_location}/Python/Scripts/pip.exe"
+  set(superbuild_python_pip "${superbuild_python_executable}" -m pip
     CACHE INTERNAL "")
 else ()
   set(superbuild_python_executable ""
