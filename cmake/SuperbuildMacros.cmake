@@ -488,6 +488,21 @@ macro (superbuild_add_project_python_wheel _name)
       "No `pip` available?")
   endif ()
 
+  if (WIN32)
+    if (python3_enabled OR ENABLE_python3)
+      set(_superbuild_python_args
+        --root=<INSTALL_DIR>
+        "--prefix=Python")
+    else  ()
+      set(_superbuild_python_args
+        --root=<INSTALL_DIR>
+        "--prefix=bin")
+    endif ()
+  else ()
+    set(_superbuild_python_args
+      "--prefix=<INSTALL_DIR>")
+  endif ()
+
   superbuild_add_project("${_name}"
     BUILD_IN_SOURCE 1
     DOWNLOAD_NO_EXTRACT 1
@@ -501,7 +516,7 @@ macro (superbuild_add_project_python_wheel _name)
         install
         --no-index
         --no-deps
-        --prefix=<INSTALL_DIR>
+        ${_superbuild_python_args}
         "<DOWNLOADED_FILE>")
 endmacro ()
 
