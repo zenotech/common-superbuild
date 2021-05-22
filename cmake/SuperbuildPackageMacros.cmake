@@ -112,7 +112,7 @@ function (superbuild_package_suffix package_suffix)
       "${CMAKE_SYSTEM_NAME}")
   endif ()
   list(APPEND package_suffix_items
-    "64bit")
+    "${CMAKE_SYSTEM_PROCESSOR}")
 
   string(REPLACE ";" "-" package_suffix_default "${package_suffix_items}")
 
