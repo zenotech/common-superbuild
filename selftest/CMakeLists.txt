@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.19)
 
 project(superbuild-selftest)
 
+option(SUPERBUILD_ENABLE_OPENSSL "Enable support for OpenSSL" OFF)
+set(_superbuild_enable_openssl "${SUPERBUILD_ENABLE_OPENSSL}")
+
 function (superbuild_find_projects var)
   set(projects
     boost
@@ -52,6 +55,11 @@ function (superbuild_find_projects var)
     szip
     tbb
     zlib)
+
+  if (SUPERBUILD_ENABLE_OPENSSL)
+    list(APPEND projects
+      openssl)
+  endif ()
 
   if (WIN32)
     list(APPEND projects

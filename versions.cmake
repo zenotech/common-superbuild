@@ -56,8 +56,8 @@ endif()
 
 if (WIN32)
   superbuild_set_revision(python3
-    URL "https://www.paraview.org/files/dependencies/python-win64-3.8.6-no-ssl.tar.xz"
-    URL_MD5 8cece55f80ef13ae8e839595e1c090d2)
+    URL     "https://www.paraview.org/files/dependencies/python-3.9.5-windows-x86_64.zip"
+    URL_MD5 c41556099961c9e0d4d6afd419045bac)
 else()
   superbuild_set_revision(python3
     URL     "https://www.paraview.org/files/dependencies/Python-3.9.5.tar.xz"
@@ -264,8 +264,8 @@ superbuild_set_revision(pythonincremental
   URL_MD5 602746e0d438e075a5a9e0678140bba2)
 
 superbuild_set_revision(pythontwisted
-  URL     "https://www.paraview.org/files/dependencies/twisted-19.7.0.tar.gz"
-  URL_MD5 f307687d4315db3534d02aba97ba5ed0)
+  URL     "https://www.paraview.org/files/dependencies/Twisted-21.2.0.tar.gz"
+  URL_MD5 0733e15bcc48bb2c8b4d593bb0839043)
 
 superbuild_set_revision(pythontxaio
   URL     "https://www.paraview.org/files/dependencies/txaio-2.8.2.tar.gz"
@@ -371,3 +371,15 @@ endif ()
 superbuild_set_revision(pythoncryptography
   URL     "https://www.paraview.org/files/dependencies/${pythoncryptography_file}"
   URL_MD5 "${pythoncryptography_md5}")
+
+set(openssl_version 1.1.1k)
+if (WIN32)
+  # Obtained from https://kb.firedaemon.com/support/solutions/articles/4000121705
+  superbuild_set_revision(openssl
+    URL     "https://www.paraview.org/files/dependencies/openssl-${openssl_version}.zip"
+    URL_MD5 0c08d59e229e2ac3cb941158b4d35915)
+else ()
+  superbuild_set_revision(openssl
+    URL     "https://www.paraview.org/files/dependencies/openssl-${openssl_version}.tar.gz"
+    URL_MD5 c4e7d95f782b08116afa27b30393dd27)
+endif ()

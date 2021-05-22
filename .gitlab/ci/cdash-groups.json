@@ -8,12 +8,27 @@
         {
             "group": "master",
             "site": "gitlab-ci",
+            "buildname": "[linux_openssl]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
             "buildname": "[macos_arm64]"
         },
         {
             "group": "master",
             "site": "gitlab-ci",
             "buildname": "[macos_x86_64]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
+            "buildname": "[macos_x86_64_openssl]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
+            "buildname": "[windows_openssl_vs2019]"
         },
         {
             "group": "master",

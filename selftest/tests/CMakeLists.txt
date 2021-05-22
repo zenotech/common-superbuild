@@ -66,3 +66,13 @@ add_python_import_test(pythonzope OFS)
 add_python_import_test(pythonzopeinterface zope.interface)
 add_python_import_test(pytz pytz)
 add_python_import_test(scipy scipy)
+
+# Verify that Python3 support for ssl is removed from a built-in Python if not
+# enabled.
+add_python_import_test(python3 ssl)
+if (NOT TARGET "openssl" AND NOT USE_SYSTEM_python3)
+  # Require that the `_ssl` module is not found.
+  set_property(TEST "python3-python3-import-ssl"
+    PROPERTY
+      PASS_REGULAR_EXPRESSION "ModuleNotFoundError: No module named '_ssl'")
+endif ()

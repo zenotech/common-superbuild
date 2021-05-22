@@ -48,16 +48,13 @@ if (WIN32)
     INSTALL_COMMAND ${NMAKE_PATH} install)
 endif ()
 
-# If not using system qt5, add qt5_ENABLE_OPENSSL option
-option(qt5_ENABLE_OPENSSL
-  "Build with OpenSSL support. Requires system-installed OpenSSL at runtime." OFF)
-mark_as_advanced(qt5_ENABLE_OPENSSL)
-if (qt5_ENABLE_OPENSSL)
-  # Require build machines to have OpenSSL
-  find_package(OpenSSL)
-  if (NOT OpenSSL_FOUND)
-    message(FATAL_ERROR "Cannot build with qt5_ENABLE_OPENSSL option because OpenSSL not found")
-  endif ()
+set(qt5_optional_depends)
+if (_superbuild_enable_openssl)
+  list(APPEND qt5_optional_depends
+    openssl)
+endif ()
+
+if ("openssl" IN_LIST qt5_optional_depends AND openssl_enabled)
   list(APPEND qt5_options "-openssl-linked")
 else ()
   list(APPEND qt5_options "-no-openssl")
@@ -78,6 +75,7 @@ endforeach()
 superbuild_add_project(qt5
   CAN_USE_SYSTEM
   DEPENDS ${qt5_depends} ${qt5_extra_depends} cxx11
+  DEPENDS_OPTIONAL ${qt5_optional_depends}
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure${qt5_configure_ext}
       -opensource

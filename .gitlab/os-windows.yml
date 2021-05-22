@@ -23,6 +23,14 @@
     variables:
         CMAKE_CONFIGURATION: windows_vs2019
 
+.windows_openssl_vs2019:
+    extends:
+        - .windows_core
+        - .windows_vs2019_addon
+
+    variables:
+        CMAKE_CONFIGURATION: windows_openssl_vs2019
+
 ## Tags
 
 .windows_builder_tags:

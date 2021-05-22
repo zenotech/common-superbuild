@@ -10,9 +10,26 @@ if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
     MACOSX_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}")
 endif ()
 
+set(python3_optional_depends)
+set(python3_args)
+if (_superbuild_enable_openssl)
+  list(APPEND python3_optional_depends
+    openssl)
+  if (openssl_enabled)
+    if (openssl_built_by_superbuild)
+      list(APPEND python3_args
+        --with-openssl=<INSTALL_DIR>)
+    else ()
+      list(APPEND python3_args
+        --with-openssl)
+    endif ()
+  endif ()
+endif ()
+
 superbuild_add_project(python3
   CAN_USE_SYSTEM
   DEPENDS bzip2 zlib png ffi sqlite
+  DEPENDS_OPTIONAL ${python3_optional_depends}
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
@@ -20,6 +37,7 @@ superbuild_add_project(python3
       --with-pymalloc
       --without-pydebug
       ${python3_shared_args}
+      ${python3_args}
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND

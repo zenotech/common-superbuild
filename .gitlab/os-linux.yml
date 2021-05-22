@@ -3,7 +3,7 @@
 ## Base images
 
 .fedora33:
-    image: "kitware/paraview:ci-csb-fedora33-20210519"
+    image: "kitware/paraview:ci-csb-fedora33-20210521"
 
     variables:
         GIT_CLONE_PATH: $CI_BUILDS_DIR/gitlab-kitware-sciviz-ci
@@ -13,6 +13,12 @@
 
     variables:
         CMAKE_CONFIGURATION: linux
+
+.linux_openssl:
+    extends: .fedora33
+
+    variables:
+        CMAKE_CONFIGURATION: linux_openssl
 
 ## Tags
 
@@ -54,4 +60,3 @@
             # Cache downloaded tarballs.
             - build/downloads/
     interruptible: true
-    timeout: 2 hours
