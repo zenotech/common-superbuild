@@ -63,7 +63,8 @@ function (superbuild_find_projects var)
 
   if (WIN32)
     list(APPEND projects
-      ftjam)
+      ftjam
+      pywin32)
   endif ()
 
   if (NOT WIN32)
