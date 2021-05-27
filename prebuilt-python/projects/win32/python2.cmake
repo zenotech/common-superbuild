@@ -4,13 +4,8 @@ include("${prebuilt-python_SOURCE_DIR}/../projects/win32/python.cmake")
 
 else ()
 
-if (superbuild_is_64bit)
-  set(python_configuration "Release|x64")
-  set(python_executable_dir "<SOURCE_DIR>/PC/VS9.0/amd64")
-else ()
-  set(python_configuration "Release|Win32")
-  set(python_executable_dir "<SOURCE_DIR>/PC/VS9.0")
-endif ()
+set(python_configuration "Release|x64")
+set(python_executable_dir "<SOURCE_DIR>/PC/VS9.0/amd64")
 
 find_program(DEVENV_EXE
   NAMES devenv

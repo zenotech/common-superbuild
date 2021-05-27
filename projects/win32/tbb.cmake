@@ -1,8 +1,4 @@
-if (superbuild_is_64bit)
-  set(tbb_archdir intel64)
-else ()
-  set(tbb_archdir ia32)
-endif ()
+set(tbb_archdir intel64)
 
 if (NOT MSVC_VERSION VERSION_GREATER 1700)
   message(FATAL_ERROR "At least Visual Studio 12.0 (2013) is required")

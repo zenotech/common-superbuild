@@ -247,7 +247,6 @@ The bundle files will have the following variables available:
 
   - `superbuild_install_location`
   - `superbuild_source_directory`
-  - `superbuild_is_64bit`
   - `${project}_enabled`
   - `USE_SYSTEM_${project}`
 

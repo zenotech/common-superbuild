@@ -64,10 +64,7 @@ endif ()
 #[==[.md INTERNAL
 # 64-bit support
 
-Some projects need to know if a build is 32-bit or 64-bit. This function sets
-`superbuild_is_64bit`.
-
-In the future, 32-bit support may be removed completely.
+This functiond detects 32-bit targets and errors if it occurs.
 #]==]
 function (superbuild_detect_64bit_target)
   if (CMAKE_CROSSCOMPILING)
@@ -80,12 +77,10 @@ function (superbuild_detect_64bit_target)
   check_type_size(void* void_ptr_size
     BUILTIN_TYPES_ONLY)
   if (void_ptr_size EQUAL 8)
-    set(superbuild_is_64bit TRUE
-      PARENT_SCOPE)
+    # OK
   elseif (void_ptr_size EQUAL 4)
-    # XXX: Error out here? Is there a reason to still support 32-bit?
-    set(superbuild_is_64bit FALSE
-      PARENT_SCOPE)
+    message(FATAL_ERROR
+      "32-bit targets are not supported.")
   else ()
     if (WIN32)
       set(extra_message "Are you in a Visual Studio command prompt?")

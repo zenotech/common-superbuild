@@ -22,15 +22,8 @@ else ()
 endif ()
 
 list(APPEND boost_platform_options
-  "--toolset=msvc-${msvc_ver}")
-
-if (superbuild_is_64bit)
-  list(APPEND boost_platform_options
-    address-model=64)
-else ()
-  list(APPEND boost_platform_options
-    address-model=32)
-endif ()
+  "--toolset=msvc-${msvc_ver}"
+  address-model=64)
 
 include(boost.common)
 
