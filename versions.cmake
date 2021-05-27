@@ -156,8 +156,8 @@ if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND
   endif ()
 elseif (ENABLE_python3 OR python3_enabled)
   superbuild_set_revision(pywin32
-    URL "https://www.paraview.org/files/dependencies/pywin32-228-cp38-cp38-win_amd64.tar.xz"
-    URL_MD5 46fc0684aa4818e622929fc031be77ba)
+    URL "https://www.paraview.org/files/dependencies/pywin32-300-cp39-cp39-win_amd64.whl"
+    URL_MD5 0c55e2c5ebd3a0bc915514ecdb6c1340)
 else ()
   superbuild_set_revision(pywin32
     URL     "https://www.paraview.org/files/dependencies/pywin32-220.zip"

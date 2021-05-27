@@ -65,6 +65,7 @@ add_python_import_test(pythonzope App)
 add_python_import_test(pythonzope OFS)
 add_python_import_test(pythonzopeinterface zope.interface)
 add_python_import_test(pytz pytz)
+add_python_import_test(pywin32 adodbapi)
 add_python_import_test(scipy scipy)
 
 # Verify that Python3 support for ssl is removed from a built-in Python if not
