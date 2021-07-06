@@ -229,7 +229,10 @@ function (superbuild_add_project name)
     option("ENABLE_${name}" "${help_string}" "${default}")
     # Set the TYPE because it is overrided to INTERNAL if it is required by
     # dependencies later.
-    set_property(CACHE "ENABLE_${name}" PROPERTY TYPE BOOL)
+    get_property(cache_var_exists CACHE "ENABLE_${name}" PROPERTY TYPE SET)
+    if (cache_var_exists)
+      set_property(CACHE "ENABLE_${name}" PROPERTY TYPE BOOL)
+    endif ()
     set_property(GLOBAL APPEND
       PROPERTY
         superbuild_projects "${name}")
@@ -885,8 +888,11 @@ function (superbuild_process_dependencies)
     else ()
       set(advanced FALSE)
     endif ()
-    set_property(CACHE "ENABLE_${project}"
-      PROPERTY ADVANCED "${advanced}")
+    get_property(cache_var_exists CACHE "ENABLE_${project}" PROPERTY ADVANCED SET)
+    if (cache_var_exists)
+      set_property(CACHE "ENABLE_${project}"
+        PROPERTY ADVANCED "${advanced}")
+    endif ()
 
     if (ENABLE_${project})
       list(APPEND enabled_projects "${project}")
@@ -939,7 +945,10 @@ function (superbuild_process_dependencies)
     else ()
       string(REPLACE ";" ", " required_by "${${project}_needed_by}")
       message(STATUS "Enabling ${project} for: ${required_by}")
-      set_property(CACHE "ENABLE_${project}" PROPERTY TYPE INTERNAL)
+      get_property(cache_var_exists CACHE "ENABLE_${project}" PROPERTY TYPE SET)
+      if (cache_var_exists)
+        set_property(CACHE "ENABLE_${project}" PROPERTY TYPE INTERNAL)
+      endif ()
     endif ()
   endforeach ()
 
