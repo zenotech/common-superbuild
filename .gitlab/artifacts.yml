@@ -4,6 +4,9 @@
     artifacts:
         expire_in: 1d
         when: always
+        reports:
+            junit:
+                - build/junit.xml
         paths:
             # The artifacts for debugging
             - build/CMakeCache.txt
