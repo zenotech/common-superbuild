@@ -74,6 +74,10 @@ endif ()
 set(superbuild_python_version "3.9"
   CACHE INTERNAL "")
 
+# Fixes compilation with our OpenSSL build.
+superbuild_apply_patch(python3 extra-error-flag
+  "Drop checking for -Werror=implicit-function-declaration")
+
 superbuild_add_extra_cmake_args(
   -DPython3_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python${superbuild_python_version}
   -DPython3_INCLUDE_DIR:PATH=<INSTALL_DIR>/include/python${superbuild_python_version}
