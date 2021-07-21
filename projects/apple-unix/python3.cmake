@@ -45,6 +45,15 @@ superbuild_add_project(python3
   PROCESS_ENVIRONMENT
     ${python3_environment})
 
+superbuild_project_add_step(python-symlink
+  COMMAND   "${CMAKE_COMMAND}" -E create_symlink
+            python3
+            "<INSTALL_DIR>/bin/python"
+  DEPENDEES build
+  DEPENDERS install
+  COMMENT   "Create a `python` symlink to `python3`"
+  WORKING_DIRECTORY <SOURCE_DIR>)
+
 if (NOT CMAKE_CROSSCOMPILING)
   # Pass the -rpath flag when building python to avoid issues running the
   # executable we built.
@@ -73,6 +82,10 @@ endif ()
 
 set(superbuild_python_version "3.9"
   CACHE INTERNAL "")
+
+# Fixes compilation with our OpenSSL build.
+superbuild_apply_patch(python3 extra-error-flag
+  "Drop checking for -Werror=implicit-function-declaration")
 
 superbuild_add_extra_cmake_args(
   -DPython3_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python${superbuild_python_version}
