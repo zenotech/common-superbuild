@@ -110,8 +110,8 @@ else ()
       URL     "https://www.paraview.org/files/dependencies/numpy-1.20.3.zip"
       URL_MD5 949d9114af9accc25ede1daa359c4227)
   superbuild_set_revision(scipy
-    URL     "https://www.paraview.org/files/dependencies/scipy-1.6.0.tar.gz"
-    URL_MD5 550fcf08700e0bf0f32dc5c06c0f793a)
+    URL     "https://www.paraview.org/files/dependencies/scipy-1.7.1.tar.gz"
+    URL_MD5 8ac74369cdcabc097f602682c951197c)
 endif ()
 
 if (ENABLE_python3 OR python3_enabled)
