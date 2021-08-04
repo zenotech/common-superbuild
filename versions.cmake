@@ -189,6 +189,10 @@ superbuild_set_revision(pythonbeniget
   URL     "https://www.paraview.org/files/dependencies/beniget-0.4.1.tar.gz"
   URL_MD5 a2bbe7f17f10f9c127d8ef00692ddc55)
 
+superbuild_set_revision(pythongast
+  URL     "https://www.paraview.org/files/dependencies/gast-0.5.2.tar.gz"
+  URL_MD5 eb2489df0c85ae198e4740e5711c7299)
+
 superbuild_set_revision(pythoncycler
   URL     "https://www.paraview.org/files/dependencies/cycler-0.10.0.tar.gz"
   URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)

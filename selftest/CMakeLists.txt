@@ -32,6 +32,7 @@ function (superbuild_find_projects var)
     pythoncycler
     pythoncython
     pythondateutil
+    pythongast
     pythonhyperlink
     pythonincremental
     pythonkiwisolver
