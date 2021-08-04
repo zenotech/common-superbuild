@@ -41,6 +41,7 @@ function (superbuild_find_projects var)
     pythonpycparser
     pythonpygments
     pythonpyparsing
+    pythonpythran
     pythonsemanticversion
     pythonsetuptools
     pythonsetuptoolsscm

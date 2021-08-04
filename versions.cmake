@@ -197,6 +197,10 @@ superbuild_set_revision(pythonply
   URL     "https://www.paraview.org/files/dependencies/ply-3.11.tar.gz"
   URL_MD5 6465f602e656455affcd7c5734c638f8)
 
+superbuild_set_revision(pythonpythran
+  URL     "https://www.paraview.org/files/dependencies/pythran-0.9.12.post1.tar.gz"
+  URL_MD5 b84d70ed33554dcef423673216bc3826)
+
 superbuild_set_revision(pythoncycler
   URL     "https://www.paraview.org/files/dependencies/cycler-0.10.0.tar.gz"
   URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)
