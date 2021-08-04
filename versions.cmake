@@ -193,6 +193,10 @@ superbuild_set_revision(pythongast
   URL     "https://www.paraview.org/files/dependencies/gast-0.5.2.tar.gz"
   URL_MD5 eb2489df0c85ae198e4740e5711c7299)
 
+superbuild_set_revision(pythonply
+  URL     "https://www.paraview.org/files/dependencies/ply-3.11.tar.gz"
+  URL_MD5 6465f602e656455affcd7c5734c638f8)
+
 superbuild_set_revision(pythoncycler
   URL     "https://www.paraview.org/files/dependencies/cycler-0.10.0.tar.gz"
   URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)

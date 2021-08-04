@@ -37,6 +37,7 @@ function (superbuild_find_projects var)
     pythonincremental
     pythonkiwisolver
     pythonmpi4py
+    pythonply
     pythonpycparser
     pythonpygments
     pythonpyparsing
