@@ -25,6 +25,7 @@ function (superbuild_find_projects var)
     python3
     pythonattrs
     pythonautobahn
+    pythonbeniget
     pythoncffi
     pythonconstantly
     pythoncryptography

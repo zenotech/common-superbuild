@@ -185,6 +185,10 @@ superbuild_set_revision(pythonpyparsing
   URL     "https://www.paraview.org/files/dependencies/pyparsing-2.2.0.tar.gz"
   URL_MD5 0214e42d63af850256962b6744c948d9)
 
+superbuild_set_revision(pythonbeniget
+  URL     "https://www.paraview.org/files/dependencies/beniget-0.4.1.tar.gz"
+  URL_MD5 a2bbe7f17f10f9c127d8ef00692ddc55)
+
 superbuild_set_revision(pythoncycler
   URL     "https://www.paraview.org/files/dependencies/cycler-0.10.0.tar.gz"
   URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)
