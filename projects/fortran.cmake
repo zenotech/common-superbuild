@@ -13,14 +13,21 @@ if (APPLE AND
   # macOS 11.5+ no longer ships with `libSystem.dylib` in `/usr/lib`, so
   # `gfortran` cannot find it when linking. Help it out as best we can.
   set(fortran_libsystem_path)
+  set(fortran_framework_path)
   if (EXISTS "${CMAKE_OSX_SYSROOT}/usr/lib/libSystem.tbd")
     set(fortran_libsystem_path
       "${CMAKE_OSX_SYSROOT}/usr/lib")
+    set(fortran_framework_path
+      "/System/Library/Frameworks")
   endif ()
 
   if (fortran_libsystem_path)
     string(APPEND _superbuild_fortran_ld_flags
       " -L${fortran_libsystem_path}")
+  endif ()
+  if (fortran_framework_path)
+    string(APPEND _superbuild_fortran_ld_flags
+      " -F${fortran_framework_path}")
   endif ()
 endif ()
 
