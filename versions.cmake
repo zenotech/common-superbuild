@@ -110,8 +110,8 @@ else ()
       URL     "https://www.paraview.org/files/dependencies/numpy-1.20.3.zip"
       URL_MD5 949d9114af9accc25ede1daa359c4227)
   superbuild_set_revision(scipy
-    URL     "https://www.paraview.org/files/dependencies/scipy-1.6.0.tar.gz"
-    URL_MD5 550fcf08700e0bf0f32dc5c06c0f793a)
+    URL     "https://www.paraview.org/files/dependencies/scipy-1.7.1.tar.gz"
+    URL_MD5 8ac74369cdcabc097f602682c951197c)
 endif ()
 
 if (ENABLE_python3 OR python3_enabled)
@@ -184,6 +184,22 @@ superbuild_set_revision(pythondateutil
 superbuild_set_revision(pythonpyparsing
   URL     "https://www.paraview.org/files/dependencies/pyparsing-2.2.0.tar.gz"
   URL_MD5 0214e42d63af850256962b6744c948d9)
+
+superbuild_set_revision(pythonbeniget
+  URL     "https://www.paraview.org/files/dependencies/beniget-0.4.1.tar.gz"
+  URL_MD5 a2bbe7f17f10f9c127d8ef00692ddc55)
+
+superbuild_set_revision(pythongast
+  URL     "https://www.paraview.org/files/dependencies/gast-0.5.2.tar.gz"
+  URL_MD5 eb2489df0c85ae198e4740e5711c7299)
+
+superbuild_set_revision(pythonply
+  URL     "https://www.paraview.org/files/dependencies/ply-3.11.tar.gz"
+  URL_MD5 6465f602e656455affcd7c5734c638f8)
+
+superbuild_set_revision(pythonpythran
+  URL     "https://www.paraview.org/files/dependencies/pythran-0.9.12.post1.tar.gz"
+  URL_MD5 b84d70ed33554dcef423673216bc3826)
 
 superbuild_set_revision(pythoncycler
   URL     "https://www.paraview.org/files/dependencies/cycler-0.10.0.tar.gz"

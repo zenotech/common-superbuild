@@ -1,12 +1,3 @@
-set(lapack_environment)
-
-# Set `-fallow-argument-mismatch` for gfortran 10+.
-if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
-    NOT CMAKE_Fortran_COMPILER_VERSION VERSION_LESS "10")
-  list(APPEND lapack_environment
-    FFLAGS -fallow-argument-mismatch)
-endif ()
-
 superbuild_add_project(lapack
   CAN_USE_SYSTEM
   DEPENDS fortran
@@ -14,6 +5,12 @@ superbuild_add_project(lapack
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DBUILD_TESTING:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
-    -DCMAKE_INSTALL_LIBDIR:STRING=lib
-  PROCESS_ENVIRONMENT
-    ${lapack_environment})
+    -DCMAKE_INSTALL_LIBDIR:STRING=lib)
+
+# Set `-fallow-argument-mismatch` for gfortran 10+.
+if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
+    NOT CMAKE_Fortran_COMPILER_VERSION VERSION_LESS "10")
+  superbuild_append_flags(f_flags
+    -fallow-argument-mismatch
+    PROJECT_ONLY)
+endif ()

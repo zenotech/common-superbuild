@@ -25,19 +25,23 @@ function (superbuild_find_projects var)
     python3
     pythonattrs
     pythonautobahn
+    pythonbeniget
     pythoncffi
     pythonconstantly
     pythoncryptography
     pythoncycler
     pythoncython
     pythondateutil
+    pythongast
     pythonhyperlink
     pythonincremental
     pythonkiwisolver
     pythonmpi4py
+    pythonply
     pythonpycparser
     pythonpygments
     pythonpyparsing
+    pythonpythran
     pythonsemanticversion
     pythonsetuptools
     pythonsetuptoolsscm

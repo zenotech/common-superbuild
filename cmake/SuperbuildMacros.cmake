@@ -97,7 +97,7 @@ following extensions:
   - `PROCESS_ENVIRONMENT <var> <value>...`
     Sets environment variables for the configure, build, and install steps.
     Some are "magic" and are prepended to the current value (namely ``PATH``,
-    ``LD_LIBRARY_PATH`` (Linux), and ``DYLD_LIBRARY_PATH`` (OS X).
+    ``LD_LIBRARY_PATH`` (Linux), and ``DYLD_LIBRARY_PATH`` (macOS)).
 
 Projects which are depended on may declare that they have CMake variables and
 flags which must be set in dependent projects (e.g., a Python project would set
@@ -705,6 +705,7 @@ Valid values for `KEY` are:
 
   - `cxx_flags`: add flags for C++ compilation.
   - `c_flags`: add flags for C compilation.
+  - `f_flags`: add flags for Fortran compilation.
   - `cpp_flags`: add flags C and C++ preprocessors.
   - `ld_flags`: add flags for linkers.
 #]==]
@@ -717,10 +718,11 @@ function (superbuild_append_flags key value)
 
   if (NOT "x${key}" STREQUAL "xcxx_flags" AND
       NOT "x${key}" STREQUAL "xc_flags" AND
+      NOT "x${key}" STREQUAL "xf_flags" AND
       NOT "x${key}" STREQUAL "xcpp_flags" AND
       NOT "x${key}" STREQUAL "xld_flags")
     message(AUTHOR_WARNING
-      "Currently, only cxx_flags, c_flags, cpp_flags, and ld_flags are supported.")
+      "Currently, only cxx_flags, c_flags, f_flags, cpp_flags, and ld_flags are supported.")
     return ()
   endif ()
 
@@ -1144,10 +1146,11 @@ endfunction ()
 # Implementation of building an actual project.
 function (_superbuild_add_project_internal name)
   set(cmake_params)
-  # Pass down C and CXX flags from this project.
+  # Pass down C, CXX, and Fortran flags from this project.
   foreach (flag IN ITEMS
       CMAKE_C_COMPILER_LAUNCHER
       CMAKE_CXX_COMPILER_LAUNCHER
+      CMAKE_Fortran_COMPILER_LAUNCHER
 
       CMAKE_C_FLAGS_DEBUG
       CMAKE_C_FLAGS_MINSIZEREL
@@ -1156,7 +1159,11 @@ function (_superbuild_add_project_internal name)
       CMAKE_CXX_FLAGS_DEBUG
       CMAKE_CXX_FLAGS_MINSIZEREL
       CMAKE_CXX_FLAGS_RELEASE
-      CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+      CMAKE_CXX_FLAGS_RELWITHDEBINFO
+      CMAKE_Fortran_FLAGS_DEBUG
+      CMAKE_Fortran_FLAGS_MINSIZEREL
+      CMAKE_Fortran_FLAGS_RELEASE
+      CMAKE_Fortran_FLAGS_RELWITHDEBINFO)
     if (${flag})
       list(APPEND cmake_params "-D${flag}:STRING=${${flag}}")
     endif ()
@@ -1197,6 +1204,7 @@ function (_superbuild_add_project_internal name)
   # Get extra flags added using superbuild_append_flags(), if any.
   set(extra_vars
     c_flags
+    f_flags
     cxx_flags
     cpp_flags
     ld_flags)
@@ -1255,7 +1263,8 @@ function (_superbuild_add_project_internal name)
       LDFLAGS "${project_ld_flags}"
       CPPFLAGS "${project_cpp_flags}"
       CXXFLAGS "${project_cxx_flags}"
-      CFLAGS "${project_c_flags}")
+      CFLAGS "${project_c_flags}"
+      FFLAGS "${project_f_flags}")
   endif ()
 
   list(INSERT extra_paths 0
@@ -1356,6 +1365,7 @@ function (_superbuild_add_project_internal name)
       -DCMAKE_PREFIX_PATH:STRING=${prepended_cmake_prefix_path}
       -DCMAKE_C_FLAGS:STRING=${project_c_flags}
       -DCMAKE_CXX_FLAGS:STRING=${project_cxx_flags}
+      -DCMAKE_Fortran_FLAGS:STRING=${project_f_flags}
       -DCMAKE_SHARED_LINKER_FLAGS:STRING=${project_ld_flags}
       -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${CMAKE_OSX_DEPLOYMENT_TARGET}
       ${cmake_params}
