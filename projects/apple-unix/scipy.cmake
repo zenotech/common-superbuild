@@ -15,13 +15,6 @@ else ()
       FC ${CMAKE_Fortran_COMPILER})
   endif ()
 
-  # Set `-fallow-argument-mismatch` for gfortran 10+.
-  if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
-      NOT CMAKE_Fortran_COMPILER_VERSION VERSION_LESS "10")
-    list(APPEND scipy_process_environment
-      FFLAGS -fallow-argument-mismatch)
-  endif ()
-
   superbuild_add_project(scipy
     DEPENDS python fortran numpy lapack pybind11
     BUILD_IN_SOURCE 1
@@ -40,6 +33,14 @@ else ()
     PROCESS_ENVIRONMENT
       PYTHONPATH "<INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages"
       ${scipy_process_environment})
+
+  # Set `-fallow-argument-mismatch` for gfortran 10+.
+  if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
+      NOT CMAKE_Fortran_COMPILER_VERSION VERSION_LESS "10")
+    superbuild_append_flags(f_flags
+      -fallow-argument-mismatch
+      PROJECT_ONLY)
+  endif ()
 
   # The superbuild setting LDFLAGS (even to empty) causes SciPy to not add its
   # flags, so add required flags manually.
