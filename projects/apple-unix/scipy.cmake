@@ -15,6 +15,26 @@ else ()
       FC ${CMAKE_Fortran_COMPILER})
   endif ()
 
+  if (APPLE)
+    # For whatever reason, SciPy's `setup.py install` step requires two passes
+    # to work. No idea and debugging `numpy.distutils` is an exercise in
+    # frustration, so instead, we'll go with a hack.
+    set(scipy_list_separator "____")
+    string(REPLACE ";" "${scipy_list_separator}" scipy_python_executable "${superbuild_python_executable}")
+    set(scipy_install_command
+      "${CMAKE_COMMAND}"
+        "-Dlist_separator=${scipy_list_separator}"
+        "-Dsuperbuild_python_executable=${scipy_python_executable}"
+        "-Dinstall_dir=<INSTALL_DIR>"
+        -P "${CMAKE_CURRENT_LIST_DIR}/scripts/scipy.install-macos.cmake")
+  else ()
+    set(scipy_install_command
+      ${superbuild_python_executable}
+        setup.py
+        install
+        --prefix=<INSTALL_DIR>)
+  endif ()
+
   superbuild_add_project(scipy
     DEPENDS python fortran numpy lapack pybind11 pythonpythran
     BUILD_IN_SOURCE 1
@@ -26,10 +46,7 @@ else ()
         "--f90exec=${CMAKE_Fortran_COMPILER}"
         build
     INSTALL_COMMAND
-      ${superbuild_python_executable}
-        setup.py
-        install
-        --prefix=<INSTALL_DIR>
+      ${scipy_install_command}
     PROCESS_ENVIRONMENT
       PYTHONPATH "<INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages"
       ${scipy_process_environment})
