@@ -135,10 +135,11 @@ function (superbuild_setup_flags)
   set(superbuild_cxx_flags "$ENV{CXXFLAGS} -fPIC ${superbuild_extra_cxx_flags}")
   set(superbuild_c_flags "$ENV{CFLAGS} -fPIC ${superbuild_extra_c_flags}")
   set(superbuild_f_flags "$ENV{FFLAGS} -fPIC ${superbuild_extra_f_flags}")
+  set(superbuild_ld_flags "$ENV{LDFLAGS} ${superbuild_extra_ld_flags}")
 
   superbuild_osx_add_version_flags()
 
-  foreach (var IN ITEMS cpp_flags cxx_flags c_flags f_flags)
+  foreach (var IN ITEMS cpp_flags cxx_flags c_flags f_flags ld_flags)
     set("superbuild_${var}"
       "${superbuild_${var}}"
       PARENT_SCOPE)
