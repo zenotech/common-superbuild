@@ -71,7 +71,7 @@ add_python_import_test(scipy scipy)
 # Verify that Python3 support for ssl is removed from a built-in Python if not
 # enabled.
 add_python_import_test(python3 ssl)
-if (NOT TARGET "openssl" AND NOT USE_SYSTEM_python3)
+if (NOT TARGET "openssl" AND NOT USE_SYSTEM_python3 AND TEST "python3-python3-import-ssl")
   # Require that the `_ssl` module is not found.
   set_property(TEST "python3-python3-import-ssl"
     PROPERTY
