@@ -97,7 +97,7 @@ following extensions:
   - `PROCESS_ENVIRONMENT <var> <value>...`
     Sets environment variables for the configure, build, and install steps.
     Some are "magic" and are prepended to the current value (namely ``PATH``,
-    ``LD_LIBRARY_PATH`` (Linux), and ``DYLD_LIBRARY_PATH`` (OS X).
+    ``LD_LIBRARY_PATH`` (Linux), and ``DYLD_LIBRARY_PATH`` (macOS)).
 
 Projects which are depended on may declare that they have CMake variables and
 flags which must be set in dependent projects (e.g., a Python project would set
