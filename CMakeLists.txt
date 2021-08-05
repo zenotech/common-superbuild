@@ -103,8 +103,9 @@ string(PREPEND superbuild_ld_flags "${CMAKE_SHARED_LINKER_FLAGS} ")
 string(PREPEND superbuild_cpp_flags "${CMAKE_CXX_FLAGS} ")
 string(PREPEND superbuild_cxx_flags "${CMAKE_CXX_FLAGS} ")
 string(PREPEND superbuild_c_flags "${CMAKE_C_FLAGS} ")
+string(PREPEND superbuild_f_flags "${CMAKE_Fortran_FLAGS} ")
 
-foreach (var IN ITEMS ld_flags cpp_flags cxx_flags c_flags)
+foreach (var IN ITEMS ld_flags cpp_flags cxx_flags c_flags f_flags)
   string(STRIP "${superbuild_${var}}" "superbuild_${var}")
 endforeach ()
 
