@@ -149,8 +149,8 @@ superbuild_set_revision(mpi
   URL_MD5 6ee1cfff98728e5160c6e78bdb1986ca)
 
 superbuild_set_revision(lapack
-  URL     "https://www.paraview.org/files/dependencies/lapack-3.9.0.tar.gz"
-  URL_MD5 0b251e2a8d5f949f99b50dd5e2200ee2)
+  URL     "https://www.paraview.org/files/dependencies/lapack-3.10.0.tar.gz"
+  URL_MD5 d70fc27a8bdebe00481c97c728184f09)
 
 superbuild_set_revision(netcdf
   URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.7.0.tar.gz"
