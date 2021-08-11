@@ -240,8 +240,8 @@ superbuild_set_revision(pythonautobahn
   URL_MD5 dcba839ee61be33d05042a09c008c6bc)
 
 superbuild_set_revision(pythoncffi
-  URL     "https://www.paraview.org/files/dependencies/cffi-1.14.5.tar.gz"
-  URL_MD5 272cb183bf0365530e3c0d8f446cd89d)
+  URL     "https://www.paraview.org/files/dependencies/cffi-1.14.6.tar.gz"
+  URL_MD5 5c118a18ea897df164dbff67a32876fc)
 
 superbuild_set_revision(pythonsemanticversion
   URL     "https://www.paraview.org/files/dependencies/semantic_version-2.8.5.tar.gz"
