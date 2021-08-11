@@ -272,8 +272,8 @@ superbuild_set_revision(pythonwslink
   URL_MD5 35e6285c2a74304da0557f1402c400e5)
 
 superbuild_set_revision(pythonzope
-  URL     "https://www.paraview.org/files/dependencies/Zope-4.0b3.tar.gz"
-  URL_MD5 9a63e8c8b614dc6d6944fcbd9c105f45)
+  URL     "https://www.paraview.org/files/dependencies/Zope-5.3.tar.gz"
+  URL_MD5 3b8ddc554345279c0e0018d5f1814c13)
 
 superbuild_set_revision(pythonzopeinterface
   URL     "https://www.paraview.org/files/dependencies/zope.interface-5.1.0.tar.gz"
