@@ -157,16 +157,16 @@ superbuild_set_revision(netcdf
   URL_MD5 37134a12a49e80c45fb58777aa3e9e3b)
 
 # Using Intel Threading Building Blocks 2018 Update 2
-set(tbb_ver "2019_20190410oss")
+set(tbb_ver "2021.3.0")
 if (WIN32)
-  set(tbb_file "tbb${tbb_ver}_win.zip")
-  set(tbb_md5 63fc9feb34ec973b0c8ae439afb30f5e)
+  set(tbb_file "oneapi-tbb-${tbb_ver}-win.zip")
+  set(tbb_md5 ad6766ea3e17e37c447b221fe01658ea)
 elseif (APPLE)
-  set(tbb_file "tbb${tbb_ver}_mac.tgz")
-  set(tbb_md5 d1420b7b6e1d2b9c7e737123bd7e8315)
+  set(tbb_file "oneapi-tbb-${tbb_ver}-mac.tgz")
+  set(tbb_md5 280566eca486f6ef434652becfb4877c)
 else ()
-  set(tbb_file "tbb${tbb_ver}_lin.tgz")
-  set(tbb_md5 cb95ed04d2522e54d2327afd1c56938f)
+  set(tbb_file "oneapi-tbb-${tbb_ver}-lin.tgz")
+  set(tbb_md5 6027dc86d01269fd03a0c2f143f313cf)
 endif ()
 
 superbuild_set_revision(tbb
