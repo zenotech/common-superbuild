@@ -210,8 +210,8 @@ superbuild_set_revision(pythoncython
   URL_MD5 81aff945f5bfdfb86e7a5d24f5467668)
 
 superbuild_set_revision(pythonsetuptools
-  URL     "https://www.paraview.org/files/dependencies/setuptools-46.1.3.zip"
-  URL_MD5 562328cde5a33564c0ebf16699a27b65)
+  URL     "https://www.paraview.org/files/dependencies/setuptools-57.4.0.tar.gz"
+  URL_MD5 1023c3535d6a3724b3c9a9929dcef195)
 
 superbuild_set_revision(pythonwheel
   # PyPI source tarball with 'unicode.dist' test excised from it (CMake has
