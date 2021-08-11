@@ -206,8 +206,8 @@ superbuild_set_revision(pythoncycler
   URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)
 
 superbuild_set_revision(pythoncython
-  URL     "https://www.paraview.org/files/dependencies/Cython-0.29.21.tar.gz"
-  URL_MD5 12c5e45af71dcc6dff28cdcbcbef6f39)
+  URL     "https://www.paraview.org/files/dependencies/Cython-0.29.24.tar.gz"
+  URL_MD5 81aff945f5bfdfb86e7a5d24f5467668)
 
 superbuild_set_revision(pythonsetuptools
   URL     "https://www.paraview.org/files/dependencies/setuptools-46.1.3.zip"
