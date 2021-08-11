@@ -236,8 +236,8 @@ superbuild_set_revision(pythonsetuptoolsrust
   URL_MD5 33c3fd3bcde2877483ab782353bee54c)
 
 superbuild_set_revision(pythonautobahn
-  URL     "https://www.paraview.org/files/dependencies/autobahn-21.1.1.tar.gz"
-  URL_MD5 f0c5bebdc24eab1e8ee5811ae73075b8)
+  URL     "https://www.paraview.org/files/dependencies/autobahn-21.3.1.tar.gz"
+  URL_MD5 dcba839ee61be33d05042a09c008c6bc)
 
 superbuild_set_revision(pythoncffi
   URL     "https://www.paraview.org/files/dependencies/cffi-1.14.5.tar.gz"
