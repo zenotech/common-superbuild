@@ -232,8 +232,8 @@ superbuild_set_revision(pythonsetuptoolsscm
   URL_MD5 aa7f0efbbf46c5576db5994dd1ce3f8d)
 
 superbuild_set_revision(pythonsetuptoolsrust
-  URL     "https://www.paraview.org/files/dependencies/setuptools-rust-0.11.6.tar.gz"
-  URL_MD5 319d2968f076f37279c866e51bcccbcc)
+  URL     "https://www.paraview.org/files/dependencies/setuptools-rust-0.12.1.tar.gz"
+  URL_MD5 33c3fd3bcde2877483ab782353bee54c)
 
 superbuild_set_revision(pythonautobahn
   URL     "https://www.paraview.org/files/dependencies/autobahn-21.1.1.tar.gz"
