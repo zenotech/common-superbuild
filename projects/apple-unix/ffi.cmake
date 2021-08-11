@@ -23,6 +23,3 @@ superbuild_add_project(ffi
     $(MAKE)
   INSTALL_COMMAND
     make install)
-
-superbuild_apply_patch(ffi powerpc.h-fix-build-failure-with-powerpc7
-  "Check for __HAVE_FLOAT128 before using _Float128")
