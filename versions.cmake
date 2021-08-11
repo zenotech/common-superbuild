@@ -174,8 +174,8 @@ superbuild_set_revision(tbb
   URL_MD5 "${tbb_md5}")
 
 superbuild_set_revision(pytz
-  URL     "https://www.paraview.org/files/dependencies/pytz-2020.1.tar.gz"
-  URL_MD5 0349106ac02f2bfe565dd6d5594e3a15)
+  URL     "https://www.paraview.org/files/dependencies/pytz-2021.1.tar.gz"
+  URL_MD5 8c849bdf95414fe708a84473e42d4406)
 
 superbuild_set_revision(pythondateutil
   URL     "https://www.paraview.org/files/dependencies/python-dateutil-2.6.0.tar.gz"
