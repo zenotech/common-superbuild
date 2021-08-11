@@ -320,8 +320,8 @@ superbuild_set_revision(pybind11
   URL_MD5 b87860218c143728f8e6efa6cba7e1ed)
 
 superbuild_set_revision(sqlite
-  URL     "https://www.paraview.org/files/dependencies/sqlite-autoconf-3350200.tar.gz"
-  URL_MD5 454e0899d99a7b28825db3d807526774)
+  URL     "https://www.paraview.org/files/dependencies/sqlite-autoconf-3360000.tar.gz"
+  URL_MD5 f5752052fc5b8e1b539af86a3671eac7)
 
 set(pythoncryptography_version "3.4.7")
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
