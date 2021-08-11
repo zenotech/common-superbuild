@@ -264,8 +264,8 @@ superbuild_set_revision(pythontwisted
   URL_MD5 6b17e9a4b28b8846847e5324c2e59bf4)
 
 superbuild_set_revision(pythontxaio
-  URL     "https://www.paraview.org/files/dependencies/txaio-2.8.2.tar.gz"
-  URL_MD5 a20e3431c95896a49fa3ffa84f77cde1)
+  URL     "https://www.paraview.org/files/dependencies/txaio-21.2.1.tar.gz"
+  URL_MD5 7e80b80ed7797245a5eef803043bdede)
 
 superbuild_set_revision(pythonwslink
   URL     "https://www.paraview.org/files/dependencies/wslink-0.1.11.tar.gz"
