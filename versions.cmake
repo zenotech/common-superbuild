@@ -256,8 +256,8 @@ superbuild_set_revision(pythonhyperlink
   URL_MD5 eaccb9845b559817e838846669cbc68a)
 
 superbuild_set_revision(pythonincremental
-  URL     "https://www.paraview.org/files/dependencies/incremental-17.5.0.tar.gz"
-  URL_MD5 602746e0d438e075a5a9e0678140bba2)
+  URL     "https://www.paraview.org/files/dependencies/incremental-21.3.0.tar.gz"
+  URL_MD5 9f7ad12e0c05a12cee52a7350976c4e3)
 
 superbuild_set_revision(pythontwisted
   URL     "https://www.paraview.org/files/dependencies/Twisted-21.2.0.tar.gz"
