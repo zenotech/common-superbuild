@@ -145,8 +145,8 @@ else ()
 endif ()
 
 superbuild_set_revision(mpi
-  URL     "https://www.paraview.org/files/dependencies/mpich-3.3.tar.gz"
-  URL_MD5 574af413dc0dc7fbb929a761822beb06)
+  URL     "https://www.paraview.org/files/dependencies/mpich-3.4.2.tar.gz"
+  URL_MD5 6ee1cfff98728e5160c6e78bdb1986ca)
 
 superbuild_set_revision(lapack
   URL     "https://www.paraview.org/files/dependencies/lapack-3.9.0.tar.gz"
