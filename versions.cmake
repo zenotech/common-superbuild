@@ -178,8 +178,8 @@ superbuild_set_revision(pytz
   URL_MD5 8c849bdf95414fe708a84473e42d4406)
 
 superbuild_set_revision(pythondateutil
-  URL     "https://www.paraview.org/files/dependencies/python-dateutil-2.6.0.tar.gz"
-  URL_MD5 6e38f91e8c94c15a79ce22768dfeca87)
+  URL     "https://www.paraview.org/files/dependencies/python-dateutil-2.8.2.tar.gz"
+  URL_MD5 5970010bb72452344df3d76a10281b65)
 
 superbuild_set_revision(pythonpyparsing
   URL     "https://www.paraview.org/files/dependencies/pyparsing-2.2.0.tar.gz"
