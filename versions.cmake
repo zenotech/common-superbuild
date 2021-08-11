@@ -216,8 +216,8 @@ superbuild_set_revision(pythonsetuptools
 superbuild_set_revision(pythonwheel
   # PyPI source tarball with 'unicode.dist' test excised from it (CMake has
   # issues extracting non-UTF-8 names in tarballs).
-  URL     "https://www.paraview.org/files/dependencies/wheel-0.36.2-nounicodedist.tar.gz"
-  URL_MD5 20cbaac2ac5493ee7395145a2d708640)
+  URL     "https://www.paraview.org/files/dependencies/wheel-0.37.0-nounicodedist.tar.gz"
+  URL_MD5 c4223d1502f05a23a67d6f0db0b424e9)
 
 superbuild_set_revision(pythonpycparser
   URL     "https://www.paraview.org/files/dependencies/pycparser-2.20.tar.gz"
