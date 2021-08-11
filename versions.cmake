@@ -288,8 +288,8 @@ superbuild_set_revision(pythonpygments
   URL_MD5 665516d1d1c0099241ab6e4c057e26be)
 
 superbuild_set_revision(pythonmako
-  URL     "https://www.paraview.org/files/dependencies/Mako-1.0.7.tar.gz"
-  URL_MD5 5836cc997b1b773ef389bf6629c30e65)
+  URL     "https://www.paraview.org/files/dependencies/Mako-1.1.4.tar.gz"
+  URL_MD5 2cd02c14d08c2180b3e10d3c2e749b9e)
 
 superbuild_set_revision(pythonkiwisolver
   URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.1.0.tar.gz"
