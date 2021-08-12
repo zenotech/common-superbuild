@@ -12,7 +12,6 @@ function (superbuild_find_projects var)
     bzip2
     cxx11
     freetype
-    ftjam
     png
     python
     python2

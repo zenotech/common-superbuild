@@ -59,13 +59,9 @@ else()
     URL_MD5 71f7ada6bec9cdbf4538adc326120cfd)
 endif()
 
-superbuild_set_revision(ftjam
-  URL     "https://www.paraview.org/files/dependencies/ftjam-2.5.2-win32.tar.bz2"
-  URL_MD5 ee52f3faff6d31ffb89a2fedb3b0caf6)
-
 superbuild_set_revision(freetype
-  URL     "https://www.paraview.org/files/dependencies/freetype-2.10.2.tar.xz"
-  URL_MD5 7c0d5a39f232d7eb9f9d7da76bf08074)
+  URL     "https://www.paraview.org/files/dependencies/freetype-2.11.0.tar.xz"
+  URL_MD5 f931582653774e310ed3a7e49b7167a3)
 
 superbuild_set_revision(gperf
   URL     "https://www.paraview.org/files/dependencies/gperf-3.1.tar.gz"
