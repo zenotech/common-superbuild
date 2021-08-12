@@ -295,6 +295,10 @@ superbuild_set_revision(pythonmako
   URL     "https://www.paraview.org/files/dependencies/Mako-1.1.4.tar.gz"
   URL_MD5 2cd02c14d08c2180b3e10d3c2e749b9e)
 
+superbuild_set_revision(pythoncppy
+  URL     "https://www.paraview.org/files/dependencies/cppy-1.1.0.tar.gz"
+  URL_MD5 2110891d75aa12551deebba1603428c6)
+
 superbuild_set_revision(pythonkiwisolver
   URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.1.0.tar.gz"
   URL_MD5 fc8a614367f7ba0d34a02fd08c535afc)
