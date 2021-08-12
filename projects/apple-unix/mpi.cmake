@@ -51,7 +51,3 @@ if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
     -fallow-argument-mismatch
     PROJECT_ONLY)
 endif ()
-
-# https://github.com/pmodels/mpich/pull/4726
-superbuild_apply_patch(mpi gfortran10
-  "Support gfortran10")

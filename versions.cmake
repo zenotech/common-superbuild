@@ -28,12 +28,12 @@ superbuild_set_revision(szip
   URL_MD5 dd579cf0f26d44afd10a0ad7291fc282)
 
 superbuild_set_revision(hdf5
-  URL     "https://www.paraview.org/files/dependencies/hdf5-1.12.0.tar.bz2"
-  URL_MD5  1fa68c4b11b6ef7a9d72ffa55995f898)
+  URL     "https://www.paraview.org/files/dependencies/hdf5-1.12.1.tar.bz2"
+  URL_MD5  442469fbf43626006346e679c22cf10a)
 
 superbuild_set_revision(boost
-  URL     "https://www.paraview.org/files/dependencies/boost_1_71_0.tar.bz2"
-  URL_MD5 4cdf9b5c2dc01fb2b7b733d5af30e558)
+  URL     "https://www.paraview.org/files/dependencies/boost_1_76_0.tar.bz2"
+  URL_MD5 )
 
 superbuild_set_revision(png
   URL     "https://www.paraview.org/files/dependencies/libpng-1.6.37.tar.xz"
@@ -76,8 +76,8 @@ superbuild_set_revision(fontconfig
   URL_MD5 36cdea1058ef13cbbfdabe6cb019dc1c)
 
 superbuild_set_revision(libxml2
-  URL     "https://www.paraview.org/files/dependencies/libxml2-2.9.10.tar.gz"
-  URL_MD5 10942a1dc23137a8aa07f0639cbfece5)
+  URL     "https://www.paraview.org/files/dependencies/libxml2-2.9.12.tar.gz"
+  URL_MD5 f433a39be087a9f0b197eb2307ad9f75)
 
 superbuild_set_revision(nlohmannjson
   URL     "https://www.paraview.org/files/dependencies/nlohmannjson-v3.9.1.tar.gz"
@@ -107,8 +107,8 @@ else ()
       URL     "https://www.paraview.org/files/dependencies/numpy-1.16.4.tar.gz"
       URL_MD5 6edf7334d04d8e8849ad058ccd3b3803
     SELECT python3 DEFAULT
-      URL     "https://www.paraview.org/files/dependencies/numpy-1.20.3.zip"
-      URL_MD5 949d9114af9accc25ede1daa359c4227)
+      URL     "https://www.paraview.org/files/dependencies/numpy-1.21.1.zip"
+      URL_MD5 1d016e05851a4ba85307f3246eb569aa)
   superbuild_set_revision(scipy
     URL     "https://www.paraview.org/files/dependencies/scipy-1.7.1.tar.gz"
     URL_MD5 8ac74369cdcabc097f602682c951197c)
@@ -136,8 +136,8 @@ if (WIN32 AND NOT superbuild_building_prebuilt_python AND NOT ENABLE_python3 AND
     URL_MD5 08a6ab778e459e6752d54083c29dbb13)
 elseif (ENABLE_python3 OR python3_enabled)
   superbuild_set_revision(pywin32
-    URL "https://www.paraview.org/files/dependencies/pywin32-300-cp39-cp39-win_amd64.whl"
-    URL_MD5 0c55e2c5ebd3a0bc915514ecdb6c1340)
+    URL "https://www.paraview.org/files/dependencies/pywin32-301-cp39-cp39-win_amd64.whl"
+    URL_MD5 3fe9793d6bee6e9b6515bc744f7585df)
 else ()
   superbuild_set_revision(pywin32
     URL     "https://www.paraview.org/files/dependencies/pywin32-220.zip"
@@ -145,28 +145,28 @@ else ()
 endif ()
 
 superbuild_set_revision(mpi
-  URL     "https://www.paraview.org/files/dependencies/mpich-3.3.tar.gz"
-  URL_MD5 574af413dc0dc7fbb929a761822beb06)
+  URL     "https://www.paraview.org/files/dependencies/mpich-3.4.2.tar.gz"
+  URL_MD5 6ee1cfff98728e5160c6e78bdb1986ca)
 
 superbuild_set_revision(lapack
-  URL     "https://www.paraview.org/files/dependencies/lapack-3.9.0.tar.gz"
-  URL_MD5 0b251e2a8d5f949f99b50dd5e2200ee2)
+  URL     "https://www.paraview.org/files/dependencies/lapack-3.10.0.tar.gz"
+  URL_MD5 d70fc27a8bdebe00481c97c728184f09)
 
 superbuild_set_revision(netcdf
   URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.7.0.tar.gz"
   URL_MD5 37134a12a49e80c45fb58777aa3e9e3b)
 
 # Using Intel Threading Building Blocks 2018 Update 2
-set(tbb_ver "2019_20190410oss")
+set(tbb_ver "2021.3.0")
 if (WIN32)
-  set(tbb_file "tbb${tbb_ver}_win.zip")
-  set(tbb_md5 63fc9feb34ec973b0c8ae439afb30f5e)
+  set(tbb_file "oneapi-tbb-${tbb_ver}-win.zip")
+  set(tbb_md5 ad6766ea3e17e37c447b221fe01658ea)
 elseif (APPLE)
-  set(tbb_file "tbb${tbb_ver}_mac.tgz")
-  set(tbb_md5 d1420b7b6e1d2b9c7e737123bd7e8315)
+  set(tbb_file "oneapi-tbb-${tbb_ver}-mac.tgz")
+  set(tbb_md5 280566eca486f6ef434652becfb4877c)
 else ()
-  set(tbb_file "tbb${tbb_ver}_lin.tgz")
-  set(tbb_md5 cb95ed04d2522e54d2327afd1c56938f)
+  set(tbb_file "oneapi-tbb-${tbb_ver}-lin.tgz")
+  set(tbb_md5 6027dc86d01269fd03a0c2f143f313cf)
 endif ()
 
 superbuild_set_revision(tbb
@@ -174,16 +174,16 @@ superbuild_set_revision(tbb
   URL_MD5 "${tbb_md5}")
 
 superbuild_set_revision(pytz
-  URL     "https://www.paraview.org/files/dependencies/pytz-2020.1.tar.gz"
-  URL_MD5 0349106ac02f2bfe565dd6d5594e3a15)
+  URL     "https://www.paraview.org/files/dependencies/pytz-2021.1.tar.gz"
+  URL_MD5 8c849bdf95414fe708a84473e42d4406)
 
 superbuild_set_revision(pythondateutil
-  URL     "https://www.paraview.org/files/dependencies/python-dateutil-2.6.0.tar.gz"
-  URL_MD5 6e38f91e8c94c15a79ce22768dfeca87)
+  URL     "https://www.paraview.org/files/dependencies/python-dateutil-2.8.2.tar.gz"
+  URL_MD5 5970010bb72452344df3d76a10281b65)
 
 superbuild_set_revision(pythonpyparsing
-  URL     "https://www.paraview.org/files/dependencies/pyparsing-2.2.0.tar.gz"
-  URL_MD5 0214e42d63af850256962b6744c948d9)
+  URL     "https://www.paraview.org/files/dependencies/pyparsing-2.4.7.tar.gz"
+  URL_MD5 f0953e47a0112f7a65aec2305ffdf7b4)
 
 superbuild_set_revision(pythonbeniget
   URL     "https://www.paraview.org/files/dependencies/beniget-0.4.1.tar.gz"
@@ -206,18 +206,18 @@ superbuild_set_revision(pythoncycler
   URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)
 
 superbuild_set_revision(pythoncython
-  URL     "https://www.paraview.org/files/dependencies/Cython-0.29.21.tar.gz"
-  URL_MD5 12c5e45af71dcc6dff28cdcbcbef6f39)
+  URL     "https://www.paraview.org/files/dependencies/Cython-0.29.24.tar.gz"
+  URL_MD5 81aff945f5bfdfb86e7a5d24f5467668)
 
 superbuild_set_revision(pythonsetuptools
-  URL     "https://www.paraview.org/files/dependencies/setuptools-46.1.3.zip"
-  URL_MD5 562328cde5a33564c0ebf16699a27b65)
+  URL     "https://www.paraview.org/files/dependencies/setuptools-57.4.0.tar.gz"
+  URL_MD5 1023c3535d6a3724b3c9a9929dcef195)
 
 superbuild_set_revision(pythonwheel
   # PyPI source tarball with 'unicode.dist' test excised from it (CMake has
   # issues extracting non-UTF-8 names in tarballs).
-  URL     "https://www.paraview.org/files/dependencies/wheel-0.36.2-nounicodedist.tar.gz"
-  URL_MD5 20cbaac2ac5493ee7395145a2d708640)
+  URL     "https://www.paraview.org/files/dependencies/wheel-0.37.0-nounicodedist.tar.gz"
+  URL_MD5 c4223d1502f05a23a67d6f0db0b424e9)
 
 superbuild_set_revision(pythonpycparser
   URL     "https://www.paraview.org/files/dependencies/pycparser-2.20.tar.gz"
@@ -228,20 +228,20 @@ superbuild_set_revision(pythontoml
   URL_MD5 59bce5d8d67e858735ec3f399ec90253)
 
 superbuild_set_revision(pythonsetuptoolsscm
-  URL     "https://www.paraview.org/files/dependencies/setuptools_scm-5.0.1.tar.gz"
-  URL_MD5 c11bf23d80224691a46ee5deb84c42db)
+  URL     "https://www.paraview.org/files/dependencies/setuptools_scm-6.0.1.tar.gz"
+  URL_MD5 aa7f0efbbf46c5576db5994dd1ce3f8d)
 
 superbuild_set_revision(pythonsetuptoolsrust
-  URL     "https://www.paraview.org/files/dependencies/setuptools-rust-0.11.6.tar.gz"
-  URL_MD5 319d2968f076f37279c866e51bcccbcc)
+  URL     "https://www.paraview.org/files/dependencies/setuptools-rust-0.12.1.tar.gz"
+  URL_MD5 33c3fd3bcde2877483ab782353bee54c)
 
 superbuild_set_revision(pythonautobahn
-  URL     "https://www.paraview.org/files/dependencies/autobahn-21.1.1.tar.gz"
-  URL_MD5 f0c5bebdc24eab1e8ee5811ae73075b8)
+  URL     "https://www.paraview.org/files/dependencies/autobahn-21.3.1.tar.gz"
+  URL_MD5 dcba839ee61be33d05042a09c008c6bc)
 
 superbuild_set_revision(pythoncffi
-  URL     "https://www.paraview.org/files/dependencies/cffi-1.14.5.tar.gz"
-  URL_MD5 272cb183bf0365530e3c0d8f446cd89d)
+  URL     "https://www.paraview.org/files/dependencies/cffi-1.14.6.tar.gz"
+  URL_MD5 5c118a18ea897df164dbff67a32876fc)
 
 superbuild_set_revision(pythonsemanticversion
   URL     "https://www.paraview.org/files/dependencies/semantic_version-2.8.5.tar.gz"
@@ -256,72 +256,72 @@ superbuild_set_revision(pythonhyperlink
   URL_MD5 eaccb9845b559817e838846669cbc68a)
 
 superbuild_set_revision(pythonincremental
-  URL     "https://www.paraview.org/files/dependencies/incremental-17.5.0.tar.gz"
-  URL_MD5 602746e0d438e075a5a9e0678140bba2)
+  URL     "https://www.paraview.org/files/dependencies/incremental-21.3.0.tar.gz"
+  URL_MD5 9f7ad12e0c05a12cee52a7350976c4e3)
 
 superbuild_set_revision(pythontwisted
-  URL     "https://www.paraview.org/files/dependencies/Twisted-21.2.0.tar.gz"
-  URL_MD5 0733e15bcc48bb2c8b4d593bb0839043)
+  URL     "https://www.paraview.org/files/dependencies/Twisted-21.7.0.tar.gz"
+  URL_MD5 6b17e9a4b28b8846847e5324c2e59bf4)
 
 superbuild_set_revision(pythontxaio
-  URL     "https://www.paraview.org/files/dependencies/txaio-2.8.2.tar.gz"
-  URL_MD5 a20e3431c95896a49fa3ffa84f77cde1)
+  URL     "https://www.paraview.org/files/dependencies/txaio-21.2.1.tar.gz"
+  URL_MD5 7e80b80ed7797245a5eef803043bdede)
 
 superbuild_set_revision(pythonwslink
   URL     "https://www.paraview.org/files/dependencies/wslink-0.1.11.tar.gz"
   URL_MD5 35e6285c2a74304da0557f1402c400e5)
 
 superbuild_set_revision(pythonzope
-  URL     "https://www.paraview.org/files/dependencies/Zope-4.0b3.tar.gz"
-  URL_MD5 9a63e8c8b614dc6d6944fcbd9c105f45)
+  URL     "https://www.paraview.org/files/dependencies/Zope-5.3.tar.gz"
+  URL_MD5 3b8ddc554345279c0e0018d5f1814c13)
 
 superbuild_set_revision(pythonzopeinterface
-  URL     "https://www.paraview.org/files/dependencies/zope.interface-5.1.0.tar.gz"
-  URL_MD5 53bccb21aab8894a68f40ee2f202465d)
+  URL     "https://www.paraview.org/files/dependencies/zope.interface-5.4.0.tar.gz"
+  URL_MD5 c58b31da83449631efb499de13c68c6a)
 
 superbuild_set_revision(pythonsix
-  URL     "https://www.paraview.org/files/dependencies/six-1.11.0.tar.gz"
-  URL_MD5 d12789f9baf7e9fb2524c0c64f1773f8)
+  URL     "https://www.paraview.org/files/dependencies/six-1.16.0.tar.gz"
+  URL_MD5 a7c927740e4964dd29b72cebfc1429bb)
 
 superbuild_set_revision(pythonpygments
-  URL     "https://www.paraview.org/files/dependencies/Pygments-2.2.0.tar.gz"
-  URL_MD5 13037baca42f16917cbd5ad2fab50844)
+  URL     "https://www.paraview.org/files/dependencies/Pygments-2.9.0.tar.gz"
+  URL_MD5 665516d1d1c0099241ab6e4c057e26be)
 
 superbuild_set_revision(pythonmako
-  URL     "https://www.paraview.org/files/dependencies/Mako-1.0.7.tar.gz"
-  URL_MD5 5836cc997b1b773ef389bf6629c30e65)
+  URL     "https://www.paraview.org/files/dependencies/Mako-1.1.4.tar.gz"
+  URL_MD5 2cd02c14d08c2180b3e10d3c2e749b9e)
 
 superbuild_set_revision(pythonkiwisolver
   URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.1.0.tar.gz"
   URL_MD5 fc8a614367f7ba0d34a02fd08c535afc)
 
 superbuild_set_revision(pythonattrs
-  URL     "https://www.paraview.org/files/dependencies/attrs-20.2.0.tar.gz"
-  URL_MD5 7be95e1b35e9385d71a0017a48217efc)
+  URL     "https://www.paraview.org/files/dependencies/attrs-21.2.0.tar.gz"
+  URL_MD5 06af884070d9180694becdb106e5cd65)
 
 superbuild_set_revision(pythonpandas
-  URL     "https://www.paraview.org/files/dependencies/pandas-1.1.3.tar.gz"
-  URL_MD5 f10372d83a1c55cae217e8c05bf9bc5d)
+  URL     "https://www.paraview.org/files/dependencies/pandas-1.3.1.tar.gz"
+  URL_MD5 407560bb24b0ec4785ecf4dba5e1a139)
 
 superbuild_set_revision(ffi
-  URL     "https://www.paraview.org/files/dependencies/libffi-3.3.tar.gz"
-  URL_MD5 6313289e32f1d38a9df4770b014a2ca7)
+  URL     "https://www.paraview.org/files/dependencies/libffi-3.4.2.tar.gz"
+  URL_MD5 294b921e6cf9ab0fbaea4b639f8fdbe8)
 
 superbuild_set_revision(utillinux
   URL     "https://www.paraview.org/files/dependencies/util-linux-2.34.tar.xz"
   URL_MD5 a78cbeaed9c39094b96a48ba8f891d50)
 
 superbuild_set_revision(pkgconf
-  URL     "https://www.paraview.org/files/dependencies/pkgconf-1.6.3.tar.xz"
-  URL_MD5 f93fb1be95a5cb62e43c219c82b5791a)
+  URL     "https://www.paraview.org/files/dependencies/pkgconf-1.8.0.tar.xz"
+  URL_MD5 823212dc241793df8ff1d097769a3473)
 
 superbuild_set_revision(pybind11
-  URL     "https://www.paraview.org/files/dependencies/pybind11-2.5.0.tar.gz"
-  URL_MD5 1ad2c611378fb440e8550a7eb6b31b89)
+  URL     "https://www.paraview.org/files/dependencies/pybind11-2.7.1.tar.gz"
+  URL_MD5 b87860218c143728f8e6efa6cba7e1ed)
 
 superbuild_set_revision(sqlite
-  URL     "https://www.paraview.org/files/dependencies/sqlite-autoconf-3350200.tar.gz"
-  URL_MD5 454e0899d99a7b28825db3d807526774)
+  URL     "https://www.paraview.org/files/dependencies/sqlite-autoconf-3360000.tar.gz"
+  URL_MD5 f5752052fc5b8e1b539af86a3671eac7)
 
 set(pythoncryptography_version "3.4.7")
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")

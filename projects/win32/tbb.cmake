@@ -1,9 +1,7 @@
 set(tbb_archdir intel64)
 
-if (NOT MSVC_VERSION VERSION_GREATER 1700)
-  message(FATAL_ERROR "At least Visual Studio 12.0 (2013) is required")
-elseif (NOT MSVC_VERSION VERSION_GREATER 1800)
-  set(tbb_vsdir vc12)
+if (NOT MSVC_VERSION VERSION_GREATER 1800)
+  message(FATAL_ERROR "At least Visual Studio 14.0 (2017) is required")
 elseif (NOT MSVC_VERSION VERSION_GREATER 1999) # 1900 (VS 2015), 191. (VS 2017)
   set(tbb_vsdir vc14)
 elseif (tbb_enabled)
