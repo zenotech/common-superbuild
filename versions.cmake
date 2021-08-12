@@ -316,8 +316,8 @@ superbuild_set_revision(ffi
   URL_MD5 294b921e6cf9ab0fbaea4b639f8fdbe8)
 
 superbuild_set_revision(utillinux
-  URL     "https://www.paraview.org/files/dependencies/util-linux-2.34.tar.xz"
-  URL_MD5 a78cbeaed9c39094b96a48ba8f891d50)
+  URL     "https://www.paraview.org/files/dependencies/util-linux-2.37.1.tar.xz"
+  URL_MD5 6d244f0f59247e9109f47d6e5dd0556b)
 
 superbuild_set_revision(pkgconf
   URL     "https://www.paraview.org/files/dependencies/pkgconf-1.8.0.tar.xz"

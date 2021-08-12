@@ -4,8 +4,14 @@ else ()
   set(fontconfig_shared_args --disable-shared --enable-static)
 endif ()
 
+set(fontconfig_platform_deps)
+if (NOT APPLE)
+  list(APPEND fontconfig_platform_deps
+    utillinux)
+endif ()
+
 superbuild_add_project(fontconfig
-  DEPENDS freetype libxml2 png gperf utillinux
+  DEPENDS freetype libxml2 png gperf ${fontconfig_platform_deps}
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure

@@ -82,13 +82,13 @@ function (superbuild_find_projects var)
       pkgconf
       pybind11
       scipy
-      sqlite
-      utillinux)
+      sqlite)
   endif ()
 
   if (UNIX AND NOT APPLE)
     list(APPEND projects
-      fontconfig)
+      fontconfig
+      utillinux)
   endif ()
 
   set("${var}"
