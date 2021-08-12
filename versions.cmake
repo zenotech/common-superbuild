@@ -124,8 +124,8 @@ superbuild_set_revision(pythonpillow
 
 if (ENABLE_python3 OR python3_enabled)
   superbuild_set_revision(matplotlib
-    URL "https://www.paraview.org/files/dependencies/matplotlib-3.2.1.tar.gz"
-    URL_MD5 9186b1e9f1fc7d555f2abf64b35dea5b)
+    URL "https://www.paraview.org/files/dependencies/matplotlib-3.4.2.tar.gz"
+    URL_MD5 e34749a5f0661b8af74a1dc327fb74f6)
 else ()
   if (WIN32 AND NOT superbuild_building_prebuilt_python)
     superbuild_set_revision(matplotlib
