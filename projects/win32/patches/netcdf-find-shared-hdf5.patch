@@ -14,6 +14,6 @@ diff -u -U5 -r netcdf-c-4.6.2/CMakeLists.txt netcdf-c-4.6.2.find-shared-hdf5/CMa
 +    ENDIF(NC_FIND_SHARED_LIBS)
      MESSAGE(STATUS "Using HDF5 C Library: ${HDF5_C_LIBRARY}")
      MESSAGE(STATUS "Using HDF5 HL LIbrary: ${HDF5_HL_LIBRARY}")
-   ELSE(HDF5_C_LIBRARY AND HDF5_HL_LIBRARY AND HDF5_INCLUDE_DIR) # We are seeking out HDF5 with Find Package.
-     ###
-     # For now we assume that if we are building netcdf
+     if (EXISTS "${HDF5_INCLUDE_DIR}/H5pubconf.h")
+       file(READ "${HDF5_INCLUDE_DIR}/H5pubconf.h" _hdf5_version_lines
+         REGEX "#define[ \t]+H5_VERSION")
