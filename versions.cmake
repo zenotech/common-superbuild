@@ -252,8 +252,8 @@ superbuild_set_revision(pythonconstantly
   URL_MD5 f0762f083d83039758e53f8cf0086eef)
 
 superbuild_set_revision(pythonhyperlink
-  URL     "https://www.paraview.org/files/dependencies/hyperlink-17.3.1.tar.gz"
-  URL_MD5 eaccb9845b559817e838846669cbc68a)
+  URL     "https://www.paraview.org/files/dependencies/hyperlink-21.0.0.tar.gz"
+  URL_MD5 6285ac13e7d6be4157698ad7960ed490)
 
 superbuild_set_revision(pythonidna
   URL     "https://www.paraview.org/files/dependencies/idna-3.2.tar.gz"
