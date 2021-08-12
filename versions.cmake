@@ -300,8 +300,8 @@ superbuild_set_revision(pythoncppy
   URL_MD5 2110891d75aa12551deebba1603428c6)
 
 superbuild_set_revision(pythonkiwisolver
-  URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.1.0.tar.gz"
-  URL_MD5 fc8a614367f7ba0d34a02fd08c535afc)
+  URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.3.1.tar.gz"
+  URL_MD5 81012578317ddcfa3daed806142f8fed)
 
 superbuild_set_revision(pythonattrs
   URL     "https://www.paraview.org/files/dependencies/attrs-21.2.0.tar.gz"
