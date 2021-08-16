@@ -235,6 +235,30 @@ superbuild_set_revision(pythonsetuptoolsrust
   URL     "https://www.paraview.org/files/dependencies/setuptools-rust-0.12.1.tar.gz"
   URL_MD5 33c3fd3bcde2877483ab782353bee54c)
 
+superbuild_set_revision(pythonaiohttp
+  URL     "https://www.paraview.org/files/dependencies/aiohttp-3.7.4.post0.tar.gz"
+  URL_MD5 7052a8e9877921d73da98d2b18c9a145)
+
+superbuild_set_revision(pythonasynctimeout
+  URL     "https://www.paraview.org/files/dependencies/async-timeout-3.0.1.tar.gz"
+  URL_MD5 305c4fa529f2485c403d0dbe14390175)
+
+superbuild_set_revision(pythonchardet
+  URL     "https://www.paraview.org/files/dependencies/chardet-4.0.0.tar.gz"
+  URL_MD5 bc9a5603d8d0994b2d4cbf255f99e654)
+
+superbuild_set_revision(pythonmultidict
+  URL     "https://www.paraview.org/files/dependencies/multidict-5.1.0.tar.gz"
+  URL_MD5 df8b37f069809779214d6b80b250e45b)
+
+superbuild_set_revision(pythontypingextensions
+  URL     "https://www.paraview.org/files/dependencies/typing_extensions-3.10.0.0.tar.gz"
+  URL_MD5 9b5b33ae64c94479fa0862cf8ae89d58)
+
+superbuild_set_revision(pythonyarl
+  URL     "https://www.paraview.org/files/dependencies/yarl-1.6.3.tar.gz "
+  URL_MD5 3b6f2da3db8c645a9440375fd6a414eb)
+
 superbuild_set_revision(pythonautobahn
   URL     "https://www.paraview.org/files/dependencies/autobahn-21.3.1.tar.gz"
   URL_MD5 dcba839ee61be33d05042a09c008c6bc)
@@ -267,9 +291,17 @@ superbuild_set_revision(pythontxaio
   URL     "https://www.paraview.org/files/dependencies/txaio-21.2.1.tar.gz"
   URL_MD5 7e80b80ed7797245a5eef803043bdede)
 
+superbuild_set_revision(pythonwslinkasync
+  URL     "https://www.paraview.org/files/dependencies/wslink-1.0.5.tar.gz"
+  URL_MD5 a9afa85dac1cb62031b52fabcc06bb69)
+
 superbuild_set_revision(pythonwslink
   URL     "https://www.paraview.org/files/dependencies/wslink-0.1.11.tar.gz"
   URL_MD5 35e6285c2a74304da0557f1402c400e5)
+
+superbuild_set_revision(pythonpywebvue
+  URL     "https://www.paraview.org/files/dependencies/pywebvue-1.3.0.tar.gz"
+  URL_MD5 3aab24c1d08e89596caa2efce8ac7987)
 
 superbuild_set_revision(pythonzope
   URL     "https://www.paraview.org/files/dependencies/Zope-5.3.tar.gz"

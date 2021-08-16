@@ -23,10 +23,13 @@ function (superbuild_find_projects var)
     python
     python2
     python3
+    pythonaiohttp
+    pythonasynctimeout
     pythonattrs
     pythonautobahn
     pythonbeniget
     pythoncffi
+    pythonchardet
     pythonconstantly
     pythoncryptography
     pythoncycler
@@ -37,6 +40,7 @@ function (superbuild_find_projects var)
     pythonincremental
     pythonkiwisolver
     pythonmpi4py
+    pythonmultidict
     pythonply
     pythonpycparser
     pythonpygments
@@ -50,8 +54,12 @@ function (superbuild_find_projects var)
     pythontoml
     pythontwisted
     pythontxaio
+    pythontypingextensions
     pythonwheel
     pythonwslink
+    pythonwslinkasync
+    pythonpywebvue
+    pythonyarl
     pythonzope
     pythonzopeinterface
     pytz
