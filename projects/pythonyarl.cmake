@@ -1,3 +1,3 @@
 superbuild_add_project_python(pythonyarl
   PACKAGE yarl
-  DEPENDS pythonsetuptools pythonmultidict)
+  DEPENDS pythonsetuptools pythonmultidict pythonidna)
