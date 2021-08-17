@@ -34,6 +34,7 @@ function (superbuild_find_projects var)
     pythondateutil
     pythongast
     pythonhyperlink
+    pythonidna
     pythonincremental
     pythonkiwisolver
     pythonmpi4py
