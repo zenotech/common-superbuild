@@ -92,6 +92,11 @@ if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "windows" AND
   enable_project(scipy)
 endif ()
 
+# TBB doesn't have macOS arm64 support yet.
+if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos_arm64")
+  enable_project(tbb)
+endif ()
+
 # qt5 things
 set(qt5_SOURCE_SELECTION            "5.12" CACHE STRING "")
 # the gold linker seems to fail with internal error on centos7 builds
