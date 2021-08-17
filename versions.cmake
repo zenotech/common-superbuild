@@ -110,6 +110,10 @@ else ()
     URL_MD5 8ac74369cdcabc097f602682c951197c)
 endif ()
 
+superbuild_set_revision(qhull
+  URL     "https://www.paraview.org/files/dependencies/qhull-2020-src-8.0.2.tgz"
+  URL_MD5 295f7332269a38279478f555cc185296)
+
 if (ENABLE_python3 OR python3_enabled)
   superbuild_set_revision(matplotlib
     URL "https://www.paraview.org/files/dependencies/matplotlib-3.2.1.tar.gz"

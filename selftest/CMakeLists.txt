@@ -65,6 +65,7 @@ function (superbuild_find_projects var)
     pythonzope
     pythonzopeinterface
     pytz
+    qhull
     qt5
     szip
     tbb
