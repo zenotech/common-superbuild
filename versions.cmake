@@ -118,6 +118,10 @@ superbuild_set_revision(libjpegturbo
   URL     "https://www.paraview.org/files/dependencies/libjpeg-turbo-2.1.1.tar.gz"
   URL_MD5 cf16866976ab31cd6fc478eac8c2c54e)
 
+superbuild_set_revision(pythonpillow
+  URL     "https://www.paraview.org/files/dependencies/Pillow-8.3.1.tar.gz"
+  URL_MD5 e42fc66e41b5309436a573af49cec47c)
+
 if (ENABLE_python3 OR python3_enabled)
   superbuild_set_revision(matplotlib
     URL "https://www.paraview.org/files/dependencies/matplotlib-3.2.1.tar.gz"

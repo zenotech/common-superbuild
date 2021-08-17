@@ -44,6 +44,7 @@ function (superbuild_find_projects var)
     pythonkiwisolver
     pythonmpi4py
     pythonmultidict
+    pythonpillow
     pythonply
     pythonpycparser
     pythonpygments
