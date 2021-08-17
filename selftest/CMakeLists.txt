@@ -31,12 +31,14 @@ function (superbuild_find_projects var)
     pythoncffi
     pythonchardet
     pythonconstantly
+    pythoncppy
     pythoncryptography
     pythoncycler
     pythoncython
     pythondateutil
     pythongast
     pythonhyperlink
+    pythonidna
     pythonincremental
     pythonkiwisolver
     pythonmpi4py
@@ -88,13 +90,13 @@ function (superbuild_find_projects var)
       pkgconf
       pybind11
       scipy
-      sqlite
-      utillinux)
+      sqlite)
   endif ()
 
   if (UNIX AND NOT APPLE)
     list(APPEND projects
-      fontconfig)
+      fontconfig
+      utillinux)
   endif ()
 
   set("${var}"

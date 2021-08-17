@@ -153,8 +153,8 @@ superbuild_set_revision(lapack
   URL_MD5 d70fc27a8bdebe00481c97c728184f09)
 
 superbuild_set_revision(netcdf
-  URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.7.0.tar.gz"
-  URL_MD5 37134a12a49e80c45fb58777aa3e9e3b)
+  URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.8.0.tar.gz"
+  URL_MD5 edd20df59299f72bb478920c11e03d4c)
 
 # Using Intel Threading Building Blocks 2018 Update 2
 set(tbb_ver "2021.3.0")
@@ -276,8 +276,12 @@ superbuild_set_revision(pythonconstantly
   URL_MD5 f0762f083d83039758e53f8cf0086eef)
 
 superbuild_set_revision(pythonhyperlink
-  URL     "https://www.paraview.org/files/dependencies/hyperlink-17.3.1.tar.gz"
-  URL_MD5 eaccb9845b559817e838846669cbc68a)
+  URL     "https://www.paraview.org/files/dependencies/hyperlink-21.0.0.tar.gz"
+  URL_MD5 6285ac13e7d6be4157698ad7960ed490)
+
+superbuild_set_revision(pythonidna
+  URL     "https://www.paraview.org/files/dependencies/idna-3.2.tar.gz"
+  URL_MD5 08ea8e2ce09e522424e872409c221138)
 
 superbuild_set_revision(pythonincremental
   URL     "https://www.paraview.org/files/dependencies/incremental-21.3.0.tar.gz"
@@ -323,9 +327,13 @@ superbuild_set_revision(pythonmako
   URL     "https://www.paraview.org/files/dependencies/Mako-1.1.4.tar.gz"
   URL_MD5 2cd02c14d08c2180b3e10d3c2e749b9e)
 
+superbuild_set_revision(pythoncppy
+  URL     "https://www.paraview.org/files/dependencies/cppy-1.1.0.tar.gz"
+  URL_MD5 2110891d75aa12551deebba1603428c6)
+
 superbuild_set_revision(pythonkiwisolver
-  URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.1.0.tar.gz"
-  URL_MD5 fc8a614367f7ba0d34a02fd08c535afc)
+  URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.3.1.tar.gz"
+  URL_MD5 81012578317ddcfa3daed806142f8fed)
 
 superbuild_set_revision(pythonattrs
   URL     "https://www.paraview.org/files/dependencies/attrs-21.2.0.tar.gz"
@@ -340,8 +348,8 @@ superbuild_set_revision(ffi
   URL_MD5 294b921e6cf9ab0fbaea4b639f8fdbe8)
 
 superbuild_set_revision(utillinux
-  URL     "https://www.paraview.org/files/dependencies/util-linux-2.34.tar.xz"
-  URL_MD5 a78cbeaed9c39094b96a48ba8f891d50)
+  URL     "https://www.paraview.org/files/dependencies/util-linux-2.37.1.tar.xz"
+  URL_MD5 6d244f0f59247e9109f47d6e5dd0556b)
 
 superbuild_set_revision(pkgconf
   URL     "https://www.paraview.org/files/dependencies/pkgconf-1.8.0.tar.xz"

@@ -1,0 +1,51 @@
+From f7a52e7fbd009d4c638da7ea495de4d5038467c7 Mon Sep 17 00:00:00 2001
+From: Ben Boeckel <ben.boeckel@kitware.com>
+Date: Mon, 2 Aug 2021 16:49:00 -0400
+Subject: [PATCH] dinfermodel: don't fail if NC_NETCDF4 is allowed, but NC3 is
+ found
+
+In VTK, there are some files which require the NC3 implementation, but
+no longer open under 4.8.0 (it worked under 4.7.4). The code checks to
+make sure that certain formats were *not* requested when it is entirely
+reasonable that support may be required for other files.
+
+This partially reverts changes made in
+59e04ae0712a59688e5ae80dfbe7fc4c295d2826 which is a massive commit which
+adds Zarr support but doesn't mention why this specific change was made.
+---
+ libdispatch/dinfermodel.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/libdispatch/dinfermodel.c b/libdispatch/dinfermodel.c
+index ba7db07e9..bdba4a16f 100644
+--- a/libdispatch/dinfermodel.c
++++ b/libdispatch/dinfermodel.c
+@@ -885,25 +885,22 @@ NC_infermodel(const char* path, int* omodep, int iscreate, int useparallel, void
+     case NC_FORMATX_UDF0:
+     case NC_FORMATX_UDF1:
+     case NC_FORMATX_NCZARR:
+-	/* Check for illegal flags */
+-	if((omode & (NC_64BIT_OFFSET|NC_64BIT_DATA)) != 0) {stat = NC_EINVAL; goto done;}
+ 	omode |= NC_NETCDF4;
+ 	if(model->format == NC_FORMAT_NETCDF4_CLASSIC)
+ 	    omode |= NC_CLASSIC_MODEL;
+ 	break;
+     case NC_FORMATX_NC3:
+-	if((omode & (NC_NETCDF4)) != 0) {stat = NC_EINVAL; goto done;}
++	omode &= ~NC_NETCDF4; /* must be netcdf-3 (CDF-1, CDF-2, CDF-5) */
+ 	if(model->format == NC_FORMAT_64BIT_OFFSET) omode |= NC_64BIT_OFFSET;
+ 	else if(model->format == NC_FORMAT_64BIT_DATA) omode |= NC_64BIT_DATA;
+ 	break;
+     case NC_FORMATX_PNETCDF:
+-	if((omode & (NC_NETCDF4)) != 0) {stat = NC_EINVAL; goto done;}
++	omode &= ~NC_NETCDF4; /* must be netcdf-3 (CDF-1, CDF-2, CDF-5) */
+ 	if(model->format == NC_FORMAT_64BIT_OFFSET) omode |= NC_64BIT_OFFSET;
+ 	else if(model->format == NC_FORMAT_64BIT_DATA) omode |= NC_64BIT_DATA;
+ 	break;
+     case NC_FORMATX_DAP2:
+-	if((omode & (NC_NETCDF4|NC_64BIT_OFFSET|NC_64BIT_DATA|NC_CLASSIC_MODEL)) != 0)
+-	    {stat = NC_EINVAL; goto done;}
++	omode &= ~(NC_NETCDF4|NC_64BIT_OFFSET|NC_64BIT_DATA|NC_CLASSIC_MODEL);
+ 	break;
+     default:
+ 	{stat = NC_ENOTNC; goto done;}
