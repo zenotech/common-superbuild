@@ -14,6 +14,7 @@ function (superbuild_find_projects var)
     freetype
     hdf5
     lapack
+    libjpegturbo
     matplotlib
     mpi
     netcdf
@@ -43,6 +44,7 @@ function (superbuild_find_projects var)
     pythonkiwisolver
     pythonmpi4py
     pythonmultidict
+    pythonpillow
     pythonply
     pythonpycparser
     pythonpygments
@@ -65,6 +67,7 @@ function (superbuild_find_projects var)
     pythonzope
     pythonzopeinterface
     pytz
+    qhull
     qt5
     szip
     tbb
@@ -77,7 +80,6 @@ function (superbuild_find_projects var)
 
   if (WIN32)
     list(APPEND projects
-      ftjam
       pywin32)
   endif ()
 

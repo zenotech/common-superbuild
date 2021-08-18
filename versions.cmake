@@ -59,13 +59,9 @@ else()
     URL_MD5 71f7ada6bec9cdbf4538adc326120cfd)
 endif()
 
-superbuild_set_revision(ftjam
-  URL     "https://www.paraview.org/files/dependencies/ftjam-2.5.2-win32.tar.bz2"
-  URL_MD5 ee52f3faff6d31ffb89a2fedb3b0caf6)
-
 superbuild_set_revision(freetype
-  URL     "https://www.paraview.org/files/dependencies/freetype-2.10.2.tar.xz"
-  URL_MD5 7c0d5a39f232d7eb9f9d7da76bf08074)
+  URL     "https://www.paraview.org/files/dependencies/freetype-2.11.0.tar.xz"
+  URL_MD5 f931582653774e310ed3a7e49b7167a3)
 
 superbuild_set_revision(gperf
   URL     "https://www.paraview.org/files/dependencies/gperf-3.1.tar.gz"
@@ -114,10 +110,22 @@ else ()
     URL_MD5 8ac74369cdcabc097f602682c951197c)
 endif ()
 
+superbuild_set_revision(qhull
+  URL     "https://www.paraview.org/files/dependencies/qhull-2020-src-8.0.2.tgz"
+  URL_MD5 295f7332269a38279478f555cc185296)
+
+superbuild_set_revision(libjpegturbo
+  URL     "https://www.paraview.org/files/dependencies/libjpeg-turbo-2.1.1.tar.gz"
+  URL_MD5 cf16866976ab31cd6fc478eac8c2c54e)
+
+superbuild_set_revision(pythonpillow
+  URL     "https://www.paraview.org/files/dependencies/Pillow-8.3.1.tar.gz"
+  URL_MD5 e42fc66e41b5309436a573af49cec47c)
+
 if (ENABLE_python3 OR python3_enabled)
   superbuild_set_revision(matplotlib
-    URL "https://www.paraview.org/files/dependencies/matplotlib-3.2.1.tar.gz"
-    URL_MD5 9186b1e9f1fc7d555f2abf64b35dea5b)
+    URL "https://www.paraview.org/files/dependencies/matplotlib-3.4.2.tar.gz"
+    URL_MD5 e34749a5f0661b8af74a1dc327fb74f6)
 else ()
   if (WIN32 AND NOT superbuild_building_prebuilt_python)
     superbuild_set_revision(matplotlib

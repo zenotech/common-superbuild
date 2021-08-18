@@ -9,20 +9,21 @@ file(INSTALL
   "${source_location}/${libdir}/"
   DESTINATION "${install_location}/lib"
   FILES_MATCHING
-    PATTERN "${libprefix}tbb${libsuffix}"
-    PATTERN "${libprefix}tbb_debug${libsuffix}"
-    PATTERN "${libprefix}tbbmalloc${libsuffix}"
-    PATTERN "${libprefix}tbbmalloc_debug${libsuffix}")
+    PATTERN "${libprefix}tbb*")
+
+# Install CMake package
+file(INSTALL
+  "${source_location}/lib/cmake"
+  DESTINATION "${install_location}/lib")
 
 if (WIN32)
   # Install DLLs
-  string(REPLACE "lib" "bin" bindir "${libdir}")
+  string(REPLACE "lib" "redist" bindir "${libdir}")
   file(INSTALL
-    "${source_location}/${bindir}/${libprefix}tbb${libsuffixshared}"
-    "${source_location}/${bindir}/${libprefix}tbb_debug${libsuffixshared}"
-    "${source_location}/${bindir}/${libprefix}tbbmalloc${libsuffixshared}"
-    "${source_location}/${bindir}/${libprefix}tbbmalloc_debug${libsuffixshared}"
-    DESTINATION "${install_location}/bin")
+    "${source_location}/${bindir}/"
+    DESTINATION "${install_location}/bin"
+    FILES_MATCHING
+      PATTERN "*${libsuffixshared}")
 endif ()
 
 # Remove rpath junk

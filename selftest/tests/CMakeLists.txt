@@ -26,7 +26,7 @@ function (add_python_import_test package module)
     NAME "${test_prefix}-${package}-import-${module}"
     COMMAND
       "${superbuild_python_executable}"
-      -c "import ${module}; import os; print(${module}.__file__.replace(os.sep, '/'))")
+      -c "import os; [os.add_dll_directory(p) for p in filter(lambda x: x, os.environ.get('PYTHON_WINDOWS_DLL_DIRECTORIES', '').split(';'))]; import ${module}; print(${module}.__file__.replace(os.sep, '/'))")
   if (NOT USE_SYSTEM_${package})
     set_property(TEST "${test_prefix}-${package}-import-${module}"
       PROPERTY
@@ -56,6 +56,8 @@ add_python_import_test(pythonidna idna)
 add_python_import_test(pythonincremental incremental)
 add_python_import_test(pythonkiwisolver kiwisolver)
 add_python_import_test(pythonmultidict multidict)
+add_python_import_test(pythonpillow PIL)
+add_python_import_test(pythonpillow PIL.Image)
 add_python_import_test(pythonply ply)
 add_python_import_test(pythonpycparser pycparser)
 add_python_import_test(pythonpygments pygments)
@@ -80,6 +82,21 @@ add_python_import_test(pythonzopeinterface zope.interface)
 add_python_import_test(pytz pytz)
 add_python_import_test(pywin32 adodbapi)
 add_python_import_test(scipy scipy)
+
+if (WIN32)
+  # Python 3.9 needs help finding dependent DLLs and Pillow doesn't do this on
+  # its own, so extra work is needed to make this happy.
+  set(pil_using_tests
+    "python3-matplotlib-import-matplotlib"
+    "python3-pythonpillow-import-PIL.Image")
+  foreach (pil_using_test IN LISTS pil_using_tests)
+    if (TEST "${pil_using_test}")
+      set_property(TEST "${pil_using_test}" APPEND
+        PROPERTY
+          ENVIRONMENT "PYTHON_WINDOWS_DLL_DIRECTORIES=${install_dir}/bin")
+    endif ()
+  endforeach ()
+endif ()
 
 # Verify that Python3 support for ssl is removed from a built-in Python if not
 # enabled.
