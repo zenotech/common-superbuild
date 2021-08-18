@@ -114,6 +114,10 @@ superbuild_set_revision(qhull
   URL     "https://www.paraview.org/files/dependencies/qhull-2020-src-8.0.2.tgz"
   URL_MD5 295f7332269a38279478f555cc185296)
 
+superbuild_set_revision(libjpegturbo
+  URL     "https://www.paraview.org/files/dependencies/libjpeg-turbo-2.1.1.tar.gz"
+  URL_MD5 cf16866976ab31cd6fc478eac8c2c54e)
+
 if (ENABLE_python3 OR python3_enabled)
   superbuild_set_revision(matplotlib
     URL "https://www.paraview.org/files/dependencies/matplotlib-3.2.1.tar.gz"

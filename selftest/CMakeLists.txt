@@ -14,6 +14,7 @@ function (superbuild_find_projects var)
     freetype
     hdf5
     lapack
+    libjpegturbo
     matplotlib
     mpi
     netcdf
