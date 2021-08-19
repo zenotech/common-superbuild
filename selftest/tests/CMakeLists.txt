@@ -28,6 +28,17 @@ function (add_python_import_test package module)
   endif ()
 endfunction ()
 
+if (TARGET mpi)
+  add_test(
+    NAME mpi-check
+    COMMAND
+      "${CMAKE_CTEST_COMMAND}"
+        --build-generator "${CMAKE_GENERATOR}"
+        --build-and-test "${CMAKE_CURRENT_SOURCE_DIR}/mpi-check" "${CMAKE_CURRENT_BINARY_DIR}/mpi-check"
+        --build-options "-DCMAKE_PREFIX_PATH=${install_dir}"
+        --test-command "${CMAKE_CTEST_COMMAND}")
+endif ()
+
 if (TARGET tbb)
   add_test(
     NAME tbb-check
