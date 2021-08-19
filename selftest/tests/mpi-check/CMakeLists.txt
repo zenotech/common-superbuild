@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(mpi-check C)
 
+message(CTEST_FULL_OUTPUT)
+
 function (check_target target)
   if (NOT TARGET "${target}")
     message(SEND_ERROR
