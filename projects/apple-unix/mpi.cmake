@@ -4,6 +4,13 @@ else ()
   set(mpi_shared_args --disable-shared --enable-static)
 endif ()
 
+if (superbuild_build_phase AND CMAKE_VERSION VERSION_LESS "3.21.2")
+  message(AUTHOR_WARNING
+    "CMake's FindMPI prior to 3.21.2 extracts incorrect flags for this build "
+    "of MPICH. Please use a newer CMake to avoid miscompilations in projects "
+    "consuming this MPI build.")
+endif ()
+
 set(mpi_fortran_flags
   --disable-fortran
   --disable-fc)
