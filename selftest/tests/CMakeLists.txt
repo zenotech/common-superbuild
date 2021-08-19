@@ -34,6 +34,16 @@ function (add_python_import_test package module)
   endif ()
 endfunction ()
 
+if (TARGET tbb)
+  add_test(
+    NAME tbb-check
+    COMMAND
+      "${CMAKE_CTEST_COMMAND}"
+        --build-generator "${CMAKE_GENERATOR}"
+        --build-and-test "${CMAKE_CURRENT_SOURCE_DIR}/tbb-check" "${CMAKE_CURRENT_BINARY_DIR}/tbb-check"
+        --build-options "-DCMAKE_PREFIX_PATH=${install_dir}")
+endif ()
+
 add_python_import_test(python3 this)
 add_python_import_test(matplotlib matplotlib)
 add_python_import_test(numpy numpy)

@@ -10,3 +10,6 @@ endif ()
 
 set(tbb_libdir lib/${tbb_archdir}/${tbb_vsdir})
 include(tbb.common)
+
+superbuild_apply_patch(tbb windows-cmake-relocate
+  "Fix CMake configuration files for the install tree relocations")

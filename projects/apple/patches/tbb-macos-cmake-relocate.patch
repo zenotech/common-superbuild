@@ -1,0 +1,18 @@
+diff -u -Nru5 oneapi-tbb-2021.3.0-mac/lib/cmake/tbb/TBBConfig.cmake oneapi-tbb-2021.3.0-mac.cmake-relocate-mac/lib/cmake/tbb/TBBConfig.cmake
+--- oneapi-tbb-2021.3.0-mac/lib/cmake/tbb/TBBConfig.cmake	2021-05-06 12:45:10.000000000 -0400
++++ oneapi-tbb-2021.3.0-mac.cmake-relocate-mac/lib/cmake/tbb/TBBConfig.cmake	2021-08-19 09:45:35.242846990 -0400
+@@ -34,12 +34,12 @@
+ get_filename_component(_tbb_root "${_tbb_root}/../../.." ABSOLUTE)
+ 
+ set(TBB_INTERFACE_VERSION )
+ 
+ set(_tbb_bin_version 12)
+-set(_tbbmalloc_bin_version 2)
+-set(_tbbmalloc_proxy_bin_version 2)
++set(_tbbmalloc_bin_version 3)
++set(_tbbmalloc_proxy_bin_version 3)
+ set(_tbbbind_bin_version 3)
+ 
+ # Add components with internal dependencies: tbbmalloc_proxy -> tbbmalloc
+ list(FIND TBB_FIND_COMPONENTS tbbmalloc_proxy _tbbmalloc_proxy_ix)
+ if (NOT _tbbmalloc_proxy_ix EQUAL -1)
