@@ -1,0 +1,15 @@
+diff -u -Nru5 oneapi-tbb-2021.3.0-lin/lib/cmake/tbb/TBBConfig.cmake oneapi-tbb-2021.3.0-lin.cmake-relocate-lin/lib/cmake/tbb/TBBConfig.cmake
+--- oneapi-tbb-2021.3.0-lin/lib/cmake/tbb/TBBConfig.cmake	2021-08-19 09:00:13.435348308 -0400
++++ oneapi-tbb-2021.3.0-lin.cmake-relocate-lin/lib/cmake/tbb/TBBConfig.cmake	2021-08-19 09:01:18.365160656 -0400
+@@ -53,9 +53,11 @@
+     set(_tbb_subdir intel64/gcc4.8)
+ else ()
+     set(_tbb_subdir ia32/gcc4.8)
+ endif()
+ 
++set(_tbb_subdir "")
++
+ foreach (_tbb_component ${TBB_FIND_COMPONENTS})
+     set(TBB_${_tbb_component}_FOUND 0)
+     
+     get_filename_component(_tbb_release_lib "${_tbb_root}/lib/${_tbb_subdir}/lib${_tbb_component}${_bin_version}.so.${_${_tbb_component}_bin_version}" ABSOLUTE)
