@@ -16,19 +16,13 @@ function (add_python_import_test package module)
     return ()
   endif ()
 
-  if (TARGET "python3")
-    set(test_prefix "python3")
-  else ()
-    set(test_prefix "python2")
-  endif ()
-
   add_test(
-    NAME "${test_prefix}-${package}-import-${module}"
+    NAME "python3-${package}-import-${module}"
     COMMAND
       "${superbuild_python_executable}"
       -c "import os; [os.add_dll_directory(p) for p in filter(lambda x: x, os.environ.get('PYTHON_WINDOWS_DLL_DIRECTORIES', '').split(';'))]; import ${module}; print(${module}.__file__.replace(os.sep, '/'))")
   if (NOT USE_SYSTEM_${package})
-    set_property(TEST "${test_prefix}-${package}-import-${module}"
+    set_property(TEST "python3-${package}-import-${module}"
       PROPERTY
         PASS_REGULAR_EXPRESSION "${install_dir}")
   endif ()

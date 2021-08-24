@@ -36,7 +36,7 @@ else ()
   endif ()
 
   superbuild_add_project(scipy
-    DEPENDS python fortran numpy lapack pybind11 pythonpythran
+    DEPENDS python3 fortran numpy lapack pybind11 pythonpythran
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
     BUILD_COMMAND

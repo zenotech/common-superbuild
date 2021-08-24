@@ -21,8 +21,6 @@ function (superbuild_find_projects var)
     nlohmannjson
     numpy
     png
-    python
-    python2
     python3
     pythonaiohttp
     pythonasynctimeout
@@ -104,11 +102,6 @@ function (superbuild_find_projects var)
   set("${var}"
     ${projects}
     PARENT_SCOPE)
-endfunction ()
-
-function (superbuild_sanity_check)
-  include(python.functions)
-  superbuild_python_sanity_check()
 endfunction ()
 
 # Disable Qt modules that generally aren't necessary.

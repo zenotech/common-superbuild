@@ -350,26 +350,14 @@ macro (superbuild_add_project_python _name)
     superbuild_require_python_package("${_name}" "${_superbuild_python_project_PACKAGE}")
   else ()
     if (WIN32)
-      if (python3_enabled OR ENABLE_python3)
-        set(_superbuild_python_args
-          "--prefix=Python")
-      else  ()
-        set(_superbuild_python_args
-          "--prefix=bin")
-      endif ()
+      set(_superbuild_python_args
+        "--prefix=Python")
     else ()
       set(_superbuild_python_args
         "--single-version-externally-managed"
         "--install-lib=lib/python${superbuild_python_version}/site-packages"
         "--prefix=")
     endif ()
-
-    set (extra_dependencies)
-    if (ENABLE_python3 OR python3_enabled)
-      set(extra_dependencies "python3")
-    else()
-      set(extra_dependencies "python2")
-    endif()
 
     set(environment)
     if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
@@ -379,7 +367,7 @@ macro (superbuild_add_project_python _name)
 
     superbuild_add_project("${_name}"
       BUILD_IN_SOURCE 1
-      DEPENDS python ${extra_dependencies} ${_superbuild_python_project_UNPARSED_ARGUMENTS}
+      DEPENDS python3 ${_superbuild_python_project_UNPARSED_ARGUMENTS}
       PROCESS_ENVIRONMENT
         ${environment}
       CONFIGURE_COMMAND
@@ -436,28 +424,16 @@ macro (superbuild_add_project_python_toml _name)
     superbuild_require_python_package("${_name}" "${_superbuild_python_project_PACKAGE}")
   else ()
     if (WIN32)
-      if (python3_enabled OR ENABLE_python3)
-        set(_superbuild_python_args
-          "--prefix=Python")
-      else  ()
-        set(_superbuild_python_args
-          "--prefix=bin")
-      endif ()
+      set(_superbuild_python_args
+        "--prefix=Python")
     else ()
       set(_superbuild_python_args
         "--prefix=.")
     endif ()
 
-    set (extra_dependencies)
-    if (ENABLE_python3 OR python3_enabled)
-      set(extra_dependencies "python3")
-    else()
-      set(extra_dependencies "python2")
-    endif()
-
     superbuild_add_project("${_name}"
       BUILD_IN_SOURCE 1
-      DEPENDS python ${extra_dependencies} ${_superbuild_python_project_UNPARSED_ARGUMENTS}
+      DEPENDS python3 ${_superbuild_python_project_UNPARSED_ARGUMENTS}
       CONFIGURE_COMMAND
         ""
       BUILD_COMMAND
@@ -492,15 +468,9 @@ macro (superbuild_add_project_python_wheel _name)
   endif ()
 
   if (WIN32)
-    if (python3_enabled OR ENABLE_python3)
-      set(_superbuild_python_args
-        --root=<INSTALL_DIR>
-        "--prefix=Python")
-    else  ()
-      set(_superbuild_python_args
-        --root=<INSTALL_DIR>
-        "--prefix=bin")
-    endif ()
+    set(_superbuild_python_args
+      --root=<INSTALL_DIR>
+      "--prefix=Python")
   else ()
     set(_superbuild_python_args
       "--prefix=<INSTALL_DIR>")
@@ -509,7 +479,7 @@ macro (superbuild_add_project_python_wheel _name)
   superbuild_add_project("${_name}"
     BUILD_IN_SOURCE 1
     DOWNLOAD_NO_EXTRACT 1
-    DEPENDS python ${ARGN}
+    DEPENDS python3 ${ARGN}
     CONFIGURE_COMMAND
       ""
     BUILD_COMMAND
@@ -1272,12 +1242,8 @@ function (_superbuild_add_project_internal name)
   list(REMOVE_DUPLICATES extra_paths)
 
   if (WIN32)
-    if (python3_enabled OR ENABLE_python3)
-      # With Python3 on Windows, Python in installed under a different root.
-      set(superbuild_python_path <INSTALL_DIR>/Python/Lib/site-packages)
-    else ()
-      set(superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
-    endif()
+    # With Python3 on Windows, Python in installed under a different root.
+    set(superbuild_python_path <INSTALL_DIR>/Python/Lib/site-packages)
   else ()
     set(superbuild_python_path <INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages)
   endif ()

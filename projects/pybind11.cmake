@@ -4,19 +4,13 @@ if (MSVC AND (MSVC_VERSION LESS 1900) AND pybind11_enabled)
 endif ()
 
 superbuild_add_project(pybind11
-  DEPENDS python cxx11
-  DEPENDS_OPTIONAL python2 python3
+  DEPENDS python3 cxx11
   CMAKE_ARGS
     -DPYBIND11_TEST:BOOL=OFF)
 
 if (WIN32)
-  if (python3_enabled OR ENABLE_python3)
-    set(pybind11_python_args
-      "--prefix=Python")
-  else  ()
-    set(pybind11_python_args
-      "--prefix=bin")
-  endif ()
+  set(pybind11_python_args
+    "--prefix=Python")
 else ()
   set(pybind11_python_args
     "--single-version-externally-managed"
