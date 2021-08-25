@@ -4,6 +4,7 @@ superbuild_add_project(freetype
   CMAKE_ARGS
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DCMAKE_INSTALL_LIBDIR:STRING=lib
+    -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib
     -DFT_WITH_ZLIB:BOOL=${zlib_enabled}
     -DFT_WITH_BZIP2:BOOL=OFF
     -DFT_WITH_PNG:BOOL=${png_enabled}
