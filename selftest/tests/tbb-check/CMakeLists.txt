@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
+project(tbb-check NONE)
+
+message(CTEST_FULL_OUTPUT)
 
 function (check_target target)
   if (NOT TARGET "${target}")

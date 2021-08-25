@@ -1,7 +1,20 @@
 set(BUILD_TESTING ON CACHE BOOL "")
 
+# Enable the `IN_LIST` operator.
+cmake_policy(SET CMP0057 NEW)
+
+# If testing specific projects, list them here to test only those projects.
+# Please use a `WIP` commit to modify this list so that it does not
+# accidentally get merged.
+set(_ci_only_projects)
+
 function (enable_project name)
-  set("ENABLE_${name}" ON CACHE BOOL "")
+  set(value ON)
+  if (_ci_only_projects AND NOT name IN_LIST _ci_only_projects)
+    set(value OFF)
+  endif ()
+
+  set("ENABLE_${name}" "${value}" CACHE BOOL "")
   set("SUPPRESS_${name}_OUTPUT" ON CACHE BOOL "")
 endfunction ()
 
