@@ -4,8 +4,7 @@ if (BUILD_SHARED_LIBS)
 endif ()
 
 superbuild_add_project(qhull
-  CAN_USE_SYSTEM
   CMAKE_ARGS
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DBUILD_STATIC_LIBS:BOOL=${qhull_build_static_libs}
-    -DCMAKE_INSTALL_LIBDIR:PATH=lib)
+    -DCMAKE_INSTALL_LIBDIR:PATH=<INSTALL_DIR>/lib)
