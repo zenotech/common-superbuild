@@ -93,6 +93,11 @@ superbuild_apply_patch(python3 ssl-fixes
   "Backport various SSL fixes")
 
 superbuild_add_extra_cmake_args(
+  -DPython_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python${superbuild_python_version}
+  -DPython_INCLUDE_DIR:PATH=<INSTALL_DIR>/include/python${superbuild_python_version}
+  -DPython_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}${CMAKE_SHARED_LIBRARY_SUFFIX}
+  -DPython_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}${CMAKE_SHARED_LIBRARY_SUFFIX}
+
   -DPython3_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python${superbuild_python_version}
   -DPython3_INCLUDE_DIR:PATH=<INSTALL_DIR>/include/python${superbuild_python_version}
   -DPython3_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}${CMAKE_SHARED_LIBRARY_SUFFIX}
