@@ -28,6 +28,18 @@ function (add_python_import_test package module)
   endif ()
 endfunction ()
 
+function (add_python_script_test package script)
+  if (NOT TARGET "${package}")
+    return ()
+  endif ()
+
+  add_test(
+    NAME "python3-${package}-script-${script}"
+    COMMAND
+      "${superbuild_python_executable}"
+      "${CMAKE_CURRENT_SOURCE_DIR}/${script}.py")
+endfunction ()
+
 if (TARGET mpi)
   add_test(
     NAME mpi-check
@@ -51,6 +63,7 @@ endif ()
 
 add_python_import_test(python3 this)
 add_python_import_test(matplotlib matplotlib)
+add_python_script_test(matplotlib matplotlib-render)
 add_python_import_test(numpy numpy)
 add_python_import_test(pythonaiohttp aiohttp)
 add_python_import_test(pythonasynctimeout async_timeout)
@@ -103,6 +116,7 @@ if (WIN32)
   # its own, so extra work is needed to make this happy.
   set(pil_using_tests
     "python3-matplotlib-import-matplotlib"
+    "python3-matplotlib-script-matplotlib-render"
     "python3-pythonpillow-import-PIL.Image")
   foreach (pil_using_test IN LISTS pil_using_tests)
     if (TEST "${pil_using_test}")
