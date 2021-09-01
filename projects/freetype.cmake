@@ -10,3 +10,8 @@ superbuild_add_project(freetype
     -DFT_WITH_PNG:BOOL=${png_enabled}
     -DFT_WITH_HARFBUZZ:BOOL=OFF
     -DFT_WITH_BROTLI:BOOL=OFF)
+
+# Upstream commit 5bcaf51b611ce579c89c2bb423984ec89fdaadd7
+# https://gitlab.freedesktop.org/freetype/freetype/-/commit/5bcaf51b611ce579c89c2bb423984ec89fdaadd7
+superbuild_apply_patch(freetype msvc-include-behavior
+  "fix MSVC `#pragma once` emulation")
