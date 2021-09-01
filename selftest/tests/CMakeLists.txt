@@ -11,6 +11,15 @@ if (APPLE)
       -P "${CMAKE_CURRENT_SOURCE_DIR}/apple-check.cmake")
 endif ()
 
+if (UNIX)
+  add_test(
+    NAME unix-check-lib64
+    COMMAND
+      "${CMAKE_COMMAND}"
+      "-Dinstall_dir=${install_dir}"
+      -P "${CMAKE_CURRENT_SOURCE_DIR}/unix-check-lib64.cmake")
+endif ()
+
 function (add_python_import_test package module)
   if (NOT TARGET "${package}")
     return ()
