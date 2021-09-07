@@ -14,8 +14,8 @@ endif ()
 set(numpy_process_environment)
 if (lapack_enabled)
   list(APPEND numpy_process_environment
-    BLAS    "${BLAS_LIBRARIES}"
-    LAPACK  "${LAPACK_LIBRARIES}"
+    BLAS    "<INSTALL_DIR>"
+    LAPACK  "<INSTALL_DIR>"
     NPY_BLAS_ORDER blas
     NPY_LAPACK_ORDER lapack)
 else()
