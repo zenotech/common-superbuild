@@ -22,6 +22,11 @@ if (APPLE AND
   endif ()
 
   if (fortran_libsystem_path)
+    # Make sure that the superbuild's library path is searched before the
+    # SDK's library path (causes confusion since the SDK has some of the
+    # libraries we want to ship).
+    string(APPEND _superbuild_fortran_ld_flags
+      " -L<INSTALL_DIR>/lib")
     string(APPEND _superbuild_fortran_ld_flags
       " -L${fortran_libsystem_path}")
   endif ()
