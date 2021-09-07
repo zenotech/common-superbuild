@@ -16,8 +16,8 @@ if (lapack_enabled)
   list(APPEND numpy_process_environment
     BLAS    "${BLAS_LIBRARIES}"
     LAPACK  "${LAPACK_LIBRARIES}"
-    NPY_BLAS_ORDER openblas
-    NPY_LAPACK_ORDER openblas,lapack)
+    NPY_BLAS_ORDER blas
+    NPY_LAPACK_ORDER lapack)
 else()
   list(APPEND numpy_process_environment
     BLAS    "None"
