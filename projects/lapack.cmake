@@ -5,6 +5,7 @@ superbuild_add_project(lapack
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DBUILD_TESTING:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+    -DCMAKE_INSTALL_NAME_DIR:STRING=<INSTALL_DIR>/lib
     -DCMAKE_INSTALL_LIBDIR:STRING=lib)
 
 # Set `-fallow-argument-mismatch` for gfortran 10+.

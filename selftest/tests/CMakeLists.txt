@@ -11,6 +11,18 @@ if (APPLE)
       -P "${CMAKE_CURRENT_SOURCE_DIR}/apple-check.cmake")
 endif ()
 
+if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET VERSION_LESS "11.0"
+    AND (TARGET numpy OR TARGET scipy))
+  add_test(
+    NAME no-accelerate-framework
+    COMMAND
+      "${CMAKE_COMMAND}"
+      "-Dinstall_dir=${install_dir}"
+      "-Dnumpy_enabled=$<TARGET_EXISTS:numpy>"
+      "-Dscipy_enabled=$<TARGET_EXISTS:scipy>"
+      -P "${CMAKE_CURRENT_SOURCE_DIR}/accelerate-check.cmake")
+endif ()
+
 if (UNIX)
   add_test(
     NAME unix-check-lib64
