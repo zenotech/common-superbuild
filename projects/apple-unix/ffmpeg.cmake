@@ -37,3 +37,6 @@ superbuild_add_project(ffmpeg
   INSTALL_COMMAND
     make install
   BUILD_IN_SOURCE 1)
+
+superbuild_apply_patch(ffmpeg swscalex86-yuv2yuvX-revert-conversion-to-assembly
+  "revert assembly port of yuv2yuvX function")
