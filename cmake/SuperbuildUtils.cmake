@@ -87,8 +87,9 @@ function (superbuild_detect_64bit_target)
     else ()
       set(extra_message "Do you have working compilers?")
     endif ()
-    message(FATAL_ERROR "Failed to determine whether the target architecture "
-                        "is 32bit or 64bit. ${extra_message}")
+    message(FATAL_ERROR
+      "Failed to determine whether the target architecture is 32bit or 64bit. "
+      "${extra_message}")
   endif ()
 endfunction ()
 

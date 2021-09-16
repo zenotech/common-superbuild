@@ -401,8 +401,12 @@ function (superbuild_set_selectable_source name)
   endif ()
 
   if (NOT selection_${selection}_args)
+    string(REPLACE ";" "`, `" available "${selections}")
     message(FATAL_ERROR
-      "The ${selection} source selection for ${name} does not exist.")
+      "The ${selection} source selection for ${name} does not exist. This "
+      "selection may have existed previously; edit the "
+      "`${name}_SOURCE_SELECTION` variable as necessary. Available "
+      "selections: `${available}`.")
   endif ()
 
   if (selection IN_LIST customizable_selections)
