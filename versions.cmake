@@ -270,8 +270,8 @@ superbuild_set_revision(pythonwslink
   URL_MD5 35e6285c2a74304da0557f1402c400e5)
 
 superbuild_set_revision(pythonpywebvue
-  URL     "https://www.paraview.org/files/dependencies/pywebvue-2.0.2.tar.gz"
-  URL_MD5 e5c8689da016dd72869f3c908bdf34e0)
+  URL     "https://www.paraview.org/files/dependencies/pywebvue-2.1.4.tar.gz"
+  URL_MD5 02f63a8b2ca20cb1d7328b1f7369a88f)
 
 superbuild_set_revision(pythonzope
   URL     "https://www.paraview.org/files/dependencies/Zope-5.3.tar.gz"
