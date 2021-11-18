@@ -10,8 +10,6 @@ if (WIN32)
     COPYONLY)
 endif ()
 
-if (NOT skip_configure)
-  configure_file(
-    "${patches_location}/matplotlib.setup.cfg.in"
-    "${source_location}/setup.cfg")
-endif ()
+configure_file(
+  "${patches_location}/matplotlib.setup.cfg.in"
+  "${source_location}/setup.cfg")

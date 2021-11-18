@@ -14,7 +14,7 @@ if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
 endif ()
 
 superbuild_add_project(ffmpeg
-  DEPENDS zlib
+  DEPENDS zlib pkgconf
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
@@ -24,13 +24,12 @@ superbuild_add_project(ffmpeg
       --disable-doc
       --disable-ffplay
       --disable-ffprobe
-      --disable-ffserver
       --disable-network
       --disable-vaapi
       --disable-vdpau
-      --disable-yasm
+      --disable-x86asm
+      --pkg-config=${superbuild_pkgconf}
       ${ffmpeg_shared_args}
-      --cc=${CMAKE_C_COMPILER}
       "--extra-cflags=${ffmpeg_c_flags}"
       "--extra-ldflags=${ffmpeg_ld_flags}"
   BUILD_COMMAND
@@ -38,3 +37,6 @@ superbuild_add_project(ffmpeg
   INSTALL_COMMAND
     make install
   BUILD_IN_SOURCE 1)
+
+superbuild_apply_patch(ffmpeg swscalex86-yuv2yuvX-revert-conversion-to-assembly
+  "revert assembly port of yuv2yuvX function")

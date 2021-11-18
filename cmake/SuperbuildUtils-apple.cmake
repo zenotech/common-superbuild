@@ -34,7 +34,7 @@ function (superbuild_osx_add_version_flags)
   endif ()
   string(REPLACE ";" " " osx_flags "${osx_flags}")
 
-  foreach (var IN ITEMS cxx_flags c_flags)
+  foreach (var IN ITEMS cxx_flags c_flags f_flags ld_flags)
     set("superbuild_${var}"
       "${superbuild_${var}} ${osx_flags}"
       PARENT_SCOPE)

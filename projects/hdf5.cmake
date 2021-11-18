@@ -1,3 +1,8 @@
+set(hdf5_build_static_libs ON)
+if (BUILD_SHARED_LIBS)
+  set(hdf5_build_static_libs OFF)
+endif ()
+
 superbuild_add_project(hdf5
   CAN_USE_SYSTEM
   DEPENDS zlib szip
@@ -5,6 +10,12 @@ superbuild_add_project(hdf5
   CMAKE_ARGS
     -DBUILD_TESTING:BOOL=OFF
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
+    -DBUILD_STATIC_LIBS:BOOL=${hdf5_build_static_libs}
+    -DDEFAULT_API_VERSION:STRING=v18
+    -DHDF5_BUILD_CPP_LIB:BOOL=${hdf5_build_cpp}
+    -DHDF5_BUILD_TOOLS:BOOL=OFF
+    -DHDF5_BUILD_UTILS:BOOL=OFF
+    -DHDF5_BUILD_EXAMPLES:BOOL=OFF
     -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=TRUE
     -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=TRUE
     -DHDF5_ENABLE_SZIP_ENCODING:BOOL=TRUE

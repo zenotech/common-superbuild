@@ -59,13 +59,6 @@ overriden from the top-level by specifying the selection with this variable.
 If defined, this is used as the default value for the
 `SUPPRESS_<PROJECT>_OUTPUT` variable for the given project.
 
-### `superbuild_is_64bit`
-
-Whether the build is targeting a 32-bit build or 64-bit build. May be removed
-in the future if 32-bit support is removed.
-
-Not available during cross-compiling.
-
 ### Language flags
 
 The following variables contain (as a string, not a list), the flags to pass to
@@ -117,3 +110,12 @@ These variables are provided by the superbuild during the packaging step.
   - `<PROJECT>_enabled`
   - `<PROJECT>_built_by_superbuild`
   - `USE_SYSTEM_<PROJECT>`
+
+## Debugging
+
+There are some debugging facilities provided. These variables control them.
+
+### `SUPERBUILD_DEBUG_CONFIGURE_STEPS`
+
+If set, projects will log their configure steps to a file. In addition, CMake
+projects will be passed `--trace-expand`.

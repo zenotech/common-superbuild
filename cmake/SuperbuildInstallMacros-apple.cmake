@@ -66,47 +66,47 @@ function (superbuild_apple_create_app destination name binary)
 
   if (_create_app_CLEAN)
     if (superbuild_is_install_target)
-      set(fixup_bundle_arguments
-        "${fixup_bundle_arguments} --new")
+      string(APPEND fixup_bundle_arguments
+        " --new")
     else ()
-      set(fixup_bundle_arguments
-        "${fixup_bundle_arguments} --clean --new")
+      string(APPEND fixup_bundle_arguments
+        " --clean --new")
     endif ()
   endif ()
 
   if (_create_app_FAKE_PLUGIN_PATHS)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --fake-plugin-paths")
+    string(APPEND fixup_bundle_arguments
+      " --fake-plugin-paths")
   endif ()
 
   foreach (include_regex IN LISTS _create_app_INCLUDE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --include \"${include_regex}\"")
+    string(APPEND fixup_bundle_arguments
+      " --include \"${include_regex}\"")
   endforeach ()
 
   foreach (exclude_regex IN LISTS _create_app_EXCLUDE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
+    string(APPEND fixup_bundle_arguments
+      " --exclude \"${exclude_regex}\"")
   endforeach ()
 
   foreach (ignore_regex IN LISTS _create_app_IGNORE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --ignore \"${ignore_regex}\"")
+    string(APPEND fixup_bundle_arguments
+      " --ignore \"${ignore_regex}\"")
   endforeach ()
 
   foreach (search_directory IN LISTS _create_app_SEARCH_DIRECTORIES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --search \"${search_directory}\"")
+    string(APPEND fixup_bundle_arguments
+      " --search \"${search_directory}\"")
   endforeach ()
 
   foreach (plugin IN LISTS _create_app_PLUGINS)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --plugin \"${plugin}\"")
+    string(APPEND fixup_bundle_arguments
+      " --plugin \"${plugin}\"")
   endforeach ()
 
   foreach (library IN LISTS _create_app_ADDITIONAL_LIBRARIES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --library \"${library}\"")
+    string(APPEND fixup_bundle_arguments
+      " --library \"${library}\"")
   endforeach ()
 
   install(CODE
@@ -164,33 +164,33 @@ function (superbuild_apple_install_utility destination name binary)
   set(fixup_bundle_arguments)
 
   foreach (include_regex IN LISTS _install_utility_INCLUDE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --include \"${include_regex}\"")
+    string(APPEND fixup_bundle_arguments
+      " --include \"${include_regex}\"")
   endforeach ()
 
   foreach (exclude_regex IN LISTS _install_utility_EXCLUDE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
+    string(APPEND fixup_bundle_arguments
+      " --exclude \"${exclude_regex}\"")
   endforeach ()
 
   foreach (ignore_regex IN LISTS _install_utility_IGNORE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --ignore \"${ignore_regex}\"")
+    string(APPEND fixup_bundle_arguments
+      " --ignore \"${ignore_regex}\"")
   endforeach ()
 
   foreach (search_directory IN LISTS _install_utility_SEARCH_DIRECTORIES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --search \"${search_directory}\"")
+    string(APPEND fixup_bundle_arguments
+      " --search \"${search_directory}\"")
   endforeach ()
 
   if (DEFINED _install_utility_FRAMEWORK_DEST)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --framework-dest \"${_install_utility_FRAMEWORK_DEST}\"")
+    string(APPEND fixup_bundle_arguments
+      " --framework-dest \"${_install_utility_FRAMEWORK_DEST}\"")
   endif ()
 
   if (DEFINED _install_utility_LIBRARY_DEST)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --library-dest \"${_install_utility_LIBRARY_DEST}\"")
+    string(APPEND fixup_bundle_arguments
+      " --library-dest \"${_install_utility_LIBRARY_DEST}\"")
   endif ()
 
   install(CODE
@@ -245,23 +245,23 @@ function (superbuild_apple_install_module destination name binary location)
   set(fixup_bundle_arguments)
 
   foreach (include_regex IN LISTS _install_module_INCLUDE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --include \"${include_regex}\"")
+    string(APPEND fixup_bundle_arguments
+      " --include \"${include_regex}\"")
   endforeach ()
 
   foreach (exclude_regex IN LISTS _install_module_EXCLUDE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --exclude \"${exclude_regex}\"")
+    string(APPEND fixup_bundle_arguments
+      " --exclude \"${exclude_regex}\"")
   endforeach ()
 
   foreach (ignore_regex IN LISTS _install_module_IGNORE_REGEXES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --ignore \"${ignore_regex}\"")
+    string(APPEND fixup_bundle_arguments
+      " --ignore \"${ignore_regex}\"")
   endforeach ()
 
   foreach (search_directory IN LISTS _install_module_SEARCH_DIRECTORIES)
-    set(fixup_bundle_arguments
-      "${fixup_bundle_arguments} --search \"${search_directory}\"")
+    string(APPEND fixup_bundle_arguments
+      " --search \"${search_directory}\"")
   endforeach ()
 
   install(CODE

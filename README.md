@@ -71,9 +71,46 @@ followed:
     exists, the idea is that time will not be needed to rediscover the reason
     it exists.
 
+## ParaView Plugins
+
+ParaView plugins are prevalent in superbuilds. There are support APIs in the
+[SuperbuildPluginMacros][plugin-macros] module.
+
+Projects which provide ParaView XML files may use the
+`superbuild_declare_paraview_xml_files` function to describe what plugin XML
+files will be installed by the project. Packaging may access this information
+via the following variables:
+
+  - `projects_with_plugins`: A list of projects with associated plugin XML
+    variables set.
+  - `${project}_plugin_files`: A list of plugin XML files provided by the
+    project.
+  - `${project}_plugin_omit`: A list of plugins to omit from the XML files
+    (usually because they are static).
+
+Projects which consume plugins may use the
+`superbuild_omit_plugins_from_project` function to exclude plugins from a
+project.
+
 ## Examples
 
 *TODO*: Add some examples of projects.
+
+# Packages
+
+Superbuilds may set the `superbuild_project_roots` variable to a list of paths
+in which to discover packages (represented as a directory) for the project.
+These packages may provide a `<package>.configure.cmake` file which is included
+if it is selected as the primary package.
+
+The default package is `<none>`, but may be set via the
+`superbuild_package_default` variable.
+
+Users may select a different default via the exposed `SUPERBUILD_PACKAGE_MODE`
+cache variable.
+
+Packages may set the `superbuild_extra_package_projects` variable to a list of
+projects to include in the project as well.
 
 # Using the superbuild infrastructure
 
@@ -167,6 +204,15 @@ called (see the [SuperbuildVersionMacros][version-macros] file for its
 documentation) so that the application's version information is available at
 all times.
 
+There is additionally the `superbuild_configure_project_version` function which
+can extract more detailed version information from the project based on the
+source selection in use. Special selection names:
+
+  - `source`: Local revision information will be extracted
+  - `git`: The repository's web hosting will be queried for version
+    information of the relevant commit.
+  - any other: Assumed to be the version number in question.
+
 ## `superbuild_sanity_check` (function)
 
 This function, if defined, is called after setting up the entire build. At
@@ -201,7 +247,6 @@ The bundle files will have the following variables available:
 
   - `superbuild_install_location`
   - `superbuild_source_directory`
-  - `superbuild_is_64bit`
   - `${project}_enabled`
   - `USE_SYSTEM_${project}`
 
@@ -210,6 +255,10 @@ In addition, variables may be exported to the bundle project by setting the
 
 See the [SuperbuildInstallMacros][install-macros] file for documentation on
 the variables available in `$project.bundle.cmake` files.
+
+Package suffixes may be computed using the `superbuild_package_suffix`
+function, though this only supports basic information (version, platform, and
+pointer size).
 
 ### `superbuild_add_tests` (function)
 
@@ -254,5 +303,6 @@ flags use `superbuild_ld_flags`, `superbuild_cpp_flags`,
 
 [install-macros]: cmake/SuperbuildInstallMacros.cmake
 [package-macros]: cmake/SuperbuildPackageMacros.cmake
+[plugin-macros]: cmake/SuperbuildPluginMacros.cmake
 [revision-macros]: cmake/SuperbuildRevisionMacros.cmake
 [version-macros]: cmake/SuperbuildVersionMacros.cmake

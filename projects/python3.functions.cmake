@@ -31,6 +31,7 @@ function (superbuild_install_superbuild_python3)
     _compat_pickle
     _compression
     _dummy_thread
+    _lzma
     _markupbase
     _osx_support
     _py_abc
@@ -226,6 +227,11 @@ function (superbuild_install_superbuild_python3)
     zipapp
     zipfile
     )
+
+  if (openssl_enabled)
+    list(APPEND modules
+      _ssl)
+  endif ()
 
   if (WIN32)
     superbuild_windows_install_python(

@@ -1,3 +1,3 @@
 superbuild_add_project_python(pythonwslink
   PACKAGE wslink
-  DEPENDS pythonsetuptools)
+  DEPENDS pythonsetuptools pythonautobahn pythontwisted)

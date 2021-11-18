@@ -22,25 +22,10 @@ else ()
 endif ()
 
 list(APPEND boost_platform_options
-  "--toolset=msvc-${msvc_ver}")
-
-if (superbuild_is_64bit)
-  list(APPEND boost_platform_options
-    address-model=64)
-else ()
-  list(APPEND boost_platform_options
-    address-model=32)
-endif ()
+  "--toolset=msvc-${msvc_ver}"
+  address-model=64)
 
 include(boost.common)
-
-# This patch is applied so that a rogue junction is not left inside of the
-# build tree for dashboard machines. CMake cannot delete such files, so we just
-# remove the code which creates such things here.
-if (NOT boost_no_junction_patch_necessary)
-  superbuild_apply_patch(boost no-junction-test
-    "Assume junctions work on Windows")
-endif ()
 
 superbuild_project_add_step(boost-copylibs
   COMMAND   "${CMAKE_COMMAND}"

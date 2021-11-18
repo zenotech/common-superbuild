@@ -48,6 +48,10 @@ repository, a reconfigure will not trigger a `git fetch` unless the source
 directory does not exist at all. This is useful when performing builds on
 machines with limited network access.
 
+### `SUPERBUILD_PACKAGE_MODE`
+
+For projects which support it, the package to build for this project.
+
 ### `SUPERBUILD_PROJECT_PARALLELISM`
 
 This defaults to the number of CPUs on the machine. It is used as the `-j`
@@ -59,6 +63,13 @@ be determined, a reasonably beefy machine is assumed (8 cores).
 If set, Python projects are not actually built by the superbuild instead it
 merely results in the generation of a `requirements.txt` file which all the
 Python packages enabled.
+
+### `SUPERBUILD_USE_JOBSERVER`
+
+If using a `Makefiles` generator, `make`-using projects may be configured to
+use the number of jobs given at the top-level rather than per project. Note
+that when this is set, the top-level build is no longer implicitly parallel, so
+a `-j` flag is required to get a parallel build.
 
 ### `SUPPRESS_<PROJECT>_OUTPUT`
 

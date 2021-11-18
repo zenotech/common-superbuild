@@ -1,0 +1,213 @@
+From 5bcaf51b611ce579c89c2bb423984ec89fdaadd7 Mon Sep 17 00:00:00 2001
+From: Ben Wagner <bungeman@chromium.org>
+Date: Fri, 23 Jul 2021 11:59:58 -0400
+Subject: [PATCH] [autofit] Split `afwrtsys.h`.
+
+The header file `afwrtsys.h` has two distinct functions: to include the
+required writing system headers and also to generate code for each writing
+system.  At each current use site only one or the other is used, with
+various macro trickery selecting one or the other.  Split this header into
+`afws-decl.h` for the required writing system declarations and `afws-iter.h`
+for iterating over the writing systems to generate code.
+
+The motivation for this change is that the Visual C++ compiler treats the
+standard include guard idiom like `#pragma once` 'if no non-comment code or
+preprocessor directive comes before or after the standard form of the
+idiom'.  It appears to check this after macro expansion, so if
+`WRITING_SYSTEM` expands to empty the bottom of `afwrtsys.h` is empty and
+looks like the standard include guard idiom which is treated like `#pragma
+once`, so subsequent inclusion of `afwrtsys.h` is elided.
+
+Fixes #1075.
+
+* src/autofit/afglobal.c (af_writing_system_classes), src/autofit/aftypes.h
+(AF_WritingSystem), src/autofit/rules.mk (AUTOF_DRV_H): Updated.
+
+* src/autofit/afwrtsys.h: Split into...
+* src/autofit/afws-decl.h, src/autofit/afws-iter.h: New files.
+---
+ src/autofit/afglobal.c                  |  8 ++-----
+ src/autofit/aftypes.h                   |  5 +---
+ src/autofit/{afwrtsys.h => afws-decl.h} | 22 ++++--------------
+ src/autofit/afws-iter.h                 | 31 +++++++++++++++++++++++++
+ src/autofit/rules.mk                    | 15 ++++++------
+ 5 files changed, 47 insertions(+), 34 deletions(-)
+ rename src/autofit/{afwrtsys.h => afws-decl.h} (56%)
+ create mode 100644 src/autofit/afws-iter.h
+
+diff --git a/src/autofit/afglobal.c b/src/autofit/afglobal.c
+index aedb74ddd..577b94e47 100644
+--- a/src/autofit/afglobal.c
++++ b/src/autofit/afglobal.c
+@@ -19,6 +19,7 @@
+ #include "afglobal.h"
+ #include "afranges.h"
+ #include "afshaper.h"
++#include "afws-decl.h"
+ #include <freetype/internal/ftdebug.h>
+ 
+ 
+@@ -32,11 +33,6 @@
+ #define FT_COMPONENT  afglobal
+ 
+ 
+-  /* get writing system specific header files */
+-#undef  WRITING_SYSTEM
+-#define WRITING_SYSTEM( ws, WS )  /* empty */
+-#include "afwrtsys.h"
+-
+ #include "aferrors.h"
+ 
+ 
+@@ -74,7 +70,7 @@
+   af_writing_system_classes[] =
+   {
+ 
+-#include "afwrtsys.h"
++#include "afws-iter.h"
+ 
+     NULL  /* do not remove */
+   };
+diff --git a/src/autofit/aftypes.h b/src/autofit/aftypes.h
+index e76b103ed..1d792b947 100644
+--- a/src/autofit/aftypes.h
++++ b/src/autofit/aftypes.h
+@@ -198,7 +198,6 @@ extern void*  _af_debug_hints;
+    *   outline according to the results of the glyph analyzer.
+    */
+ 
+-#define AFWRTSYS_H_  /* don't load header files */
+ #undef  WRITING_SYSTEM
+ #define WRITING_SYSTEM( ws, WS )    \
+           AF_WRITING_SYSTEM_ ## WS,
+@@ -207,14 +206,12 @@ extern void*  _af_debug_hints;
+   typedef enum  AF_WritingSystem_
+   {
+ 
+-#include "afwrtsys.h"
++#include "afws-iter.h"
+ 
+     AF_WRITING_SYSTEM_MAX   /* do not remove */
+ 
+   } AF_WritingSystem;
+ 
+-#undef  AFWRTSYS_H_
+-
+ 
+   typedef struct  AF_WritingSystemClassRec_
+   {
+diff --git a/src/autofit/afwrtsys.h b/src/autofit/afws-decl.h
+similarity index 56%
+rename from src/autofit/afwrtsys.h
+rename to src/autofit/afws-decl.h
+index 39aa12112..c10dd57e7 100644
+--- a/src/autofit/afwrtsys.h
++++ b/src/autofit/afws-decl.h
+@@ -1,8 +1,8 @@
+ /****************************************************************************
+  *
+- * afwrtsys.h
++ * afws-decl.h
+  *
+- *   Auto-fitter writing systems (specification only).
++ *   Auto-fitter writing system declarations (specification only).
+  *
+  * Copyright (C) 2013-2021 by
+  * David Turner, Robert Wilhelm, and Werner Lemberg.
+@@ -16,8 +16,8 @@
+  */
+ 
+ 
+-#ifndef AFWRTSYS_H_
+-#define AFWRTSYS_H_
++#ifndef AFWS_DECL_H_
++#define AFWS_DECL_H_
+ 
+   /* Since preprocessor directives can't create other preprocessor */
+   /* directives, we have to include the header files manually.     */
+@@ -27,19 +27,7 @@
+ #include "afcjk.h"
+ #include "afindic.h"
+ 
+-#endif /* AFWRTSYS_H_ */
++#endif /* AFWS_DECL_H_ */
+ 
+ 
+-  /* The following part can be included multiple times. */
+-  /* Define `WRITING_SYSTEM' as needed.                 */
+-
+-
+-  /* Add new writing systems here.  The arguments are the writing system */
+-  /* name in lowercase and uppercase, respectively.                      */
+-
+-  WRITING_SYSTEM( dummy,  DUMMY  )
+-  WRITING_SYSTEM( latin,  LATIN  )
+-  WRITING_SYSTEM( cjk,    CJK    )
+-  WRITING_SYSTEM( indic,  INDIC  )
+-
+ /* END */
+diff --git a/src/autofit/afws-iter.h b/src/autofit/afws-iter.h
+new file mode 100644
+index 000000000..55714203e
+--- /dev/null
++++ b/src/autofit/afws-iter.h
+@@ -0,0 +1,31 @@
++/****************************************************************************
++ *
++ * afws-iter.h
++ *
++ *   Auto-fitter writing systems iterator (specification only).
++ *
++ * Copyright (C) 2013-2021 by
++ * David Turner, Robert Wilhelm, and Werner Lemberg.
++ *
++ * This file is part of the FreeType project, and may only be used,
++ * modified, and distributed under the terms of the FreeType project
++ * license, LICENSE.TXT.  By continuing to use, modify, or distribute
++ * this file you indicate that you have read the license and
++ * understand and accept it fully.
++ *
++ */
++
++  /* This header may be included multiple times. */
++  /* Define `WRITING_SYSTEM' as needed.          */
++
++
++  /* Add new writing systems here.  The arguments are the writing system */
++  /* name in lowercase and uppercase, respectively.                      */
++
++  WRITING_SYSTEM( dummy, DUMMY )
++  WRITING_SYSTEM( latin, LATIN )
++  WRITING_SYSTEM( cjk,   CJK   )
++  WRITING_SYSTEM( indic, INDIC )
++
++
++/* END */
+diff --git a/src/autofit/rules.mk b/src/autofit/rules.mk
+index 19b3bcadb..499c0e083 100644
+--- a/src/autofit/rules.mk
++++ b/src/autofit/rules.mk
+@@ -42,13 +42,14 @@ AUTOF_DRV_SRC := $(AUTOF_DIR)/afblue.c   \
+ 
+ # AUTOF driver headers
+ #
+-AUTOF_DRV_H := $(AUTOF_DRV_SRC:%c=%h)  \
+-               $(AUTOF_DIR)/afcover.h  \
+-               $(AUTOF_DIR)/aferrors.h \
+-               $(AUTOF_DIR)/afscript.h \
+-               $(AUTOF_DIR)/afstyles.h \
+-               $(AUTOF_DIR)/aftypes.h  \
+-               $(AUTOF_DIR)/afwrtsys.h
++AUTOF_DRV_H := $(AUTOF_DRV_SRC:%c=%h)   \
++               $(AUTOF_DIR)/afcover.h   \
++               $(AUTOF_DIR)/aferrors.h  \
++               $(AUTOF_DIR)/afscript.h  \
++               $(AUTOF_DIR)/afstyles.h  \
++               $(AUTOF_DIR)/aftypes.h   \
++               $(AUTOF_DIR)/afws-decl.h \
++               $(AUTOF_DIR)/afws-iter.h
+ 
+ 
+ # AUTOF driver object(s)
+-- 
+GitLab

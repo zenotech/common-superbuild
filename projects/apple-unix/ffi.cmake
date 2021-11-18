@@ -4,6 +4,13 @@ else ()
   set(ffi_shared_args --disable-shared --enable-static)
 endif ()
 
+set(ffi_args)
+if (APPLE AND CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
+  list(APPEND ffi_args
+    # See: https://github.com/libffi/libffi/issues/571
+    --build=aarch64-apple-darwin)
+endif ()
+
 superbuild_add_project(ffi
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
@@ -11,10 +18,8 @@ superbuild_add_project(ffi
       --disable-multi-os-directory
       --disable-docs
       ${ffi_shared_args}
+      ${ffi_args}
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND
     make install)
-
-superbuild_apply_patch(ffi powerpc.h-fix-build-failure-with-powerpc7
-  "Check for __HAVE_FLOAT128 before using _Float128")

@@ -97,7 +97,7 @@ following extensions:
   - `PROCESS_ENVIRONMENT <var> <value>...`
     Sets environment variables for the configure, build, and install steps.
     Some are "magic" and are prepended to the current value (namely ``PATH``,
-    ``LD_LIBRARY_PATH`` (Linux), and ``DYLD_LIBRARY_PATH`` (OS X).
+    ``LD_LIBRARY_PATH`` (Linux), and ``DYLD_LIBRARY_PATH`` (macOS)).
 
 Projects which are depended on may declare that they have CMake variables and
 flags which must be set in dependent projects (e.g., a Python project would set
@@ -116,9 +116,14 @@ function (superbuild_add_project name)
   set(help_string)
   set(depends)
   set(optional_depends)
+  set(process_environment)
 
   set(ep_arguments)
   set(grab)
+
+  _ep_get_add_keywords(keywords)
+  list(APPEND keywords
+    PROCESS_ENVIRONMENT)
 
   foreach (arg IN LISTS ARGN)
     if (arg STREQUAL "CAN_USE_SYSTEM")
@@ -145,7 +150,7 @@ function (superbuild_add_project name)
       set(grab depends)
     elseif (arg STREQUAL "DEPENDS_OPTIONAL")
       set(grab optional_depends)
-    elseif (arg MATCHES "${_ep_keywords__superbuild_ExternalProject_add}")
+    elseif (arg IN_LIST keywords)
       set(grab ep_arguments)
       list(APPEND ep_arguments
         "${arg}")
@@ -224,7 +229,10 @@ function (superbuild_add_project name)
     option("ENABLE_${name}" "${help_string}" "${default}")
     # Set the TYPE because it is overrided to INTERNAL if it is required by
     # dependencies later.
-    set_property(CACHE "ENABLE_${name}" PROPERTY TYPE BOOL)
+    get_property(cache_var_exists CACHE "ENABLE_${name}" PROPERTY TYPE SET)
+    if (cache_var_exists)
+      set_property(CACHE "ENABLE_${name}" PROPERTY TYPE BOOL)
+    endif ()
     set_property(GLOBAL APPEND
       PROPERTY
         superbuild_projects "${name}")
@@ -342,13 +350,8 @@ macro (superbuild_add_project_python _name)
     superbuild_require_python_package("${_name}" "${_superbuild_python_project_PACKAGE}")
   else ()
     if (WIN32)
-      if (python3_enabled OR ENABLE_python3)
-        set(_superbuild_python_args
-          "--prefix=Python")
-      else  ()
-        set(_superbuild_python_args
-          "--prefix=bin")
-      endif ()
+      set(_superbuild_python_args
+        "--prefix=Python")
     else ()
       set(_superbuild_python_args
         "--single-version-externally-managed"
@@ -356,16 +359,17 @@ macro (superbuild_add_project_python _name)
         "--prefix=")
     endif ()
 
-    set (extra_dependencies)
-    if (ENABLE_python3 OR python3_enabled)
-      set(extra_dependencies "python3")
-    else()
-      set(extra_dependencies "python2")
-    endif()
+    set(environment)
+    if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
+      list(APPEND environment
+        MACOSX_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}")
+    endif ()
 
     superbuild_add_project("${_name}"
       BUILD_IN_SOURCE 1
-      DEPENDS python ${extra_dependencies} ${_superbuild_python_project_UNPARSED_ARGUMENTS}
+      DEPENDS python3 ${_superbuild_python_project_UNPARSED_ARGUMENTS}
+      PROCESS_ENVIRONMENT
+        ${environment}
       CONFIGURE_COMMAND
         ""
       BUILD_COMMAND
@@ -395,6 +399,58 @@ function (superbuild_require_python_package _name package)
 endfunction ()
 
 #[==[.md
+### `pyproject.toml`
+
+```
+superbuild_add_project_python_toml(<NAME> <ARG>...)
+```
+
+Same as `superbuild_add_project`, but sets build commands to
+work properly out of the box for `pyproject.toml`.
+#]==]
+macro (superbuild_add_project_python_toml _name)
+  cmake_parse_arguments(_superbuild_python_project
+    ""
+    "PACKAGE"
+    ""
+    ${ARGN})
+
+  if (NOT DEFINED _superbuild_python_project_PACKAGE)
+    message(FATAL_ERROR
+      "Python requires that projects have a package specified")
+  endif ()
+
+  if (SUPERBUILD_SKIP_PYTHON_PROJECTS)
+    superbuild_require_python_package("${_name}" "${_superbuild_python_project_PACKAGE}")
+  else ()
+    if (WIN32)
+      set(_superbuild_python_args
+        "--prefix=Python")
+    else ()
+      set(_superbuild_python_args
+        "--prefix=.")
+    endif ()
+
+    superbuild_add_project("${_name}"
+      BUILD_IN_SOURCE 1
+      DEPENDS python3 ${_superbuild_python_project_UNPARSED_ARGUMENTS}
+      CONFIGURE_COMMAND
+        ""
+      BUILD_COMMAND
+        ""
+      INSTALL_COMMAND
+        ${superbuild_python_pip}
+          install
+          --no-index
+          --no-deps
+          --root=<INSTALL_DIR>
+          ${_superbuild_python_args}
+          ${${_name}_python_install_args}
+          .)
+  endif ()
+endmacro ()
+
+#[==[.md
 ### Wheels
 
 ```
@@ -411,10 +467,19 @@ macro (superbuild_add_project_python_wheel _name)
       "No `pip` available?")
   endif ()
 
+  if (WIN32)
+    set(_superbuild_python_args
+      --root=<INSTALL_DIR>
+      "--prefix=Python")
+  else ()
+    set(_superbuild_python_args
+      "--prefix=<INSTALL_DIR>")
+  endif ()
+
   superbuild_add_project("${_name}"
     BUILD_IN_SOURCE 1
     DOWNLOAD_NO_EXTRACT 1
-    DEPENDS python ${ARGN}
+    DEPENDS python3 ${ARGN}
     CONFIGURE_COMMAND
       ""
     BUILD_COMMAND
@@ -423,7 +488,8 @@ macro (superbuild_add_project_python_wheel _name)
       ${superbuild_python_pip}
         install
         --no-index
-        --prefix=<INSTALL_DIR>
+        --no-deps
+        ${_superbuild_python_args}
         "<DOWNLOADED_FILE>")
 endmacro ()
 
@@ -609,6 +675,7 @@ Valid values for `KEY` are:
 
   - `cxx_flags`: add flags for C++ compilation.
   - `c_flags`: add flags for C compilation.
+  - `f_flags`: add flags for Fortran compilation.
   - `cpp_flags`: add flags C and C++ preprocessors.
   - `ld_flags`: add flags for linkers.
 #]==]
@@ -621,10 +688,11 @@ function (superbuild_append_flags key value)
 
   if (NOT "x${key}" STREQUAL "xcxx_flags" AND
       NOT "x${key}" STREQUAL "xc_flags" AND
+      NOT "x${key}" STREQUAL "xf_flags" AND
       NOT "x${key}" STREQUAL "xcpp_flags" AND
       NOT "x${key}" STREQUAL "xld_flags")
     message(AUTHOR_WARNING
-      "Currently, only cxx_flags, c_flags, cpp_flags, and ld_flags are supported.")
+      "Currently, only cxx_flags, c_flags, f_flags, cpp_flags, and ld_flags are supported.")
     return ()
   endif ()
 
@@ -792,8 +860,11 @@ function (superbuild_process_dependencies)
     else ()
       set(advanced FALSE)
     endif ()
-    set_property(CACHE "ENABLE_${project}"
-      PROPERTY ADVANCED "${advanced}")
+    get_property(cache_var_exists CACHE "ENABLE_${project}" PROPERTY ADVANCED SET)
+    if (cache_var_exists)
+      set_property(CACHE "ENABLE_${project}"
+        PROPERTY ADVANCED "${advanced}")
+    endif ()
 
     if (ENABLE_${project})
       list(APPEND enabled_projects "${project}")
@@ -846,7 +917,10 @@ function (superbuild_process_dependencies)
     else ()
       string(REPLACE ";" ", " required_by "${${project}_needed_by}")
       message(STATUS "Enabling ${project} for: ${required_by}")
-      set_property(CACHE "ENABLE_${project}" PROPERTY TYPE INTERNAL)
+      get_property(cache_var_exists CACHE "ENABLE_${project}" PROPERTY TYPE SET)
+      if (cache_var_exists)
+        set_property(CACHE "ENABLE_${project}" PROPERTY TYPE INTERNAL)
+      endif ()
     endif ()
   endforeach ()
 
@@ -1042,10 +1116,11 @@ endfunction ()
 # Implementation of building an actual project.
 function (_superbuild_add_project_internal name)
   set(cmake_params)
-  # Pass down C and CXX flags from this project.
+  # Pass down C, CXX, and Fortran flags from this project.
   foreach (flag IN ITEMS
       CMAKE_C_COMPILER_LAUNCHER
       CMAKE_CXX_COMPILER_LAUNCHER
+      CMAKE_Fortran_COMPILER_LAUNCHER
 
       CMAKE_C_FLAGS_DEBUG
       CMAKE_C_FLAGS_MINSIZEREL
@@ -1054,7 +1129,11 @@ function (_superbuild_add_project_internal name)
       CMAKE_CXX_FLAGS_DEBUG
       CMAKE_CXX_FLAGS_MINSIZEREL
       CMAKE_CXX_FLAGS_RELEASE
-      CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+      CMAKE_CXX_FLAGS_RELWITHDEBINFO
+      CMAKE_Fortran_FLAGS_DEBUG
+      CMAKE_Fortran_FLAGS_MINSIZEREL
+      CMAKE_Fortran_FLAGS_RELEASE
+      CMAKE_Fortran_FLAGS_RELWITHDEBINFO)
     if (${flag})
       list(APPEND cmake_params "-D${flag}:STRING=${${flag}}")
     endif ()
@@ -1095,6 +1174,7 @@ function (_superbuild_add_project_internal name)
   # Get extra flags added using superbuild_append_flags(), if any.
   set(extra_vars
     c_flags
+    f_flags
     cxx_flags
     cpp_flags
     ld_flags)
@@ -1153,7 +1233,8 @@ function (_superbuild_add_project_internal name)
       LDFLAGS "${project_ld_flags}"
       CPPFLAGS "${project_cpp_flags}"
       CXXFLAGS "${project_cxx_flags}"
-      CFLAGS "${project_c_flags}")
+      CFLAGS "${project_c_flags}"
+      FFLAGS "${project_f_flags}")
   endif ()
 
   list(INSERT extra_paths 0
@@ -1161,12 +1242,8 @@ function (_superbuild_add_project_internal name)
   list(REMOVE_DUPLICATES extra_paths)
 
   if (WIN32)
-    if (python3_enabled OR ENABLE_python3)
-      # With Python3 on Windows, Python in installed under a different root.
-      set(superbuild_python_path <INSTALL_DIR>/Python/Lib/site-packages)
-    else ()
-      set(superbuild_python_path <INSTALL_DIR>/bin/Lib/site-packages)
-    endif()
+    # With Python3 on Windows, Python in installed under a different root.
+    set(superbuild_python_path <INSTALL_DIR>/Python/Lib/site-packages)
   else ()
     set(superbuild_python_path <INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages)
   endif ()
@@ -1255,7 +1332,9 @@ function (_superbuild_add_project_internal name)
       -DCMAKE_PREFIX_PATH:STRING=${prepended_cmake_prefix_path}
       -DCMAKE_C_FLAGS:STRING=${project_c_flags}
       -DCMAKE_CXX_FLAGS:STRING=${project_cxx_flags}
+      -DCMAKE_Fortran_FLAGS:STRING=${project_f_flags}
       -DCMAKE_SHARED_LINKER_FLAGS:STRING=${project_ld_flags}
+      -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${CMAKE_OSX_DEPLOYMENT_TARGET}
       ${cmake_params}
 
     LIST_SEPARATOR "${_superbuild_list_separator}")
@@ -1350,8 +1429,8 @@ endfunction ()
 # Currently "valid" means alphanumeric with a non-numeric prefix.
 function (_superbuild_project_check_name name)
   if (NOT name MATCHES "^[a-zA-Z][a-zA-Z0-9]*$")
-    message(FATAL_ERROR "Invalid project name: ${name}. "
-                        "Only alphanumerics are allowed.")
+    message(FATAL_ERROR
+      "Invalid project name: ${name}. Only alphanumerics are allowed.")
   endif ()
 endfunction ()
 

@@ -64,10 +64,7 @@ endif ()
 #[==[.md INTERNAL
 # 64-bit support
 
-Some projects need to know if a build is 32-bit or 64-bit. This function sets
-`superbuild_is_64bit`.
-
-In the future, 32-bit support may be removed completely.
+This functiond detects 32-bit targets and errors if it occurs.
 #]==]
 function (superbuild_detect_64bit_target)
   if (CMAKE_CROSSCOMPILING)
@@ -80,20 +77,19 @@ function (superbuild_detect_64bit_target)
   check_type_size(void* void_ptr_size
     BUILTIN_TYPES_ONLY)
   if (void_ptr_size EQUAL 8)
-    set(superbuild_is_64bit TRUE
-      PARENT_SCOPE)
+    # OK
   elseif (void_ptr_size EQUAL 4)
-    # XXX: Error out here? Is there a reason to still support 32-bit?
-    set(superbuild_is_64bit FALSE
-      PARENT_SCOPE)
+    message(FATAL_ERROR
+      "32-bit targets are not supported.")
   else ()
     if (WIN32)
       set(extra_message "Are you in a Visual Studio command prompt?")
     else ()
       set(extra_message "Do you have working compilers?")
     endif ()
-    message(FATAL_ERROR "Failed to determine whether the target architecture "
-                        "is 32bit or 64bit. ${extra_message}")
+    message(FATAL_ERROR
+      "Failed to determine whether the target architecture is 32bit or 64bit. "
+      "${extra_message}")
   endif ()
 endfunction ()
 
@@ -139,10 +135,12 @@ function (superbuild_setup_flags)
   set(superbuild_cpp_flags "$ENV{CPPFLAGS} ${superbuild_extra_cpp_flags}")
   set(superbuild_cxx_flags "$ENV{CXXFLAGS} -fPIC ${superbuild_extra_cxx_flags}")
   set(superbuild_c_flags "$ENV{CFLAGS} -fPIC ${superbuild_extra_c_flags}")
+  set(superbuild_f_flags "$ENV{FFLAGS} -fPIC ${superbuild_extra_f_flags}")
+  set(superbuild_ld_flags "$ENV{LDFLAGS} ${superbuild_extra_ld_flags}")
 
   superbuild_osx_add_version_flags()
 
-  foreach (var IN ITEMS cpp_flags cxx_flags c_flags)
+  foreach (var IN ITEMS cpp_flags cxx_flags c_flags f_flags ld_flags)
     set("superbuild_${var}"
       "${superbuild_${var}}"
       PARENT_SCOPE)

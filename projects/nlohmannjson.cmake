@@ -4,6 +4,7 @@ superbuild_add_project(nlohmannjson
   CMAKE_ARGS
     -DENABLE_TESTING:BOOL=OFF
     -DBUILD_TESTING:BOOL=OFF
+    -DCMAKE_INSTALL_LIBDIR:STRING=lib
 )
 
 # Provide our location to dependent projects:
