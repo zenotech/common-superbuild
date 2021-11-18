@@ -32,7 +32,7 @@ stages:
 
 ## Normal build
 
-build:linux:
+linux:build:
     extends:
         - .linux
         - .cmake_build_linux
@@ -40,7 +40,7 @@ build:linux:
         - .linux_builder_tags
         - .run_manually
 
-build:linux-openssl:
+linux-openssl:build:
     extends:
         - .linux_openssl
         - .cmake_build_linux
@@ -52,7 +52,7 @@ build:linux-openssl:
 
 ## Normal build
 
-build:macos-arm64:
+macos-arm64:build:
     extends:
         - .macos_arm64
         - .cmake_build_macos
@@ -60,7 +60,7 @@ build:macos-arm64:
         - .macos_arm64_builder_tags
         - .run_manually
 
-build:macos-x86_64:
+macos-x86_64:build:
     extends:
         - .macos_x86_64
         - .cmake_build_macos
@@ -68,7 +68,7 @@ build:macos-x86_64:
         - .macos_builder_tags
         - .run_manually
 
-build:macos-x86_64-openssl:
+macos-x86_64-openssl:build:
     extends:
         - .macos_x86_64_openssl
         - .cmake_build_macos
@@ -80,7 +80,7 @@ build:macos-x86_64-openssl:
 
 ## Normal build
 
-build:windows-vs2019:
+windows-vs2019:build:
     extends:
         - .windows_vs2019
         - .cmake_build_windows
@@ -88,7 +88,7 @@ build:windows-vs2019:
         - .windows_builder_tags
         - .run_manually
 
-build:windows-openssl-vs2019:
+windows-openssl-vs2019:build:
     extends:
         - .windows_openssl_vs2019
         - .cmake_build_windows
