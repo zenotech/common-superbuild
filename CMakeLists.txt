@@ -136,6 +136,13 @@ endif ()
 
 include(SuperbuildRevisionMacros)
 
+if (superbuild_package_roots)
+  include(SuperbuildPackageMacros)
+
+  _superbuild_package_discover()
+  _superbuild_package_select()
+endif ()
+
 # Gather version information.
 list(APPEND superbuild_version_files
   "${CMAKE_CURRENT_LIST_DIR}/versions.cmake")
@@ -145,13 +152,6 @@ endforeach ()
 
 if (COMMAND superbuild_setup_variables)
   superbuild_setup_variables()
-endif ()
-
-if (superbuild_package_roots)
-  include(SuperbuildPackageMacros)
-
-  _superbuild_package_discover()
-  _superbuild_package_select()
 endif ()
 
 include(SuperbuildMacros)
