@@ -293,6 +293,15 @@ ignored.
 This variable is a path where all of the projects will install themselves. If
 it is not set, the default value is `${CMAKE_BINARY_DIR}/install`.
 
+### `mpi_ENABLE_UCX` (variable)
+
+This variable is useful for taking advantage of infiniband devices utilizing the
+channel for ucx. This variable will typically be used in combination with the
+`mpi_ADDITIONAL_CONFIG_ARGS` advanced variable to specify ucx settings during
+the MPI build. By default this is disabled as most machines won't have this
+high bandwidth option available and will just use regular ethernet for
+MPI communication.
+
 ### Flags
 
 The common infrastructure will bring in flags from both the user's settings
