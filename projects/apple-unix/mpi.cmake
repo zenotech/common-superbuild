@@ -11,6 +11,27 @@ if (superbuild_build_phase AND CMAKE_VERSION VERSION_LESS "3.21.2")
     "consuming this MPI build.")
 endif ()
 
+# Set the default device channel to ch3:sock
+set(mpi_device_channel "ch3:sock")
+
+set(mpi_EXTRA_CONFIGURE_ARGUMENTS ""
+  CACHE STRING "Extra arguments to be passed to MPI when configuring.")
+mark_as_advanced(mpi_EXTRA_CONFIGURE_ARGUMENTS)
+
+option(mpi_ENABLE_UCX "Configure mpi with UCX" OFF)
+mark_as_advanced(mpi_ENABLE_UCX)
+
+# Enable internal UCX configuration. UCX allows automatic switching
+# from an ethernet fabric to a more efficient communication fabric
+# on architectures such as HPC machines.
+if (mpi_ENABLE_UCX AND NOT USE_SYSTEM_mpi)
+  set(mpi_device_channel "ch4:ucx")
+elseif(mpi_ENABLE_UCX AND USE_SYSTEM_mpi)
+  message(AUTHOR_WARNING
+    "In order to enable UCX, disable USE_SYSTEM_mpi"
+  )
+endif ()
+
 set(mpi_fortran_flags
   --disable-fortran
   --disable-fc)
@@ -28,11 +49,12 @@ superbuild_add_project(mpi
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
-      --with-device=ch3:sock
+      --with-device=${mpi_device_channel}
       ${mpi_shared_args}
       ${mpi_fortran_flags}
       --disable-mpe
       --disable-libxml2
+      ${mpi_EXTRA_CONFIGURE_ARGUMENTS}
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND
