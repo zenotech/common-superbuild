@@ -332,6 +332,32 @@ superbuild_set_revision(sqlite
   URL     "https://www.paraview.org/files/dependencies/sqlite-autoconf-3360000.tar.gz"
   URL_MD5 f5752052fc5b8e1b539af86a3671eac7)
 
+superbuild_set_revision(expat
+  URL     "https://www.paraview.org/files/dependencies/expat-2.4.1.tar.xz"
+  URL_MD5 a4fb91a9441bcaec576d4c4a56fa3aa6)
+
+superbuild_set_revision(llvm
+  URL     "https://www.paraview.org/files/dependencies/llvm-7.0.0.src.tar.xz"
+  URL_MD5 e0140354db83cdeb8668531b431398f0)
+
+superbuild_set_revision(glproto
+  URL     "https://www.paraview.org/files/dependencies/glproto-1.4.17.tar.bz2"
+  URL_MD5 5565f1b0facf4a59c2778229c1f70d10)
+
+superbuild_set_revision(meson
+  URL     "https://www.paraview.org/files/dependencies/meson-0.59.1.tar.gz"
+  URL_MD5 9c8135ecde820094be2f42f457fb6535)
+
+superbuild_set_revision(mesa
+  URL     "https://www.paraview.org/files/dependencies/mesa-21.2.1.tar.xz"
+  URL_MD5 5d8beb41eccad604296d1e2a6688dd6a)
+get_property(mesa_revision GLOBAL PROPERTY mesa_revision)
+superbuild_set_revision(osmesa ${mesa_revision})
+
+superbuild_set_revision(ninja
+  URL     "https://www.paraview.org/files/dependencies/ninja-1.10.2.tar.gz"
+  URL_MD5 639f75bc2e3b19ab893eaf2c810d4eb4)
+
 set(pythoncryptography_version "3.4.7")
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "64")
