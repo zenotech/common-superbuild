@@ -15,3 +15,7 @@ if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
     -fallow-argument-mismatch
     PROJECT_ONLY)
 endif ()
+
+# https://github.com/Reference-LAPACK/lapack/pull/640
+superbuild_apply_patch(lapack macosx-target-forward
+  "Forward the macOS target deployment to `try_compile` calls")
