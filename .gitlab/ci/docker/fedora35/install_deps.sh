@@ -7,7 +7,7 @@ dnf install --setopt=install_weak_deps=False -y \
 # Install tools used during the build of various projects.
 dnf install --setopt=install_weak_deps=False -y \
     file which libxkbcommon-x11-devel mesa-libGL-devel \
-    python-unversioned-command perl-FindBin perl-lib
+    python-unversioned-command perl-FindBin perl-lib bison flex
 
 # Install development tools
 dnf install --setopt=install_weak_deps=False -y \
