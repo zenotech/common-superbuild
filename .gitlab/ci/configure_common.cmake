@@ -107,7 +107,7 @@ if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos_arm64")
 endif ()
 
 # qt5 things
-set(qt5_SOURCE_SELECTION            "5.12" CACHE STRING "")
+set(qt5_SOURCE_SELECTION            "5.15" CACHE STRING "")
 # the gold linker seems to fail with internal error on centos7 builds
 # disabling
 set(qt5_EXTRA_CONFIGURATION_OPTIONS "-no-use-gold-linker" CACHE STRING "")
