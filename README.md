@@ -297,10 +297,10 @@ it is not set, the default value is `${CMAKE_BINARY_DIR}/install`.
 
 This variable is useful for taking advantage of infiniband devices utilizing the
 channel for ucx. This variable will typically be used in combination with the
-`mpi_ADDITIONAL_CONFIG_ARGS` advanced variable to specify ucx settings during
-the MPI build. By default this is disabled as most machines won't have this
-high bandwidth option available and will just use regular ethernet for
-MPI communication.
+`mpi_EXTRA_CONFIGURE_ARGUMENTS` advanced variable to specify ucx settings
+during the MPI build. By default this is disabled as most machines won't have
+this high bandwidth option available and will just use regular ethernet for MPI
+communication.
 
 ### Flags
 
