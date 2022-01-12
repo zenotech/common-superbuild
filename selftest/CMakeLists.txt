@@ -18,6 +18,7 @@ function (superbuild_find_projects var)
     matplotlib
     mpi
     netcdf
+    ninja
     nlohmannjson
     numpy
     png
@@ -40,6 +41,7 @@ function (superbuild_find_projects var)
     pythonidna
     pythonincremental
     pythonkiwisolver
+    pythonmako
     pythonmpi4py
     pythonmultidict
     pythonpillow
@@ -95,7 +97,12 @@ function (superbuild_find_projects var)
 
   if (UNIX AND NOT APPLE)
     list(APPEND projects
+      expat
       fontconfig
+      glproto
+      llvm
+      mesa
+      meson
       utillinux)
   endif ()
 
