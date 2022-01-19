@@ -13,6 +13,7 @@ function (superbuild_find_projects var)
     fortran
     freetype
     hdf5
+    hdf5cpp
     lapack
     libjpegturbo
     matplotlib
