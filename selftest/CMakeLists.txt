@@ -104,6 +104,7 @@ function (superbuild_find_projects var)
       llvm
       mesa
       meson
+      osmesa
       utillinux)
   endif ()
 
