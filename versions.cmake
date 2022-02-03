@@ -345,8 +345,8 @@ superbuild_set_revision(glproto
   URL_MD5 5565f1b0facf4a59c2778229c1f70d10)
 
 superbuild_set_revision(meson
-  URL     "https://www.paraview.org/files/dependencies/meson-0.59.1.tar.gz"
-  URL_MD5 9c8135ecde820094be2f42f457fb6535)
+  URL     "https://www.paraview.org/files/dependencies/meson-0.60.3.tar.gz"
+  URL_MD5 03ddd7272d8cbb9f33269cb37a200d24)
 
 superbuild_set_revision(mesa
   URL     "https://www.paraview.org/files/dependencies/mesa-21.2.1.tar.xz"
