@@ -44,6 +44,7 @@ superbuild_add_project(llvm
     -DLLVM_ENABLE_RTTI=ON
     -DLLVM_INSTALL_UTILS=ON
     -DLLVM_ENABLE_LIBXML2=OFF
+    -DLLVM_ENABLE_BINDINGS=OFF
     -DLLVM_TARGETS_TO_BUILD:STRING=${llvm_TARGETS_TO_BUILD}
     -DPYTHON_EXECUTABLE=${superbuild_python_executable})
 
