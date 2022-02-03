@@ -345,6 +345,14 @@ superbuild_set_revision(ninja
   URL     "https://www.paraview.org/files/dependencies/ninja-1.10.2.tar.gz"
   URL_MD5 639f75bc2e3b19ab893eaf2c810d4eb4)
 
+superbuild_set_revision(openxrsdk
+  URL     "https://www.paraview.org/files/dependencies/OpenXR-SDK-release-1.0.22.tar.gz"
+  URL_MD5 a2623ebab3d0b340bc16311b14f02075)
+
+superbuild_set_revision(jsoncpp
+  URL     "https://www.paraview.org/files/dependencies/jsoncpp-1.9.5.tar.gz"
+  URL_MD5 d6c8c609f2162eff373db62b90a051c7)
+
 set(pythoncryptography_version "3.4.7")
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "64")
