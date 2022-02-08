@@ -27,3 +27,7 @@ superbuild_project_add_step(pybind11-pip-install
   DEPENDEES install
   COMMENT   "Install pybind11 for pip"
   WORKING_DIRECTORY <SOURCE_DIR>)
+
+# https://github.com/pybind/pybind11/pull/3497 (subset)
+superbuild_apply_patch(pybind11 msvc2022
+  "MSVC 2022 support in Pybind11")
