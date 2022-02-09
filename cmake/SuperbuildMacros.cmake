@@ -1107,6 +1107,7 @@ function (_superbuild_add_dummy_project_internal name)
     DOWNLOAD_COMMAND  ""
     SOURCE_DIR        ""
     UPDATE_COMMAND    ""
+    UPDATE_DISCONNECTED 1
     CONFIGURE_COMMAND ""
     BUILD_COMMAND     ""
     INSTALL_COMMAND   ""
