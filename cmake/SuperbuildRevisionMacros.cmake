@@ -397,6 +397,18 @@ function (superbuild_set_selectable_source name)
     set_property(CACHE "${name}_SOURCE_SELECTION"
       PROPERTY
         STRINGS "${selections}")
+
+    # Setup global properties so selection may be changed after
+    set_property(GLOBAL PROPERTY "_${name}_selections" ${selections})
+    foreach (selection IN LISTS selections)
+      set_property(GLOBAL PROPERTY "_${name}_${selection}_selection_args" ${selection_${selection}_args})
+      if (selection IN_LIST customizable_selections)
+        set_property(GLOBAL PROPERTY "_${name}_${selection}_CUSTOMIZABLE" TRUE)
+      endif ()
+      if (selection IN_LIST promote_selections)
+        set_property(GLOBAL PROPERTY "_${name}_${selection}_PROMOTE" TRUE)
+      endif ()
+    endforeach ()
     set(selection "${${name}_SOURCE_SELECTION}")
   endif ()
 
@@ -410,8 +422,7 @@ function (superbuild_set_selectable_source name)
   endif ()
 
   if (selection IN_LIST customizable_selections)
-    _superbuild_set_customizable_revision("${name}"
-      ${selection_${selection}_args})
+    _superbuild_set_customizable_revision("${name}" ${selection_${selection}_args})
   else ()
     if (selection IN_LIST promote_selections)
       set(keys
@@ -427,7 +438,50 @@ function (superbuild_set_selectable_source name)
       endforeach ()
     endif ()
 
-    superbuild_set_revision("${name}"
-      ${selection_${selection}_args})
+    superbuild_set_revision("${name}" ${selection_${selection}_args})
+  endif ()
+endfunction ()
+
+function (superbuild_set_source_selection name selection)
+
+  if (superbuild_build_phase AND (NOT ${${name}_SOURCE_SELECTION} STREQUAL selection))
+    message (FATAL_ERROR "Cannot change the source selection after the build phase begins.")
+  endif ()
+
+  get_property(_selections GLOBAL PROPERTY _${name}_selections)
+  if (NOT selection IN_LIST _selections)
+    message (FATAL_ERROR "Cannot find ${selection} as an selection option for ${name}.")
+  endif ()
+
+  cmake_parse_arguments(_selection "CUSTOMIZABLE;PROMOTE" "" "ARGS" ${ARGN})
+
+  if (NOT _selection_PROMOTE)
+    get_property(_selection_PROMOTE GLOBAL PROPERTY _${name}_${selection}_PROMOTE SET)
+  endif ()
+  if (NOT _selection_CUSTOMIZABLE)
+    get_property(_selection_CUSTOMIZABLE GLOBAL PROPERTY _${name}_${selection}_CUSTOMIZABLE SET)
+  endif ()
+
+  # Update the source selection
+  set_property(CACHE "${name}_SOURCE_SELECTION" PROPERTY VALUE ${selection})
+
+  if (_selection_CUSTOMIZABLE)
+    _superbuild_set_customizable_revision("${name}" ${_selection_ARGS})
+  else ()
+    if (_selection_PROMOTE)
+      set(keys
+        GIT_REPOSITORY GIT_TAG
+        URL URL_HASH URL_MD5
+        SOURCE_DIR)
+      cmake_parse_arguments(_args "" "${keys}" "" ${_selection_ARGS})
+
+      foreach (key IN LISTS keys)
+        if (_args_${key})
+          set("${name}_${key}" "${_args_${key}}" PARENT_SCOPE)
+        endif ()
+      endforeach ()
+    endif ()
+
+    superbuild_set_revision("${name}" ${_selection_ARGS})
   endif ()
 endfunction ()
