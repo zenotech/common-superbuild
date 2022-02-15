@@ -43,16 +43,18 @@ function (superbuild_set_revision name)
     PROPERTY
       "${name}_revision" SET)
 
-  if (have_revision)
+  cmake_parse_arguments(_rev_args "FORCE" "" "" ${ARGN})
+
+  if (have_revision AND NOT _rev_args_FORCE)
     return ()
   endif ()
 
+  set(args "${_rev_args_UNPARSED_ARGUMENTS}")
+
   if (${name}_SKIP_VERIFICATION)
     set(keys URL_HASH URL_MD5)
-    cmake_parse_arguments(_args "" "${keys}" "" ${ARGN})
+    cmake_parse_arguments(_args "" "${keys}" "" ${args})
     set(args "${_args_UNPARSED_ARGUMENTS}")
-  else()
-    set(args "${ARGN}")
   endif()
   set_property(GLOBAL
     PROPERTY
@@ -84,7 +86,7 @@ function (_superbuild_set_customizable_revision name)
     GIT_REPOSITORY GIT_TAG
     URL URL_HASH URL_MD5
     SOURCE_DIR)
-  cmake_parse_arguments(_args "" "${keys}" "" ${ARGN})
+  cmake_parse_arguments(_args "FORCE" "${keys}" "" ${ARGN})
   set(customized_args)
 
   foreach (key IN LISTS keys)
@@ -94,8 +96,13 @@ function (_superbuild_set_customizable_revision name)
       if (key STREQUAL "SOURCE_DIR")
         set(cache_type PATH)
       endif ()
-      set("${option_name}" "${_args_${key}}"
-        CACHE "${cache_type}" "${key} for project '${name}'")
+      if (_args_FORCE)
+        set("${option_name}" "${_args_${key}}"
+          CACHE "${cache_type}" "${key} for project '${name}'" FORCE)
+      else ()
+        set("${option_name}" "${_args_${key}}"
+          CACHE "${cache_type}" "${key} for project '${name}'")
+      endif ()
       if (NOT key STREQUAL "SOURCE_DIR")
         mark_as_advanced(${option_name})
       else ()
@@ -105,10 +112,13 @@ function (_superbuild_set_customizable_revision name)
         "${key}" "${${option_name}}")
     endif ()
   endforeach ()
-
+  set(use_force)
+  if (_args_FORCE)
+    set(use_force FORCE)
+  endif ()
   superbuild_set_revision("${name}"
     ${customized_args}
-    ${_args_UNPARSED_ARGUMENTS})
+    ${_args_UNPARSED_ARGUMENTS} ${use_force})
 endfunction ()
 
 #[==[.md
@@ -397,18 +407,6 @@ function (superbuild_set_selectable_source name)
     set_property(CACHE "${name}_SOURCE_SELECTION"
       PROPERTY
         STRINGS "${selections}")
-
-    # Setup global properties so selection may be changed after
-    set_property(GLOBAL PROPERTY "_${name}_selections" ${selections})
-    foreach (selection IN LISTS selections)
-      set_property(GLOBAL PROPERTY "_${name}_${selection}_selection_args" ${selection_${selection}_args})
-      if (selection IN_LIST customizable_selections)
-        set_property(GLOBAL PROPERTY "_${name}_${selection}_CUSTOMIZABLE" TRUE)
-      endif ()
-      if (selection IN_LIST promote_selections)
-        set_property(GLOBAL PROPERTY "_${name}_${selection}_PROMOTE" TRUE)
-      endif ()
-    endforeach ()
     set(selection "${${name}_SOURCE_SELECTION}")
   endif ()
 
@@ -420,6 +418,18 @@ function (superbuild_set_selectable_source name)
       "`${name}_SOURCE_SELECTION` variable as necessary. Available "
       "selections: `${available}`.")
   endif ()
+
+  # Setup global properties so selection may be changed after
+  set_property(GLOBAL PROPERTY "_${name}_selections" ${selections})
+  foreach (select IN LISTS selections)
+    set_property(GLOBAL PROPERTY "_${name}_${select}_selection_args" ${selection_${select}_args})
+    if (select IN_LIST customizable_selections)
+      set_property(GLOBAL PROPERTY "_${name}_${select}_CUSTOMIZABLE" TRUE)
+    endif ()
+    if (select IN_LIST promote_selections)
+      set_property(GLOBAL PROPERTY "_${name}_${select}_PROMOTE" TRUE)
+    endif ()
+  endforeach ()
 
   if (selection IN_LIST customizable_selections)
     _superbuild_set_customizable_revision("${name}" ${selection_${selection}_args})
@@ -461,27 +471,32 @@ function (superbuild_set_source_selection name selection)
   if (NOT _selection_CUSTOMIZABLE)
     get_property(_selection_CUSTOMIZABLE GLOBAL PROPERTY _${name}_${selection}_CUSTOMIZABLE SET)
   endif ()
+  if (NOT _selection_ARGS)
+    get_property(_selection_ARGS GLOBAL PROPERTY _${name}_${selection}_selection_args)
+  endif ()
 
   # Update the source selection
   set_property(CACHE "${name}_SOURCE_SELECTION" PROPERTY VALUE ${selection})
 
   if (_selection_CUSTOMIZABLE)
-    _superbuild_set_customizable_revision("${name}" ${_selection_ARGS})
-  else ()
-    if (_selection_PROMOTE)
-      set(keys
-        GIT_REPOSITORY GIT_TAG
-        URL URL_HASH URL_MD5
-        SOURCE_DIR)
-      cmake_parse_arguments(_args "" "${keys}" "" ${_selection_ARGS})
+    _superbuild_set_customizable_revision("${name}" ${_selection_ARGS} FORCE)
+  endif ()
 
-      foreach (key IN LISTS keys)
-        if (_args_${key})
-          set("${name}_${key}" "${_args_${key}}" PARENT_SCOPE)
-        endif ()
-      endforeach ()
-    endif ()
+  if (_selection_PROMOTE)
+    set(keys
+      GIT_REPOSITORY GIT_TAG
+      URL URL_HASH URL_MD5
+      SOURCE_DIR)
+    cmake_parse_arguments(_args "" "${keys}" "" ${_selection_ARGS})
 
-    superbuild_set_revision("${name}" ${_selection_ARGS})
+    foreach (key IN LISTS keys)
+      if (_args_${key})
+        set("${name}_${key}" "${_args_${key}}" PARENT_SCOPE)
+      endif ()
+    endforeach ()
+  endif ()
+
+  if (NOT _selection_CUSTOMIZABLE)
+    superbuild_set_revision("${name}" ${_selection_ARGS} FORCE)
   endif ()
 endfunction ()
