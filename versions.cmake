@@ -325,8 +325,8 @@ superbuild_set_revision(pkgconf
   URL_MD5 823212dc241793df8ff1d097769a3473)
 
 superbuild_set_revision(pybind11
-  URL     "https://www.paraview.org/files/dependencies/pybind11-2.7.1.tar.gz"
-  URL_MD5 b87860218c143728f8e6efa6cba7e1ed)
+  URL     "https://www.paraview.org/files/dependencies/pybind11-2.9.1.tar.gz"
+  URL_MD5 7609dcb4e6e18eee9dc1a5f26572ded1)
 
 superbuild_set_revision(sqlite
   URL     "https://www.paraview.org/files/dependencies/sqlite-autoconf-3360000.tar.gz"
