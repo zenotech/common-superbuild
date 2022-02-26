@@ -98,6 +98,7 @@ enable_project(pywin32)
 enable_project(qhull)
 enable_project(qt5)
 enable_project(szip)
+enable_project(tbb)
 enable_project(utillinux)
 enable_project(zlib)
 
@@ -107,11 +108,6 @@ if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "windows" AND
   enable_project(fortran)
   enable_project(lapack)
   enable_project(scipy)
-endif ()
-
-# TBB doesn't have macOS arm64 support yet.
-if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos_arm64")
-  enable_project(tbb)
 endif ()
 
 # qt5 things
