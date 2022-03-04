@@ -125,22 +125,9 @@ superbuild_set_revision(netcdf
   URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.8.1.tar.gz"
   URL_MD5 b069f4eb1718798c2907c38189615f95)
 
-# Using Intel Threading Building Blocks 2018 Update 2
-set(tbb_ver "2021.3.0")
-if (WIN32)
-  set(tbb_file "oneapi-tbb-${tbb_ver}-win.zip")
-  set(tbb_md5 ad6766ea3e17e37c447b221fe01658ea)
-elseif (APPLE)
-  set(tbb_file "oneapi-tbb-${tbb_ver}-mac.tgz")
-  set(tbb_md5 280566eca486f6ef434652becfb4877c)
-else ()
-  set(tbb_file "oneapi-tbb-${tbb_ver}-lin.tgz")
-  set(tbb_md5 6027dc86d01269fd03a0c2f143f313cf)
-endif ()
-
 superbuild_set_revision(tbb
-  URL     "https://www.paraview.org/files/dependencies/${tbb_file}"
-  URL_MD5 "${tbb_md5}")
+  URL     "https://www.paraview.org/files/dependencies/tbb-2021.5.0.tar.gz"
+  URL_MD5 5e5f2ee22a0d19c0abbe7478f1c7ccf6)
 
 superbuild_set_revision(pytz
   URL     "https://www.paraview.org/files/dependencies/pytz-2021.1.tar.gz"
