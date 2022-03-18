@@ -58,6 +58,7 @@ string(REPLACE ";" "," mesa_drivers "${mesa_drivers}")
 
 set(mesa_common_config_args
   --libdir lib
+  --buildtype=release
   -Dprefix=<INSTALL_DIR>
   ${mesa_swr_arch}
   -Dauto_features=disabled
