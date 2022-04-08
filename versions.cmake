@@ -50,8 +50,8 @@ else()
 endif()
 
 superbuild_set_revision(freetype
-  URL     "https://www.paraview.org/files/dependencies/freetype-2.11.0.tar.xz"
-  URL_MD5 f931582653774e310ed3a7e49b7167a3)
+  URL     "https://www.paraview.org/files/dependencies/freetype-2.12.0.tar.xz"
+  URL_MD5 9a07649ce73ba0d80d211092b3d1c2fa)
 
 superbuild_set_revision(gperf
   URL     "https://www.paraview.org/files/dependencies/gperf-3.1.tar.gz"
