@@ -16,8 +16,7 @@ if (APPLE OR UNIX)
 
   if (pkgconf_enabled)
     list(APPEND fontconfig_process_environment
-      PKG_CONFIG "${superbuild_pkgconf}"
-      PKG_CONFIG_PATH <INSTALL_DIR>/lib/pkgconfig)
+      PKG_CONFIG "${superbuild_pkgconf}")
   endif ()
 endif ()
 
