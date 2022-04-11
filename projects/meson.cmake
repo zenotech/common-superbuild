@@ -12,6 +12,3 @@ if (UNIX)
     DEPENDS    "${CMAKE_CURRENT_LIST_DIR}/scripts/meson.postinstall.cmake"
     COMMENT   "Make meson safe against long paths")
 endif ()
-
-superbuild_apply_patch(meson armclang
-  "add armclang support")
