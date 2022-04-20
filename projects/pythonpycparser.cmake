@@ -1,3 +1,4 @@
 superbuild_add_project_python(pythonpycparser
   PACKAGE pycparser
-  DEPENDS pythonsetuptools)
+  DEPENDS pythonsetuptools
+  LICENSE_FILES LICENSE)

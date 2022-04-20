@@ -38,6 +38,8 @@ else ()
   superbuild_add_project(scipy
     DEPENDS python3 fortran numpy lapack pybind11 pythonpythran
     BUILD_IN_SOURCE 1
+    LICENSE_FILES
+      LICENSE.txt
     CONFIGURE_COMMAND ""
     BUILD_COMMAND
       ${superbuild_python_executable}

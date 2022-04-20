@@ -11,6 +11,8 @@ endif ()
 superbuild_add_project(openssl
   CAN_USE_SYSTEM
   DEPENDS zlib
+  LICENSE_FILES
+    LICENSE
   CONFIGURE_COMMAND
     "<SOURCE_DIR>/config"
       "--prefix=<INSTALL_DIR>"

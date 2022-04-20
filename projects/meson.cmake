@@ -1,6 +1,7 @@
 superbuild_add_project_python(meson
   PACKAGE meson
-  DEPENDS pythonsetuptools ninja)
+  DEPENDS pythonsetuptools ninja
+  LICENSE_FILES COPYING)
 
 if (UNIX)
   superbuild_project_add_step(meson-postinstall

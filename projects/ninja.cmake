@@ -6,6 +6,8 @@ if (CMAKE_GENERATOR MATCHES "Ninja")
 else ()
   superbuild_add_project(ninja
     CAN_USE_SYSTEM
+    LICENSE_FILES
+      COPYING
     CMAKE_ARGS
       -DBUILD_TESTING:BOOL=OFF)
   if (ninja_enabled)

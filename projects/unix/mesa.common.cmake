@@ -84,6 +84,8 @@ endif ()
 superbuild_add_project(${project}
   CAN_USE_SYSTEM
   DEPENDS llvm zlib ${mesa_type_deps} expat pythonmako meson python3
+  LICENSE_FILES
+    docs/license.rst
   CONFIGURE_COMMAND
     meson
       ${mesa_common_config_args}

@@ -30,6 +30,8 @@ superbuild_add_project(python3
   CAN_USE_SYSTEM
   DEPENDS bzip2 zlib png ffi sqlite
   DEPENDS_OPTIONAL ${python3_optional_depends}
+  LICENSE_FILES
+    LICENSE
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>

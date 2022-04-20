@@ -37,6 +37,11 @@ endif ()
 superbuild_add_project(llvm
   CAN_USE_SYSTEM
   DEPENDS python3 cxx11
+  LICENSE_FILES
+    LICENSE.TXT
+    lib/Support/COPYRIGHT.regex
+    test/YAMLParser/LICENSE.txt
+    lib/Target/ARM/LICENSE.TXT
   CMAKE_ARGS
     -DCMAKE_BUILD_TYPE=Release
     -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}

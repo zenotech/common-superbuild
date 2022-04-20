@@ -5,6 +5,8 @@ set(sqlite_extra_build_flags
 string(REPLACE ";" " " sqlite_extra_build_flags "${sqlite_extra_build_flags}")
 superbuild_add_project(sqlite
   CAN_USE_SYSTEM
+  LICENSE_FILES
+    tea/license.terms # There is no license file in sqlite, only headers.
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>

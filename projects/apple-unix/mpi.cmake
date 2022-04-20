@@ -45,6 +45,8 @@ endif ()
 superbuild_add_project(mpi
   CAN_USE_SYSTEM
   DEPENDS_OPTIONAL fortran
+  LICENSE_FILES
+    COPYRIGHT
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure

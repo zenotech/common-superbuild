@@ -5,4 +5,5 @@ if (WIN32)
 endif ()
 
 superbuild_add_project_python(pythonsetuptools
-  PACKAGE setuptools ${pythonsetuptools_depends})
+  PACKAGE setuptools ${pythonsetuptools_depends}
+  LICENSE_FILES LICENSE)

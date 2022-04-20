@@ -19,6 +19,9 @@ endif ()
 superbuild_add_project(freetype
   CAN_USE_SYSTEM
   DEPENDS zlib png
+  LICENSE_FILES
+    LICENSE.TXT
+    docs/FTL.TXT
   CMAKE_ARGS
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DCMAKE_INSTALL_LIBDIR:STRING=lib

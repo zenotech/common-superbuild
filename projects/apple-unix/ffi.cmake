@@ -12,6 +12,8 @@ if (APPLE AND CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
 endif ()
 
 superbuild_add_project(ffi
+  LICENSE_FILES
+    LICENSE
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>

@@ -5,6 +5,8 @@ endif ()
 
 superbuild_add_project(pybind11
   DEPENDS python3 cxx11 pythonsetuptools
+  LICENSE_FILES
+    LICENSE
   CMAKE_ARGS
     -DPYBIND11_TEST:BOOL=OFF)
 
