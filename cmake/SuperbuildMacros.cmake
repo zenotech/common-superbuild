@@ -94,6 +94,11 @@ following extensions:
   - `DEPENDS_OPTIONAL <project>...`
     Projects which this one can use if it is enabled, but is not required for
     use.
+  - `LICENSE_FILES <files>...`
+    Path to license files (relative to `<SOURCE_DIR>` if not absolute), in
+    order to install them in under `share/licenses/<project>`. Needed only if
+    the project does not install them itself. Relative paths respect the
+    directory hierarchy when installed.
   - `PROCESS_ENVIRONMENT <var> <value>...`
     Sets environment variables for the configure, build, and install steps.
     Some are "magic" and are prepended to the current value (namely ``PATH``,
@@ -116,6 +121,7 @@ function (superbuild_add_project name)
   set(help_string)
   set(depends)
   set(optional_depends)
+  set(license_files)
   set(process_environment)
 
   set(ep_arguments)
@@ -150,6 +156,8 @@ function (superbuild_add_project name)
       set(grab depends)
     elseif (arg STREQUAL "DEPENDS_OPTIONAL")
       set(grab optional_depends)
+    elseif (arg STREQUAL "LICENSE_FILES")
+      set(grab license_files)
     elseif (arg IN_LIST keywords)
       set(grab ep_arguments)
       list(APPEND ep_arguments
@@ -288,6 +296,9 @@ function (superbuild_add_project name)
     set_property(GLOBAL
       PROPERTY
         "${name}_depends_optional" ${optional_depends})
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_license_files" ${license_files})
   endif ()
 endfunction ()
 
@@ -460,26 +471,51 @@ superbuild_add_project_python_wheel(<NAME> <ARG>...)
 Same as `superbuild_add_project`, but installs the project from a wheel. Note
 that the source for such projects must be a wheel that may be extracted using
 `pip`.
+
+  - `DEPENDS <project>...`
+    Projects which or needed to enable this one and will be enabled when needed.
+
+  - `LICENSE_FILES_WHEEL <files>...`
+    Relative path to license files in the installed wheel, in order to install
+    them in under `share/licenses/<project>`. Needed only if the project does not install them
+    itself.
+
 #]==]
 macro (superbuild_add_project_python_wheel _name)
+  cmake_parse_arguments(_superbuild_add_project_python_wheel
+    ""
+    ""
+    "LICENSE_FILES_WHEEL;DEPENDS"
+    ${ARGN})
+
   if (superbuild_build_phase AND NOT superbuild_python_pip)
     message(FATAL_ERROR
       "No `pip` available?")
   endif ()
 
+  set(python_module_install_location)
   if (WIN32)
     set(_superbuild_python_args
       --root=<INSTALL_DIR>
       "--prefix=Python")
+    set(python_module_install_location "<INSTALL_DIR>/Python/Lib/site-packages")
   else ()
     set(_superbuild_python_args
       "--prefix=<INSTALL_DIR>")
+    set(python_module_install_location "<INSTALL_DIR>/lib/python${superbuild_python_version}/site-packages")
   endif ()
+
+  # license files in wheels are recovered from the install
+  set(license_files)
+  foreach (license_file IN LISTS _superbuild_add_project_python_wheel_LICENSE_FILES_WHEEL)
+      list(APPEND license_files "${python_module_install_location}/${license_file}")
+  endforeach ()
 
   superbuild_add_project("${_name}"
     BUILD_IN_SOURCE 1
     DOWNLOAD_NO_EXTRACT 1
-    DEPENDS python3 ${ARGN}
+    DEPENDS python3 ${_superbuild_add_project_python_wheel_DEPENDS}
+    LICENSE_FILES ${license_files}
     CONFIGURE_COMMAND
       ""
     BUILD_COMMAND
@@ -1350,6 +1386,30 @@ function (_superbuild_add_project_internal name)
         "${step_arguments}")
     endforeach ()
   endif ()
+
+  # Install license files
+  get_property(license_files_set GLOBAL PROPERTY "${name}_license_files" SET)
+  if (license_files_set)
+    set(license_install_command)
+    set(license_install_dir_root "<INSTALL_DIR>/share/licenses/${project}/")
+    get_property(license_files GLOBAL PROPERTY "${name}_license_files")
+    foreach (license_file IN LISTS license_files)
+      if (IS_ABSOLUTE "${license_file}" OR license_file MATCHES "^<(SOURCE|BINARY|INSTALL)_DIR>/")
+        set(license_source "${license_file}")
+        set(license_install_dir "${license_install_dir_root}")
+      else ()
+        get_filename_component(license_subdir "${license_file}" DIRECTORY)
+        set(license_source "<SOURCE_DIR>/${license_file}")
+        set(license_install_dir "${license_install_dir_root}/${license_subdir}")
+      endif ()
+      list(APPEND license_install_command COMMAND "${CMAKE_COMMAND}" -E make_directory "${license_install_dir}")
+      list(APPEND license_install_command COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${license_source}" "${license_install_dir}")
+    endforeach ()
+    ExternalProject_add_step("${name}" install-licenses
+      ${license_install_command}
+      DEPENDEES install)
+  endif ()
+
 endfunction ()
 
 # Wrapper around ExternalProject's internal calls to gather the CMake flags
