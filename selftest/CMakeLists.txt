@@ -111,6 +111,9 @@ function (superbuild_find_projects var)
   set("${var}"
     ${projects}
     PARENT_SCOPE)
+
+  # For later usage.
+  set_property(GLOBAL PROPERTY _superbuild_all_projects ${projects})
 endfunction ()
 
 # Disable Qt modules that generally aren't necessary.
