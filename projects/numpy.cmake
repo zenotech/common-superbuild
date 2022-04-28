@@ -48,6 +48,8 @@ superbuild_add_project_python(numpy
   DEPENDS
     pythoncython
   DEPENDS_OPTIONAL ${numpy_depends_optional}
+  LICENSE_FILES
+    LICENSE.txt
   PROCESS_ENVIRONMENT
     MKL         "None"
     ATLAS       "None"

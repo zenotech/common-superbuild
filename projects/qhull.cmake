@@ -4,6 +4,8 @@ if (BUILD_SHARED_LIBS)
 endif ()
 
 superbuild_add_project(qhull
+  LICENSE_FILES
+    COPYING.txt
   CMAKE_ARGS
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DBUILD_STATIC_LIBS:BOOL=${qhull_build_static_libs}

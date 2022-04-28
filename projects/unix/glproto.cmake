@@ -1,4 +1,6 @@
 superbuild_add_project(glproto
+  LICENSE_FILES
+    COPYING
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
     --prefix=<INSTALL_DIR>

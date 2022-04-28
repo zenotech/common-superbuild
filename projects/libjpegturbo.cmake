@@ -4,6 +4,8 @@ if (BUILD_SHARED_LIBS)
 endif ()
 
 superbuild_add_project(libjpegturbo
+  LICENSE_FILES
+    LICENSE.md
   CMAKE_ARGS
     -DENABLE_SHARED:BOOL=${BUILD_SHARED_LIBS}
     -DENABLE_STATIC:BOOL=${libjpegturbo_enable_static}

@@ -8,5 +8,6 @@ endif ()
 superbuild_add_project_python(pythonpillow
   PACKAGE PIL
   DEPENDS pythonsetuptools libjpegturbo
+  LICENSE_FILES LICENSE
   PROCESS_ENVIRONMENT
     ${pythonpillow_process_environment})

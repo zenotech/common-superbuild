@@ -14,7 +14,8 @@ endif ()
 superbuild_add_project(png
   CAN_USE_SYSTEM
   DEPENDS zlib
-
+  LICENSE_FILES
+    LICENSE
   CMAKE_ARGS
     ${png_libtype_args}
     -DCMAKE_MACOSX_RPATH:BOOL=FALSE

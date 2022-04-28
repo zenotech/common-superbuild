@@ -32,6 +32,66 @@ if (UNIX)
       -P "${CMAKE_CURRENT_SOURCE_DIR}/unix-check-lib64.cmake")
 endif ()
 
+function (add_license_test package)
+  if (NOT TARGET "${package}")
+    return ()
+  endif ()
+
+  add_test(
+    NAME "license-${package}"
+    COMMAND
+      "${CMAKE_COMMAND}"
+      "-Dlicense_dir=${install_dir}/share/licenses/${package}"
+      -P "${CMAKE_CURRENT_SOURCE_DIR}/check-license.cmake")
+endfunction ()
+
+get_property(all_projects GLOBAL PROPERTY _superbuild_all_projects)
+
+set(license_projects "${all_projects}")
+# Remove projects which are known to not have licenses.
+list(REMOVE_ITEM license_projects
+  # Language utility projects
+  cxx11
+
+  # Feature projects
+  fortran
+
+  # Dummy projects
+  hdf5cpp
+  pythonmpi4py
+
+  # Outdated project without license
+  pythonwslink
+  pythonpywebvue
+  )
+
+# Apple USE_SYSTEM projects
+if (APPLE)
+  list(REMOVE_ITEM license_projects
+    qt5
+    bzip2
+    )
+endif ()
+
+# Win32 USE_SYSTEM projects
+if (WIN32)
+  list(REMOVE_ITEM license_projects
+    qt5
+    mpi
+    )
+endif ()
+
+# Ninja logic
+if (CMAKE_GENERATOR MATCHES "Ninja")
+  list(REMOVE_ITEM license_projects
+    ninja
+    )
+endif ()
+
+foreach (project IN LISTS license_projects)
+  add_license_test("${project}")
+endforeach ()
+
 function (add_python_import_test package module)
   if (NOT TARGET "${package}")
     return ()

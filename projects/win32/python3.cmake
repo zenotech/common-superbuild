@@ -8,6 +8,8 @@ superbuild_add_project(python3
   DEPENDS_OPTIONAL ${python3_optional_depends}
   CAN_USE_SYSTEM
   BUILD_IN_SOURCE 1
+  LICENSE_FILES
+    LICENSE.txt
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
   INSTALL_COMMAND
