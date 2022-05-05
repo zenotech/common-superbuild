@@ -545,13 +545,11 @@ Applies a patch to the project during the build. The patch is assumed live at
 site.
 
 Patches should not be applied to projects which are sourced from Git
-repositories due to bugs in `git apply`. Use of this function on such projects
-will cause patches to, in all probability, be ignored or fail to apply. For
-those projects, create a fork, create commits, and point the repository to the
-fork instead.
-
-This function does check if the build tree lives under a git repository and
-errors out if so since then *all* patch applications will fail.
+repositories due to interactions between `git apply`, already applied patches,
+and the updating mechanisms of `ExternalProject`. Use of this function on such
+projects will cause patches to, in all probability, be ignored or fail to
+apply. For those projects, create a fork, create commits, and point the
+repository to the fork instead.
 
 Please forward relevant patches upstream.
 
@@ -564,40 +562,6 @@ function (superbuild_apply_patch _name _patch _comment)
   if (NOT GIT_FOUND)
     mark_as_advanced(CLEAR GIT_EXECUTABLE)
     message(FATAL_ERROR "Could not find git executable.  Please set GIT_EXECUTABLE.")
-  endif ()
-
-  execute_process(
-    COMMAND "${GIT_EXECUTABLE}"
-            rev-parse
-            --is-inside-work-tree
-    RESULT_VARIABLE res
-    OUTPUT_VARIABLE out
-    ERROR_VARIABLE  err
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-  if (res AND NOT res EQUAL 128)
-    message(FATAL_ERROR "Failed to determine if the build tree is inside of a git repository.")
-  endif ()
-  if (out STREQUAL "true")
-    execute_process(
-      COMMAND "${GIT_EXECUTABLE}"
-              rev-parse
-              --show-toplevel
-      RESULT_VARIABLE res
-      OUTPUT_VARIABLE out
-      ERROR_VARIABLE  err
-      WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
-    if (res)
-      message(WARNING
-        "Failed to detect the top-level of the git repository: ${err}.")
-      set(out "<unknown>")
-    endif ()
-    message(FATAL_ERROR
-      "The build tree appears to be inside of the git repository located at "
-      "${out}. This interferes with the way the superbuild applies patches to "
-      "projects and is not supported. Please relocate the build tree to a "
-      "directory which is not under a git repository.")
   endif ()
 
   if (NOT superbuild_build_phase)
@@ -620,6 +584,7 @@ function (superbuild_apply_patch _name _patch _comment)
 
   superbuild_project_add_step("${_name}-patch-${_patch}"
     COMMAND   "${GIT_EXECUTABLE}"
+              --git-dir= # Make `git` think it is not in a repository.
               apply
               # Necessary for applying patches to windows-newline files.
               --whitespace=fix
