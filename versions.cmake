@@ -252,8 +252,8 @@ superbuild_set_revision(pythontxaio
   URL_MD5 7e80b80ed7797245a5eef803043bdede)
 
 superbuild_set_revision(pythonwslinkasync
-  URL     "https://www.paraview.org/files/dependencies/wslink-1.6.1.tar.gz"
-  URL_MD5 97df40d3cf1ee2029e8e2e12da070263)
+  URL     "https://www.paraview.org/files/dependencies/wslink-1.6.4.tar.gz"
+  URL_MD5 fad2f607b68f9d9916450adf55a1f7c9)
 
 superbuild_set_revision(pythonwslink
   URL     "https://www.paraview.org/files/dependencies/wslink-0.1.11.tar.gz"
