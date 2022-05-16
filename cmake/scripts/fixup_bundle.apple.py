@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 '''
 A tool to install Mach-O binaries into an ``.app`` bundle.
@@ -6,7 +6,6 @@ A tool to install Mach-O binaries into an ``.app`` bundle.
 Other bundle types (particularly ``.framework`` and ``.plugin`` bundles) are
 not supported yet.
 '''
-from __future__ import print_function
 
 import json
 import os

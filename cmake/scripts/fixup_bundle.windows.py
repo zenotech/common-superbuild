@@ -1,9 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 '''
 A tool to install PE-COFF binaries into in installation prefix.
 '''
-from __future__ import print_function
 
 import json
 import os
