@@ -41,12 +41,12 @@ superbuild_set_revision(png
 
 if (WIN32)
   superbuild_set_revision(python3
-    URL     "https://www.paraview.org/files/dependencies/python-3.9.5-windows-x86_64.zip"
-    URL_MD5 c41556099961c9e0d4d6afd419045bac)
+    URL     "https://www.paraview.org/files/dependencies/python-3.9.13-windows-x86_64.zip"
+    URL_MD5 d55270fbc6356eb5c2b37bffd0c0b48b)
 else()
   superbuild_set_revision(python3
-    URL     "https://www.paraview.org/files/dependencies/Python-3.9.5.tar.xz"
-    URL_MD5 71f7ada6bec9cdbf4538adc326120cfd)
+    URL     "https://www.paraview.org/files/dependencies/Python-3.9.13.tar.xz"
+    URL_MD5 5e2411217b0060828d5f923eb422a3b8)
 endif()
 
 superbuild_set_revision(freetype
