@@ -41,12 +41,12 @@ superbuild_set_revision(png
 
 if (WIN32)
   superbuild_set_revision(python3
-    URL     "https://www.paraview.org/files/dependencies/python-3.9.5-windows-x86_64.zip"
-    URL_MD5 c41556099961c9e0d4d6afd419045bac)
+    URL     "https://www.paraview.org/files/dependencies/python-3.9.13-windows-x86_64.zip"
+    URL_MD5 d55270fbc6356eb5c2b37bffd0c0b48b)
 else()
   superbuild_set_revision(python3
-    URL     "https://www.paraview.org/files/dependencies/Python-3.9.5.tar.xz"
-    URL_MD5 71f7ada6bec9cdbf4538adc326120cfd)
+    URL     "https://www.paraview.org/files/dependencies/Python-3.9.13.tar.xz"
+    URL_MD5 5e2411217b0060828d5f923eb422a3b8)
 endif()
 
 superbuild_set_revision(freetype
@@ -154,8 +154,8 @@ superbuild_set_revision(pythonply
   URL_MD5 6465f602e656455affcd7c5734c638f8)
 
 superbuild_set_revision(pythonpythran
-  URL     "https://www.paraview.org/files/dependencies/pythran-0.9.12.post1.tar.gz"
-  URL_MD5 b84d70ed33554dcef423673216bc3826)
+  URL     "https://www.paraview.org/files/dependencies/pythran-0.11.0.tar.gz"
+  URL_MD5 e09e90484771937ab499380858bdb18d)
 
 superbuild_set_revision(pythoncycler
   URL     "https://www.paraview.org/files/dependencies/cycler-0.10.0.tar.gz"

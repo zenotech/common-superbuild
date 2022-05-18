@@ -2,20 +2,20 @@
 
 ## Base images
 
-.fedora35:
-    image: "kitware/paraview:ci-csb-fedora35-20220112"
+.fedora36:
+    image: "kitware/paraview:ci-csb-fedora36-20220516"
 
     variables:
         GIT_CLONE_PATH: $CI_BUILDS_DIR/gitlab-kitware-sciviz-ci
 
 .linux:
-    extends: .fedora35
+    extends: .fedora36
 
     variables:
         CMAKE_CONFIGURATION: linux
 
 .linux_openssl:
-    extends: .fedora35
+    extends: .fedora36
 
     variables:
         CMAKE_CONFIGURATION: linux_openssl

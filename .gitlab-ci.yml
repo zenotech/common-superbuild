@@ -80,17 +80,17 @@ macos-x86_64-openssl:build:
 
 ## Normal build
 
-windows-vs2019:build:
+windows-vs2022:build:
     extends:
-        - .windows_vs2019
+        - .windows_vs2022
         - .cmake_build_windows
         - .cmake_build_artifacts
         - .windows_builder_tags
         - .run_manually
 
-windows-openssl-vs2019:build:
+windows-openssl-vs2022:build:
     extends:
-        - .windows_openssl_vs2019
+        - .windows_openssl_vs2022
         - .cmake_build_windows
         - .cmake_build_artifacts
         - .windows_builder_tags
