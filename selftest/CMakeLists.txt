@@ -14,6 +14,7 @@ function (superbuild_find_projects var)
     freetype
     hdf5
     hdf5cpp
+    jsoncpp
     lapack
     libjpegturbo
     matplotlib
@@ -94,6 +95,11 @@ function (superbuild_find_projects var)
       pybind11
       scipy
       sqlite)
+  endif ()
+
+  if (NOT APPLE)
+    list(APPEND projects
+      openxrsdk)
   endif ()
 
   if (UNIX AND NOT APPLE)

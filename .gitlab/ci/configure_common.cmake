@@ -35,6 +35,7 @@ enable_project(glproto)
 enable_project(gperf)
 enable_project(hdf5)
 enable_project(hdf5cpp)
+enable_project(jsoncpp)
 enable_project(libjpegturbo)
 enable_project(libxml2)
 enable_project(llvm)
@@ -101,6 +102,11 @@ enable_project(szip)
 enable_project(tbb)
 enable_project(utillinux)
 enable_project(zlib)
+
+# OpenXR-SDK-Source does not build on mac os
+if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos")
+  enable_project(openxrsdk)
+endif ()
 
 # Fortran doesn't work on Windows right now.
 if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "windows" AND
