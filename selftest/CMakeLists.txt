@@ -62,7 +62,6 @@ function (superbuild_find_projects var)
     pythonwslinkasync
     pythonpywebvue
     pythonyarl
-    pythonzope
     pytz
     qhull
     qt5

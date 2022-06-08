@@ -247,10 +247,6 @@ superbuild_set_revision(pythonpywebvue
   URL     "https://www.paraview.org/files/dependencies/pywebvue-2.1.4.tar.gz"
   URL_MD5 02f63a8b2ca20cb1d7328b1f7369a88f)
 
-superbuild_set_revision(pythonzope
-  URL     "https://www.paraview.org/files/dependencies/Zope-5.3.tar.gz"
-  URL_MD5 3b8ddc554345279c0e0018d5f1814c13)
-
 superbuild_set_revision(pythonsix
   URL     "https://www.paraview.org/files/dependencies/six-1.16.0.tar.gz"
   URL_MD5 a7c927740e4964dd29b72cebfc1429bb)
