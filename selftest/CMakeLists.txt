@@ -62,7 +62,6 @@ function (superbuild_find_projects var)
     pythontxaio
     pythontypingextensions
     pythonwheel
-    pythonwslink
     pythonwslinkasync
     pythonpywebvue
     pythonyarl

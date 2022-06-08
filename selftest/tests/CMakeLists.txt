@@ -61,7 +61,6 @@ list(REMOVE_ITEM license_projects
   pythonmpi4py
 
   # Outdated project without license
-  pythonwslink
   pythonpywebvue
   )
 
@@ -182,7 +181,6 @@ add_python_import_test(pythontwisted twisted)
 add_python_import_test(pythontxaio txaio)
 add_python_import_test(pythontypingextensions typing_extensions)
 add_python_import_test(pythonwheel wheel)
-add_python_import_test(pythonwslink wslink)
 add_python_import_test(pythonwslinkasync wslink)
 add_python_import_test(pythonyarl yarl)
 add_python_import_test(pythonzope App)
