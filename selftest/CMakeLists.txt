@@ -28,7 +28,6 @@ function (superbuild_find_projects var)
     pythonaiohttp
     pythonasynctimeout
     pythonattrs
-    pythonautobahn
     pythonbeniget
     pythoncffi
     pythonchardet

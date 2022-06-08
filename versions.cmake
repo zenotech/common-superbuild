@@ -215,10 +215,6 @@ superbuild_set_revision(pythonyarl
   URL     "https://www.paraview.org/files/dependencies/yarl-1.6.3.tar.gz "
   URL_MD5 3b6f2da3db8c645a9440375fd6a414eb)
 
-superbuild_set_revision(pythonautobahn
-  URL     "https://www.paraview.org/files/dependencies/autobahn-21.3.1.tar.gz"
-  URL_MD5 dcba839ee61be33d05042a09c008c6bc)
-
 superbuild_set_revision(pythoncffi
   URL     "https://www.paraview.org/files/dependencies/cffi-1.14.6.tar.gz"
   URL_MD5 5c118a18ea897df164dbff67a32876fc)
