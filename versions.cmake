@@ -223,10 +223,6 @@ superbuild_set_revision(pythonsemanticversion
   URL     "https://www.paraview.org/files/dependencies/semantic_version-2.8.5.tar.gz"
   URL_MD5 76d7364def7ee487b6153d40b13de904)
 
-superbuild_set_revision(pythonhyperlink
-  URL     "https://www.paraview.org/files/dependencies/hyperlink-21.0.0.tar.gz"
-  URL_MD5 6285ac13e7d6be4157698ad7960ed490)
-
 superbuild_set_revision(pythonidna
   URL     "https://www.paraview.org/files/dependencies/idna-3.2.tar.gz"
   URL_MD5 08ea8e2ce09e522424e872409c221138)
