@@ -223,10 +223,6 @@ superbuild_set_revision(pythonsemanticversion
   URL     "https://www.paraview.org/files/dependencies/semantic_version-2.8.5.tar.gz"
   URL_MD5 76d7364def7ee487b6153d40b13de904)
 
-superbuild_set_revision(pythonconstantly
-  URL     "https://www.paraview.org/files/dependencies/constantly-15.1.0.tar.gz"
-  URL_MD5 f0762f083d83039758e53f8cf0086eef)
-
 superbuild_set_revision(pythonhyperlink
   URL     "https://www.paraview.org/files/dependencies/hyperlink-21.0.0.tar.gz"
   URL_MD5 6285ac13e7d6be4157698ad7960ed490)

@@ -31,7 +31,6 @@ function (superbuild_find_projects var)
     pythonbeniget
     pythoncffi
     pythonchardet
-    pythonconstantly
     pythoncppy
     pythoncryptography
     pythoncycler
