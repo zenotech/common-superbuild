@@ -38,7 +38,6 @@ function (superbuild_find_projects var)
     pythondateutil
     pythongast
     pythonidna
-    pythonincremental
     pythonkiwisolver
     pythonmako
     pythonmpi4py

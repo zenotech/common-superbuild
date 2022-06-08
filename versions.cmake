@@ -227,10 +227,6 @@ superbuild_set_revision(pythonidna
   URL     "https://www.paraview.org/files/dependencies/idna-3.2.tar.gz"
   URL_MD5 08ea8e2ce09e522424e872409c221138)
 
-superbuild_set_revision(pythonincremental
-  URL     "https://www.paraview.org/files/dependencies/incremental-21.3.0.tar.gz"
-  URL_MD5 9f7ad12e0c05a12cee52a7350976c4e3)
-
 superbuild_set_revision(pythontxaio
   URL     "https://www.paraview.org/files/dependencies/txaio-21.2.1.tar.gz"
   URL_MD5 7e80b80ed7797245a5eef803043bdede)
