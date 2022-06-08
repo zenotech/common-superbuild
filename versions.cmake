@@ -227,10 +227,6 @@ superbuild_set_revision(pythonidna
   URL     "https://www.paraview.org/files/dependencies/idna-3.2.tar.gz"
   URL_MD5 08ea8e2ce09e522424e872409c221138)
 
-superbuild_set_revision(pythontxaio
-  URL     "https://www.paraview.org/files/dependencies/txaio-21.2.1.tar.gz"
-  URL_MD5 7e80b80ed7797245a5eef803043bdede)
-
 superbuild_set_revision(pythonwslinkasync
   URL     "https://www.paraview.org/files/dependencies/wslink-1.6.4.tar.gz"
   URL_MD5 fad2f607b68f9d9916450adf55a1f7c9)

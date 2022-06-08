@@ -54,7 +54,6 @@ function (superbuild_find_projects var)
     pythonsetuptoolsrust
     pythonsix
     pythontoml
-    pythontxaio
     pythontypingextensions
     pythonwheel
     pythonwslinkasync
