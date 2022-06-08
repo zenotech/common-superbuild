@@ -57,7 +57,6 @@ function (superbuild_find_projects var)
     pythontypingextensions
     pythonwheel
     pythonwslinkasync
-    pythonpywebvue
     pythonyarl
     pytz
     qhull

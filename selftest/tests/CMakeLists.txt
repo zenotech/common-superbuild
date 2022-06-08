@@ -59,9 +59,6 @@ list(REMOVE_ITEM license_projects
   # Dummy projects
   hdf5cpp
   pythonmpi4py
-
-  # Outdated project without license
-  pythonpywebvue
   )
 
 # Apple USE_SYSTEM projects
