@@ -215,10 +215,6 @@ superbuild_set_revision(pythonyarl
   URL     "https://www.paraview.org/files/dependencies/yarl-1.6.3.tar.gz "
   URL_MD5 3b6f2da3db8c645a9440375fd6a414eb)
 
-superbuild_set_revision(pythonautobahn
-  URL     "https://www.paraview.org/files/dependencies/autobahn-21.3.1.tar.gz"
-  URL_MD5 dcba839ee61be33d05042a09c008c6bc)
-
 superbuild_set_revision(pythoncffi
   URL     "https://www.paraview.org/files/dependencies/cffi-1.14.6.tar.gz"
   URL_MD5 5c118a18ea897df164dbff67a32876fc)
@@ -227,49 +223,13 @@ superbuild_set_revision(pythonsemanticversion
   URL     "https://www.paraview.org/files/dependencies/semantic_version-2.8.5.tar.gz"
   URL_MD5 76d7364def7ee487b6153d40b13de904)
 
-superbuild_set_revision(pythonconstantly
-  URL     "https://www.paraview.org/files/dependencies/constantly-15.1.0.tar.gz"
-  URL_MD5 f0762f083d83039758e53f8cf0086eef)
-
-superbuild_set_revision(pythonhyperlink
-  URL     "https://www.paraview.org/files/dependencies/hyperlink-21.0.0.tar.gz"
-  URL_MD5 6285ac13e7d6be4157698ad7960ed490)
-
 superbuild_set_revision(pythonidna
   URL     "https://www.paraview.org/files/dependencies/idna-3.2.tar.gz"
   URL_MD5 08ea8e2ce09e522424e872409c221138)
 
-superbuild_set_revision(pythonincremental
-  URL     "https://www.paraview.org/files/dependencies/incremental-21.3.0.tar.gz"
-  URL_MD5 9f7ad12e0c05a12cee52a7350976c4e3)
-
-superbuild_set_revision(pythontwisted
-  URL     "https://www.paraview.org/files/dependencies/Twisted-21.7.0.tar.gz"
-  URL_MD5 6b17e9a4b28b8846847e5324c2e59bf4)
-
-superbuild_set_revision(pythontxaio
-  URL     "https://www.paraview.org/files/dependencies/txaio-21.2.1.tar.gz"
-  URL_MD5 7e80b80ed7797245a5eef803043bdede)
-
 superbuild_set_revision(pythonwslinkasync
   URL     "https://www.paraview.org/files/dependencies/wslink-1.6.4.tar.gz"
   URL_MD5 fad2f607b68f9d9916450adf55a1f7c9)
-
-superbuild_set_revision(pythonwslink
-  URL     "https://www.paraview.org/files/dependencies/wslink-0.1.11.tar.gz"
-  URL_MD5 35e6285c2a74304da0557f1402c400e5)
-
-superbuild_set_revision(pythonpywebvue
-  URL     "https://www.paraview.org/files/dependencies/pywebvue-2.1.4.tar.gz"
-  URL_MD5 02f63a8b2ca20cb1d7328b1f7369a88f)
-
-superbuild_set_revision(pythonzope
-  URL     "https://www.paraview.org/files/dependencies/Zope-5.3.tar.gz"
-  URL_MD5 3b8ddc554345279c0e0018d5f1814c13)
-
-superbuild_set_revision(pythonzopeinterface
-  URL     "https://www.paraview.org/files/dependencies/zope.interface-5.4.0.tar.gz"
-  URL_MD5 c58b31da83449631efb499de13c68c6a)
 
 superbuild_set_revision(pythonsix
   URL     "https://www.paraview.org/files/dependencies/six-1.16.0.tar.gz"

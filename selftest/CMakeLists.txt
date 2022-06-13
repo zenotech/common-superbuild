@@ -28,20 +28,16 @@ function (superbuild_find_projects var)
     pythonaiohttp
     pythonasynctimeout
     pythonattrs
-    pythonautobahn
     pythonbeniget
     pythoncffi
     pythonchardet
-    pythonconstantly
     pythoncppy
     pythoncryptography
     pythoncycler
     pythoncython
     pythondateutil
     pythongast
-    pythonhyperlink
     pythonidna
-    pythonincremental
     pythonkiwisolver
     pythonmako
     pythonmpi4py
@@ -58,16 +54,10 @@ function (superbuild_find_projects var)
     pythonsetuptoolsrust
     pythonsix
     pythontoml
-    pythontwisted
-    pythontxaio
     pythontypingextensions
     pythonwheel
-    pythonwslink
     pythonwslinkasync
-    pythonpywebvue
     pythonyarl
-    pythonzope
-    pythonzopeinterface
     pytz
     qhull
     qt5
