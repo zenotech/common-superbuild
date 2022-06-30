@@ -4,7 +4,7 @@ if (NOT PACKAGE_SYSTEM_QT)
   return ()
 endif ()
 
-# For Windows, add rules to pacakge system Qt.
+# For Windows, add rules to package system Qt.
 function (_qt_query_qmake qt_var result)
   execute_process(
     COMMAND         "${QT_QMAKE_EXECUTABLE}"

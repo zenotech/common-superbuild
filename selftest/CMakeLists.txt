@@ -62,6 +62,7 @@ function (superbuild_find_projects var)
     pytz
     qhull
     qt5
+    scipy
     sympy
     szip
     tbb
@@ -85,7 +86,6 @@ function (superbuild_find_projects var)
       libxml2
       pkgconf
       pybind11
-      scipy
       sqlite)
   endif ()
 
