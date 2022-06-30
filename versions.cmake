@@ -93,6 +93,14 @@ superbuild_set_revision(scipy
   URL     "https://www.paraview.org/files/dependencies/scipy-1.7.1.tar.gz"
   URL_MD5 8ac74369cdcabc097f602682c951197c)
 
+superbuild_set_revision(pythonmpmath
+  URL     "https://www.paraview.org/files/dependencies/mpmath-1.2.1.tar.gz"
+  URL_MD5 ef8a6449851755319673b06f71731d52)
+
+superbuild_set_revision(sympy
+  URL     "https://www.paraview.org/files/dependencies/sympy-1.10.1.tar.gz"
+  URL_MD5 8c7a956d74a47dc439c2935fec64ac46)
+
 superbuild_set_revision(qhull
   URL     "https://www.paraview.org/files/dependencies/qhull-2020-src-8.0.2.tgz"
   URL_MD5 295f7332269a38279478f555cc185296)
