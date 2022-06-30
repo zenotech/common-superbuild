@@ -41,6 +41,7 @@ function (superbuild_find_projects var)
     pythonkiwisolver
     pythonmako
     pythonmpi4py
+    pythonmpmath
     pythonmultidict
     pythonpillow
     pythonply
@@ -61,6 +62,7 @@ function (superbuild_find_projects var)
     pytz
     qhull
     qt5
+    sympy
     szip
     tbb
     zlib)
