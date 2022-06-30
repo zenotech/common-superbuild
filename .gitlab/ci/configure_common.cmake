@@ -100,11 +100,16 @@ if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos")
   enable_project(openxrsdk)
 endif ()
 
-# Fortran doesn't work on Windows right now.
+# Fortran doesn't work on Windows or macOS arm64 right now.
 if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "windows" AND
     NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos_arm64")
   enable_project(fortran)
   enable_project(lapack)
+  enable_project(scipy)
+endif ()
+
+# But scipy does work on Windows.
+if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "windows")
   enable_project(scipy)
 endif ()
 
