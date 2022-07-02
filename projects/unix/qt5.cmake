@@ -8,6 +8,9 @@ list(APPEND qt5_extra_options
 if (qt5_SOURCE_SELECTION VERSION_LESS "5.15")
   list(APPEND qt5_extra_options
     -qt-xcb)
+else ()
+  list(APPEND qt5_extra_options
+    -xcb)
 endif ()
 if (NOT qt5_SOURCE_SELECTION VERSION_LESS "5.12")
   list(APPEND qt5_extra_options
