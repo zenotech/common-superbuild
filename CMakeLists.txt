@@ -6,11 +6,13 @@ if (POLICY CMP0114)
   cmake_policy(SET CMP0114 NEW)
 endif ()
 
+get_property(is_multiconfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+
 if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   message(FATAL_ERROR
     "This project is not meant to be run directly, but instead used via "
     "add_subdirectory.")
-elseif (CMAKE_CONFIGURATION_TYPES)
+elseif (is_multiconfig)
   # These generators aren't tested at all and non-CMake subprojects do not
   # change their configuration properly without a reconfigure. This could
   # change in the future, but it is not in the plan right now.
