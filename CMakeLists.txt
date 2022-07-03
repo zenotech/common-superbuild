@@ -26,6 +26,19 @@ elseif (NOT COMMAND superbuild_find_projects)
     "can be enabled.")
 endif ()
 
+# Some flags are really bad for caching. Replace them with better variants.
+if (superbuild_replace_uncacheable_flags)
+  string(TOUPPER "${CMAKE_BUILD_TYPE}" build_type_upper)
+  foreach (lang IN ITEMS C CXX Fortran)
+    foreach (prefix IN ITEMS - /)
+      foreach (flag IN ITEMS Zi ZI)
+        string(REPLACE "${prefix}${flag}" "-Z7" "CMAKE_${lang}_FLAGS" "${CMAKE_${lang}_FLAGS}")
+        string(REPLACE "${prefix}${flag}" "-Z7" "CMAKE_${lang}_FLAGS_${build_type_upper}" "${CMAKE_${lang}_FLAGS_${build_type_upper}}")
+      endforeach ()
+    endforeach ()
+  endforeach ()
+endif ()
+
 list(INSERT CMAKE_MODULE_PATH 0
   "${CMAKE_CURRENT_LIST_DIR}/cmake")
 include("SuperbuildUtils")
