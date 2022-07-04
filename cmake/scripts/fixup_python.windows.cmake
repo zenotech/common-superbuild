@@ -1,6 +1,11 @@
 set(_superbuild_install_cmake_scripts_dir "${CMAKE_CURRENT_LIST_DIR}")
 
 function (superbuild_windows_install_python_module destination module search_paths location)
+  # Inherit the caller's local search arguments into the parent search
+  # arguments.
+  list(APPEND parent_extra_search_arguments
+    ${local_extra_search_arguments})
+
   foreach (search_path IN LISTS search_paths)
     if (EXISTS "${search_path}/${module}.py")
       file(INSTALL
@@ -26,12 +31,25 @@ function (superbuild_windows_install_python_module destination module search_pat
       endif()
     endif ()
 
+    # Python wheels ship their dependencies in `.libs` directories.
+    if (EXISTS "${search_path}/.libs")
+      # Add it to the search path if it exists.
+      set(local_extra_search_arguments
+        --search "${search_path}/.libs")
+    else ()
+      # But clear it out if there isn't one; we'll use the parent's search
+      # paths as well.
+      set(local_extra_search_arguments "")
+    endif ()
+
     if (EXISTS "${module_pyd}")
       execute_process(
         COMMAND "${superbuild_python_executable}"
                 "${_superbuild_install_cmake_scripts_dir}/fixup_bundle.windows.py"
                 --destination "${bundle_destination}"
                 ${fixup_bundle_arguments}
+                ${local_extra_search_arguments}
+                ${parent_extra_search_arguments}
                 --location    "${location}"
                 --manifest    "${bundle_manifest}"
                 --type        module
