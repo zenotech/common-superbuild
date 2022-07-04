@@ -12,6 +12,21 @@ import shutil
 import subprocess
 
 
+def long_path(path):
+    return '\\\\?\\' + path
+
+
+def shutil_rmtree(path):
+    path = long_path(os.path.abspath(path))
+    return shutil.rmtree(path)
+
+
+def shutil_copy(src, dst):
+    src = long_path(os.path.abspath(src))
+    dst = long_path(os.path.abspath(dst))
+    return shutil.copy(src, dst)
+
+
 class Pipeline(object):
     '''
     A simple class to handle a list of shell commands which need to pass input
@@ -278,7 +293,7 @@ def copy_library(destination, bundle_dest, library, dry_run=False):
 
     if not dry_run:
         _os_makedirs(app_dest)
-        shutil.copy(library.path, destination)
+        shutil_copy(library.path, destination)
 
     return binary
 
@@ -366,7 +381,7 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
     print('Copying %s ==> %s' % (binary.path, binary.bundle_location))
     if not dry_run:
         _os_makedirs(app_dest)
-        shutil.copy(binary.path, app_dest)
+        shutil_copy(binary.path, app_dest)
 
 
 def _update_manifest(manifest, installed, path, location):
@@ -403,7 +418,7 @@ def main(args):
 
     # Remove the old bundle.
     if not opts.dry_run and opts.clean and os.path.exists(bundle_dest):
-        shutil.rmtree(bundle_dest)
+        shutil_rmtree(bundle_dest)
 
     includes = list(map(re.compile, opts.include))
     excludes = list(map(re.compile, opts.exclude))
