@@ -6,11 +6,13 @@ if (POLICY CMP0114)
   cmake_policy(SET CMP0114 NEW)
 endif ()
 
+get_property(is_multiconfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+
 if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   message(FATAL_ERROR
     "This project is not meant to be run directly, but instead used via "
     "add_subdirectory.")
-elseif (CMAKE_CONFIGURATION_TYPES)
+elseif (is_multiconfig)
   # These generators aren't tested at all and non-CMake subprojects do not
   # change their configuration properly without a reconfigure. This could
   # change in the future, but it is not in the plan right now.
@@ -22,6 +24,19 @@ elseif (NOT COMMAND superbuild_find_projects)
   message(FATAL_ERROR
     "The superbuild_find_projects function is not implemented; no projects "
     "can be enabled.")
+endif ()
+
+# Some flags are really bad for caching. Replace them with better variants.
+if (superbuild_replace_uncacheable_flags)
+  string(TOUPPER "${CMAKE_BUILD_TYPE}" build_type_upper)
+  foreach (lang IN ITEMS C CXX Fortran)
+    foreach (prefix IN ITEMS - /)
+      foreach (flag IN ITEMS Zi ZI)
+        string(REPLACE "${prefix}${flag}" "-Z7" "CMAKE_${lang}_FLAGS" "${CMAKE_${lang}_FLAGS}")
+        string(REPLACE "${prefix}${flag}" "-Z7" "CMAKE_${lang}_FLAGS_${build_type_upper}" "${CMAKE_${lang}_FLAGS_${build_type_upper}}")
+      endforeach ()
+    endforeach ()
+  endforeach ()
 endif ()
 
 list(INSERT CMAKE_MODULE_PATH 0
