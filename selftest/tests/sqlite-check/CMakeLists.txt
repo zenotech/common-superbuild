@@ -28,3 +28,5 @@ include(CTest)
 enable_testing()
 
 add_test(NAME sqlitetest COMMAND sqlitetest)
+string(REPLACE ";" "\;" curpath "$ENV{PATH}")
+set_property(TEST sqlitetest APPEND PROPERTY ENVIRONMENT "PATH=${curpath}\;${CMAKE_PREFIX_PATH}/bin")

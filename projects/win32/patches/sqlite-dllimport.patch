@@ -1,0 +1,16 @@
+diff -u -U5 -r src/sqlite3.h src.import/sqlite3.h
+--- src/sqlite3.h	2021-06-18 14:52:24.000000000 -0400
++++ src.import/sqlite3.h	2022-07-07 09:07:47.914519261 -0400
+@@ -47,11 +47,11 @@
+ */
+ #ifndef SQLITE_EXTERN
+ # define SQLITE_EXTERN extern
+ #endif
+ #ifndef SQLITE_API
+-# define SQLITE_API
++# define SQLITE_API __declspec(dllimport)
+ #endif
+ #ifndef SQLITE_CDECL
+ # define SQLITE_CDECL
+ #endif
+ #ifndef SQLITE_APICALL
