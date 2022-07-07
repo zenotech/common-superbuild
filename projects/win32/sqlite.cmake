@@ -3,7 +3,9 @@ set(sqlite_c_flags
   ${CMAKE_C_FLAGS}
   ${CMAKE_C_FLAGS_${sqlite_upper_config}}
   # Export symbols from the library.
-  "-DSQLITE_API=__declspec(dllexport)")
+  "-DSQLITE_API=__declspec(dllexport)"
+  # Enable RTree support
+  "-DSQLITE_ENABLE_RTREE=1")
 set(sqlite_shared_flags
   ${CMAKE_SHARED_LINKER_FLAGS}
   ${CMAKE_SHARED_LINKER_FLAGS_${sqlite_upper_config}})
