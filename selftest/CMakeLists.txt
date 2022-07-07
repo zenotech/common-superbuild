@@ -63,6 +63,7 @@ function (superbuild_find_projects var)
     qhull
     qt5
     scipy
+    sqlite
     sympy
     szip
     tbb
@@ -85,8 +86,7 @@ function (superbuild_find_projects var)
       gperf
       libxml2
       pkgconf
-      pybind11
-      sqlite)
+      pybind11)
   endif ()
 
   if (NOT APPLE)
