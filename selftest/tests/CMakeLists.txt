@@ -190,6 +190,7 @@ add_python_import_test(pytz pytz)
 add_python_import_test(pywin32 adodbapi)
 add_python_import_test(scipy scipy)
 add_python_import_test(sympy sympy)
+add_python_import_test(xz lzma)
 
 if (WIN32)
   # Python 3.9 needs help finding dependent DLLs and Pillow doesn't do this on

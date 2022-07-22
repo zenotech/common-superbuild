@@ -28,7 +28,7 @@ endif ()
 
 superbuild_add_project(python3
   CAN_USE_SYSTEM
-  DEPENDS bzip2 zlib png ffi sqlite
+  DEPENDS bzip2 zlib png ffi sqlite xz
   DEPENDS_OPTIONAL ${python3_optional_depends}
   LICENSE_FILES
     LICENSE
