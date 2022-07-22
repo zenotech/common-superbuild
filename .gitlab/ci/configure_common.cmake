@@ -94,6 +94,7 @@ enable_project(sympy)
 enable_project(szip)
 enable_project(tbb)
 enable_project(utillinux)
+enable_project(xz)
 enable_project(zlib)
 
 # OpenXR-SDK-Source does not build on mac os
