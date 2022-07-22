@@ -89,7 +89,7 @@ foreach (project IN LISTS license_projects)
 endforeach ()
 
 function (add_python_import_test package module)
-  if (NOT TARGET "${package}")
+  if (NOT TARGET "${package}" OR NOT TARGET "python3")
     return ()
   endif ()
 
