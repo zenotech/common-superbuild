@@ -89,7 +89,7 @@ foreach (project IN LISTS license_projects)
 endforeach ()
 
 function (add_python_import_test package module)
-  if (NOT TARGET "${package}")
+  if (NOT TARGET "${package}" OR NOT TARGET "python3")
     return ()
   endif ()
 
@@ -190,6 +190,7 @@ add_python_import_test(pytz pytz)
 add_python_import_test(pywin32 adodbapi)
 add_python_import_test(scipy scipy)
 add_python_import_test(sympy sympy)
+add_python_import_test(xz lzma)
 
 if (WIN32)
   # Python 3.9 needs help finding dependent DLLs and Pillow doesn't do this on

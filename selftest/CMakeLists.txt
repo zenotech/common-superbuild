@@ -67,6 +67,7 @@ function (superbuild_find_projects var)
     sympy
     szip
     tbb
+    xz
     zlib)
 
   if (SUPERBUILD_ENABLE_OPENSSL)
