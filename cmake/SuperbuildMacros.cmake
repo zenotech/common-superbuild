@@ -564,43 +564,6 @@ function (superbuild_apply_patch _name _patch _comment)
     message(FATAL_ERROR "Could not find git executable.  Please set GIT_EXECUTABLE.")
   endif ()
 
-<<<<<<< HEAD
-  execute_process(
-    COMMAND "${GIT_EXECUTABLE}"
-            rev-parse
-            --is-inside-work-tree
-    RESULT_VARIABLE res
-    OUTPUT_VARIABLE out
-    ERROR_VARIABLE  err
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-  if (res AND NOT res EQUAL 128)
-    message(FATAL_ERROR "Failed to determine if the build tree is inside of a git repository.")
-  endif ()
-  if (out STREQUAL "true")
-    execute_process(
-      COMMAND "${GIT_EXECUTABLE}"
-              rev-parse
-              --show-toplevel
-      RESULT_VARIABLE res
-      OUTPUT_VARIABLE out
-      ERROR_VARIABLE  err
-      WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
-    if (res)
-      message(WARNING
-        "Failed to detect the top-level of the git repository: ${err}.")
-      set(out "<unknown>")
-    endif ()
-    message(WARNING
-      "The build tree appears to be inside of the git repository located at "
-      "${out}. This interferes with the way the superbuild applies patches to "
-      "projects and is not supported. Please relocate the build tree to a "
-      "directory which is not under a git repository.")
-  endif ()
-
-=======
->>>>>>> upstream/master
   if (NOT superbuild_build_phase)
     return ()
   endif ()
