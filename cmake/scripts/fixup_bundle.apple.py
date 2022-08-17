@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 '''
 A tool to install Mach-O binaries into an ``.app`` bundle.
@@ -6,7 +6,6 @@ A tool to install Mach-O binaries into an ``.app`` bundle.
 Other bundle types (particularly ``.framework`` and ``.plugin`` bundles) are
 not supported yet.
 '''
-from __future__ import print_function
 
 import json
 import os
@@ -848,11 +847,11 @@ def main(args):
     _install_binary(main_exe, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run, library_dest=opts.library_dest, framework_dest=opts.framework_dest)
 
     for plugin in opts.plugins:
-        plugin_bin = Plugin(plugin, fake_exe_path=opts.fake_plugin_paths, search_paths=opts.search)
+        plugin_bin = Plugin(plugin, fake_exe_path=opts.fake_plugin_paths, search_paths=opts.search, ignores=ignores)
         _install_binary(plugin_bin, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run, library_dest=opts.library_dest, framework_dest=opts.framework_dest)
 
     for library in opts.libraries:
-        library_bin = Module(library, 'Contents/Libraries', search_paths=opts.search)
+        library_bin = Module(library, 'Contents/Libraries', search_paths=opts.search, ignores=ignores)
         _install_binary(library_bin, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run)
         library_bin.set_installed_id('@executable_path/../Libraries')
 

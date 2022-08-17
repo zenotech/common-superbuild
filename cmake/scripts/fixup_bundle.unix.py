@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 '''
 A tool to install ELF binaries into in installation prefix.
@@ -206,7 +206,7 @@ class Library(object):
                 ])
             rpaths.extend(get_rpaths().split('\n'))
 
-            self._rpaths = list(filter(lambda x: x, map(self._resolve_rpath, rpaths)))
+            self._rpaths = list([x for x in map(self._resolve_rpath, rpaths) if x])
         return self._rpaths
 
     @property
@@ -233,7 +233,7 @@ class Library(object):
                 ])
             runpaths.extend(get_runpaths().split(':'))
 
-            self._runpaths = list(filter(lambda x: x, map(self._resolve_rpath, runpaths)))
+            self._runpaths = list([x for x in map(self._resolve_rpath, runpaths) if x])
         return self._runpaths
 
     def _get_dependencies(self):

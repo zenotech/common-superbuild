@@ -9,4 +9,8 @@ superbuild_add_project_python(pythonpandas
     pytz
     zlib
   DEPENDS_OPTIONAL
-    matplotlib)
+    matplotlib
+  LICENSE_FILES
+    # They are many license files in pythonpandas, but only this one applies
+    LICENSE
+  )

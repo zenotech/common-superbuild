@@ -13,11 +13,14 @@ function (superbuild_find_projects var)
     fortran
     freetype
     hdf5
+    hdf5cpp
+    jsoncpp
     lapack
     libjpegturbo
     matplotlib
     mpi
     netcdf
+    ninja
     nlohmannjson
     numpy
     png
@@ -25,22 +28,20 @@ function (superbuild_find_projects var)
     pythonaiohttp
     pythonasynctimeout
     pythonattrs
-    pythonautobahn
     pythonbeniget
     pythoncffi
     pythonchardet
-    pythonconstantly
     pythoncppy
     pythoncryptography
     pythoncycler
     pythoncython
     pythondateutil
     pythongast
-    pythonhyperlink
     pythonidna
-    pythonincremental
     pythonkiwisolver
+    pythonmako
     pythonmpi4py
+    pythonmpmath
     pythonmultidict
     pythonpillow
     pythonply
@@ -54,21 +55,19 @@ function (superbuild_find_projects var)
     pythonsetuptoolsrust
     pythonsix
     pythontoml
-    pythontwisted
-    pythontxaio
     pythontypingextensions
     pythonwheel
-    pythonwslink
     pythonwslinkasync
-    pythonpywebvue
     pythonyarl
-    pythonzope
-    pythonzopeinterface
     pytz
     qhull
     qt5
+    scipy
+    sqlite
+    sympy
     szip
     tbb
+    xz
     zlib)
 
   if (SUPERBUILD_ENABLE_OPENSSL)
@@ -88,20 +87,32 @@ function (superbuild_find_projects var)
       gperf
       libxml2
       pkgconf
-      pybind11
-      scipy
-      sqlite)
+      pybind11)
+  endif ()
+
+  if (NOT APPLE)
+    list(APPEND projects
+      openxrsdk)
   endif ()
 
   if (UNIX AND NOT APPLE)
     list(APPEND projects
+      expat
       fontconfig
+      glproto
+      llvm
+      mesa
+      meson
+      osmesa
       utillinux)
   endif ()
 
   set("${var}"
     ${projects}
     PARENT_SCOPE)
+
+  # For later usage.
+  set_property(GLOBAL PROPERTY _superbuild_all_projects ${projects})
 endfunction ()
 
 # Disable Qt modules that generally aren't necessary.

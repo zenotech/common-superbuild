@@ -1,3 +1,4 @@
 superbuild_add_project_python(pythonkiwisolver
   PACKAGE kiwisolver
-  DEPENDS pythonsetuptools pythoncppy)
+  DEPENDS pythonsetuptools pythoncppy
+  LICENSE_FILES LICENSE)

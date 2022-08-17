@@ -32,8 +32,64 @@ if (UNIX)
       -P "${CMAKE_CURRENT_SOURCE_DIR}/unix-check-lib64.cmake")
 endif ()
 
-function (add_python_import_test package module)
+function (add_license_test package)
   if (NOT TARGET "${package}")
+    return ()
+  endif ()
+
+  add_test(
+    NAME "license-${package}"
+    COMMAND
+      "${CMAKE_COMMAND}"
+      "-Dlicense_dir=${install_dir}/share/licenses/${package}"
+      -P "${CMAKE_CURRENT_SOURCE_DIR}/check-license.cmake")
+endfunction ()
+
+get_property(all_projects GLOBAL PROPERTY _superbuild_all_projects)
+
+set(license_projects "${all_projects}")
+# Remove projects which are known to not have licenses.
+list(REMOVE_ITEM license_projects
+  # Language utility projects
+  cxx11
+
+  # Feature projects
+  fortran
+
+  # Dummy projects
+  hdf5cpp
+  pythonmpi4py
+  )
+
+# Apple USE_SYSTEM projects
+if (APPLE)
+  list(REMOVE_ITEM license_projects
+    qt5
+    bzip2
+    )
+endif ()
+
+# Win32 USE_SYSTEM projects
+if (WIN32)
+  list(REMOVE_ITEM license_projects
+    qt5
+    mpi
+    )
+endif ()
+
+# Ninja logic
+if (CMAKE_GENERATOR MATCHES "Ninja")
+  list(REMOVE_ITEM license_projects
+    ninja
+    )
+endif ()
+
+foreach (project IN LISTS license_projects)
+  add_license_test("${project}")
+endforeach ()
+
+function (add_python_import_test package module)
+  if (NOT TARGET "${package}" OR NOT TARGET "python3")
     return ()
   endif ()
 
@@ -82,6 +138,17 @@ if (TARGET tbb)
         --build-options "-DCMAKE_PREFIX_PATH=${install_dir}")
 endif ()
 
+if (TARGET sqlite)
+  add_test(
+    NAME sqlite-check
+    COMMAND
+      "${CMAKE_CTEST_COMMAND}"
+        --build-generator "${CMAKE_GENERATOR}"
+        --build-and-test "${CMAKE_CURRENT_SOURCE_DIR}/sqlite-check" "${CMAKE_CURRENT_BINARY_DIR}/sqlite-check"
+        --build-options "-DCMAKE_PREFIX_PATH=${install_dir}"
+        --test-command "${CMAKE_CTEST_COMMAND}")
+endif ()
+
 add_python_import_test(python3 this)
 add_python_import_test(matplotlib matplotlib)
 add_python_script_test(matplotlib matplotlib-render)
@@ -89,21 +156,18 @@ add_python_import_test(numpy numpy)
 add_python_import_test(pythonaiohttp aiohttp)
 add_python_import_test(pythonasynctimeout async_timeout)
 add_python_import_test(pythonattrs attr)
-add_python_import_test(pythonautobahn autobahn)
 add_python_import_test(pythonbeniget beniget)
 add_python_import_test(pythoncffi cffi)
 add_python_import_test(pythonchardet chardet)
-add_python_import_test(pythonconstantly constantly)
 add_python_import_test(pythoncppy cppy)
 add_python_import_test(pythoncryptography cryptography)
 add_python_import_test(pythoncycler cycler)
 add_python_import_test(pythoncython cython)
 add_python_import_test(pythondateutil dateutil)
 add_python_import_test(pythongast gast)
-add_python_import_test(pythonhyperlink hyperlink)
 add_python_import_test(pythonidna idna)
-add_python_import_test(pythonincremental incremental)
 add_python_import_test(pythonkiwisolver kiwisolver)
+add_python_import_test(pythonmpmath mpmath)
 add_python_import_test(pythonmultidict multidict)
 add_python_import_test(pythonpillow PIL)
 add_python_import_test(pythonpillow PIL.Image)
@@ -118,19 +182,15 @@ add_python_import_test(pythonsetuptoolsscm setuptools_scm)
 add_python_import_test(pythonsetuptoolsrust setuptools_rust)
 add_python_import_test(pythonsix six)
 add_python_import_test(pythontoml toml)
-add_python_import_test(pythontwisted twisted)
-add_python_import_test(pythontxaio txaio)
 add_python_import_test(pythontypingextensions typing_extensions)
 add_python_import_test(pythonwheel wheel)
-add_python_import_test(pythonwslink wslink)
 add_python_import_test(pythonwslinkasync wslink)
 add_python_import_test(pythonyarl yarl)
-add_python_import_test(pythonzope App)
-add_python_import_test(pythonzope OFS)
-add_python_import_test(pythonzopeinterface zope.interface)
 add_python_import_test(pytz pytz)
 add_python_import_test(pywin32 adodbapi)
 add_python_import_test(scipy scipy)
+add_python_import_test(sympy sympy)
+add_python_import_test(xz lzma)
 
 if (WIN32)
   # Python 3.9 needs help finding dependent DLLs and Pillow doesn't do this on

@@ -2,6 +2,8 @@ include(openssl.common)
 
 superbuild_add_project(openssl
   BUILD_IN_SOURCE 1
+  LICENSE_FILES
+    LICENSE
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
   INSTALL_COMMAND

@@ -76,6 +76,8 @@ superbuild_add_project(qt5
   CAN_USE_SYSTEM
   DEPENDS ${qt5_depends} ${qt5_extra_depends} cxx11
   DEPENDS_OPTIONAL ${qt5_optional_depends}
+  LICENSE_FILES
+    LICENSE.LGPLv3 # Qt is distributed under many licenses, this one can be chosen for the enabled components
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure${qt5_configure_ext}
       -opensource
@@ -107,3 +109,8 @@ superbuild_add_project(qt5
 superbuild_add_extra_cmake_args(
   -DPARAVIEW_QT_VERSION:STRING=5
   -DQt5_DIR:PATH=<INSTALL_DIR>/lib/cmake/Qt5)
+
+if (qt5_SOURCE_SELECTION STREQUAL "5.15")
+  superbuild_apply_patch(qt5 missing-includes
+    "Add missing includes for newer GCC versions")
+endif ()

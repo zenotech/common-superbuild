@@ -15,6 +15,9 @@ endif ()
 
 superbuild_add_project(ffmpeg
   DEPENDS zlib pkgconf
+  LICENSE_FILES
+    LICENSE.md
+    COPYING.LGPLv2.1
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>

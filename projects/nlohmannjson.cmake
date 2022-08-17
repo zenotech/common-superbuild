@@ -1,6 +1,8 @@
 # Build and install:
 superbuild_add_project(nlohmannjson
   DEPENDS cxx11
+  LICENSE_FILES
+    LICENSE.MIT
   CMAKE_ARGS
     -DENABLE_TESTING:BOOL=OFF
     -DBUILD_TESTING:BOOL=OFF

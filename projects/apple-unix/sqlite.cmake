@@ -1,10 +1,14 @@
 set(sqlite_extra_build_flags
   # Needed for external Qt builds.
-  "-DSQLITE_ENABLE_COLUMN_METADATA=1")
+  "-DSQLITE_ENABLE_COLUMN_METADATA=1"
+  # Needed for GDAL builds
+  "-DSQLITE_ENABLE_RTREE=1")
 
 string(REPLACE ";" " " sqlite_extra_build_flags "${sqlite_extra_build_flags}")
 superbuild_add_project(sqlite
   CAN_USE_SYSTEM
+  LICENSE_FILES
+    tea/license.terms # There is no license file in sqlite, only headers.
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>

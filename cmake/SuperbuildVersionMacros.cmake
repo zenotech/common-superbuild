@@ -138,6 +138,29 @@ function (_superbuild_detect_version_git var source_dir default version_file)
         ERROR_QUIET
         OUTPUT_STRIP_TRAILING_WHITESPACE)
     endif ()
+
+    # Get branch information (if `describe` worked).
+    set(branch "")
+    if (NOT result)
+      execute_process(
+        COMMAND "${GIT_EXECUTABLE}"
+                name-rev
+                --name-only
+                --no-undefined          # error if these names don't work
+                --refs=refs/tags/*      # tags
+                --refs=refs/heads/*     # branches
+                --refs=refs/pipelines/* # CI
+                HEAD
+        WORKING_DIRECTORY ${source_dir}
+        RESULT_VARIABLE name_rev_result
+        OUTPUT_VARIABLE name_rev_output
+        ERROR_QUIET
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_STRIP_TRAILING_WHITESPACE)
+      if (NOT name_rev_result)
+        set(branch "${name_rev_output}")
+      endif ()
+    endif ()
   endif ()
 
   # If `git describe` failed, check for a version file.
@@ -162,6 +185,11 @@ function (_superbuild_detect_version_git var source_dir default version_file)
   set("${var}_VERSION_PATCH_EXTRA" "${parsed_VERSION_PATCH_EXTRA}" PARENT_SCOPE)
   set("${var}_VERSION_FULL"        "${parsed_VERSION_FULL}" PARENT_SCOPE)
   set("${var}_VERSION_IS_RELEASE"  "${parsed_VERSION_IS_RELEASE}" PARENT_SCOPE)
+  if (parsed_VERSION_PATCH_EXTRA)
+    set("${var}_VERSION_BRANCH"    "${branch}" PARENT_SCOPE)
+  else ()
+    set("${var}_VERSION_BRANCH"    "" PARENT_SCOPE)
+  endif ()
 endfunction ()
 
 #[==[.md
@@ -188,6 +216,7 @@ The variables available after inclusion are:
  `<PROJECT>_version_suffix` (equivalent to `-<patch_extra>` if `patch_extra` is non-empty)
  `<PROJECT>_version_full`
  `<PROJECT>_version_is_release` (`TRUE` if the suffix is empty, `FALSE` otherwise)
+ `<PROJECT>_version_branch` (the "branch" name from Git if available, empty otherwise)
 #]==]
 function (superbuild_set_version_variables project default include_file)
   set(source_dir "")
@@ -210,10 +239,11 @@ function (superbuild_set_version_variables project default include_file)
   endif ()
   _superbuild_set_up("${project}_version_full" "${${project}_VERSION_FULL}")
   _superbuild_set_up("${project}_version_is_release" "${${project}_VERSION_IS_RELEASE}")
+  _superbuild_set_up("${project}_version_branch" "${${project}_VERSION_BRANCH}")
 
   if (include_file)
     file(WRITE "${_superbuild_module_gen_dir}/${include_file}" "")
-    foreach (variable IN ITEMS "" _major _minor _patch _patch_extra _suffix _full _is_release)
+    foreach (variable IN ITEMS "" _major _minor _patch _patch_extra _suffix _full _is_release _branch)
       file(APPEND "${_superbuild_module_gen_dir}/${include_file}"
         "set(\"${project}_version${variable}\" \"${${project}_version${variable}}\")\n")
     endforeach ()
@@ -227,7 +257,7 @@ function (superbuild_configure_project_version project)
     set(is_git_source_selection ON)
   elseif (ARGC GREATER 1)
     foreach (arg IN LISTS ARGN)
-      if (${project}_SOURCE_SELECTION IN_LIST "${arg}")
+      if (${project}_SOURCE_SELECTION IN_LIST arg)
         set(is_git_source_selection ON)
       endif ()
     endforeach ()

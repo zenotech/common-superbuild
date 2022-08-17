@@ -19,6 +19,10 @@ superbuild_set_revision(zlib
   URL     "https://www.paraview.org/files/dependencies/zlib-1.2.11.tar.xz"
   URL_MD5 85adef240c5f370b308da8c938951a68)
 
+superbuild_set_revision(xz
+  URL     "https://www.paraview.org/files/dependencies/xz-5.2.5.tar.xz"
+  URL_MD5 aa1621ec7013a19abab52a8aff04fe5b)
+
 superbuild_set_revision(ffmpeg
   URL     "https://www.paraview.org/files/dependencies/ffmpeg-4.4.tar.xz"
   URL_MD5 7b9d5b652d20e8c5405304ad72636d4a)
@@ -32,8 +36,8 @@ superbuild_set_revision(hdf5
   URL_MD5  442469fbf43626006346e679c22cf10a)
 
 superbuild_set_revision(boost
-  URL     "https://www.paraview.org/files/dependencies/boost_1_76_0.tar.bz2"
-  URL_MD5 )
+  URL     "https://www.paraview.org/files/dependencies/boost_1_79_0.tar.bz2"
+  URL_MD5 ce966eccb3c296a27abfef9356fd1dc4)
 
 superbuild_set_revision(png
   URL     "https://www.paraview.org/files/dependencies/libpng-1.6.37.tar.xz"
@@ -41,17 +45,17 @@ superbuild_set_revision(png
 
 if (WIN32)
   superbuild_set_revision(python3
-    URL     "https://www.paraview.org/files/dependencies/python-3.9.5-windows-x86_64.zip"
-    URL_MD5 c41556099961c9e0d4d6afd419045bac)
+    URL     "https://www.paraview.org/files/dependencies/python-3.9.13-windows-x86_64.zip"
+    URL_MD5 d55270fbc6356eb5c2b37bffd0c0b48b)
 else()
   superbuild_set_revision(python3
-    URL     "https://www.paraview.org/files/dependencies/Python-3.9.5.tar.xz"
-    URL_MD5 71f7ada6bec9cdbf4538adc326120cfd)
+    URL     "https://www.paraview.org/files/dependencies/Python-3.9.13.tar.xz"
+    URL_MD5 5e2411217b0060828d5f923eb422a3b8)
 endif()
 
 superbuild_set_revision(freetype
-  URL     "https://www.paraview.org/files/dependencies/freetype-2.11.0.tar.xz"
-  URL_MD5 f931582653774e310ed3a7e49b7167a3)
+  URL     "https://www.paraview.org/files/dependencies/freetype-2.12.0.tar.xz"
+  URL_MD5 9a07649ce73ba0d80d211092b3d1c2fa)
 
 superbuild_set_revision(gperf
   URL     "https://www.paraview.org/files/dependencies/gperf-3.1.tar.gz"
@@ -79,16 +83,34 @@ superbuild_set_selectable_source(qt5
   SELECT 5.10
     URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.10.1.tar.xz"
     URL_MD5 "7e167b9617e7bd64012daaacb85477af"
-  SELECT 5.12 DEFAULT
+  SELECT 5.12
     URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.12.9.tar.xz"
-    URL_MD5 "fa2646280cf38180689c29c393cddd05")
+    URL_MD5 "fa2646280cf38180689c29c393cddd05"
+  SELECT 5.15 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.15.2.tar.xz"
+    URL_MD5 "e1447db4f06c841d8947f0a6ce83a7b5")
 
 superbuild_set_revision(numpy
   URL     "https://www.paraview.org/files/dependencies/numpy-1.21.1.zip"
   URL_MD5 1d016e05851a4ba85307f3246eb569aa)
-superbuild_set_revision(scipy
-  URL     "https://www.paraview.org/files/dependencies/scipy-1.7.1.tar.gz"
-  URL_MD5 8ac74369cdcabc097f602682c951197c)
+
+if (WIN32)
+  superbuild_set_revision(scipy
+    URL     "https://www.paraview.org/files/dependencies/scipy-1.7.1-cp39-cp39-win_amd64.whl"
+    URL_MD5 f8d0f87aaa8929f059fcf840db345310)
+else ()
+  superbuild_set_revision(scipy
+    URL     "https://www.paraview.org/files/dependencies/scipy-1.7.1.tar.gz"
+    URL_MD5 8ac74369cdcabc097f602682c951197c)
+endif ()
+
+superbuild_set_revision(pythonmpmath
+  URL     "https://www.paraview.org/files/dependencies/mpmath-1.2.1.tar.gz"
+  URL_MD5 ef8a6449851755319673b06f71731d52)
+
+superbuild_set_revision(sympy
+  URL     "https://www.paraview.org/files/dependencies/sympy-1.10.1.tar.gz"
+  URL_MD5 8c7a956d74a47dc439c2935fec64ac46)
 
 superbuild_set_revision(qhull
   URL     "https://www.paraview.org/files/dependencies/qhull-2020-src-8.0.2.tgz"
@@ -122,22 +144,9 @@ superbuild_set_revision(netcdf
   URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.8.1.tar.gz"
   URL_MD5 b069f4eb1718798c2907c38189615f95)
 
-# Using Intel Threading Building Blocks 2018 Update 2
-set(tbb_ver "2021.3.0")
-if (WIN32)
-  set(tbb_file "oneapi-tbb-${tbb_ver}-win.zip")
-  set(tbb_md5 ad6766ea3e17e37c447b221fe01658ea)
-elseif (APPLE)
-  set(tbb_file "oneapi-tbb-${tbb_ver}-mac.tgz")
-  set(tbb_md5 280566eca486f6ef434652becfb4877c)
-else ()
-  set(tbb_file "oneapi-tbb-${tbb_ver}-lin.tgz")
-  set(tbb_md5 6027dc86d01269fd03a0c2f143f313cf)
-endif ()
-
 superbuild_set_revision(tbb
-  URL     "https://www.paraview.org/files/dependencies/${tbb_file}"
-  URL_MD5 "${tbb_md5}")
+  URL     "https://www.paraview.org/files/dependencies/tbb-2021.5.0.tar.gz"
+  URL_MD5 5e5f2ee22a0d19c0abbe7478f1c7ccf6)
 
 superbuild_set_revision(pytz
   URL     "https://www.paraview.org/files/dependencies/pytz-2021.1.tar.gz"
@@ -164,8 +173,8 @@ superbuild_set_revision(pythonply
   URL_MD5 6465f602e656455affcd7c5734c638f8)
 
 superbuild_set_revision(pythonpythran
-  URL     "https://www.paraview.org/files/dependencies/pythran-0.9.12.post1.tar.gz"
-  URL_MD5 b84d70ed33554dcef423673216bc3826)
+  URL     "https://www.paraview.org/files/dependencies/pythran-0.11.0.tar.gz"
+  URL_MD5 e09e90484771937ab499380858bdb18d)
 
 superbuild_set_revision(pythoncycler
   URL     "https://www.paraview.org/files/dependencies/cycler-0.10.0.tar.gz"
@@ -225,10 +234,6 @@ superbuild_set_revision(pythonyarl
   URL     "https://www.paraview.org/files/dependencies/yarl-1.6.3.tar.gz "
   URL_MD5 3b6f2da3db8c645a9440375fd6a414eb)
 
-superbuild_set_revision(pythonautobahn
-  URL     "https://www.paraview.org/files/dependencies/autobahn-21.3.1.tar.gz"
-  URL_MD5 dcba839ee61be33d05042a09c008c6bc)
-
 superbuild_set_revision(pythoncffi
   URL     "https://www.paraview.org/files/dependencies/cffi-1.14.6.tar.gz"
   URL_MD5 5c118a18ea897df164dbff67a32876fc)
@@ -237,49 +242,13 @@ superbuild_set_revision(pythonsemanticversion
   URL     "https://www.paraview.org/files/dependencies/semantic_version-2.8.5.tar.gz"
   URL_MD5 76d7364def7ee487b6153d40b13de904)
 
-superbuild_set_revision(pythonconstantly
-  URL     "https://www.paraview.org/files/dependencies/constantly-15.1.0.tar.gz"
-  URL_MD5 f0762f083d83039758e53f8cf0086eef)
-
-superbuild_set_revision(pythonhyperlink
-  URL     "https://www.paraview.org/files/dependencies/hyperlink-21.0.0.tar.gz"
-  URL_MD5 6285ac13e7d6be4157698ad7960ed490)
-
 superbuild_set_revision(pythonidna
   URL     "https://www.paraview.org/files/dependencies/idna-3.2.tar.gz"
   URL_MD5 08ea8e2ce09e522424e872409c221138)
 
-superbuild_set_revision(pythonincremental
-  URL     "https://www.paraview.org/files/dependencies/incremental-21.3.0.tar.gz"
-  URL_MD5 9f7ad12e0c05a12cee52a7350976c4e3)
-
-superbuild_set_revision(pythontwisted
-  URL     "https://www.paraview.org/files/dependencies/Twisted-21.7.0.tar.gz"
-  URL_MD5 6b17e9a4b28b8846847e5324c2e59bf4)
-
-superbuild_set_revision(pythontxaio
-  URL     "https://www.paraview.org/files/dependencies/txaio-21.2.1.tar.gz"
-  URL_MD5 7e80b80ed7797245a5eef803043bdede)
-
 superbuild_set_revision(pythonwslinkasync
-  URL     "https://www.paraview.org/files/dependencies/wslink-1.1.0.tar.gz"
-  URL_MD5 a498fb76a59814b44d3530ab36cfd81e)
-
-superbuild_set_revision(pythonwslink
-  URL     "https://www.paraview.org/files/dependencies/wslink-0.1.11.tar.gz"
-  URL_MD5 35e6285c2a74304da0557f1402c400e5)
-
-superbuild_set_revision(pythonpywebvue
-  URL     "https://www.paraview.org/files/dependencies/pywebvue-2.1.4.tar.gz"
-  URL_MD5 02f63a8b2ca20cb1d7328b1f7369a88f)
-
-superbuild_set_revision(pythonzope
-  URL     "https://www.paraview.org/files/dependencies/Zope-5.3.tar.gz"
-  URL_MD5 3b8ddc554345279c0e0018d5f1814c13)
-
-superbuild_set_revision(pythonzopeinterface
-  URL     "https://www.paraview.org/files/dependencies/zope.interface-5.4.0.tar.gz"
-  URL_MD5 c58b31da83449631efb499de13c68c6a)
+  URL     "https://www.paraview.org/files/dependencies/wslink-1.7.0.tar.gz"
+  URL_MD5 5f87c499c9d1d36743f4b754f2f0e6f4)
 
 superbuild_set_revision(pythonsix
   URL     "https://www.paraview.org/files/dependencies/six-1.16.0.tar.gz"
@@ -322,12 +291,46 @@ superbuild_set_revision(pkgconf
   URL_MD5 823212dc241793df8ff1d097769a3473)
 
 superbuild_set_revision(pybind11
-  URL     "https://www.paraview.org/files/dependencies/pybind11-2.7.1.tar.gz"
-  URL_MD5 b87860218c143728f8e6efa6cba7e1ed)
+  URL     "https://www.paraview.org/files/dependencies/pybind11-2.9.1.tar.gz"
+  URL_MD5 7609dcb4e6e18eee9dc1a5f26572ded1)
 
 superbuild_set_revision(sqlite
   URL     "https://www.paraview.org/files/dependencies/sqlite-autoconf-3360000.tar.gz"
   URL_MD5 f5752052fc5b8e1b539af86a3671eac7)
+
+superbuild_set_revision(expat
+  URL     "https://www.paraview.org/files/dependencies/expat-2.4.1.tar.xz"
+  URL_MD5 a4fb91a9441bcaec576d4c4a56fa3aa6)
+
+superbuild_set_revision(llvm
+  URL     "https://www.paraview.org/files/dependencies/llvm-7.0.0.src.tar.xz"
+  URL_MD5 e0140354db83cdeb8668531b431398f0)
+
+superbuild_set_revision(glproto
+  URL     "https://www.paraview.org/files/dependencies/glproto-1.4.17.tar.bz2"
+  URL_MD5 5565f1b0facf4a59c2778229c1f70d10)
+
+superbuild_set_revision(meson
+  URL     "https://www.paraview.org/files/dependencies/meson-0.62.0.tar.gz"
+  URL_MD5 2b8c86273f9f94aada9adcce895861d8)
+
+superbuild_set_revision(mesa
+  URL     "https://www.paraview.org/files/dependencies/mesa-21.2.1.tar.xz"
+  URL_MD5 5d8beb41eccad604296d1e2a6688dd6a)
+get_property(mesa_revision GLOBAL PROPERTY mesa_revision)
+superbuild_set_revision(osmesa ${mesa_revision})
+
+superbuild_set_revision(ninja
+  URL     "https://www.paraview.org/files/dependencies/ninja-1.10.2.tar.gz"
+  URL_MD5 639f75bc2e3b19ab893eaf2c810d4eb4)
+
+superbuild_set_revision(openxrsdk
+  URL     "https://www.paraview.org/files/dependencies/OpenXR-SDK-release-1.0.22.tar.gz"
+  URL_MD5 a2623ebab3d0b340bc16311b14f02075)
+
+superbuild_set_revision(jsoncpp
+  URL     "https://www.paraview.org/files/dependencies/jsoncpp-1.9.5.tar.gz"
+  URL_MD5 d6c8c609f2162eff373db62b90a051c7)
 
 set(pythoncryptography_version "3.4.7")
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")

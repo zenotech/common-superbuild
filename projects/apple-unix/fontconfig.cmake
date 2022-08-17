@@ -1,17 +1,30 @@
+set(fontconfig_process_environment)
 if (BUILD_SHARED_LIBS)
   set(fontconfig_shared_args --enable-shared --disable-static)
 else ()
   set(fontconfig_shared_args --disable-shared --enable-static)
 endif ()
 
-set(fontconfig_platform_deps)
+set(fontconfig_depends)
 if (NOT APPLE)
-  list(APPEND fontconfig_platform_deps
+  list(APPEND fontconfig_depends
     utillinux)
 endif ()
+if (APPLE OR UNIX)
+  list(APPEND fontconfig_depends
+    pkgconf)
+
+  if (pkgconf_enabled)
+    list(APPEND fontconfig_process_environment
+      PKG_CONFIG "${superbuild_pkgconf} --keep-system-cflags --keep-system-libs")
+  endif ()
+endif ()
+
 
 superbuild_add_project(fontconfig
-  DEPENDS freetype libxml2 png gperf ${fontconfig_platform_deps}
+  DEPENDS freetype libxml2 png gperf ${fontconfig_depends}
+  LICENSE_FILES
+    COPYING
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
@@ -28,7 +41,7 @@ superbuild_add_project(fontconfig
   INSTALL_COMMAND
     $(MAKE) install-exec install-pkgconfigDATA installdirs
   PROCESS_ENVIRONMENT
-    PKG_CONFIG_PATH <INSTALL_DIR>/lib/pkgconfig)
+    ${fontconfig_process_environment})
 
 superbuild_project_add_step(install-headers
   COMMAND   make install-fontconfigincludeHEADERS

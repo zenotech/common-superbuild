@@ -67,6 +67,7 @@ superbuild_add_project(boost
   CAN_USE_SYSTEM
   BUILD_IN_SOURCE 1
   DEPENDS_OPTIONAL cxx11
+  LICENSE_FILES LICENSE_1_0.txt
   "${boost_build_commands}"
   ${boost_extra_arguments})
 
