@@ -95,7 +95,9 @@ superbuild_add_project(${project}
     ${superbuild_ninja_command} -C build
   INSTALL_COMMAND
     ${superbuild_ninja_command} -C build install
-  BUILD_IN_SOURCE 1)
+  BUILD_IN_SOURCE 1
+  PROCESS_ENVIRONMENT
+  SSL_CERT_FILE <INSTALL_DIR>/lib/python3.9/site-packages/certifi/cacert.pem)
 
 superbuild_append_flags(ld_flags
   "-Wl,-rpath,<INSTALL_DIR>/lib"
