@@ -247,8 +247,8 @@ superbuild_set_revision(pythonidna
   URL_MD5 08ea8e2ce09e522424e872409c221138)
 
 superbuild_set_revision(pythonwslinkasync
-  URL     "https://www.paraview.org/files/dependencies/wslink-1.8.0.tar.gz"
-  URL_MD5 dd89d5c5fef3c883a939c52148fbdfca)
+  URL     "https://www.paraview.org/files/dependencies/wslink-1.8.2.tar.gz"
+  URL_MD5 2ba433bea6730669ecbc1e665e821091)
 
 superbuild_set_revision(pythonsix
   URL     "https://www.paraview.org/files/dependencies/six-1.16.0.tar.gz"
