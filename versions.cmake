@@ -19,6 +19,10 @@ superbuild_set_revision(cgns
   URL     "https://www.paraview.org/files/dependencies/cgns-4.3.0.tar.gz"
   URL_MD5 bce0461cd385ec5daeb04986093290d1)
 
+superbuild_set_revision(seacas
+  URL     "https://www.paraview.org/files/dependencies/seacas-2022-08-01.tar.gz"
+  URL_MD5 1d50fdd11b1293a7bbb87eb15ca4b6e2)
+
 superbuild_set_revision(zlib
   URL     "https://www.paraview.org/files/dependencies/zlib-1.2.11.tar.xz"
   URL_MD5 85adef240c5f370b308da8c938951a68)
