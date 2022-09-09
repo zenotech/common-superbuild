@@ -34,7 +34,9 @@ enable_project(freetype)
 enable_project(glproto)
 enable_project(gperf)
 enable_project(hdf5)
-enable_project(hdf5cpp)
+# Explicitly do not enable; it conflicts with `mpi` + `hdf5` which is a more
+# important use case for actually building things.
+#enable_project(hdf5cpp)
 enable_project(jsoncpp)
 enable_project(libjpegturbo)
 enable_project(libxml2)
