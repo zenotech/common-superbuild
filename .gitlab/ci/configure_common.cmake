@@ -25,6 +25,7 @@ endif ()
 
 enable_project(boost)
 enable_project(bzip2)
+enable_project(cgns)
 enable_project(cxx11)
 enable_project(expat)
 enable_project(ffi)

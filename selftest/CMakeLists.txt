@@ -9,6 +9,7 @@ function (superbuild_find_projects var)
   set(projects
     boost
     bzip2
+    cgns
     cxx11
     fortran
     freetype
