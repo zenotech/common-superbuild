@@ -6,7 +6,7 @@ endif ()
 superbuild_add_project(hdf5
   CAN_USE_SYSTEM
   DEPENDS zlib szip
-  DEPENDS_OPTIONAL hdf5cpp
+  DEPENDS_OPTIONAL hdf5cpp mpi
   LICENSE_FILES
     COPYING
     COPYING_LBNL_HDF5
@@ -19,6 +19,7 @@ superbuild_add_project(hdf5
     -DHDF5_BUILD_TOOLS:BOOL=OFF
     -DHDF5_BUILD_UTILS:BOOL=OFF
     -DHDF5_BUILD_EXAMPLES:BOOL=OFF
+    -DHDF5_ENABLE_PARALLEL:BOOL=${mpi_enabled}
     -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=TRUE
     -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=TRUE
     -DHDF5_ENABLE_SZIP_ENCODING:BOOL=TRUE
@@ -31,3 +32,6 @@ superbuild_add_extra_cmake_args(
 
 superbuild_apply_patch(hdf5 fix-ext-pkg-find
   "Force proper logic for zlib and szip dependencies")
+
+superbuild_apply_patch(hdf5 cmake-fixes
+  "Patch up terrible CMake code")

@@ -9,7 +9,9 @@ function (superbuild_find_projects var)
   set(projects
     boost
     bzip2
+    cgns
     cxx11
+    exodus
     fortran
     freetype
     hdf5
@@ -63,6 +65,7 @@ function (superbuild_find_projects var)
     qhull
     qt5
     scipy
+    seacas
     sqlite
     sympy
     szip

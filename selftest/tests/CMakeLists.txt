@@ -57,6 +57,7 @@ list(REMOVE_ITEM license_projects
   fortran
 
   # Dummy projects
+  exodus
   hdf5cpp
   pythonmpi4py
   )

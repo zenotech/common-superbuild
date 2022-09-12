@@ -1,0 +1,60 @@
+diff -u -U5 -r netcdf-c-4.8.1/CMakeLists.txt netcdf-c-4.8.1.parallel-hdf5/CMakeLists.txt
+--- netcdf-c-4.8.1/CMakeLists.txt	2022-09-12 11:05:00.167194383 -0400
++++ netcdf-c-4.8.1.parallel-hdf5/CMakeLists.txt	2022-09-12 11:14:33.792176070 -0400
+@@ -768,10 +768,13 @@
+   IF(HDF5_IS_PARALLEL_MPIO)
+     SET(HDF5_PARALLEL ON)
+   ELSE()
+     SET(HDF5_PARALLEL OFF)
+   ENDIF()
++  if (HDF5_PARALLEL)
++    find_package(MPI REQUIRED)
++  endif ()
+ 
+   #Check to see if HDF5 library has collective metadata APIs, (HDF5 >= 1.10.0)
+   CHECK_LIBRARY_EXISTS(${HDF5_C_LIBRARY_hdf5} H5Pset_all_coll_metadata_ops "" HDF5_HAS_COLL_METADATA_OPS)
+   CHECK_LIBRARY_EXISTS(${HDF5_C_LIBRARY_hdf5} H5free_memory "" HAVE_H5FREE_MEMORY)
+   CHECK_LIBRARY_EXISTS(${HDF5_C_LIBRARY_hdf5} H5allocate_memory "" HAVE_H5ALLOCATE_MEMORY)
+@@ -826,10 +829,13 @@
+     INCLUDE_DIRECTORIES(${HAVE_HDF5_H})
+   ENDIF(NOT HAVE_HDF5_H)
+ 
+   # Check to ensure that HDF5 was built with zlib.
+   set (CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})
++  if (HDF5_PARALLEL)
++    list (APPEND CMAKE_REQUIRED_INCLUDES ${MPI_C_INCLUDE_PATH})
++  endif ()
+ 
+ 
+   CHECK_C_SOURCE_COMPILES("#include <H5public.h>
+    #if !H5_HAVE_ZLIB_H
+    #error
+diff -u -U5 -r netcdf-c-4.8.1/liblib/CMakeLists.txt netcdf-c-4.8.1.parallel-hdf5/liblib/CMakeLists.txt
+--- netcdf-c-4.8.1/liblib/CMakeLists.txt	2021-08-18 13:49:05.000000000 -0400
++++ netcdf-c-4.8.1.parallel-hdf5/liblib/CMakeLists.txt	2022-09-12 11:25:44.981154641 -0400
+@@ -84,17 +84,24 @@
+       SET(HDF5_C_LIBRARIES ${HDF5_hdf5_LIBRARY})
+     ENDIF()
+     IF(HDF5_hdf5_hl_LIBRARY AND NOT HDF5_HL_LIBRARIES)
+       SET(HDF5_HL_LIBRARIES ${HDF5_hdf5_hl_LIBRARY})
+     ENDIF()
++    if (HDF5_IS_PARALLEL)
++      list(APPEND HDF5_C_LIBRARIES ${MPI_C_LIBRARIES})
++    endif ()
+     # The order of the libraries is important here for static
+     # builds:
+     # Make sure that HDF5_C_LIBRARY appears *after*
+     # HDF5_HL_LIBRARY.
+     SET(TLL_LIBS ${HDF5_HL_LIBRARIES} ${HDF5_C_LIBRARIES} ${TLL_LIBS} ${SZIP_LIBRARY})
+   ELSE() # Windows CMake defines HDF5_LIBRARIES.
+-    SET(TLL_LIBS ${HDF5_LIBRARIES} ${TLL_LIBS} ${SZIP_LIBRARY})
++    set(mpi_libs)
++    if (HDF5_PARALLEL)
++      set(mpi_libs ${MPI_C_LIBRARIES})
++    endif ()
++    SET(TLL_LIBS ${HDF5_LIBRARIES} ${mpi_libs} ${TLL_LIBS} ${SZIP_LIBRARY})
+   ENDIF()
+ ENDIF()
+ 
+ IF(FOUND_CURL)
+   SET(TLL_LIBS ${TLL_LIBS} ${CURL_LIBRARY})

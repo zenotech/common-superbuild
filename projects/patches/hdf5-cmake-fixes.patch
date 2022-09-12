@@ -1,0 +1,72 @@
+diff -u -U5 -r hdf5-1.12.1/config/cmake/ConfigureChecks.cmake hdf5-1.12.1.cmake-fixes/config/cmake/ConfigureChecks.cmake
+--- hdf5-1.12.1/config/cmake/ConfigureChecks.cmake	2021-07-01 17:26:38.000000000 -0400
++++ hdf5-1.12.1.cmake-fixes/config/cmake/ConfigureChecks.cmake	2022-09-12 09:02:23.685429247 -0400
+@@ -252,19 +252,19 @@
+ #-----------------------------------------------------------------------------
+ # The provided CMake C macros don't provide a general compile/run function
+ # so this one is used.
+ #-----------------------------------------------------------------------------
+ set (RUN_OUTPUT_PATH_DEFAULT ${CMAKE_BINARY_DIR})
+-macro (C_RUN FUNCTION_NAME SOURCE_CODE RETURN_VAR)
++macro (C_RUN FUNCTION_NAME SOURCE_CODE RETURN_VAR OUTPUT_VAR)
+     if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+       message (VERBOSE "Detecting C ${FUNCTION_NAME}")
+     endif ()
+     file (WRITE
+         ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testCCompiler1.c
+         ${SOURCE_CODE}
+     )
+-    TRY_RUN (RUN_RESULT_VAR COMPILE_RESULT_VAR
++    TRY_RUN ("${OUTPUT_VAR}" COMPILE_RESULT_VAR
+         ${CMAKE_BINARY_DIR}
+         ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testCCompiler1.c
+         COMPILE_DEFINITIONS "-D_SIZEOF___FLOAT128=${H5_SIZEOF___FLOAT128};-D_HAVE_QUADMATH_H=${H5_HAVE_QUADMATH_H}"
+         COMPILE_OUTPUT_VARIABLE COMPILEOUT
+         RUN_OUTPUT_VARIABLE OUTPUT_VAR
+@@ -275,17 +275,17 @@
+     if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+       message (VERBOSE "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ")
+       message (VERBOSE "Test COMPILE_RESULT_VAR ${COMPILE_RESULT_VAR} ")
+       message (VERBOSE "Test COMPILE_OUTPUT ${COMPILEOUT} ")
+       message (VERBOSE "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ")
+-      message (VERBOSE "Test RUN_RESULT_VAR ${RUN_RESULT_VAR} ")
++      message (VERBOSE "Test RUN_RESULT_VAR ${${OUTPUT_VAR}} ")
+       message (VERBOSE "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ")
+     endif ()
+ 
+     if (${COMPILE_RESULT_VAR})
+-      if (${RUN_RESULT_VAR} MATCHES 0)
+-        set (${RUN_RESULT_VAR} 1 CACHE INTERNAL "Have C function ${FUNCTION_NAME}")
++      if (${OUTPUT_VAR} EQUAL "0")
++        set (${OUTPUT_VAR} 1 CACHE INTERNAL "Have C function ${FUNCTION_NAME}")
+         if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+           message (VERBOSE "Testing C ${FUNCTION_NAME} - OK")
+         endif ()
+         file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
+             "Determining if the C ${FUNCTION_NAME} exists passed with the following output:\n"
+@@ -293,11 +293,11 @@
+         )
+       else ()
+         if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.15.0")
+           message (VERBOSE "Testing C ${FUNCTION_NAME} - Fail")
+         endif ()
+-        set (${RUN_RESULT_VAR} 0 CACHE INTERNAL "Have C function ${FUNCTION_NAME}")
++        set (${OUTPUT_VAR} 0 CACHE INTERNAL "Have C function ${FUNCTION_NAME}")
+         file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
+             "Determining if the C ${FUNCTION_NAME} exists failed with the following output:\n"
+             "${OUTPUT_VAR}\n\n")
+       endif ()
+     else ()
+@@ -328,11 +328,11 @@
+ #define C_LDBL_DIG LDBL_DIG\n\
+ #endif\n\nint main() {\nFILE *pFile = fopen(\"pac_Cconftest.out\",\"w\")\\\;\nfprintf(pFile, \"\\%d\\\;\\%d\\\;\", C_LDBL_DIG, C_FLT128_DIG)\\\;\n\nreturn 0\\\;\n}\n
+      "
+ )
+ 
+-C_RUN ("maximum decimal precision for C" ${PROG_SRC} PROG_RES)
++C_RUN ("maximum decimal precision for C" ${PROG_SRC} PROG_RES HDF5_MAX_DECIMAL_PRECISION)
+ file (READ "${RUN_OUTPUT_PATH_DEFAULT}/pac_Cconftest.out" PROG_OUTPUT4)
+ message (STATUS "Testing maximum decimal precision for C - ${PROG_OUTPUT4}")
+ 
+ # dnl The output from the above program will be:
+ # dnl  -- long double decimal precision  --  __float128 decimal precision
