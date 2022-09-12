@@ -474,28 +474,10 @@ def is_subdir(path, directory):
 
 
 HAVE_CHRPATH = None
+HAVE_PATCHELF = None
 
 
-def remove_prefix_rpaths(binary, location, sources):
-    '''Remove rpaths which reference the build machine.'''
-    if not sources:
-        return
-
-    global HAVE_CHRPATH
-    if HAVE_CHRPATH is None:
-        which = Pipeline([
-            'which',
-            'chrpath',
-        ])
-        try:
-            which()
-            HAVE_CHRPATH = True
-        except RuntimeError:
-            print('No chrpath found; superbuild rpaths may still exist in the package')
-            HAVE_CHRPATH = False
-    if not HAVE_CHRPATH:
-        return
-
+def fix_rpath_with_chrpath(binary, location, sources):
     chrpath = Pipeline([
         'chrpath',
         '--list',
@@ -535,6 +517,85 @@ def remove_prefix_rpaths(binary, location, sources):
             binary,
         ])
     chrpath()
+
+
+def fix_rpath_with_patchelf(binary, location, sources):
+    patchelf = Pipeline([
+        'patchelf',
+        '--print-rpath',
+        binary,
+    ])
+    old_path = patchelf().strip()
+
+    path_to_root = ''
+    for part in location.split('/'):
+        if part:
+            path_to_root = os.path.join(path_to_root, '..')
+    new_paths = []
+    for path in old_path.split(':'):
+        for source in sources:
+            if is_subdir(path, source):
+                path = path.replace(source, os.path.join('$ORIGIN', path_to_root))
+            if path not in new_paths:
+                new_paths.append(path)
+
+    new_path = ':'.join(new_paths)
+    if old_path == new_path:
+        return
+
+    if new_path:
+        print('Updating the rpath in %s: %s -> %s' % (binary, old_path, new_path))
+        patchelf = Pipeline([
+            'patchelf',
+            '--set-rpath',
+            new_path,
+            binary,
+        ])
+    else:
+        print('Removing the rpath in %s' % binary)
+        patchelf = Pipeline([
+            'patchelf',
+            '--remove-rpath',
+            binary,
+        ])
+    patchelf()
+
+
+def remove_prefix_rpaths(binary, location, sources):
+    '''Remove rpaths which reference the build machine.'''
+    if not sources:
+        return
+
+    global HAVE_CHRPATH
+    if HAVE_CHRPATH is None:
+        which = Pipeline([
+            'which',
+            'chrpath',
+        ])
+        try:
+            which()
+            HAVE_CHRPATH = True
+        except RuntimeError:
+            print('No chrpath found; superbuild rpaths may still exist in the package')
+            HAVE_CHRPATH = False
+
+    global HAVE_PATCHELF
+    if HAVE_PATCHELF is None:
+        which = Pipeline([
+            'which',
+            'patchelf',
+        ])
+        try:
+            which()
+            HAVE_PATCHELF = True
+        except RuntimeError:
+            print('No patchelf found; superbuild rpaths may still exist in the package')
+            HAVE_PATCHELF = False
+
+    if HAVE_CHRPATH:
+        fix_rpath_with_chrpath(binary, location, sources)
+    elif HAVE_PATCHELF:
+        fix_rpath_with_patchelf(binary, location, sources)
 
 
 def _os_makedirs(path):
