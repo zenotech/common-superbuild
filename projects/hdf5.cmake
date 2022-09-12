@@ -3,6 +3,11 @@ if (BUILD_SHARED_LIBS)
   set(hdf5_build_static_libs OFF)
 endif ()
 
+set(hdf5_mpi_supported ${mpi_enabled})
+if (_hdf5_disable_mpi_support)
+  set(hdf5_mpi_supported OFF)
+endif ()
+
 superbuild_add_project(hdf5
   CAN_USE_SYSTEM
   DEPENDS zlib szip
@@ -19,7 +24,7 @@ superbuild_add_project(hdf5
     -DHDF5_BUILD_TOOLS:BOOL=OFF
     -DHDF5_BUILD_UTILS:BOOL=OFF
     -DHDF5_BUILD_EXAMPLES:BOOL=OFF
-    -DHDF5_ENABLE_PARALLEL:BOOL=${mpi_enabled}
+    -DHDF5_ENABLE_PARALLEL:BOOL=${hdf5_mpi_supported}
     -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=TRUE
     -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=TRUE
     -DHDF5_ENABLE_SZIP_ENCODING:BOOL=TRUE
