@@ -4,6 +4,11 @@ if (UNIX AND NOT APPLE)
     -DCMAKE_INSTALL_LIBDIR:BOOL=lib)
 endif ()
 
+set(netcdf_mpi_supported ${mpi_enabled})
+if (_netcdf_disable_mpi_support)
+  set(netcdf_mpi_supported OFF)
+endif ()
+
 superbuild_add_project(netcdf
   CAN_USE_SYSTEM
   DEPENDS hdf5 zlib
@@ -15,7 +20,7 @@ superbuild_add_project(netcdf
     -DNC_FIND_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DBUILD_TESTING:BOOL=OFF
     -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib
-    -DENABLE_PARALLEL4:BOOL=${mpi_enabled}
+    -DENABLE_PARALLEL4:BOOL=${netcdf_mpi_supported}
     -DENABLE_PARALLEL_TESTS:BOOL=OFF
     -DENABLE_TESTS:BOOL=OFF
     -DTEST_PARALLEL:BOOL=OFF
