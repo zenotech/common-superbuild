@@ -26,3 +26,6 @@ superbuild_add_project(netcdf
 
 superbuild_apply_patch(netcdf fix-size-uchar
   "fix check on size of uchar: test for existence first")
+
+superbuild_apply_patch(netcdf parallel-hdf5
+  "link to MPI when using a parallel HDF5")
