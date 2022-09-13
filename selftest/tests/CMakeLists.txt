@@ -59,7 +59,6 @@ list(REMOVE_ITEM license_projects
   # Dummy projects
   exodus
   hdf5cpp
-  pythonmpi4py
   )
 
 # Apple USE_SYSTEM projects
@@ -168,6 +167,7 @@ add_python_import_test(pythondateutil dateutil)
 add_python_import_test(pythongast gast)
 add_python_import_test(pythonidna idna)
 add_python_import_test(pythonkiwisolver kiwisolver)
+add_python_import_test(pythonmpi4py mpi4py)
 add_python_import_test(pythonmpmath mpmath)
 add_python_import_test(pythonmultidict multidict)
 add_python_import_test(pythonpillow PIL)
