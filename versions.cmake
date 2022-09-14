@@ -202,6 +202,17 @@ superbuild_set_revision(pythonwheel
   URL     "https://www.paraview.org/files/dependencies/wheel-0.37.0-nounicodedist.tar.gz"
   URL_MD5 c4223d1502f05a23a67d6f0db0b424e9)
 
+set(mpi4py_ver "3.1.3")
+if (WIN32)
+  superbuild_set_revision(pythonmpi4py
+    URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp39-cp39-win_amd64.whl"
+    URL_MD5 e9e890b7058b81cd1099627c61852967)
+else ()
+  superbuild_set_revision(pythonmpi4py
+    URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}.tar.gz"
+    URL_MD5 e6d0644a2a3c7aa5119825d35ebeb8ee)
+endif ()
+
 superbuild_set_revision(pythonpycparser
   URL     "https://www.paraview.org/files/dependencies/pycparser-2.20.tar.gz"
   URL_MD5 b8f88de737db8c346ee8d31c07c7a25a)
