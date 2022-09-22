@@ -19,8 +19,6 @@
 
     variables:
         CMAKE_CONFIGURATION: macos_arm64
-        # No gfortran support on arm64 yet.
-        NO_FORTRAN: 1
 
 .macos_x86_64:
     extends: .macos_core
@@ -57,12 +55,12 @@
 .before_script_macos: &before_script_macos
     - .gitlab/ci/cmake.sh
     - .gitlab/ci/ninja.sh
-    - '[ -z "$NO_FORTRAN" ] && .gitlab/ci/gfortran.sh'
+    - .gitlab/ci/gfortran.sh
     # Make sure gfortran is last to avoid the gcc/g++ it ships with from interfering.
     - export PATH=$PWD/.gitlab:$PWD/.gitlab/cmake/bin:$PATH:$PWD/.gitlab/gfortran/bin
     - cmake --version
     - ninja --version
-    - '[ -z "$NO_FORTRAN" ] && gfortran --version'
+    - gfortran --version
     # Download Qt
     - cmake -P .gitlab/ci/download_qt.cmake
     - export CMAKE_PREFIX_PATH=$PWD/.gitlab/qt
