@@ -93,6 +93,7 @@ enable_project(pytz)
 enable_project(pywin32)
 enable_project(qhull)
 enable_project(qt5)
+enable_project(scipy)
 enable_project(seacas)
 enable_project(sqlite)
 enable_project(sympy)
@@ -102,22 +103,15 @@ enable_project(utillinux)
 enable_project(xz)
 enable_project(zlib)
 
-# OpenXR-SDK-Source does not build on mac os
+# OpenXR-SDK-Source does not build on macOS
 if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos")
   enable_project(openxrsdk)
 endif ()
 
-# Fortran doesn't work on Windows or macOS arm64 right now.
-if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "windows" AND
-    NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos_arm64")
+# Fortran doesn't work on Windows right now.
+if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "windows")
   enable_project(fortran)
   enable_project(lapack)
-  enable_project(scipy)
-endif ()
-
-# But scipy does work on Windows.
-if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "windows")
-  enable_project(scipy)
 endif ()
 
 # qt5 things
