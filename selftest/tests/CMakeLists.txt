@@ -59,6 +59,7 @@ list(REMOVE_ITEM license_projects
   # Dummy projects
   exodus
   hdf5cpp
+  ospraymodulempi
   )
 
 # Apple USE_SYSTEM projects
