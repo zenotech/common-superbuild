@@ -11,11 +11,13 @@ function (superbuild_find_projects var)
     bzip2
     cgns
     cxx11
+    embree
     exodus
     fortran
     freetype
     hdf5
     hdf5cpp
+    ispc
     jsoncpp
     lapack
     libjpegturbo
@@ -25,6 +27,11 @@ function (superbuild_find_projects var)
     ninja
     nlohmannjson
     numpy
+    openimagedenoise
+    openvkl
+    ospray
+    ospraymaterials
+    ospraymodulempi
     png
     python3
     pythonaiohttp
@@ -53,8 +60,8 @@ function (superbuild_find_projects var)
     pythonpythran
     pythonsemanticversion
     pythonsetuptools
-    pythonsetuptoolsscm
     pythonsetuptoolsrust
+    pythonsetuptoolsscm
     pythonsix
     pythontoml
     pythontypingextensions
@@ -64,8 +71,10 @@ function (superbuild_find_projects var)
     pytz
     qhull
     qt5
+    rkcommon
     scipy
     seacas
+    snappy
     sqlite
     sympy
     szip
