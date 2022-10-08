@@ -7,7 +7,7 @@ elseif (NOT MSVC_VERSION VERSION_GREATER 1900)
   set(xz_vs_version 2017)
 elseif (NOT MSVC_VERSION VERSION_GREATER 1930)
   set(xz_vs_version 2019)
-elseif (NOT MSVC_VERSION VERSION_GREATER 1932)
+elseif (NOT MSVC_VERSION VERSION_GREATER 1939)
   set(xz_vs_version 2019) # actually 2022, but this should work
 else ()
   message(FATAL_ERROR "Unrecognized MSVC version: ${MSVC_VERSION}")
