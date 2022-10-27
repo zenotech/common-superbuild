@@ -95,6 +95,7 @@ superbuild_add_project(qt5
       -nomake tests
 
       -no-dbus
+      -no-zstd
 
       -qt-libjpeg
       -qt-pcre
