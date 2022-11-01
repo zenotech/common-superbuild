@@ -20,7 +20,8 @@ superbuild_apple_create_app(<DESTINATION> <NAME> <BINARY>
   [SEARCH_DIRECTORIES <library-path>...]
   [PLUGINS <plugin>...]
   [ADDITIONAL_LIBRARIES <library-path>...]
-  [FAKE_PLUGIN_PATHS] [CLEAN])
+  [FAKE_PLUGIN_PATHS] [CLEAN]
+  [COMPONENT] <component>)
 ```
 
 Creates a `<NAME>.app` bundle. The bundle is placed in `<DESTINATION>` with
@@ -48,11 +49,15 @@ application.
 Additional libraries may be listed under the ``ADDITIONAL_LIBRARIES`` keyword
 and will be installed to the ``Libraries/`` directory in the bundle. These are
 full paths to the libraries.
+
+The `COMPONENT` argument is the name of the component to install to.
+Default to `superbuild`.
 #]==]
 function (superbuild_apple_create_app destination name binary)
   set(options
     CLEAN
     FAKE_PLUGIN_PATHS)
+  set(values COMPONENT)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
@@ -60,7 +65,7 @@ function (superbuild_apple_create_app destination name binary)
     SEARCH_DIRECTORIES
     PLUGINS
     ADDITIONAL_LIBRARIES)
-  cmake_parse_arguments(_create_app "${options}" "" "${multivalues}" ${ARGN})
+  cmake_parse_arguments(_create_app "${options}" "${values}" "${multivalues}" ${ARGN})
 
   set(fixup_bundle_arguments)
 
@@ -109,6 +114,10 @@ function (superbuild_apple_create_app destination name binary)
       " --library \"${library}\"")
   endforeach ()
 
+  if (NOT DEFINED _create_app_COMPONENT)
+    set(_create_app_COMPONENT "superbuild")
+  endif ()
+
   install(CODE
     "execute_process(
       COMMAND \"${_superbuild_install_cmake_dir}/scripts/fixup_bundle.apple.py\"
@@ -124,7 +133,7 @@ function (superbuild_apple_create_app destination name binary)
     if (res)
       message(FATAL_ERROR \"Failed to install ${name}:\n\${err}\")
     endif ()"
-    COMPONENT superbuild)
+    COMPONENT "${_create_app_COMPONENT}")
 endfunction ()
 
 #[==[.md
@@ -137,7 +146,8 @@ superbuild_apple_install_utility(<DESTINATION> <NAME> <BINARY>
   [IGNORE_REGEXES <regex>...]
   [SEARCH_DIRECTORIES <library-path>...]
   [FRAMEWORK_DEST <framework-dest>]
-  [LIBRARY_DEST <library-dest>])
+  [LIBRARY_DEST <library-dest>]
+  [COMPONENT] <component>)
 ```
 
 Adds a binary to the `bin/` path of the bundle. Required libraries are
@@ -149,11 +159,15 @@ arguments; this call will not create a new application bundle.
 The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, `IGNORE_REGEXES`, and
 `SEARCH_DIRECTORIES` arguments are the same as those for
 `superbuild_apple_create_app`.
+
+The `COMPONENT` argument is the name of the component to install to.
+Default to `superbuild`.
 #]==]
 function (superbuild_apple_install_utility destination name binary)
   set(values
     FRAMEWORK_DEST
-    LIBRARY_DEST)
+    LIBRARY_DEST
+    COMPONENT)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
@@ -193,6 +207,10 @@ function (superbuild_apple_install_utility destination name binary)
       " --library-dest \"${_install_utility_LIBRARY_DEST}\"")
   endif ()
 
+  if (NOT DEFINED _install_utility_COMPONENT)
+    set(_install_utility_COMPONENT "superbuild")
+  endif ()
+
   install(CODE
     "execute_process(
       COMMAND \"${_superbuild_install_cmake_dir}/scripts/fixup_bundle.apple.py\"
@@ -208,7 +226,7 @@ function (superbuild_apple_install_utility destination name binary)
     if (res)
       message(FATAL_ERROR \"Failed to install ${name}:\n\${err}\")
     endif ()"
-    COMPONENT superbuild)
+    COMPONENT "${_install_utility_COMPONENT}")
 endfunction ()
 
 #[==[.md
@@ -219,7 +237,8 @@ superbuild_apple_install_module(<DESTINATION> <NAME> <BINARY> <LOCATION>
   [INCLUDE_REGEXES <regex>...]
   [EXCLUDE_REGEXES <regex>...]
   [IGNORE_REGEXES <regex>...]
-  [SEARCH_DIRECTORIES <library-path>...])
+  [SEARCH_DIRECTORIES <library-path>...]
+  [COMPONENT] <component>)
 ```
 
 Adds a library to the `<LOCATION>` path of the bundle. Required libraries which
@@ -233,14 +252,18 @@ arguments; this call will not create a new application bundle.
 The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, `IGNORE_REGEXES`, and
 `SEARCH_DIRECTORIES` arguments are the same as those for
 `superbuild_apple_create_app`.
+
+The `COMPONENT` argument is the name of the component to install to.
+Default to `superbuild`.
 #]==]
 function (superbuild_apple_install_module destination name binary location)
+  set(values COMPONENT)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
     IGNORE_REGEXES
     SEARCH_DIRECTORIES)
-  cmake_parse_arguments(_install_module "" "" "${multivalues}" ${ARGN})
+  cmake_parse_arguments(_install_module "" "${values}" "${multivalues}" ${ARGN})
 
   set(fixup_bundle_arguments)
 
@@ -264,6 +287,10 @@ function (superbuild_apple_install_module destination name binary location)
       " --search \"${search_directory}\"")
   endforeach ()
 
+  if (NOT DEFINED _install_module_COMPONENT)
+    set(_install_module_COMPONENT "superbuild")
+  endif ()
+
   install(CODE
     "execute_process(
       COMMAND \"${_superbuild_install_cmake_dir}/scripts/fixup_bundle.apple.py\"
@@ -280,7 +307,7 @@ function (superbuild_apple_install_module destination name binary location)
     if (res)
       message(FATAL_ERROR \"Failed to install ${name}:\n\${err}\")
     endif ()"
-    COMPONENT superbuild)
+    COMPONENT "${_install_module_COMPONENT}")
 endfunction ()
 
 #[==[.md
@@ -292,7 +319,8 @@ The superbuild also provides functions to install Python modules and packages.
 superbuild_apple_install_python(<DESTINATION> <NAME>
   MODULES <module>...
   MODULE_DIRECTORIES <module-path>...
-  [SEARCH_DIRECTORIES <library-path>...])
+  [SEARCH_DIRECTORIES <library-path>...]
+  [COMPONENT] <component>)
 ```
 
 The list of modules to installed is given to the `MODULES` argument. These
@@ -304,9 +332,15 @@ Modules are placed in the `Python/` directory in the given application bundle.
 A previous call must have been made with matching `DESTINATION` and `NAME`
 arguments; this call will not create a new application bundle.
 
+The `COMPONENT` argument is the name of the component to install to.
+Default to `superbuild`.
+
 Note that modules in the list which cannot be found are ignored.
 #]==]
 function (superbuild_apple_install_python destination name)
+  set(values
+    PYTHON_DESTINATION
+    COMPONENT)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
@@ -314,7 +348,7 @@ function (superbuild_apple_install_python destination name)
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
-  cmake_parse_arguments(_install_python "" "PYTHON_DESTINATION" "${multivalues}" ${ARGN})
+  cmake_parse_arguments(_install_python "" "${values}" "${multivalues}" ${ARGN})
 
   if (NOT _install_python_MODULES)
     message(FATAL_ERROR "No modules specified.")
@@ -350,6 +384,10 @@ function (superbuild_apple_install_python destination name)
       --search "${search_directory}")
   endforeach ()
 
+  if (NOT DEFINED _install_python_COMPONENT)
+    set(_install_python_COMPONENT "superbuild")
+  endif ()
+
   install(CODE
     "include(\"${_superbuild_install_cmake_dir}/scripts/fixup_python.apple.cmake\")
     set(python_modules \"${_install_python_MODULES}\")
@@ -364,5 +402,5 @@ function (superbuild_apple_install_python destination name)
       superbuild_apple_install_python_module(\"\${bundle_destination}/\${bundle_name}\"
         \"\${python_module}\" \"\${module_directories}\" \"${_install_python_PYTHON_DESTINATION}\")
     endforeach ()"
-    COMPONENT superbuild)
+    COMPONENT "${_install_python_COMPONENT}")
 endfunction ()
