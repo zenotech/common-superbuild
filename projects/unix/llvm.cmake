@@ -54,3 +54,7 @@ superbuild_add_project(llvm
     -DPYTHON_EXECUTABLE=${superbuild_python_executable})
 
 set(llvm_dir "<INSTALL_DIR>")
+
+# https://github.com/spack/spack/pull/22516
+superbuild_apply_patch(llvm intel
+  "Fix ambiguous namespace reference with Intel compiler")
