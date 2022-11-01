@@ -72,6 +72,11 @@ foreach(module IN LISTS qt5_skip_modules)
   list(APPEND qt5_skip_args -skip ${module})
 endforeach()
 
+if (NOT qt5_SOURCE_SELECTION VERSION_LESS "5.15")
+  list(APPEND qt5_options
+    -no-zstd)
+endif ()
+
 superbuild_add_project(qt5
   CAN_USE_SYSTEM
   DEPENDS ${qt5_depends} ${qt5_extra_depends} cxx11
@@ -95,7 +100,6 @@ superbuild_add_project(qt5
       -nomake tests
 
       -no-dbus
-      -no-zstd
 
       -qt-libjpeg
       -qt-pcre
