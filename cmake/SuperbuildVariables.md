@@ -97,6 +97,16 @@ These variables are used in packaging tests (mainly `.bundle.cmake` files).
 If set in a `bundle.cmake` file, it can be used to skip the
 `InstallRequiredSystemLibraries` bit implicit in a packaging test.
 
+### `superbuild_bundle_system_libraries_destination`
+
+If set in a `bundle.cmake` file, it can be used to set the destination
+folder of system libraries, when packaging them.
+
+### `superbuild_bundle_system_libraries_component`
+
+If set in a `bundle.cmake` file, it can be used to set the component name
+used for packaging system libraries.
+
 ### `superbuild_is_install_target`
 
 If set, the package is being installed to the host system, not into a package.

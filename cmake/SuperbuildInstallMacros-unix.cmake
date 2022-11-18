@@ -29,7 +29,8 @@ _superbuild_unix_install_binary(
   [INCLUDE_REGEXES <include-regex>...]
   [EXCLUDE_REGEXES <exclude-regex>...]
   [LOADER_PATHS <loader-paths>...]
-  [SEARCH_DIRECTORIES <search-directory>...])
+  [SEARCH_DIRECTORIES <search-directory>...]
+  [COMPONENT] <component>)
 ```
 
 A manifest file is kept in the binary directory of the packaging step. This
@@ -67,6 +68,9 @@ the library cannot be found due to rpaths in the binary, `LOADER_PATHS`, or
 other runtime-loader logic. If these paths are required to find a library, a
 warning is printed at install time.
 
+The `COMPONENT` argument is the name of the component to install to.
+Default to `superbuild`.
+
 By default, libraries from the "system" (basically standard `/lib` directories)
 are ignored when installing. The `INCLUDE_REGEXES` and `EXCLUDE_REGEXES`
 arguments are lists of Python regular expressions to either force-include or
@@ -82,7 +86,8 @@ function (_superbuild_unix_install_binary)
     LIBDIR
     LOCATION
     BINARY
-    TYPE)
+    TYPE
+    COMPONENT)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
@@ -173,6 +178,10 @@ function (_superbuild_unix_install_binary)
       " --search \"${search_directory}\"")
   endforeach ()
 
+  if (NOT DEFINED _install_binary_COMPONENT)
+    set(_install_binary_COMPONENT "superbuild")
+  endif ()
+
   install(CODE
     "execute_process(
       COMMAND \"${superbuild_python_executable}\"
@@ -187,7 +196,7 @@ function (_superbuild_unix_install_binary)
     if (res)
       message(FATAL_ERROR \"Failed to install ${name}:\n\${err}\")
     endif ()"
-    COMPONENT superbuild)
+    COMPONENT "${_install_binary_COMPONENT}")
 endfunction ()
 
 # A convenience function for installing an executable.
@@ -389,7 +398,8 @@ superbuild_unix_install_python(
   [INCLUDE_REGEXES <include-regex>...]
   [EXCLUDE_REGEXES <exclude-regex>...]
   [LOADER_PATHS <loader-paths>...]
-  [SEARCH_DIRECTORIES <library-path>...])
+  [SEARCH_DIRECTORIES <library-path>...]
+  [COMPONENT] <component>)
 ```
 
 The list of modules to installed is given to the `MODULES` argument. These
@@ -405,11 +415,15 @@ The `INCLUDE_REGEXES`, `EXCLUDE_REGEXES`, `LOADER_PATHS`, and
 through an internal `superbuild_unix_install_plugin` call.
 
 Note that modules in the list which cannot be found are ignored.
+
+The `COMPONENT` argument is the name of the component to install to.
+Default to `superbuild`.
 #]==]
 function (superbuild_unix_install_python)
   set(values
     MODULE_DESTINATION
-    LIBDIR)
+    LIBDIR
+    COMPONENT)
   set(multivalues
     INCLUDE_REGEXES
     EXCLUDE_REGEXES
@@ -417,7 +431,7 @@ function (superbuild_unix_install_python)
     SEARCH_DIRECTORIES
     MODULE_DIRECTORIES
     MODULES)
-  cmake_parse_arguments(_install_python "${options}" "${values}" "${multivalues}" ${ARGN})
+  cmake_parse_arguments(_install_python "" "${values}" "${multivalues}" ${ARGN})
 
   if (NOT _install_python_LIBDIR)
     message(FATAL_ERROR "Cannot install Python modules without knowing where to put dependent libraries.")
@@ -457,6 +471,10 @@ function (superbuild_unix_install_python)
       --loader-path "${loader_path}")
   endforeach ()
 
+  if (NOT DEFINED _install_python_COMPONENT)
+    set(_install_python_COMPONENT "superbuild")
+  endif ()
+
   get_property(superbuild_install_no_external_dependencies GLOBAL PROPERTY
     superbuild_install_no_external_dependencies)
   if (superbuild_install_no_external_dependencies)
@@ -479,5 +497,5 @@ function (superbuild_unix_install_python)
       superbuild_unix_install_python_module(\"\${CMAKE_INSTALL_PREFIX}\"
         \"\${python_module}\" \"\${module_directories}\" \"lib/python${superbuild_python_version}${_install_python_MODULE_DESTINATION}\")
     endforeach ()"
-    COMPONENT superbuild)
+    COMPONENT "${_install_python_COMPONENT}")
 endfunction ()

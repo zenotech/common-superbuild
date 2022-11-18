@@ -10,6 +10,13 @@ else ()
   set(boost_use_static ON)
 endif ()
 
+# Disable library usage that is not expected.
+list(APPEND boost_options
+  -sNO_BZIP2=1
+  -sNO_ZLIB=1
+  -sNO_LZMA=1
+  -sNO_ZSTD=1)
+
 list(APPEND boost_options
   --prefix=<INSTALL_DIR>)
 
