@@ -19,6 +19,12 @@ superbuild_add_extra_cmake_args(
   -DPYTHON_EXECUTABLE:FILEPATH=${Python3_EXECUTABLE}
   -DPython3_EXECUTABLE:FILEPATH=${Python3_EXECUTABLE})
 
+# FindPython3.cmake only set plural variables
+if (NOT Python3_INCLUDE_DIR AND NOT Python3_LIBRARY)
+  list(JOIN Python3_INCLUDE_DIRS "${_superbuild_list_separator}" Python3_INCLUDE_DIR)
+  list(JOIN Python3_LIBRARIES "${_superbuild_list_separator}" Python3_LIBRARY)
+endif()
+
 if (python3_FIND_LIBRARIES)
   superbuild_add_extra_cmake_args(
     -DPYTHON_INCLUDE_DIR:PATH=${Python3_INCLUDE_DIR}
