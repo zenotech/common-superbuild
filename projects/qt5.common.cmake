@@ -68,6 +68,14 @@ if (NOT qt5_ENABLE_SVG)
     -skip qtsvg)
 endif()
 
+# Add option to build qtmultimedia, on by default
+option(qt5_ENABLE_MULTIMEDIA "Build Qt5 Multimedia library." ON)
+mark_as_advanced(qt5_ENABLE_MULTIMEDIA)
+if (NOT qt5_ENABLE_MULTIMEDIA)
+  list(APPEND qt5_options
+    -skip qtmultimedia)
+endif()
+
 foreach(module IN LISTS qt5_skip_modules)
   list(APPEND qt5_skip_args -skip ${module})
 endforeach()
