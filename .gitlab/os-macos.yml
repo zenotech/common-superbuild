@@ -37,7 +37,7 @@
 .macos_builder_tags:
     tags:
         - paraview
-        - macos
+        - macos-x86_64
         - shell
         - xcode-13.3
         - concurrent
