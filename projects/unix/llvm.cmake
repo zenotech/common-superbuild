@@ -36,12 +36,12 @@ endif ()
 
 superbuild_add_project(llvm
   CAN_USE_SYSTEM
-  DEPENDS python3 cxx11
+  DEPENDS python3 cxx17
   LICENSE_FILES
-    LICENSE.TXT
-    lib/Support/COPYRIGHT.regex
-    test/YAMLParser/LICENSE.txt
-    lib/Target/ARM/LICENSE.TXT
+    llvm/LICENSE.TXT
+    llvm/lib/Support/COPYRIGHT.regex
+    llvm/test/YAMLParser/LICENSE.txt
+  SOURCE_SUBDIR llvm
   CMAKE_ARGS
     -DCMAKE_BUILD_TYPE=Release
     -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}
@@ -54,7 +54,3 @@ superbuild_add_project(llvm
     -DPYTHON_EXECUTABLE=${superbuild_python_executable})
 
 set(llvm_dir "<INSTALL_DIR>")
-
-# https://github.com/spack/spack/pull/22516
-superbuild_apply_patch(llvm intel
-  "Fix ambiguous namespace reference with Intel compiler")

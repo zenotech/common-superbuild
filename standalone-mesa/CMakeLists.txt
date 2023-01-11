@@ -8,6 +8,7 @@ function (superbuild_find_projects var)
   set(projects
     bzip2
     cxx11
+    cxx17
     expat
     ffi
     glproto
