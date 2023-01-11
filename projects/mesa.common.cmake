@@ -24,9 +24,15 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
     PROJECT_ONLY)
 endif ()
 
+set(mesa_platform_deps)
+if (NOT WIN32)
+  list(APPEND mesa_platform_deps
+    expat)
+endif ()
+
 superbuild_add_project(${project}
   CAN_USE_SYSTEM
-  DEPENDS llvm zlib ${mesa_type_deps} expat pythonmako meson python3
+  DEPENDS llvm zlib ${mesa_type_deps} ${mesa_platform_deps} pythonmako meson python3
   LICENSE_FILES
     docs/license.rst
   CONFIGURE_COMMAND

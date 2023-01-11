@@ -25,6 +25,7 @@ function (superbuild_find_projects var)
     libjpegturbo
     llvm
     matplotlib
+    meson
     mpi
     netcdf
     ninja
@@ -32,6 +33,7 @@ function (superbuild_find_projects var)
     numpy
     openimagedenoise
     openvkl
+    osmesa
     ospray
     ospraymaterials
     ospraymodulempi
@@ -108,6 +110,7 @@ function (superbuild_find_projects var)
 
   if (NOT APPLE)
     list(APPEND projects
+      mesa
       openxrsdk)
   endif ()
 
@@ -115,9 +118,6 @@ function (superbuild_find_projects var)
     list(APPEND projects
       fontconfig
       glproto
-      mesa
-      meson
-      osmesa
       utillinux)
   endif ()
 
