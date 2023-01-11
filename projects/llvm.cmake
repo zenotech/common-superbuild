@@ -8,6 +8,7 @@ if (NOT llvm_TARGETS_TO_BUILD)
   if ((CMAKE_SYSTEM_PROCESSOR MATCHES "i[2-6]86") OR
       (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86") OR
       (CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64") OR
+      (CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64") OR
       (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64"))
     set_property(CACHE llvm_TARGETS_TO_BUILD PROPERTY VALUE "X86")
   elseif (CMAKE_SYSTEM_PROCESSOR MATCHES "sparc")
@@ -34,6 +35,13 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
     PROJECT_ONLY)
 endif ()
 
+set(llvm_cmake_shared_flags)
+if (NOT WIN32)
+  # LLVM errors if told anything about this on Windows.
+  list(APPEND llvm_cmake_shared_flags
+    -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS})
+endif ()
+
 superbuild_add_project(llvm
   CAN_USE_SYSTEM
   DEPENDS python3 cxx17
@@ -44,7 +52,7 @@ superbuild_add_project(llvm
   SOURCE_SUBDIR llvm
   CMAKE_ARGS
     -DCMAKE_BUILD_TYPE=Release
-    -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}
+    ${llvm_cmake_shared_flags}
     -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
     -DLLVM_ENABLE_RTTI=ON
     -DLLVM_INSTALL_UTILS=ON

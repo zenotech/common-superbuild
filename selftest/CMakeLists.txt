@@ -23,6 +23,7 @@ function (superbuild_find_projects var)
     jsoncpp
     lapack
     libjpegturbo
+    llvm
     matplotlib
     mpi
     netcdf
@@ -114,7 +115,6 @@ function (superbuild_find_projects var)
       expat
       fontconfig
       glproto
-      llvm
       mesa
       meson
       osmesa
