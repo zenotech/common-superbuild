@@ -333,10 +333,10 @@ superbuild_set_revision(meson
   URL     "https://www.paraview.org/files/dependencies/meson-0.62.0.tar.gz"
   URL_MD5 2b8c86273f9f94aada9adcce895861d8)
 
-set(mesa_version "21.2.1")
+set(mesa_version "22.3.3")
 superbuild_set_revision(mesa
   URL     "https://www.paraview.org/files/dependencies/mesa-${mesa_version}.tar.xz"
-  URL_MD5 5d8beb41eccad604296d1e2a6688dd6a)
+  URL_MD5 3cee19ea4d800e6ca8570d1f9ab1482d)
 get_property(mesa_revision GLOBAL PROPERTY mesa_revision)
 superbuild_set_revision(osmesa ${mesa_revision})
 
