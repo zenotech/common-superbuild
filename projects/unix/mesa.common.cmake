@@ -30,7 +30,7 @@ superbuild_add_project(${project}
   LICENSE_FILES
     docs/license.rst
   CONFIGURE_COMMAND
-    meson
+    ${meson_command}
       ${mesa_common_config_args}
       ${mesa_type_args}
       build
