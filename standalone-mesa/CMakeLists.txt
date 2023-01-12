@@ -52,7 +52,6 @@ function (superbuild_add_packaging)
     mesa_PACKAGE_FILE_NAME)
 
   list(APPEND superbuild_export_variables
-    mesa_USE_SWR
     mesa_SWR_ARCH)
 
   foreach (generator IN LISTS generators)
