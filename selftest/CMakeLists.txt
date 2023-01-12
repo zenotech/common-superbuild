@@ -11,6 +11,8 @@ function (superbuild_find_projects var)
     bzip2
     cgns
     cxx11
+    cxx14
+    cxx17
     embree
     exodus
     fortran

@@ -52,6 +52,8 @@ set(license_projects "${all_projects}")
 list(REMOVE_ITEM license_projects
   # Language utility projects
   cxx11
+  cxx14
+  cxx17
 
   # Feature projects
   fortran
