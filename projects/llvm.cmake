@@ -39,7 +39,7 @@ set(llvm_cmake_shared_flags)
 if (NOT WIN32)
   # LLVM errors if told anything about this on Windows.
   list(APPEND llvm_cmake_shared_flags
-    -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS})
+    -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS})
 endif ()
 
 superbuild_add_project(llvm
@@ -51,14 +51,14 @@ superbuild_add_project(llvm
     llvm/test/YAMLParser/LICENSE.txt
   SOURCE_SUBDIR llvm
   CMAKE_ARGS
-    -DCMAKE_BUILD_TYPE=Release
+    -DCMAKE_BUILD_TYPE:STRING=Release
     ${llvm_cmake_shared_flags}
-    -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-    -DLLVM_ENABLE_RTTI=ON
-    -DLLVM_INSTALL_UTILS=ON
-    -DLLVM_ENABLE_LIBXML2=OFF
-    -DLLVM_ENABLE_BINDINGS=OFF
+    -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+    -DLLVM_ENABLE_RTTI:BOOL=ON
+    -DLLVM_INSTALL_UTILS:BOOL=ON
+    -DLLVM_ENABLE_LIBXML2:BOOL=OFF
+    -DLLVM_ENABLE_BINDINGS:BOOL=OFF
     -DLLVM_TARGETS_TO_BUILD:STRING=${llvm_TARGETS_TO_BUILD}
-    -DPYTHON_EXECUTABLE=${superbuild_python_executable})
+    -DPYTHON_EXECUTABLE:FILEPATH=${superbuild_python_executable})
 
 set(llvm_dir "<INSTALL_DIR>")
