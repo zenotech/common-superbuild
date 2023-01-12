@@ -97,6 +97,7 @@ function (superbuild_find_projects var)
 
   if (NOT WIN32)
     list(APPEND projects
+      expat
       ffi
       ffmpeg
       gperf
@@ -112,7 +113,6 @@ function (superbuild_find_projects var)
 
   if (UNIX AND NOT APPLE)
     list(APPEND projects
-      expat
       fontconfig
       glproto
       mesa
