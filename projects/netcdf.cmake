@@ -27,6 +27,7 @@ superbuild_add_project(netcdf
     -DBUILD_UTILITIES:BOOL=OFF
     -DUSE_SZIP:BOOL=OFF
     -DENABLE_DAP:BOOL=OFF
+    -DENABLE_NCZARR:BOOL=OFF
     ${netcdf_libdir})
 
 superbuild_apply_patch(netcdf fix-size-uchar
@@ -34,3 +35,7 @@ superbuild_apply_patch(netcdf fix-size-uchar
 
 superbuild_apply_patch(netcdf parallel-hdf5
   "link to MPI when using a parallel HDF5")
+
+# Remove once https://github.com/Unidata/netcdf-c/pull/2592/files is merged
+superbuild_apply_patch(netcdf remove-zip-dep
+  "remove unneeded zip dependency")
