@@ -218,12 +218,12 @@ function (superbuild_add_project name)
     # Warn if optional dependencies are unknown.
     if (missing_deps_optional)
       string(REPLACE ";" ", " missing_deps_optional "${missing_deps_optional}")
-      message(AUTHOR_WARNING "Optional dependencies for ${name} not found: ${missing_deps_optional}")
+      message(AUTHOR_WARNING "Optional dependencies for ${name} not found, is it in the list of projects?: ${missing_deps_optional}")
     endif ()
     # Error if required dependencies are unknown.
     if (missing_deps)
       string(REPLACE ";" ", " missing_deps "${missing_deps}")
-      message(FATAL_ERROR "Dependencies for ${name} not found: ${missing_deps}")
+      message(FATAL_ERROR "Dependencies for ${name} not found, is it in the list of projects?: ${missing_deps}")
     endif ()
 
     list(APPEND ep_arguments DEPENDS ${depends})
