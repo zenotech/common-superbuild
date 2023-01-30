@@ -1,4 +1,17 @@
-function (superbuild_install_qt5_plugin_paths output)
+#[==[.md
+```
+_superbuild_get_qt5_plugin_install_context(<OUT:ContextPath> <OUT:ContextExtension>)
+```
+
+**Warning** Internal function, see `superbuild_get_qt5_plugin_install_paths` and
+`superbuild_get_qt5_plugin_optional_module_install_paths`
+
+Returns the absolute path containing all Qt5 plugin directories,
+as well as the extension for these plugins. Because path and
+extensions can change according to the current plateform and whether
+or not we use Qt system, this function ease the work for us.
+#]==]
+function (_superbuild_get_qt5_plugin_install_context out_path out_ext)
   if (USE_SYSTEM_qt5 AND UNIX)
     set(qt5_no_package_paths)
     if (APPLE)
@@ -54,6 +67,31 @@ function (superbuild_install_qt5_plugin_paths output)
       "Unknown Qt5 plugin path for this platform.")
   endif ()
 
+  set("${out_path}" "${qt5_plugin_path}" PARENT_SCOPE)
+  set("${out_ext}" "${qt5_plugin_ext}" PARENT_SCOPE)
+endfunction()
+
+#[==[.md
+```
+superbuild_get_qt5_plugin_install_paths(<OUT:PathList> <IN:PluginList>)
+```
+
+Returns a list of absolute path of Qt5 plugins to install from a list of
+required plugin. This input list take the form of the dynamic library name
+with no extension but with their parent folder.
+
+Also see : superbuild_install_qt5_optional_plugin_directory_paths
+
+Example :
+
+```
+    superbuild_get_qt5_plugin_install_paths(output_paths
+        "platforms/libqminimal;renderers/libopenglrenderer")
+```
+#]==]
+function (superbuild_get_qt5_plugin_install_paths output)
+  _superbuild_get_qt5_plugin_install_context(qt5_plugin_path qt5_plugin_ext)
+
   set(plugin_paths)
   foreach (plugin IN LISTS ARGN)
     set(plugin_path "${qt5_plugin_path}/${plugin}${qt5_plugin_ext}")
@@ -65,6 +103,46 @@ function (superbuild_install_qt5_plugin_paths output)
     list(APPEND plugin_paths
       "${plugin_path}")
   endforeach ()
+
+  set("${output}" "${plugin_paths}" PARENT_SCOPE)
+endfunction ()
+
+#[==[.md
+```
+superbuild_get_qt5_plugin_optional_module_install_paths(<OUT:PathList> <IN:ModuleList>)
+```
+
+Returns a list of absolute path of Qt5 plugins to install from a list of
+required plugin directory. This function will not fail if a directory does not
+exist, and will install every plugin it will find under the given directories.
+
+Also see: superbuild_get_qt5_plugin_install_paths
+
+Example :
+
+```
+    superbuild_get_qt5_plugin_optional_module_install_paths(output_paths
+        "platforms;renderers")
+```
+#]==]
+function (superbuild_get_qt5_plugin_optional_module_install_paths output)
+  _superbuild_get_qt5_plugin_install_context(qt5_plugin_path qt5_plugin_ext)
+
+  set(plugin_paths)
+  foreach(directory IN LISTS ARGN)
+    set(directory_abs_path "${qt5_plugin_path}/${directory}")
+    if (EXISTS "${directory_abs_path}")
+      file(GLOB plugins
+        "${directory_abs_path}/*${qt5_plugin_ext}")
+      foreach(plugin IN LISTS plugins)
+        get_filename_component(stripped_plugin "${plugin}" NAME_WE)
+        list(APPEND plugin_paths
+          "${directory}/${stripped_plugin}")
+      endforeach()
+    else()
+      message(STATUS "Qt5 plugin directory ${directory} not found, ignoring ..")
+    endif()
+  endforeach()
 
   set("${output}" "${plugin_paths}" PARENT_SCOPE)
 endfunction ()
