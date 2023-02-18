@@ -3,7 +3,7 @@ superbuild_add_project(glproto
     COPYING
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
-    --prefix=<INSTALL_DIR>
+      --prefix=<INSTALL_DIR>
   BUILD_COMMAND
     $(MAKE)
   INSTALL_COMMAND
