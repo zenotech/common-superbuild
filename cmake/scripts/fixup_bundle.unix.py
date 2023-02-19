@@ -576,7 +576,6 @@ def remove_prefix_rpaths(binary, location, sources):
             which()
             HAVE_CHRPATH = True
         except RuntimeError:
-            print('No chrpath found; superbuild rpaths may still exist in the package')
             HAVE_CHRPATH = False
 
     global HAVE_PATCHELF
@@ -589,13 +588,14 @@ def remove_prefix_rpaths(binary, location, sources):
             which()
             HAVE_PATCHELF = True
         except RuntimeError:
-            print('No patchelf found; superbuild rpaths may still exist in the package')
             HAVE_PATCHELF = False
 
     if HAVE_CHRPATH:
         fix_rpath_with_chrpath(binary, location, sources)
     elif HAVE_PATCHELF:
         fix_rpath_with_patchelf(binary, location, sources)
+    else:
+        print('No chrpath or patchelf found; superbuild rpaths may still exist in the package')
 
 
 def _os_makedirs(path):
