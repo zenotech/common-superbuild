@@ -56,7 +56,8 @@ if (NOT multi_config)
         "Debug builds are probably not what you want. Set the "
         "SUPERBUILD_ALLOW_DEBUG variable using either the GUI ('Add Entry') "
         "or pass -DSUPERBUILD_ALLOW_DEBUG:BOOL=ON on the command to indicate "
-        "this is what you intended.")
+        "this is what you intended. Alternatively, specific projects may "
+        "support debugging via a `CMAKE_BUILD_TYPE_<project>` variable.")
     endif ()
   endif ()
 endif ()
