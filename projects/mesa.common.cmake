@@ -11,9 +11,16 @@ set(mesa_common_config_args
   -Dshared-glapi=enabled
   -Degl=disabled
   -Dllvm=enabled
-  -Dshared-llvm=enabled
   -Dgles1=disabled
   -Dgles2=disabled)
+
+if (WIN32)
+  list(APPEND mesa_common_config_args
+    -Dshared-llvm=disabled)
+else ()
+  list(APPEND mesa_common_config_args
+    -Dshared-llvm=enabled)
+endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
   superbuild_append_flags(
