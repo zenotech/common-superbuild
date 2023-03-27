@@ -40,6 +40,7 @@ endif ()
 superbuild_add_project(${project}
   CAN_USE_SYSTEM
   DEPENDS llvm zlib ${mesa_type_deps} ${mesa_platform_deps} pythonmako meson python3
+          flexbison
   LICENSE_FILES
     docs/license.rst
   CONFIGURE_COMMAND

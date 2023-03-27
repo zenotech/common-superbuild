@@ -11,6 +11,7 @@ function (superbuild_find_projects var)
     cxx17
     expat
     ffi
+    flexbison
     glproto
     llvm
     mesa
