@@ -3,7 +3,7 @@
 set(mesa_common_config_args
   --libdir lib
   --buildtype=release
-  -Dprefix=<INSTALL_DIR>
+  --prefix=<INSTALL_DIR>
   -Dauto_features=disabled
   -Dgallium-drivers=swrast
   -Dvulkan-drivers=
