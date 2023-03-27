@@ -40,6 +40,11 @@ if (NOT WIN32)
   # LLVM errors if told anything about this on Windows.
   list(APPEND llvm_cmake_shared_flags
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS})
+else ()
+  # Force usage of the shared runtime.
+  list(APPEND llvm_cmake_shared_flags
+    -DCMAKE_MSVC_RUNTIME_LIBRARY:STRING=MultiThreadedDLL
+    -DCMAKE_POLICY_DEFAULT_CMP0091:STRING=NEW)
 endif ()
 
 superbuild_add_project(llvm
