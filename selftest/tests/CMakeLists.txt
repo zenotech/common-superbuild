@@ -80,6 +80,13 @@ if (WIN32)
     )
 endif ()
 
+# Unix/Apple USE_SYSTEM projects
+if (UNIX)
+  list(REMOVE_ITEM license_projects
+    flexbison
+    )
+endif ()
+
 # Ninja logic
 if (CMAKE_GENERATOR MATCHES "Ninja")
   list(REMOVE_ITEM license_projects

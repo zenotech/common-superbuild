@@ -15,6 +15,7 @@ function (superbuild_find_projects var)
     cxx17
     embree
     exodus
+    flexbison
     fortran
     freetype
     hdf5

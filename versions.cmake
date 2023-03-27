@@ -450,3 +450,9 @@ else ()
     URL     "https://www.paraview.org/files/dependencies/openssl-${openssl_version}.tar.gz"
     URL_MD5 c4e7d95f782b08116afa27b30393dd27)
 endif ()
+
+if (WIN32)
+  superbuild_set_revision(flexbison
+    URL     "https://www.paraview.org/files/dependencies/win_flex_bison-2.5.25.zip"
+    URL_MD5 "720226b1befe7033fb3ecc98f5ffd425")
+endif ()
