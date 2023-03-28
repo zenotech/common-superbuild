@@ -322,8 +322,8 @@ superbuild_set_revision(expat
   URL_MD5 a4fb91a9441bcaec576d4c4a56fa3aa6)
 
 superbuild_set_revision(llvm
-  URL     "https://www.paraview.org/files/dependencies/llvm-7.0.0.src.tar.xz"
-  URL_MD5 e0140354db83cdeb8668531b431398f0)
+  URL     "https://www.paraview.org/files/dependencies/llvm-project-15.0.6.src.tar.xz"
+  URL_MD5 8202ece5dfaad502ee513a8eaaa4ada3)
 
 superbuild_set_revision(glproto
   URL     "https://www.paraview.org/files/dependencies/glproto-1.4.17.tar.bz2"
@@ -333,10 +333,10 @@ superbuild_set_revision(meson
   URL     "https://www.paraview.org/files/dependencies/meson-0.62.0.tar.gz"
   URL_MD5 2b8c86273f9f94aada9adcce895861d8)
 
-set(mesa_version "21.2.1")
+set(mesa_version "22.3.3")
 superbuild_set_revision(mesa
   URL     "https://www.paraview.org/files/dependencies/mesa-${mesa_version}.tar.xz"
-  URL_MD5 5d8beb41eccad604296d1e2a6688dd6a)
+  URL_MD5 3cee19ea4d800e6ca8570d1f9ab1482d)
 get_property(mesa_revision GLOBAL PROPERTY mesa_revision)
 superbuild_set_revision(osmesa ${mesa_revision})
 
@@ -449,4 +449,10 @@ else ()
   superbuild_set_revision(openssl
     URL     "https://www.paraview.org/files/dependencies/openssl-${openssl_version}.tar.gz"
     URL_MD5 c4e7d95f782b08116afa27b30393dd27)
+endif ()
+
+if (WIN32)
+  superbuild_set_revision(flexbison
+    URL     "https://www.paraview.org/files/dependencies/win_flex_bison-2.5.25.zip"
+    URL_MD5 "720226b1befe7033fb3ecc98f5ffd425")
 endif ()

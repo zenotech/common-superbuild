@@ -11,8 +11,11 @@ function (superbuild_find_projects var)
     bzip2
     cgns
     cxx11
+    cxx14
+    cxx17
     embree
     exodus
+    flexbison
     fortran
     freetype
     hdf5
@@ -21,7 +24,9 @@ function (superbuild_find_projects var)
     jsoncpp
     lapack
     libjpegturbo
+    llvm
     matplotlib
+    meson
     mpi
     netcdf
     ninja
@@ -29,6 +34,7 @@ function (superbuild_find_projects var)
     numpy
     openimagedenoise
     openvkl
+    osmesa
     ospray
     ospraymaterials
     ospraymodulempi
@@ -94,6 +100,7 @@ function (superbuild_find_projects var)
 
   if (NOT WIN32)
     list(APPEND projects
+      expat
       ffi
       ffmpeg
       gperf
@@ -104,18 +111,14 @@ function (superbuild_find_projects var)
 
   if (NOT APPLE)
     list(APPEND projects
+      mesa
       openxrsdk)
   endif ()
 
   if (UNIX AND NOT APPLE)
     list(APPEND projects
-      expat
       fontconfig
       glproto
-      llvm
-      mesa
-      meson
-      osmesa
       utillinux)
   endif ()
 

@@ -52,6 +52,8 @@ set(license_projects "${all_projects}")
 list(REMOVE_ITEM license_projects
   # Language utility projects
   cxx11
+  cxx14
+  cxx17
 
   # Feature projects
   fortran
@@ -75,6 +77,13 @@ if (WIN32)
   list(REMOVE_ITEM license_projects
     qt5
     mpi
+    )
+endif ()
+
+# Unix/Apple USE_SYSTEM projects
+if (UNIX)
+  list(REMOVE_ITEM license_projects
+    flexbison
     )
 endif ()
 

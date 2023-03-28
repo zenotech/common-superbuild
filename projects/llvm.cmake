@@ -8,6 +8,7 @@ if (NOT llvm_TARGETS_TO_BUILD)
   if ((CMAKE_SYSTEM_PROCESSOR MATCHES "i[2-6]86") OR
       (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86") OR
       (CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64") OR
+      (CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64") OR
       (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64"))
     set_property(CACHE llvm_TARGETS_TO_BUILD PROPERTY VALUE "X86")
   elseif (CMAKE_SYSTEM_PROCESSOR MATCHES "sparc")
@@ -34,27 +35,40 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
     PROJECT_ONLY)
 endif ()
 
+set(llvm_cmake_shared_flags)
+if (NOT WIN32)
+  # LLVM errors if told anything about this on Windows.
+  list(APPEND llvm_cmake_shared_flags
+    -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS})
+else ()
+  # Force usage of the shared runtime.
+  list(APPEND llvm_cmake_shared_flags
+    -DCMAKE_MSVC_RUNTIME_LIBRARY:STRING=MultiThreadedDLL
+    -DCMAKE_POLICY_DEFAULT_CMP0091:STRING=NEW)
+endif ()
+
 superbuild_add_project(llvm
   CAN_USE_SYSTEM
-  DEPENDS python3 cxx11
+  DEPENDS python3 cxx17
   LICENSE_FILES
-    LICENSE.TXT
-    lib/Support/COPYRIGHT.regex
-    test/YAMLParser/LICENSE.txt
-    lib/Target/ARM/LICENSE.TXT
+    llvm/LICENSE.TXT
+    llvm/lib/Support/COPYRIGHT.regex
+    llvm/test/YAMLParser/LICENSE.txt
+  SOURCE_SUBDIR llvm
   CMAKE_ARGS
-    -DCMAKE_BUILD_TYPE=Release
-    -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}
-    -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-    -DLLVM_ENABLE_RTTI=ON
-    -DLLVM_INSTALL_UTILS=ON
-    -DLLVM_ENABLE_LIBXML2=OFF
-    -DLLVM_ENABLE_BINDINGS=OFF
+    -DCMAKE_BUILD_TYPE:STRING=Release
+    ${llvm_cmake_shared_flags}
+    -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+    -DLLVM_ENABLE_RTTI:BOOL=ON
+    -DLLVM_INSTALL_UTILS:BOOL=ON
+    -DLLVM_ENABLE_LIBXML2:BOOL=OFF
+    -DLLVM_ENABLE_BINDINGS:BOOL=OFF
+    -DLLVM_INCLUDE_BENCHMARKS:BOOL=OFF
+    -DLLVM_INCLUDE_EXAMPLES:BOOL=OFF
+    -DLLVM_INCLUDE_RUNTIMES:BOOL=OFF
+    -DLLVM_INCLUDE_TESTS:BOOL=OFF
+    -DLLVM_INCLUDE_UTILS:BOOL=OFF
     -DLLVM_TARGETS_TO_BUILD:STRING=${llvm_TARGETS_TO_BUILD}
-    -DPYTHON_EXECUTABLE=${superbuild_python_executable})
+    -DPYTHON_EXECUTABLE:FILEPATH=${superbuild_python_executable})
 
 set(llvm_dir "<INSTALL_DIR>")
-
-# https://github.com/spack/spack/pull/22516
-superbuild_apply_patch(llvm intel
-  "Fix ambiguous namespace reference with Intel compiler")

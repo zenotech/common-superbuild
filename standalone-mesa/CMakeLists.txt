@@ -8,13 +8,13 @@ function (superbuild_find_projects var)
   set(projects
     bzip2
     cxx11
-    expat
-    ffi
-    glproto
+    cxx17
+    flexbison
     llvm
     mesa
     meson
     ninja
+    osmesa
     png
     python3
     pythonmako
@@ -23,14 +23,26 @@ function (superbuild_find_projects var)
     xz
     zlib)
 
+  if (UNIX)
+    list(APPEND projects
+      expat
+      ffi
+      glproto)
+  endif ()
+
+  if (WIN32)
+    list(APPEND projects
+      pywin32)
+  endif ()
+
   set("${var}"
     ${projects}
     PARENT_SCOPE)
 endfunction ()
 
 function (superbuild_sanity_check)
-  if (NOT mesa_enabled)
-    message(FATAL_ERROR "Mesa must be enabled.")
+  if (NOT mesa_enabled AND NOT osmesa_enabled)
+    message(FATAL_ERROR "Mesa or OSMesa must be enabled.")
   endif ()
 endfunction ()
 
@@ -46,23 +58,41 @@ function (superbuild_add_packaging)
 
   list(APPEND superbuild_export_variables)
 
-  set(mesa_PACKAGE_FILE_NAME "mesa-${mesa_version}")
-  list(APPEND superbuild_export_variables
-    mesa_PACKAGE_FILE_NAME)
+  if (mesa_enabled)
+    set(mesa_PACKAGE_FILE_NAME "mesa-${mesa_version}")
+    list(APPEND superbuild_export_variables
+      mesa_PACKAGE_FILE_NAME)
+  endif ()
+
+  if (osmesa_enabled)
+    set(osmesa_PACKAGE_FILE_NAME "osmesa-${mesa_version}")
+    list(APPEND superbuild_export_variables
+      osmesa_PACKAGE_FILE_NAME)
+  endif ()
 
   list(APPEND superbuild_export_variables
-    mesa_USE_SWR
     mesa_SWR_ARCH)
 
   foreach (generator IN LISTS generators)
-    superbuild_add_extra_package_test(mesa "${generator}"
-      TIMEOUT 6400)
+    if (mesa_enabled AND UNIX AND NOT APPLE)
+      superbuild_add_extra_package_test(mesa "${generator}"
+        TIMEOUT 6400)
+    endif ()
+    if (osmesa_enabled AND WIN32)
+      superbuild_add_extra_package_test(osmesa "${generator}"
+        TIMEOUT 6400)
+    endif ()
   endforeach ()
 
   superbuild_enable_install_target("mesa/${default_generator}")
 endfunction ()
 
-set(_superbuild_default_mesa ON)
+if (UNIX AND NOT APPLE)
+  set(_superbuild_default_mesa ON)
+endif ()
+if (WIN32)
+  set(_superbuild_default_osmesa ON)
+endif ()
 
 set(superbuild_install_location "${CMAKE_BINARY_DIR}/install")
 
