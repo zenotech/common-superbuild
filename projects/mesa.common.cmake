@@ -37,6 +37,13 @@ if (NOT WIN32)
     expat)
 endif ()
 
+set(mesa_environment)
+if (WIN32)
+  list(APPEND mesa_environment
+    PATH <INSTALL_DIR>/Python
+    PATH <INSTALL_DIR>/bin)
+endif ()
+
 superbuild_add_project(${project}
   CAN_USE_SYSTEM
   DEPENDS llvm zlib ${mesa_type_deps} ${mesa_platform_deps} pythonmako meson python3
@@ -52,7 +59,9 @@ superbuild_add_project(${project}
     ${superbuild_ninja_command} -C build
   INSTALL_COMMAND
     ${superbuild_ninja_command} -C build install
-  BUILD_IN_SOURCE 1)
+  BUILD_IN_SOURCE 1
+  PROCESS_ENVIRONMENT
+    ${mesa_environment})
 
 superbuild_append_flags(ld_flags
   "-Wl,-rpath,<INSTALL_DIR>/lib"
