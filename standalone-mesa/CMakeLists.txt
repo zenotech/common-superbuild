@@ -9,10 +9,7 @@ function (superbuild_find_projects var)
     bzip2
     cxx11
     cxx17
-    expat
-    ffi
     flexbison
-    glproto
     llvm
     mesa
     meson
@@ -24,6 +21,13 @@ function (superbuild_find_projects var)
     sqlite
     xz
     zlib)
+
+  if (UNIX)
+    list(APPEND projects
+      expat
+      ffi
+      glproto)
+  endif ()
 
   set("${var}"
     ${projects}
@@ -56,14 +60,18 @@ function (superbuild_add_packaging)
     mesa_SWR_ARCH)
 
   foreach (generator IN LISTS generators)
-    superbuild_add_extra_package_test(mesa "${generator}"
-      TIMEOUT 6400)
+    if (UNIX AND NOT APPLE)
+      superbuild_add_extra_package_test(mesa "${generator}"
+        TIMEOUT 6400)
+    endif ()
   endforeach ()
 
   superbuild_enable_install_target("mesa/${default_generator}")
 endfunction ()
 
-set(_superbuild_default_mesa ON)
+if (UNIX AND NOT APPLE)
+  set(_superbuild_default_mesa ON)
+endif ()
 
 set(superbuild_install_location "${CMAKE_BINARY_DIR}/install")
 
