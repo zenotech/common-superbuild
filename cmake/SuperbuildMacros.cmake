@@ -1336,6 +1336,7 @@ function (_superbuild_add_project_internal name)
       -DCMAKE_Fortran_FLAGS:STRING=${project_f_flags}
       -DCMAKE_SHARED_LINKER_FLAGS:STRING=${project_ld_flags}
       -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${CMAKE_OSX_DEPLOYMENT_TARGET}
+      -DCMAKE_EXPORT_NO_PACKAGE_REGISTRY:BOOL=ON
       ${cmake_params}
 
     LIST_SEPARATOR "${_superbuild_list_separator}")
