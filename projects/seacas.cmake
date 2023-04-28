@@ -44,5 +44,6 @@ superbuild_add_project(seacas
 
     # exodus
     -DSeacas_ENABLE_SEACASExodus:BOOL=${exodus_enabled}
+    -DTPL_ENABLE_HDF5:BOOL=${exodus_enabled}
     -DTPL_ENABLE_MPI:STRING=${mpi_enabled}
     )
