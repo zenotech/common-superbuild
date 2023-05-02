@@ -8,6 +8,11 @@
         {
             "group": "master",
             "site": "gitlab-ci",
+            "buildname": "[linux_oldmesa]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
             "buildname": "[linux_openssl]"
         },
         {
