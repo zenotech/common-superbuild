@@ -59,19 +59,20 @@ function (superbuild_add_packaging)
   list(APPEND superbuild_export_variables)
 
   if (mesa_enabled)
-    set(mesa_PACKAGE_FILE_NAME "mesa-${mesa_version}")
+    set(mesa_PACKAGE_FILE_NAME "mesa-${mesa_SOURCE_SELECTION}")
     list(APPEND superbuild_export_variables
       mesa_PACKAGE_FILE_NAME)
   endif ()
 
   if (osmesa_enabled)
-    set(osmesa_PACKAGE_FILE_NAME "osmesa-${mesa_version}")
+    set(osmesa_PACKAGE_FILE_NAME "osmesa-${mesa_SOURCE_SELECTION}")
     list(APPEND superbuild_export_variables
       osmesa_PACKAGE_FILE_NAME)
   endif ()
 
   list(APPEND superbuild_export_variables
-    mesa_SWR_ARCH)
+    mesa_SWR_ARCH
+    mesa_SOURCE_SELECTION)
 
   foreach (generator IN LISTS generators)
     if (mesa_enabled AND UNIX AND NOT APPLE)
