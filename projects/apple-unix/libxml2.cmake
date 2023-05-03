@@ -12,6 +12,9 @@ superbuild_add_project(libxml2
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
       --without-python
+      --without-lzma
+      --without-zlib
+      --without-modules
       ${libxml2_shared_args}
   BUILD_COMMAND
     $(MAKE)
