@@ -5,6 +5,16 @@ set(library_paths
 
 set(mesa_libraries
   GL)
+if (mesa_USE_SWR)
+  string(REPLACE "," ";" _mesa_SWR_ARCH "${mesa_SWR_ARCH}")
+  list(LENGTH _mesa_SWR_ARCH mesa_num_swr_archs)
+  if (mesa_num_swr_archs GREATER 1)
+    foreach (arch IN LISTS _mesa_SWR_ARCH)
+      string(TOUPPER "${arch}" ARCH)
+      list(APPEND mesa_libraries swr${ARCH})
+    endforeach ()
+  endif ()
+endif ()
 
 foreach (mesa_library IN LISTS mesa_libraries)
   file(GLOB mesa_library_filenames

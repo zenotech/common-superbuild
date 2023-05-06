@@ -47,14 +47,50 @@ else ()
     -DCMAKE_POLICY_DEFAULT_CMP0091:STRING=NEW)
 endif ()
 
+set(llvm_version "${llvm_version_${llvm_SOURCE_SELECTION}}")
+
+set(llvm_depends_7.0.0
+  cxx11)
+set(llvm_depends_15.0.6
+  cxx17)
+
+set(llvm_licenses_7.0.0
+  LICENSE.TXT
+  lib/Support/COPYRIGHT.regex
+  test/YAMLParser/LICENSE.txt
+  lib/Target/ARM/LICENSE.TXT)
+set(llvm_licenses_15.0.6
+  llvm/LICENSE.TXT
+  llvm/lib/Support/COPYRIGHT.regex
+  llvm/test/YAMLParser/LICENSE.txt)
+
+set(llvm_source_args_7.0.0)
+set(llvm_source_args_15.0.6
+  SOURCE_SUBDIR llvm)
+
+set(llvm_configure_args_7.0.0
+  -DLLVM_INCLUDE_UTILS:BOOL=ON)
+set(llvm_configure_args_15.0.6
+  -DLLVM_INCLUDE_TESTS:BOOL=OFF
+  -DLLVM_INCLUDE_UTILS:BOOL=OFF)
+
+set(llvm_depends ${llvm_depends_${llvm_version}})
+set(llvm_licenses ${llvm_licenses_${llvm_version}})
+if (superbuild_build_phase)
+  if (NOT llvm_licenses)
+    message(FATAL_ERROR
+      "Unknown licenses for LLVM licenses version ${llvm_version}")
+  endif ()
+endif ()
+set(llvm_source_args ${llvm_source_args_${llvm_version}})
+set(llvm_configure_args ${llvm_configure_args_${llvm_version}})
+
 superbuild_add_project(llvm
   CAN_USE_SYSTEM
-  DEPENDS python3 cxx17
+  DEPENDS python3 ${llvm_depends}
   LICENSE_FILES
-    llvm/LICENSE.TXT
-    llvm/lib/Support/COPYRIGHT.regex
-    llvm/test/YAMLParser/LICENSE.txt
-  SOURCE_SUBDIR llvm
+    ${llvm_licenses}
+  ${llvm_source_args}
   CMAKE_ARGS
     -DCMAKE_BUILD_TYPE:STRING=Release
     ${llvm_cmake_shared_flags}
@@ -66,9 +102,14 @@ superbuild_add_project(llvm
     -DLLVM_INCLUDE_BENCHMARKS:BOOL=OFF
     -DLLVM_INCLUDE_EXAMPLES:BOOL=OFF
     -DLLVM_INCLUDE_RUNTIMES:BOOL=OFF
-    -DLLVM_INCLUDE_TESTS:BOOL=OFF
-    -DLLVM_INCLUDE_UTILS:BOOL=OFF
+    ${llvm_configure_args}
     -DLLVM_TARGETS_TO_BUILD:STRING=${llvm_TARGETS_TO_BUILD}
     -DPYTHON_EXECUTABLE:FILEPATH=${superbuild_python_executable})
 
 set(llvm_dir "<INSTALL_DIR>")
+
+if (llvm_version VERSION_LESS_EQUAL "7.0.0")
+  # https://github.com/spack/spack/pull/22516
+  superbuild_apply_patch(llvm intel
+    "Fix ambiguous namespace reference with Intel compiler")
+endif ()

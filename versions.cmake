@@ -321,10 +321,6 @@ superbuild_set_revision(expat
   URL     "https://www.paraview.org/files/dependencies/expat-2.4.1.tar.xz"
   URL_MD5 a4fb91a9441bcaec576d4c4a56fa3aa6)
 
-superbuild_set_revision(llvm
-  URL     "https://www.paraview.org/files/dependencies/llvm-project-15.0.6.src.tar.xz"
-  URL_MD5 8202ece5dfaad502ee513a8eaaa4ada3)
-
 superbuild_set_revision(glproto
   URL     "https://www.paraview.org/files/dependencies/glproto-1.4.17.tar.bz2"
   URL_MD5 5565f1b0facf4a59c2778229c1f70d10)
@@ -333,12 +329,26 @@ superbuild_set_revision(meson
   URL     "https://www.paraview.org/files/dependencies/meson-0.62.0.tar.gz"
   URL_MD5 2b8c86273f9f94aada9adcce895861d8)
 
-set(mesa_version "22.3.3")
-superbuild_set_revision(mesa
-  URL     "https://www.paraview.org/files/dependencies/mesa-${mesa_version}.tar.xz"
-  URL_MD5 3cee19ea4d800e6ca8570d1f9ab1482d)
+superbuild_set_selectable_source(mesa
+  SELECT 22.3.3 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/mesa-22.3.3.tar.xz"
+    URL_MD5 3cee19ea4d800e6ca8570d1f9ab1482d
+  SELECT 21.2.1
+    URL     "https://www.paraview.org/files/dependencies/mesa-21.2.1.tar.xz"
+    URL_MD5 5d8beb41eccad604296d1e2a6688dd6a)
 get_property(mesa_revision GLOBAL PROPERTY mesa_revision)
 superbuild_set_revision(osmesa ${mesa_revision})
+
+superbuild_set_selectable_source(llvm
+  SELECTS_WITH mesa
+  SELECT 22.3.3
+    URL     "https://www.paraview.org/files/dependencies/llvm-project-15.0.6.src.tar.xz"
+    URL_MD5 8202ece5dfaad502ee513a8eaaa4ada3
+  SELECT 21.2.1
+    URL     "https://www.paraview.org/files/dependencies/llvm-7.0.0.src.tar.xz"
+    URL_MD5 e0140354db83cdeb8668531b431398f0)
+set(llvm_version_22.3.3 "15.0.6")
+set(llvm_version_21.2.1 "7.0.0")
 
 superbuild_set_revision(ninja
   URL     "https://www.paraview.org/files/dependencies/ninja-1.10.2.tar.gz"

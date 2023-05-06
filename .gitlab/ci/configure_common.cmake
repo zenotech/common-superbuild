@@ -23,6 +23,12 @@ if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "openssl")
   enable_project(openssl)
 endif ()
 
+if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "oldmesa")
+  set(mesa_SOURCE_SELECTION "21.2.1" CACHE STRING "")
+  # Only build `mesa` and `osmesa`.
+  set(_ci_only_projects mesa osmesa)
+endif ()
+
 enable_project(boost)
 enable_project(bzip2)
 enable_project(cgns)
