@@ -19,3 +19,8 @@ endforeach ()
 if (APPLE)
   get_filename_component(qt5_rpath "${Qt5_DIR}/../.." REALPATH)
 endif ()
+
+if (WIN32)
+  # support python testing in the build tree
+  get_filename_component(qt5_dllpath "${Qt5_DIR}/../../../bin" REALPATH)
+endif()
