@@ -62,6 +62,9 @@ list(REMOVE_ITEM license_projects
   exodus
   hdf5cpp
   ospraymodulempi
+
+  # USE_SYSTEM projects
+  openmp
   )
 
 # Apple USE_SYSTEM projects

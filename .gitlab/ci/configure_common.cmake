@@ -119,6 +119,8 @@ enable_project(zlib)
 # OpenXR-SDK-Source does not build on macOS
 if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos")
   enable_project(openxrsdk)
+  # fortran can't use openmp because it's not installed, so disable on Mac
+  enable_project(openmp)
 endif ()
 
 # No ispc binaries for arm64, making most of the ospray stack incompatible with it
