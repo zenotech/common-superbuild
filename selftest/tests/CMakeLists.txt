@@ -86,6 +86,7 @@ endif ()
 # Unix/Apple USE_SYSTEM projects
 if (UNIX)
   list(REMOVE_ITEM license_projects
+    egl
     flexbison
     )
 endif ()

@@ -118,6 +118,7 @@ function (superbuild_find_projects var)
 
   if (UNIX AND NOT APPLE)
     list(APPEND projects
+      egl
       fontconfig
       glproto
       utillinux)
