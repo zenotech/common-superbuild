@@ -1,3 +1,2 @@
-file(GLOB files "x64/")
-file(INSTALL ${files}
+file(INSTALL x64/
      DESTINATION "${install_location}")
