@@ -163,6 +163,17 @@ if (TARGET sqlite)
         --test-command "${CMAKE_CTEST_COMMAND}")
 endif ()
 
+if (TARGET openssl)
+  add_test(
+    NAME openssl-check
+    COMMAND
+      "${CMAKE_CTEST_COMMAND}"
+        --build-generator "${CMAKE_GENERATOR}"
+        --build-and-test "${CMAKE_CURRENT_SOURCE_DIR}/openssl-check" "${CMAKE_CURRENT_BINARY_DIR}/openssl-check"
+        --build-options "-DCMAKE_PREFIX_PATH=${install_dir}"
+        --test-command "${CMAKE_CTEST_COMMAND}")
+endif ()
+
 add_python_import_test(python3 this)
 add_python_import_test(matplotlib matplotlib)
 add_python_script_test(matplotlib matplotlib-render)
