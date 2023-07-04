@@ -76,7 +76,7 @@ set(mesa_common_config_args
   -Dgles1=disabled
   -Dgles2=disabled)
 
-if (WIN32)
+if (NOT llvm_is_shared)
   list(APPEND mesa_common_config_args
     -Dshared-llvm=disabled)
 else ()

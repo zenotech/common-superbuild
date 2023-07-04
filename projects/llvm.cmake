@@ -38,13 +38,27 @@ endif ()
 set(llvm_cmake_shared_flags)
 if (NOT WIN32)
   # LLVM errors if told anything about this on Windows.
+  set(llvm_BUILD_SHARED_LIBS "<SAME>"
+    CACHE STRING "Build LLVM as static or shared")
+  set_property(CACHE llvm_BUILD_SHARED_LIBS
+    PROPERTY
+      STRINGS "<SAME>;ON;OFF")
+  if (llvm_BUILD_SHARED_LIBS STREQUAL "<SAME>")
+    set(llvm_BUILD_SHARED_LIBS "${BUILD_SHARED_LIBS}")
+  endif ()
   list(APPEND llvm_cmake_shared_flags
-    -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS})
+    -DBUILD_SHARED_LIBS:BOOL=${llvm_BUILD_SHARED_LIBS})
+  if (llvm_BUILD_SHARED_LIBS)
+    set(llvm_is_shared 1)
+  else ()
+    set(llvm_is_shared 0)
+  endif ()
 else ()
   # Force usage of the shared runtime.
   list(APPEND llvm_cmake_shared_flags
     -DCMAKE_MSVC_RUNTIME_LIBRARY:STRING=MultiThreadedDLL
     -DCMAKE_POLICY_DEFAULT_CMP0091:STRING=NEW)
+  set(llvm_is_shared 0)
 endif ()
 
 set(llvm_version "${llvm_version_${llvm_SOURCE_SELECTION}}")
