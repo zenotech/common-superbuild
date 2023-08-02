@@ -7,6 +7,7 @@ set(_superbuild_enable_openssl "${SUPERBUILD_ENABLE_OPENSSL}")
 
 function (superbuild_find_projects var)
   set(projects
+    alembic
     boost
     bzip2
     cgns
@@ -20,6 +21,7 @@ function (superbuild_find_projects var)
     freetype
     hdf5
     hdf5cpp
+    imath
     ispc
     jsoncpp
     lapack
