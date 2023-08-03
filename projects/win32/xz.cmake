@@ -26,4 +26,6 @@ superbuild_add_project(xz
       -Dinstall_location=<INSTALL_DIR>
       -Dvs_version=${xz_vs_version}
       -P "${CMAKE_CURRENT_LIST_DIR}/scripts/xz.install.cmake"
+  INSTALL_DEPENDS
+    "${CMAKE_CURRENT_LIST_DIR}/scripts/xz.install.cmake"
   BUILD_IN_SOURCE 1)

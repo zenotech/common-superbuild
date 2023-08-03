@@ -69,6 +69,8 @@ superbuild_add_project(sqlite
     "${CMAKE_COMMAND}"
       -Dinstall_location=<INSTALL_DIR>
       -P "${CMAKE_CURRENT_LIST_DIR}/scripts/sqlite.install.cmake"
+  INSTALL_DEPENDS
+    "${CMAKE_CURRENT_LIST_DIR}/scripts/sqlite.install.cmake"
   BUILD_IN_SOURCE 1)
 
 superbuild_apply_patch(sqlite dllimport
