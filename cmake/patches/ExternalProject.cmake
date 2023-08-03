@@ -651,6 +651,12 @@ External Project Definition
       supported). Passing an empty string as the ``<cmd>`` makes the install
       step do nothing.
 
+    ``INSTALL_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the install step. See the ``DEPENDS`` argument
+      to :command:`ExternalProject_Add_Step`.
+
   **Test Step Options:**
     The test step is only defined if at least one of the following ``TEST_...``
     options are provided.
@@ -3710,6 +3716,8 @@ function(_ep_add_install_command name)
     set(uses_terminal "")
   endif()
 
+  get_property(file_deps TARGET ${name} PROPERTY _EP_INSTALL_DEPENDS)
+
   set(__cmdQuoted)
   foreach(__item IN LISTS cmd)
     string(APPEND __cmdQuoted " [==[${__item}]==]")
@@ -3719,6 +3727,7 @@ function(_ep_add_install_command name)
       INDEPENDENT FALSE
       COMMAND ${__cmdQuoted}
       WORKING_DIRECTORY \${binary_dir}
+      DEPENDS \${file_deps}
       DEPENDEES build
       ${log}
       ${uses_terminal}
@@ -3892,6 +3901,7 @@ macro(_ep_get_add_keywords out_var)
     # Install step options
     #
     INSTALL_COMMAND
+    INSTALL_DEPENDS
     #
     # Test step options
     #
