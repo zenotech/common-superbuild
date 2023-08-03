@@ -599,6 +599,12 @@ External Project Definition
       specified with an empty string as the command to make the build step do
       nothing.
 
+    ``BUILD_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the build step. See the ``DEPENDS`` argument to
+      :command:`ExternalProject_Add_Step`.
+
     ``BUILD_IN_SOURCE <bool>``
       When this option is enabled, the build will be done directly within the
       external project's source tree. This should generally be avoided, the use
@@ -3625,6 +3631,8 @@ function(_ep_add_build_command name)
     # Depend on other external projects (file-level)
     _ep_get_file_deps(file_deps ${name})
   endif()
+  get_property(cmd_file_deps TARGET ${name} PROPERTY _EP_BUILD_DEPENDS)
+  list(APPEND file_deps ${cmd_file_deps})
 
   get_property(cmd_set TARGET ${name} PROPERTY _EP_BUILD_COMMAND SET)
   if(cmd_set)
@@ -3876,6 +3884,7 @@ macro(_ep_get_add_keywords out_var)
     # Build step options
     #
     BUILD_COMMAND
+    BUILD_DEPENDS
     BUILD_IN_SOURCE
     BUILD_ALWAYS
     BUILD_BYPRODUCTS
