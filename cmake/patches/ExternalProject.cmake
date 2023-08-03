@@ -423,6 +423,12 @@ External Project Definition
       The command may use
       :manual:`generator expressions <cmake-generator-expressions(7)>`.
 
+    ``UPDATE_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the update step. See the ``DEPENDS`` argument to
+      :command:`ExternalProject_Add_Step`.
+
     ``UPDATE_DISCONNECTED <bool>``
       .. versionadded:: 3.2
 
@@ -3334,7 +3340,7 @@ Update to Mercurial >= 2.1.1.
   set(_EPcommand_UPDATE         "${cmd}"      PARENT_SCOPE)
   set(_EPalways_UPDATE          "${always}"   PARENT_SCOPE)
   set(_EPexcludefrommain_UPDATE "${update_disconnected}" PARENT_SCOPE)
-  set(_EPdepends_UPDATE         ""            PARENT_SCOPE)
+  set(_EPdepends_UPDATE         "${_EP_UPDATE_DEPENDS}" PARENT_SCOPE)
   set(_EPdependees_UPDATE       download      PARENT_SCOPE)
 
 endfunction()
@@ -3828,6 +3834,7 @@ macro(_ep_get_add_keywords out_var)
     # Update step options
     #
     UPDATE_COMMAND
+    UPDATE_DEPENDS
     UPDATE_DISCONNECTED
     #
     # Patch step options
