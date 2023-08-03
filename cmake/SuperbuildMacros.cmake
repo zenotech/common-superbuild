@@ -593,6 +593,7 @@ function (superbuild_apply_patch _name _patch _comment)
               --whitespace=fix
               -p1
               "${CMAKE_CURRENT_LIST_DIR}/patches/${_name}-${_patch}.patch"
+    DEPENDS   "${CMAKE_CURRENT_LIST_DIR}/patches/${_name}-${_patch}.patch"
     DEPENDEES patch ${patch-steps}
     DEPENDERS configure
     ${_independent}
