@@ -482,6 +482,12 @@ External Project Definition
       supported). For projects that require no configure step, specify this
       option with an empty string as the command to execute.
 
+    ``CONFIGURE_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the configure step. See the ``DEPENDS`` argument
+      to :command:`ExternalProject_Add_Step`.
+
     ``CMAKE_COMMAND /.../cmake``
       Specify an alternative cmake executable for the configure step (use an
       absolute path). This is generally not recommended, since it is
@@ -3559,6 +3565,8 @@ function(_ep_add_configure_command name)
     # Depend on other external projects (file-level)
     _ep_get_file_deps(file_deps ${name})
   endif()
+  get_property(cmd_file_deps TARGET ${name} PROPERTY _EP_CONFIGURE_DEPENDS)
+  list(APPEND file_deps ${cmd_file_deps})
 
   _ep_extract_configure_command(cmd ${name})
 
@@ -3853,6 +3861,7 @@ macro(_ep_get_add_keywords out_var)
     # Configure step options
     #
     CONFIGURE_COMMAND
+    CONFIGURE_DEPENDS
     CMAKE_COMMAND
     CMAKE_GENERATOR
     CMAKE_GENERATOR_PLATFORM
