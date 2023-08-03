@@ -9,4 +9,6 @@ superbuild_add_project(openssl
   INSTALL_COMMAND
     "${CMAKE_COMMAND}"
       "-Dinstall_location:PATH=<INSTALL_DIR>"
-      -P "${CMAKE_CURRENT_LIST_DIR}/scripts/openssl.install.cmake")
+      -P "${CMAKE_CURRENT_LIST_DIR}/scripts/openssl.install.cmake"
+  INSTALL_DEPENDS
+    "${CMAKE_CURRENT_LIST_DIR}/scripts/openssl.install.cmake")

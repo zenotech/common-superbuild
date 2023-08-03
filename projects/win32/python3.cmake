@@ -16,7 +16,9 @@ superbuild_add_project(python3
     "${CMAKE_COMMAND}"
       "-Dinstall_location:PATH=<INSTALL_DIR>/Python"
       "-Dkeep_openssl:BOOL=${openssl_enabled}"
-      -P "${CMAKE_CURRENT_LIST_DIR}/scripts/python3.install.cmake")
+      -P "${CMAKE_CURRENT_LIST_DIR}/scripts/python3.install.cmake"
+  INSTALL_DEPENDS
+    "${CMAKE_CURRENT_LIST_DIR}/scripts/python3.install.cmake")
 
 if (python3_enabled)
   set(superbuild_python_executable "${superbuild_install_location}/Python/python.exe"

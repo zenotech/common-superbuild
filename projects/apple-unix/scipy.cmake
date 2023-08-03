@@ -26,7 +26,9 @@ else ()
         "-Dlist_separator=${scipy_list_separator}"
         "-Dsuperbuild_python_executable=${scipy_python_executable}"
         "-Dinstall_dir=<INSTALL_DIR>"
-        -P "${CMAKE_CURRENT_LIST_DIR}/scripts/scipy.install-macos.cmake")
+        -P "${CMAKE_CURRENT_LIST_DIR}/scripts/scipy.install-macos.cmake"
+      INSTALL_DEPENDS
+        "${CMAKE_CURRENT_LIST_DIR}/scripts/scipy.install-macos.cmake")
   else ()
     set(scipy_install_command
       ${superbuild_python_executable}
