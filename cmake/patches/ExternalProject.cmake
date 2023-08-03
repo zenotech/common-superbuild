@@ -463,6 +463,12 @@ External Project Definition
       discard changes from a previous patch, but the patch command will be
       called again after updating to the new tag.
 
+    ``PATCH_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the patch step. See the ``DEPENDS`` argument to
+      :command:`ExternalProject_Add_Step`.
+
   **Configure Step Options:**
     The configure step is run after the download and update steps. By default,
     the external project is assumed to be a CMake project, but this can be
@@ -2634,6 +2640,8 @@ function(_ep_add_preconfigure_command name step)
   set(file_deps)
   if (step STREQUAL "download")
     get_property(file_deps TARGET ${name} PROPERTY _EP_DOWNLOAD_DEPENDS)
+  elseif (step STREQUAL "patch")
+    get_property(file_deps TARGET ${name} PROPERTY _EP_PATCH_DEPENDS)
   endif ()
 
   # Pre-configure steps are expected to set their own work_dir
@@ -3840,6 +3848,7 @@ macro(_ep_get_add_keywords out_var)
     # Patch step options
     #
     PATCH_COMMAND
+    PATCH_DEPENDS
     #
     # Configure step options
     #
