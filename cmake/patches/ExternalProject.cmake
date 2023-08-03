@@ -134,6 +134,12 @@ External Project Definition
       be ignored. Providing an empty string for ``<cmd>`` effectively disables
       the download step.
 
+    ``DOWNLOAD_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the download step. See the ``DEPENDS`` argument
+      to :command:`ExternalProject_Add_Step`.
+
     *URL Download*
       ``URL <url1> [<url2>...]``
         List of paths and/or URL(s) of the external project's source. When more
@@ -2619,6 +2625,11 @@ function(_ep_add_preconfigure_command name step)
     set(uses_terminal FALSE)
   endif()
 
+  set(file_deps)
+  if (step STREQUAL "download")
+    get_property(file_deps TARGET ${name} PROPERTY _EP_DOWNLOAD_DEPENDS)
+  endif ()
+
   # Pre-configure steps are expected to set their own work_dir
   ExternalProject_Add_Step(${name} ${step}
     INDEPENDENT        TRUE
@@ -2626,7 +2637,7 @@ function(_ep_add_preconfigure_command name step)
     COMMAND            ${_EPcommand_${STEP}}
     ALWAYS             ${_EPalways_${STEP}}
     EXCLUDE_FROM_MAIN  ${_EPexcludefrommain_${STEP}}
-    DEPENDS            ${_EPdepends_${STEP}}
+    DEPENDS            ${_EPdepends_${STEP}} ${file_deps}
     DEPENDEES          ${_EPdependees_${STEP}}
     USES_TERMINAL      ${uses_terminal}
   )
@@ -3773,6 +3784,7 @@ macro(_ep_get_add_keywords out_var)
     # Download step options
     #
     DOWNLOAD_COMMAND
+    DOWNLOAD_DEPENDS
     #
     URL
     URL_HASH
