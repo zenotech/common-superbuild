@@ -672,6 +672,12 @@ External Project Definition
       command, but prefer to omit all ``TEST_...`` options altogether if the
       test step target is not needed.
 
+    ``TEST_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the test step. See the ``DEPENDS`` argument to
+      :command:`ExternalProject_Add_Step`.
+
     ``TEST_BEFORE_INSTALL <bool>``
       When this option is enabled, the test step will be executed before the
       install step. The default behavior is for the test step to run after the
@@ -3743,6 +3749,7 @@ function(_ep_add_test_command name)
   get_property(after TARGET ${name} PROPERTY _EP_TEST_AFTER_INSTALL)
   get_property(exclude TARGET ${name} PROPERTY _EP_TEST_EXCLUDE_FROM_MAIN)
   get_property(cmd_set TARGET ${name} PROPERTY _EP_TEST_COMMAND SET)
+  get_property(file_deps TARGET ${name} PROPERTY _EP_TEST_DEPENDS)
 
   # Only actually add the test step if one of the test related properties is
   # explicitly set. (i.e. the test step is omitted unless requested...)
@@ -3796,6 +3803,7 @@ function(_ep_add_test_command name)
         INDEPENDENT FALSE
         COMMAND ${__cmdQuoted}
         WORKING_DIRECTORY \${binary_dir}
+        DEPENDS \${file_deps}
         ${dependees_args}
         ${dependers_args}
         ${exclude_args}
@@ -3906,6 +3914,7 @@ macro(_ep_get_add_keywords out_var)
     # Test step options
     #
     TEST_COMMAND
+    TEST_DEPENDS
     TEST_BEFORE_INSTALL
     TEST_AFTER_INSTALL
     TEST_EXCLUDE_FROM_MAIN
