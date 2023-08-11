@@ -466,3 +466,11 @@ if (WIN32)
     URL     "https://www.paraview.org/files/dependencies/win_flex_bison-2.5.25.zip"
     URL_MD5 "720226b1befe7033fb3ecc98f5ffd425")
 endif ()
+
+superbuild_set_revision(alembic
+  URL     "https://www.paraview.org/files/dependencies/alembic-1.8.5.tar.gz"
+  URL_MD5 fcd5b5492a005057e11b601b60ac9a49)
+
+superbuild_set_revision(imath
+  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.7.tar.gz"
+  URL_MD5 5cedab446ab296c080957c3037c6d097)

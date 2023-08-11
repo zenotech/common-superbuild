@@ -29,6 +29,7 @@ if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "oldmesa")
   set(_ci_only_projects mesa osmesa)
 endif ()
 
+enable_project(alembic)
 enable_project(boost)
 enable_project(bzip2)
 enable_project(cgns)
@@ -49,6 +50,7 @@ enable_project(hdf5)
 # Explicitly do not enable; it conflicts with `mpi` + `hdf5` which is a more
 # important use case for actually building things.
 #enable_project(hdf5cpp)
+enable_project(imath)
 enable_project(jsoncpp)
 enable_project(libjpegturbo)
 enable_project(libxml2)
