@@ -69,12 +69,17 @@ set(mesa_common_config_args
   -Dauto_features=disabled
   -Dgallium-drivers=${mesa_drivers}
   -Dvulkan-drivers=
-  -Ddri-drivers=
   -Dshared-glapi=enabled
   -Degl=disabled
   -Dllvm=enabled
   -Dgles1=disabled
   -Dgles2=disabled)
+
+if (mesa_SOURCE_SELECTION STREQUAL "21.2.1" OR
+    mesa_SOURCE_SELECTION STREQUAL "22.3.3")
+  list(APPEND mesa_common_config_args
+    -Ddri-drivers=)
+endif()
 
 if (NOT llvm_is_shared)
   list(APPEND mesa_common_config_args
