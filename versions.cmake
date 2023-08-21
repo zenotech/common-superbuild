@@ -330,6 +330,9 @@ superbuild_set_revision(meson
   URL_MD5 2b8c86273f9f94aada9adcce895861d8)
 
 superbuild_set_selectable_source(mesa
+  SELECT 23.1.6
+    URL     "https://www.paraview.org/files/dependencies/mesa-23.1.6.tar.xz"
+    URL_MD5 5dd176e3f283143cc193b5a8264a206e
   SELECT 22.3.3 DEFAULT
     URL     "https://www.paraview.org/files/dependencies/mesa-22.3.3.tar.xz"
     URL_MD5 3cee19ea4d800e6ca8570d1f9ab1482d
@@ -341,12 +344,16 @@ superbuild_set_revision(osmesa ${mesa_revision})
 
 superbuild_set_selectable_source(llvm
   SELECTS_WITH mesa
+  SELECT 23.1.6
+    URL     "https://www.paraview.org/files/dependencies/llvm-project-15.0.6.src.tar.xz"
+    URL_MD5 8202ece5dfaad502ee513a8eaaa4ada3
   SELECT 22.3.3
     URL     "https://www.paraview.org/files/dependencies/llvm-project-15.0.6.src.tar.xz"
     URL_MD5 8202ece5dfaad502ee513a8eaaa4ada3
   SELECT 21.2.1
     URL     "https://www.paraview.org/files/dependencies/llvm-7.0.0.src.tar.xz"
     URL_MD5 e0140354db83cdeb8668531b431398f0)
+set(llvm_version_23.1.6 "15.0.6")
 set(llvm_version_22.3.3 "15.0.6")
 set(llvm_version_21.2.1 "7.0.0")
 

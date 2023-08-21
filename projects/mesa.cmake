@@ -7,10 +7,10 @@ if (APPLE)
     -Dglx=xlib)
 elseif (UNIX)
   set(mesa_has_glx 1)
-  if (mesa_SOURCE_SELECTION STREQUAL "22.3.3")
-    set(mesa_glx_name xlib)
-  elseif (mesa_SOURCE_SELECTION STREQUAL "21.2.1")
+  if (mesa_SOURCE_SELECTION STREQUAL "21.2.1")
     set(mesa_glx_name gallium-xlib)
+  else ()
+    set(mesa_glx_name xlib)
   endif ()
 
   list(APPEND mesa_type_args
