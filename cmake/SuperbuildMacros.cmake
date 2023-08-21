@@ -1124,8 +1124,11 @@ function (_superbuild_add_project_internal name)
   set(cmake_params)
   # Pass down C, CXX, and Fortran flags from this project.
   foreach (flag IN ITEMS
+      CMAKE_C_COMPILER
       CMAKE_C_COMPILER_LAUNCHER
+      CMAKE_CXX_COMPILER
       CMAKE_CXX_COMPILER_LAUNCHER
+      CMAKE_Fortran_COMPILER
       CMAKE_Fortran_COMPILER_LAUNCHER
 
       CMAKE_C_FLAGS_DEBUG
@@ -1236,6 +1239,13 @@ function (_superbuild_add_project_internal name)
   set(build_env)
   if (NOT MSVC)
     list(APPEND build_env
+      # These would mirror `-DCMAKE_C_COMPILER=` but, on macOS, `autoconf`
+      # isn't happy for some reason. Just skip it; we've gone long enough
+      # without it. See #67.
+      #CC "${CMAKE_C_COMPILER}"
+      #CXX "${CMAKE_CXX_COMPILER}"
+      #FC "${CMAKE_Fortran_COMPILER}"
+
       LDFLAGS "${project_ld_flags}"
       CPPFLAGS "${project_cpp_flags}"
       CXXFLAGS "${project_cxx_flags}"
