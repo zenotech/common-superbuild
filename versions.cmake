@@ -232,8 +232,8 @@ superbuild_set_revision(pythoncycler
 
 superbuild_set_revision(pythoncython
   # https://pypi.org/project/Cython/#history
-  URL     "https://www.paraview.org/files/dependencies/Cython-0.29.24.tar.gz"
-  URL_MD5 81aff945f5bfdfb86e7a5d24f5467668)
+  URL     "https://www.paraview.org/files/dependencies/Cython-3.0.0.tar.gz"
+  URL_MD5 63c5672e1f58dcee6854aef8b33a922e)
 
 superbuild_set_revision(pythonsetuptools
   # https://pypi.org/project/setuptools/#history
