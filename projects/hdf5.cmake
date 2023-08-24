@@ -28,15 +28,13 @@ superbuild_add_project(hdf5
     -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=TRUE
     -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=TRUE
     -DHDF5_ENABLE_SZIP_ENCODING:BOOL=TRUE
+    -DSZIP_USE_EXTERNAL:BOOL=TRUE
+    -DZLIB_USE_EXTERNAL:BOOL=TRUE
     -DHDF5_BUILD_HL_LIB:BOOL=TRUE
     -DHDF5_BUILD_WITH_INSTALL_NAME:BOOL=ON)
 
 superbuild_add_extra_cmake_args(
-  -DHDF5_ROOT:PATH=<INSTALL_DIR>
-  -DHDF5_NO_FIND_PACKAGE_CONFIG_FILE:BOOL=ON)
+  -DHDF5_ROOT:PATH=<INSTALL_DIR>)
 
 superbuild_apply_patch(hdf5 fix-ext-pkg-find
   "Force proper logic for zlib and szip dependencies")
-
-superbuild_apply_patch(hdf5 cmake-fixes
-  "Patch up terrible CMake code")

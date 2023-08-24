@@ -48,8 +48,8 @@ superbuild_set_revision(szip
 
 superbuild_set_revision(hdf5
   # https://github.com/HDFGroup/hdf5/releases
-  URL     "https://www.paraview.org/files/dependencies/hdf5-1.12.1.tar.bz2"
-  URL_MD5  442469fbf43626006346e679c22cf10a)
+  URL     "https://www.paraview.org/files/dependencies/hdf5-1_14_2.tar.gz"
+  URL_MD5  dc95b307eb8a46335ec59e7ffa1948a4)
 
 superbuild_set_revision(boost
   # https://www.boost.org/users/download/
