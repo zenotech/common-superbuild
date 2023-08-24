@@ -121,8 +121,8 @@ superbuild_set_selectable_source(qt5
 
 superbuild_set_revision(numpy
   # https://pypi.org/project/numpy/#history
-  URL     "https://www.paraview.org/files/dependencies/numpy-1.21.1.zip"
-  URL_MD5 1d016e05851a4ba85307f3246eb569aa)
+  URL     "https://www.paraview.org/files/dependencies/numpy-1.25.2.tar.gz"
+  URL_MD5 cee1996a80032d47bdf1d9d17249c34e)
 
 # https://pypi.org/project/scipy/#history
 set(scipy_version "1.7.1")
