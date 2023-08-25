@@ -316,8 +316,8 @@ superbuild_set_revision(pythoncffi
 
 superbuild_set_revision(pythonsemanticversion
   # https://pypi.org/project/semantic_version/#history
-  URL     "https://www.paraview.org/files/dependencies/semantic_version-2.8.5.tar.gz"
-  URL_MD5 76d7364def7ee487b6153d40b13de904)
+  URL     "https://www.paraview.org/files/dependencies/semantic_version-2.10.0.tar.gz"
+  URL_MD5 e48abef93ba69abcd4eaf4640edfc38b)
 
 superbuild_set_revision(pythonidna
   # https://pypi.org/project/idna/#history
