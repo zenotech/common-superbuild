@@ -559,12 +559,10 @@ else ()
     URL_MD5 c4e7d95f782b08116afa27b30393dd27)
 endif ()
 
-if (WIN32)
-  superbuild_set_revision(flexbison
-    # https://github.com/lexxmark/winflexbison/releases
-    URL     "https://www.paraview.org/files/dependencies/win_flex_bison-2.5.25.zip"
-    URL_MD5 "720226b1befe7033fb3ecc98f5ffd425")
-endif ()
+superbuild_set_revision(flexbison
+  # https://github.com/lexxmark/winflexbison/releases
+  URL     "https://www.paraview.org/files/dependencies/win_flex_bison-2.5.25.zip"
+  URL_MD5 "720226b1befe7033fb3ecc98f5ffd425")
 
 superbuild_set_revision(alembic
   # https://github.com/alembic/alembic/releases
