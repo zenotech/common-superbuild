@@ -1,4 +1,4 @@
-superbuild_add_project_python(pythonsetuptoolsscm
+superbuild_add_project_python_pyproject(pythonsetuptoolsscm
   PACKAGE setuptools_scm
-  DEPENDS pythonsetuptools
+  DEPENDS pythonsetuptools pythonpackaging pythontomli pythontypingextensions
   LICENSE_FILES LICENSE)

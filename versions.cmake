@@ -296,8 +296,8 @@ superbuild_set_revision(pythontoml
 
 superbuild_set_revision(pythonsetuptoolsscm
   # https://pypi.org/project/setuptools-scm/#history
-  URL     "https://www.paraview.org/files/dependencies/setuptools_scm-6.0.1.tar.gz"
-  URL_MD5 aa7f0efbbf46c5576db5994dd1ce3f8d)
+  URL     "https://www.paraview.org/files/dependencies/setuptools_scm-7.1.0.tar.gz"
+  URL_MD5 158dc741637fb4fa4b955c62bd2c08be)
 
 superbuild_set_revision(pythonsetuptoolsrust
   # https://pypi.org/project/setuptools-rust/#history
