@@ -269,8 +269,8 @@ superbuild_set_revision(pythonwheel
   # https://pypi.org/project/wheel/#history
   # PyPI source tarball with 'unicode.dist' test excised from it (CMake has
   # issues extracting non-UTF-8 names in tarballs).
-  URL     "https://www.paraview.org/files/dependencies/wheel-0.37.0-nounicodedist.tar.gz"
-  URL_MD5 c4223d1502f05a23a67d6f0db0b424e9)
+  URL     "https://www.paraview.org/files/dependencies/wheel-0.41.2-nounicodedist.tar.gz"
+  URL_MD5 b5f1f03ec0ad347b8b17c33077513863)
 
 # https://pypi.org/project/mpi4py/#history
 set(mpi4py_ver "3.1.3")
