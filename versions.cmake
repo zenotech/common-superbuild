@@ -371,8 +371,8 @@ superbuild_set_revision(pythonmako
 
 superbuild_set_revision(pythoncppy
   # https://pypi.org/project/cppy/#history
-  URL     "https://www.paraview.org/files/dependencies/cppy-1.1.0.tar.gz"
-  URL_MD5 2110891d75aa12551deebba1603428c6)
+  URL     "https://www.paraview.org/files/dependencies/cppy-1.2.1.tar.gz"
+  URL_MD5 7c1f825c43dd66454440932a35b9969c)
 
 superbuild_set_revision(pythonkiwisolver
   # https://pypi.org/project/kiwisolver/#history
