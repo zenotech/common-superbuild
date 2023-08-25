@@ -571,5 +571,5 @@ superbuild_set_revision(alembic
 
 superbuild_set_revision(imath
   # https://github.com/AcademySoftwareFoundation/Imath/releases
-  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.7.tar.gz"
-  URL_MD5 5cedab446ab296c080957c3037c6d097)
+  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.9.tar.gz"
+  URL_MD5 97f1cbfb86b88ddfde42b7df1f1494db)
