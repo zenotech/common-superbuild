@@ -163,8 +163,8 @@ endif ()
 
 superbuild_set_revision(pythonmpmath
   # https://pypi.org/project/mpmath/#history
-  URL     "https://www.paraview.org/files/dependencies/mpmath-1.2.1.tar.gz"
-  URL_MD5 ef8a6449851755319673b06f71731d52)
+  URL     "https://www.paraview.org/files/dependencies/mpmath-1.3.0.tar.gz"
+  URL_MD5 d5d17bbefea73eeb959967351d905306)
 
 superbuild_set_revision(sympy
   # https://pypi.org/project/sympy/#history
