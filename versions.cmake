@@ -65,8 +65,8 @@ if (WIN32)
   superbuild_set_revision(python3
     # See https://www.paraview.org/files/dependencies/python-for-wheels/
     # To make a new one, see `vtk/vtk@.gitlab/ci/wheels/`
-    URL     "https://www.paraview.org/files/dependencies/python-3.9.13-windows-x86_64.zip"
-    URL_MD5 d55270fbc6356eb5c2b37bffd0c0b48b)
+    URL     "https://www.paraview.org/files/dependencies/python-for-wheels/python-3.9.13-windows-x86_64.zip"
+    URL_MD5 fe29035c955c49ace9e2844a505bbc09)
 else()
   superbuild_set_revision(python3
     # https://www.python.org/downloads/source/
