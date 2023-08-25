@@ -371,8 +371,8 @@ superbuild_set_revision(pythonmarkupsafe
 
 superbuild_set_revision(pythonmako
   # https://pypi.org/project/Mako/#history
-  URL     "https://www.paraview.org/files/dependencies/Mako-1.1.4.tar.gz"
-  URL_MD5 2cd02c14d08c2180b3e10d3c2e749b9e)
+  URL     "https://www.paraview.org/files/dependencies/Mako-1.2.4.tar.gz"
+  URL_MD5 651f365616611fcd4f2702a9002e2195)
 
 superbuild_set_revision(pythoncppy
   # https://pypi.org/project/cppy/#history
