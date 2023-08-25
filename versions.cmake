@@ -561,32 +561,32 @@ superbuild_set_revision(snappy
   URL_MD5 70153395ebe6d72febe2cf2e40026a44)
 
 # https://pypi.org/project/cryptography/#history
-set(pythoncryptography_version "3.4.7")
+set(pythoncryptography_version "41.0.3")
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "64")
     set(pythoncryptography_file
-      "cryptography-${pythoncryptography_version}-cp36-abi3-win_amd64.whl")
+      "cryptography-${pythoncryptography_version}-cp37-abi3-win_amd64.whl")
     set(pythoncryptography_md5
-      "4ac946949ecb278b028c2fcf5d1cbc2b")
+      "5dee5069491c917a975d76fa655ab0ad")
   endif ()
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
     set(pythoncryptography_file
-      "cryptography-${pythoncryptography_version}-cp36-abi3-macosx_10_10_x86_64.whl")
+      "cryptography-${pythoncryptography_version}-cp37-abi3-macosx_10_12_x86_64.whl")
     set(pythoncryptography_md5
-      "f5e574ea0e46b25157a29d09fc6e76b3")
+      "1351baacf6069403c3f916a46cebbad5")
   elseif (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
     set(pythoncryptography_file
-      "cryptography-${pythoncryptography_version}-cp36-abi3-macosx_11_0_arm64.whl")
+      "cryptography-${pythoncryptography_version}-cp37-abi3-macosx_10_12_universal2.whl")
     set(pythoncryptography_md5
-      "cd55873ce4a9aa985a0573efdc4244e1")
+      "bedfef0b707ea313b212c2e72222e883")
   endif ()
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
   if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
     set(pythoncryptography_file
-      "cryptography-${pythoncryptography_version}-cp36-abi3-manylinux2010_x86_64.whl")
+      "cryptography-${pythoncryptography_version}-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl")
     set(pythoncryptography_md5
-      "37e6016ff0dd06e168d908ee800a071b")
+      "c7fce3b285651310e92cfe5a6e299898")
   endif ()
 endif ()
 if (NOT pythoncryptography_file)
@@ -597,7 +597,7 @@ if (NOT pythoncryptography_file)
   set(pythoncryptography_file
     "cryptography-${pythoncryptography_version}.tar.gz")
   set(pythoncryptography_md5
-    "f24fb11c6d5beb18cbfe216b9e58c27e")
+    "fbf930acd8de95780604c40c4e817a74")
   set_property(GLOBAL
     PROPERTY
       pythoncryptography_source 1)
