@@ -451,17 +451,17 @@ superbuild_set_revision(jsoncpp
 
 if (WIN32)
   set(ispc_suffix "windows.zip")
-  set(ispc_md5 22d1e9fd03427b8e8a9d75ce56cfa495)
+  set(ispc_md5 c3757640921b6b53086dd842b2f36992)
 elseif (APPLE)
-  set(ispc_suffix "macOS.tar.gz")
-  set(ispc_md5 0ae980be5d319b38592c6ef5596c305d)
+  set(ispc_suffix "macOS.universal.tar.gz")
+  set(ispc_md5 dd91293a5a8db6182df2360ed1c1be24)
 else()
   set(ispc_suffix "linux.tar.gz")
-  set(ispc_md5 4665c577541003e31c8ce0afd64b6952)
+  set(ispc_md5 281e7cb034f454553133587b88081aad)
 endif()
 superbuild_set_revision(ispc
   # https://github.com/ispc/ispc/releases
-  URL     "https://www.paraview.org/files/dependencies/ispc-v1.16.1-${ispc_suffix}"
+  URL     "https://www.paraview.org/files/dependencies/ispc-v1.21.0-${ispc_suffix}"
   URL_MD5 "${ispc_md5}")
 
 superbuild_set_revision(embree
