@@ -316,8 +316,8 @@ superbuild_set_revision(pythonasynctimeout
 
 superbuild_set_revision(pythonchardet
   # https://pypi.org/project/chardet/#history
-  URL     "https://www.paraview.org/files/dependencies/chardet-4.0.0.tar.gz"
-  URL_MD5 bc9a5603d8d0994b2d4cbf255f99e654)
+  URL     "https://www.paraview.org/files/dependencies/chardet-5.2.0.tar.gz"
+  URL_MD5 cc2d8cc9a751641463b4f7cfecad2ffa)
 
 superbuild_set_revision(pythonmultidict
   # https://pypi.org/project/multidict/#history
