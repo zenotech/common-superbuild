@@ -86,8 +86,8 @@ superbuild_set_revision(gperf
 
 superbuild_set_revision(fontconfig
   # https://www.freedesktop.org/software/fontconfig/release/
-  URL     "https://www.paraview.org/files/dependencies/fontconfig-2.13.1.tar.bz2"
-  URL_MD5 36cdea1058ef13cbbfdabe6cb019dc1c)
+  URL     "https://www.paraview.org/files/dependencies/fontconfig-2.14.2.tar.xz"
+  URL_MD5 95261910ea727b5dd116b06fbfd84b1f)
 
 superbuild_set_revision(libxml2
   # https://gitlab.gnome.org/GNOME/libxml2/-/releases
