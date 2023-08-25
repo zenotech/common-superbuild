@@ -441,8 +441,8 @@ superbuild_set_revision(ninja
 
 superbuild_set_revision(openxrsdk
   # https://github.com/KhronosGroup/OpenXR-SDK/releases
-  URL     "https://www.paraview.org/files/dependencies/OpenXR-SDK-release-1.0.22.tar.gz"
-  URL_MD5 a2623ebab3d0b340bc16311b14f02075)
+  URL     "https://www.paraview.org/files/dependencies/OpenXR-SDK-release-1.0.28.tar.gz"
+  URL_MD5 c1d4caa3c1b7a7e7b972202f55cc8d2b)
 
 superbuild_set_revision(jsoncpp
   # https://github.com/open-source-parsers/jsoncpp/releases
