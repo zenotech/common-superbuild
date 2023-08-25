@@ -33,8 +33,8 @@ superbuild_set_revision(zlib
 
 superbuild_set_revision(xz
   # https://tukaani.org/xz/
-  URL     "https://www.paraview.org/files/dependencies/xz-5.2.5.tar.xz"
-  URL_MD5 aa1621ec7013a19abab52a8aff04fe5b)
+  URL     "https://www.paraview.org/files/dependencies/xz-5.4.4.tar.xz"
+  URL_MD5 d83d6f64a64f88759e312b8a38c3add6)
 
 superbuild_set_revision(ffmpeg
   # https://ffmpeg.org/download.html
