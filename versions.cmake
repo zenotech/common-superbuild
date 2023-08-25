@@ -187,8 +187,8 @@ superbuild_set_revision(netcdf
 
 superbuild_set_revision(tbb
   # https://github.com/oneapi-src/oneTBB/releases
-  URL     "https://www.paraview.org/files/dependencies/tbb-2021.5.0.tar.gz"
-  URL_MD5 5e5f2ee22a0d19c0abbe7478f1c7ccf6)
+  URL     "https://www.paraview.org/files/dependencies/tbb-2021.10.0.tar.gz"
+  URL_MD5 2caf55b3d35b53edccb33ecaf0f23402)
 
 superbuild_set_revision(pytz
   # https://pypi.org/project/pytz/#history
