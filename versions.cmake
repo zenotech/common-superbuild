@@ -97,9 +97,9 @@ superbuild_set_revision(libxml2
 
 superbuild_set_revision(nlohmannjson
   # https://github.com/nlohmann/json/releases
-  # Note: downloaded assets need renamed from `json.tar.xz`
-  URL     "https://www.paraview.org/files/dependencies/nlohmannjson-v3.9.1.tar.gz"
-  URL_MD5 e386222fb57dd2fcb8a7879fc016d037)
+  # Be sure to grab the full source code, not one of the subdirectory archives.
+  URL     "https://www.paraview.org/files/dependencies/nlohmannjson-3.11.2.tar.gz"
+  URL_MD5 e8d56bc54621037842ee9f0aeae27746)
 
 # https://download.qt.io/official_releases/qt/
 superbuild_set_selectable_source(qt5
