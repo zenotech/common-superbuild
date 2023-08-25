@@ -386,8 +386,8 @@ superbuild_set_revision(pybind11
 
 superbuild_set_revision(sqlite
   # https://sqlite.org/download.html
-  URL     "https://www.paraview.org/files/dependencies/sqlite-autoconf-3360000.tar.gz"
-  URL_MD5 f5752052fc5b8e1b539af86a3671eac7)
+  URL     "https://www.paraview.org/files/dependencies/sqlite-autoconf-3430000.tar.gz"
+  URL_MD5 f321a958aed13fb5f8773ae2f3504c0b)
 
 superbuild_set_revision(expat
   # https://github.com/libexpat/libexpat/releases
