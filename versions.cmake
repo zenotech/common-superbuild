@@ -227,8 +227,8 @@ superbuild_set_revision(pythonpythran
 
 superbuild_set_revision(pythoncycler
   # https://pypi.org/project/cycler/#history
-  URL     "https://www.paraview.org/files/dependencies/cycler-0.10.0.tar.gz"
-  URL_MD5 4cb42917ac5007d1cdff6cccfe2d016b)
+  URL     "https://www.paraview.org/files/dependencies/cycler-0.11.0.tar.gz"
+  URL_MD5 4d0c25f418956e91c47163179682e0ef)
 
 superbuild_set_revision(pythoncython
   # https://pypi.org/project/Cython/#history
