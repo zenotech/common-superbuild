@@ -436,8 +436,8 @@ set(llvm_version_21.2.1 "7.0.0")
 
 superbuild_set_revision(ninja
   # https://github.com/ninja-build/ninja/releases
-  URL     "https://www.paraview.org/files/dependencies/ninja-1.10.2.tar.gz"
-  URL_MD5 639f75bc2e3b19ab893eaf2c810d4eb4)
+  URL     "https://www.paraview.org/files/dependencies/ninja-1.11.1.tar.gz"
+  URL_MD5 32151c08211d7ca3c1d832064f6939b0)
 
 superbuild_set_revision(openxrsdk
   # https://github.com/KhronosGroup/OpenXR-SDK/releases
