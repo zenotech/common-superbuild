@@ -391,8 +391,8 @@ superbuild_set_revision(sqlite
 
 superbuild_set_revision(expat
   # https://github.com/libexpat/libexpat/releases
-  URL     "https://www.paraview.org/files/dependencies/expat-2.4.1.tar.xz"
-  URL_MD5 a4fb91a9441bcaec576d4c4a56fa3aa6)
+  URL     "https://www.paraview.org/files/dependencies/expat-2.5.0.tar.xz"
+  URL_MD5 ac6677b6d1b95d209ab697ce8b688704)
 
 superbuild_set_revision(glproto
   # Deprecated; no new releases.
