@@ -38,8 +38,8 @@ superbuild_set_revision(xz
 
 superbuild_set_revision(ffmpeg
   # https://ffmpeg.org/download.html
-  URL     "https://www.paraview.org/files/dependencies/ffmpeg-4.4.tar.xz"
-  URL_MD5 7b9d5b652d20e8c5405304ad72636d4a)
+  URL     "https://www.paraview.org/files/dependencies/ffmpeg-6.0.tar.xz"
+  URL_MD5 47b6c5d930937413c3e308e2fdb3dfb5)
 
 superbuild_set_revision(szip
   # https://support.hdfgroup.org/doc_resource/SZIP/ (Check "SZIP Source Code" link)
