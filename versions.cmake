@@ -18,8 +18,8 @@ superbuild_set_revision(bzip2
 
 superbuild_set_revision(cgns
   # https://github.com/CGNS/CGNS/releases
-  URL     "https://www.paraview.org/files/dependencies/cgns-4.3.0.tar.gz"
-  URL_MD5 bce0461cd385ec5daeb04986093290d1)
+  URL     "https://www.paraview.org/files/dependencies/cgns-4.4.0.tar.gz"
+  URL_MD5 7d82f6834c11ee873232cf131fadfba6)
 
 superbuild_set_revision(seacas
   # https://github.com/sandialabs/seacas/releases
