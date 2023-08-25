@@ -311,8 +311,8 @@ superbuild_set_revision(pythonyarl
 
 superbuild_set_revision(pythoncffi
   # https://pypi.org/project/cffi/#history
-  URL     "https://www.paraview.org/files/dependencies/cffi-1.14.6.tar.gz"
-  URL_MD5 5c118a18ea897df164dbff67a32876fc)
+  URL     "https://www.paraview.org/files/dependencies/cffi-1.15.1.tar.gz"
+  URL_MD5 f493860a6e98cd0c4178149568a6b4f6)
 
 superbuild_set_revision(pythonsemanticversion
   # https://pypi.org/project/semantic_version/#history
