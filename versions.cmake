@@ -507,15 +507,15 @@ superbuild_set_selectable_source(llvm
   # https://github.com/llvm/llvm-project/releases
   SELECTS_WITH mesa
   SELECT 23.1.6
-    URL     "https://www.paraview.org/files/dependencies/llvm-project-15.0.6.src.tar.xz"
-    URL_MD5 8202ece5dfaad502ee513a8eaaa4ada3
+    URL     "https://www.paraview.org/files/dependencies/llvm-project-16.0.6.src.tar.xz"
+    URL_MD5 7d986cda69719a35bd5ecb266fcf1f65
   SELECT 22.3.3
     URL     "https://www.paraview.org/files/dependencies/llvm-project-15.0.6.src.tar.xz"
     URL_MD5 8202ece5dfaad502ee513a8eaaa4ada3
   SELECT 21.2.1
     URL     "https://www.paraview.org/files/dependencies/llvm-7.0.0.src.tar.xz"
     URL_MD5 e0140354db83cdeb8668531b431398f0)
-set(llvm_version_23.1.6 "15.0.6")
+set(llvm_version_23.1.6 "16.0.6")
 set(llvm_version_22.3.3 "15.0.6")
 set(llvm_version_21.2.1 "7.0.0")
 
