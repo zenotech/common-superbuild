@@ -172,8 +172,8 @@ superbuild_set_revision(pywin32
 
 superbuild_set_revision(mpi
   # https://github.com/pmodels/mpich/releases
-  URL     "https://www.paraview.org/files/dependencies/mpich-4.1.1.tar.gz"
-  URL_MD5 bd0ecf550e4a3e54128f377b65743370)
+  URL     "https://www.paraview.org/files/dependencies/mpich-4.1.2.tar.gz"
+  URL_MD5 66185dc9d911ab2b27cb42bec8e8e1a7)
 
 superbuild_set_revision(lapack
   # https://github.com/Reference-LAPACK/lapack/releases
