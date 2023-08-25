@@ -157,8 +157,8 @@ superbuild_set_revision(libjpegturbo
 
 superbuild_set_revision(pythonpillow
   # https://pypi.org/project/pillow/#history
-  URL     "https://www.paraview.org/files/dependencies/Pillow-8.3.1.tar.gz"
-  URL_MD5 e42fc66e41b5309436a573af49cec47c)
+  URL     "https://www.paraview.org/files/dependencies/Pillow-10.0.0.tar.gz"
+  URL_MD5 2a8f327ba2250aad26ed101337c8fa56)
 
 superbuild_set_revision(matplotlib
   # https://pypi.org/project/matplotlib/#history
