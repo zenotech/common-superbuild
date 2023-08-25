@@ -286,8 +286,8 @@ superbuild_set_revision(pythonaiohttp
 
 superbuild_set_revision(pythonasynctimeout
   # https://pypi.org/project/async-timeout/#history
-  URL     "https://www.paraview.org/files/dependencies/async-timeout-3.0.1.tar.gz"
-  URL_MD5 305c4fa529f2485c403d0dbe14390175)
+  URL     "https://www.paraview.org/files/dependencies/async-timeout-4.0.3.tar.gz"
+  URL_MD5 9bf7b764a7310cb063c1c261c21342e4)
 
 superbuild_set_revision(pythonchardet
   # https://pypi.org/project/chardet/#history
