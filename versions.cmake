@@ -192,8 +192,8 @@ superbuild_set_revision(matplotlib
 
 superbuild_set_revision(pywin32
   # https://pypi.org/project/pywin32/#history
-  URL "https://www.paraview.org/files/dependencies/pywin32-301-cp39-cp39-win_amd64.whl"
-  URL_MD5 3fe9793d6bee6e9b6515bc744f7585df)
+  URL "https://www.paraview.org/files/dependencies/pywin32-306-cp39-cp39-win_amd64.whl"
+  URL_MD5 8825c29dd5dc6e8d906d82c666a7081f)
 
 superbuild_set_revision(mpi
   # https://github.com/pmodels/mpich/releases
