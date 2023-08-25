@@ -301,8 +301,8 @@ superbuild_set_revision(pythonsetuptoolsscm
 
 superbuild_set_revision(pythonsetuptoolsrust
   # https://pypi.org/project/setuptools-rust/#history
-  URL     "https://www.paraview.org/files/dependencies/setuptools-rust-0.12.1.tar.gz"
-  URL_MD5 33c3fd3bcde2877483ab782353bee54c)
+  URL     "https://www.paraview.org/files/dependencies/setuptools-rust-1.7.0.tar.gz"
+  URL_MD5 5d8c29528d6f99537ff6c186f977f470)
 
 superbuild_set_revision(pythoncharsetnormalizer
   # https://pypi.org/project/charset-normalizer/#history
