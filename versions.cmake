@@ -376,8 +376,8 @@ superbuild_set_revision(pythonsix
 
 superbuild_set_revision(pythonpygments
   # https://pypi.org/project/Pygments/#history
-  URL     "https://www.paraview.org/files/dependencies/Pygments-2.9.0.tar.gz"
-  URL_MD5 665516d1d1c0099241ab6e4c057e26be)
+  URL     "https://www.paraview.org/files/dependencies/Pygments-2.16.1.tar.gz"
+  URL_MD5 20cb967029c23389253326cf515dec8a)
 
 superbuild_set_revision(pythonmarkupsafe
   # https://pypi.org/project/MarkupSafe/#history
