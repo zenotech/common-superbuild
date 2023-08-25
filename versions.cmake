@@ -28,8 +28,8 @@ superbuild_set_revision(seacas
 
 superbuild_set_revision(zlib
   # https://github.com/madler/zlib/releases
-  URL     "https://www.paraview.org/files/dependencies/zlib-1.2.11.tar.xz"
-  URL_MD5 85adef240c5f370b308da8c938951a68)
+  URL     "https://www.paraview.org/files/dependencies/zlib-1.3.tar.xz"
+  URL_MD5 b49e70aacafacfceb1107943497f5545)
 
 superbuild_set_revision(xz
   # https://tukaani.org/xz/
