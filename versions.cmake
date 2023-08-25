@@ -124,15 +124,15 @@ superbuild_set_revision(numpy
   URL     "https://www.paraview.org/files/dependencies/numpy-1.21.1.zip"
   URL_MD5 1d016e05851a4ba85307f3246eb569aa)
 
+# https://pypi.org/project/scipy/#history
+set(scipy_version "1.7.1")
 if (WIN32)
   superbuild_set_revision(scipy
-    # https://pypi.org/project/scipy/#history
-    URL     "https://www.paraview.org/files/dependencies/scipy-1.7.1-cp39-cp39-win_amd64.whl"
+    URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp39-cp39-win_amd64.whl"
     URL_MD5 f8d0f87aaa8929f059fcf840db345310)
 else ()
   superbuild_set_revision(scipy
-    # https://pypi.org/project/scipy/#history
-    URL     "https://www.paraview.org/files/dependencies/scipy-1.7.1.tar.gz"
+    URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}.tar.gz"
     URL_MD5 8ac74369cdcabc097f602682c951197c)
 endif ()
 
