@@ -262,8 +262,8 @@ superbuild_set_revision(pythoncython
 
 superbuild_set_revision(pythonsetuptools
   # https://pypi.org/project/setuptools/#history
-  URL     "https://www.paraview.org/files/dependencies/setuptools-57.4.0.tar.gz"
-  URL_MD5 1023c3535d6a3724b3c9a9929dcef195)
+  URL     "https://www.paraview.org/files/dependencies/setuptools-68.1.2.tar.gz"
+  URL_MD5 222b8c1a7432457d8485f947a0e0fde6)
 
 superbuild_set_revision(pythonwheel
   # https://pypi.org/project/wheel/#history
