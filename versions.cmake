@@ -227,8 +227,8 @@ superbuild_set_revision(pythondateutil
 
 superbuild_set_revision(pythonpyparsing
   # https://pypi.org/project/pyparsing/#history
-  URL     "https://www.paraview.org/files/dependencies/pyparsing-2.4.7.tar.gz"
-  URL_MD5 f0953e47a0112f7a65aec2305ffdf7b4)
+  URL     "https://www.paraview.org/files/dependencies/pyparsing-3.1.1.tar.gz"
+  URL_MD5 bb8c8c6b8015ca5887ae2c37917ee82e)
 
 superbuild_set_revision(pythonbeniget
   # https://pypi.org/project/beniget/#history
