@@ -446,8 +446,8 @@ superbuild_set_revision(pythonversioneer
 
 superbuild_set_revision(pythonpandas
   # https://pypi.org/project/pandas/#history
-  URL     "https://www.paraview.org/files/dependencies/pandas-1.3.1.tar.gz"
-  URL_MD5 407560bb24b0ec4785ecf4dba5e1a139)
+  URL     "https://www.paraview.org/files/dependencies/pandas-2.0.3.tar.gz"
+  URL_MD5 9d78ba91d58e424e262b07ebf8a514ac)
 
 superbuild_set_revision(ffi
   # https://github.com/libffi/libffi/releases
