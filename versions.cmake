@@ -492,8 +492,8 @@ superbuild_set_revision(openimagedenoise
 
 superbuild_set_revision(rkcommon
   # https://github.com/ospray/rkcommon/tags
-  URL     "https://www.paraview.org/files/dependencies/rkcommon-v1.7.0.tar.gz"
-  URL_MD5 1bd26e5aea9b1c4873fe8b8cec9a1d28)
+  URL     "https://www.paraview.org/files/dependencies/rkcommon-1.11.0.tar.gz"
+  URL_MD5 2a298ad88b2959e44c275a6ff679bf1f)
 
 superbuild_set_revision(snappy
   # https://github.com/google/snappy/releases
