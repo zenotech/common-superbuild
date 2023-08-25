@@ -326,8 +326,8 @@ superbuild_set_revision(pythonmultidict
 
 superbuild_set_revision(pythontypingextensions
   # https://pypi.org/project/typing_extensions/#history
-  URL     "https://www.paraview.org/files/dependencies/typing_extensions-3.10.0.0.tar.gz"
-  URL_MD5 9b5b33ae64c94479fa0862cf8ae89d58)
+  URL     "https://www.paraview.org/files/dependencies/typing_extensions-4.7.1.tar.gz"
+  URL_MD5 06e7fff4b1d51f8dc6f49b16e71de54e)
 
 superbuild_set_revision(pythonyarl
   # https://pypi.org/project/yarl/#history
