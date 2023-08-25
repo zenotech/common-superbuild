@@ -168,8 +168,8 @@ superbuild_set_revision(pythonmpmath
 
 superbuild_set_revision(sympy
   # https://pypi.org/project/sympy/#history
-  URL     "https://www.paraview.org/files/dependencies/sympy-1.10.1.tar.gz"
-  URL_MD5 8c7a956d74a47dc439c2935fec64ac46)
+  URL     "https://www.paraview.org/files/dependencies/sympy-1.12.tar.gz"
+  URL_MD5 3e0033109352d7303ea97b9216e16645)
 
 superbuild_set_revision(qhull
   # http://www.qhull.org/download/ ("Download: … for Unix")
