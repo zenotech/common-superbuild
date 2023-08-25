@@ -273,15 +273,15 @@ superbuild_set_revision(pythonwheel
   URL_MD5 b5f1f03ec0ad347b8b17c33077513863)
 
 # https://pypi.org/project/mpi4py/#history
-set(mpi4py_ver "3.1.3")
+set(mpi4py_ver "3.1.4")
 if (WIN32)
   superbuild_set_revision(pythonmpi4py
     URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp39-cp39-win_amd64.whl"
-    URL_MD5 e9e890b7058b81cd1099627c61852967)
+    URL_MD5 e8387c642919358a7d5739c8e7128f89)
 else ()
   superbuild_set_revision(pythonmpi4py
     URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}.tar.gz"
-    URL_MD5 e6d0644a2a3c7aa5119825d35ebeb8ee)
+    URL_MD5 09e20c0128207303a3d0462eb6b0c0e3)
 endif ()
 
 superbuild_set_revision(pythonpycparser
