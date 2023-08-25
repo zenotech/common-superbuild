@@ -396,8 +396,8 @@ superbuild_set_revision(pythoncppy
 
 superbuild_set_revision(pythonkiwisolver
   # https://pypi.org/project/kiwisolver/#history
-  URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.3.1.tar.gz"
-  URL_MD5 81012578317ddcfa3daed806142f8fed)
+  URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.4.5.tar.gz"
+  URL_MD5 20dea6992699d6be8a563995d7fe0309)
 
 superbuild_set_revision(pythonpathspec
   # https://pypi.org/project/pathspec/#history
