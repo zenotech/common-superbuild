@@ -212,8 +212,8 @@ superbuild_set_revision(pythonbeniget
 
 superbuild_set_revision(pythongast
   # https://pypi.org/project/gast/#history
-  URL     "https://www.paraview.org/files/dependencies/gast-0.5.2.tar.gz"
-  URL_MD5 eb2489df0c85ae198e4740e5711c7299)
+  URL     "https://www.paraview.org/files/dependencies/gast-0.5.4.tar.gz"
+  URL_MD5 907c689e3fdbc7a48cc010e665195baa)
 
 superbuild_set_revision(pythonply
   # https://pypi.org/project/ply/#history
