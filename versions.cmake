@@ -497,8 +497,8 @@ superbuild_set_revision(rkcommon
 
 superbuild_set_revision(snappy
   # https://github.com/google/snappy/releases
-  URL     "https://www.paraview.org/files/dependencies/snappy-1.1.9.tar.gz"
-  URL_MD5 213b6324b7790d25f5368629540a172c)
+  URL     "https://www.paraview.org/files/dependencies/snappy-1.1.10.tar.gz"
+  URL_MD5 70153395ebe6d72febe2cf2e40026a44)
 
 # https://pypi.org/project/cryptography/#history
 set(pythoncryptography_version "3.4.7")

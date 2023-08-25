@@ -9,3 +9,6 @@ superbuild_add_project(snappy
     -DSNAPPY_BUILD_BENCHMARKS:BOOL=OFF
     -DSNAPPY_INSTALL:BOOL=ON
 )
+
+superbuild_apply_patch(snappy no-werror
+  "Remove `-Werror` flag")
