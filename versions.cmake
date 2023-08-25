@@ -23,8 +23,8 @@ superbuild_set_revision(cgns
 
 superbuild_set_revision(seacas
   # https://github.com/sandialabs/seacas/releases
-  URL     "https://www.paraview.org/files/dependencies/seacas-2022-08-01.tar.gz"
-  URL_MD5 1d50fdd11b1293a7bbb87eb15ca4b6e2)
+  URL     "https://www.paraview.org/files/dependencies/seacas-2023-05-30.tar.gz"
+  URL_MD5 03f0eca3e201cd2fd352b80c10536669)
 
 superbuild_set_revision(zlib
   # https://github.com/madler/zlib/releases
