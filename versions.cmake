@@ -296,8 +296,8 @@ superbuild_set_revision(pythonchardet
 
 superbuild_set_revision(pythonmultidict
   # https://pypi.org/project/multidict/#history
-  URL     "https://www.paraview.org/files/dependencies/multidict-5.1.0.tar.gz"
-  URL_MD5 df8b37f069809779214d6b80b250e45b)
+  URL     "https://www.paraview.org/files/dependencies/multidict-6.0.4.tar.gz"
+  URL_MD5 ec06a613d871dadfb66f2be3a1f2f3fa)
 
 superbuild_set_revision(pythontypingextensions
   # https://pypi.org/project/typing_extensions/#history
