@@ -152,8 +152,8 @@ superbuild_set_revision(qhull
   URL_MD5 295f7332269a38279478f555cc185296)
 
 superbuild_set_revision(libjpegturbo
-  URL     "https://www.paraview.org/files/dependencies/libjpeg-turbo-2.1.1.tar.gz"
-  URL_MD5 cf16866976ab31cd6fc478eac8c2c54e)
+  URL     "https://www.paraview.org/files/dependencies/libjpeg-turbo-3.0.0.tar.gz"
+  URL_MD5 c84d907ace44d351fcce643c2b9d9492)
 
 superbuild_set_revision(pythonpillow
   # https://pypi.org/project/pillow/#history
