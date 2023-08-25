@@ -192,8 +192,8 @@ superbuild_set_revision(tbb
 
 superbuild_set_revision(pytz
   # https://pypi.org/project/pytz/#history
-  URL     "https://www.paraview.org/files/dependencies/pytz-2021.1.tar.gz"
-  URL_MD5 8c849bdf95414fe708a84473e42d4406)
+  URL     "https://www.paraview.org/files/dependencies/pytz-2023.3.tar.gz"
+  URL_MD5 fe54c8f8a1544b4e78b523b264ab071b)
 
 superbuild_set_revision(pythondateutil
   # https://pypi.org/project/python-dateutil/#history
