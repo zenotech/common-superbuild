@@ -58,8 +58,8 @@ superbuild_set_revision(boost
 
 superbuild_set_revision(png
   # http://www.libpng.org/pub/png/libpng.html
-  URL     "https://www.paraview.org/files/dependencies/libpng-1.6.37.tar.xz"
-  URL_MD5 015e8e15db1eecde5f2eb9eb5b6e59e9)
+  URL     "https://www.paraview.org/files/dependencies/libpng-1.6.40.tar.xz"
+  URL_MD5 6c7fe9dbb80c89c3579bedad9722e559)
 
 if (WIN32)
   superbuild_set_revision(python3
