@@ -182,8 +182,8 @@ superbuild_set_revision(lapack
 
 superbuild_set_revision(netcdf
   # https://github.com/Unidata/netcdf-c/releases
-  URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.8.1.tar.gz"
-  URL_MD5 b069f4eb1718798c2907c38189615f95)
+  URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.9.2.tar.gz"
+  URL_MD5 84acd096ab4f3300c20db862eecdf7c7)
 
 superbuild_set_revision(tbb
   # https://github.com/oneapi-src/oneTBB/releases
