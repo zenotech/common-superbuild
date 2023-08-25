@@ -401,8 +401,8 @@ superbuild_set_revision(glproto
 
 superbuild_set_revision(meson
   # https://github.com/mesonbuild/meson/releases
-  URL     "https://www.paraview.org/files/dependencies/meson-0.62.0.tar.gz"
-  URL_MD5 2b8c86273f9f94aada9adcce895861d8)
+  URL     "https://www.paraview.org/files/dependencies/meson-1.2.1.tar.gz"
+  URL_MD5 e3cc846536189aacd7d01858a45ca9af)
 
 superbuild_set_selectable_source(mesa
   # https://gitlab.freedesktop.org/mesa/mesa/-/tags
