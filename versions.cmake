@@ -416,8 +416,8 @@ superbuild_set_revision(pythonhatchfancypypireadme
 
 superbuild_set_revision(pythonattrs
   # https://pypi.org/project/attrs/#history
-  URL     "https://www.paraview.org/files/dependencies/attrs-21.2.0.tar.gz"
-  URL_MD5 06af884070d9180694becdb106e5cd65)
+  URL     "https://www.paraview.org/files/dependencies/attrs-23.1.0.tar.gz"
+  URL_MD5 6623fed7ffa22261ba25fccaf4d99539)
 
 superbuild_set_revision(pythonpandas
   # https://pypi.org/project/pandas/#history
