@@ -1,0 +1,60 @@
+From 290704d3a9a859c7eac94c40dfbca798d2c9597d Mon Sep 17 00:00:00 2001
+From: Ben Boeckel <ben.boeckel@kitware.com>
+Date: Thu, 31 Aug 2023 10:09:56 -0400
+Subject: [PATCH] scipy.special: fix dependencies for `_ellip_harm_2`
+
+Generating the source for `_ellip_harm_2` requires the `cython_special`
+module to already be compiled. Add a dependency for this. Note that it
+now must be a custom target because generators do not support extra
+dependencies.
+
+Fixes: #19167
+---
+ scipy/special/meson.build | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
+
+diff --git a/scipy/special/meson.build b/scipy/special/meson.build
+index e7e25aa54e83..79ed1240925b 100644
+--- a/scipy/special/meson.build
++++ b/scipy/special/meson.build
+@@ -380,16 +380,6 @@ py3.extension_module('_ufuncs_cxx',
+   subdir: 'scipy/special'
+ )
+ 
+-py3.extension_module('_ellip_harm_2',
+-  [uf_cython_gen.process('_ellip_harm_2.pyx'), 'sf_error.c'],
+-  c_args: cython_c_args,
+-  include_directories: ['../_lib', '../_build_utils/src'],
+-  link_args: version_link_args,
+-  dependencies: [lapack, np_dep],
+-  install: true,
+-  subdir: 'scipy/special'
+-)
+-
+ py3.extension_module('cython_special',
+   [
+     uf_cython_gen.process(cython_special[6]),  # cython_special.pyx
+@@ -416,6 +406,23 @@ py3.extension_module('cython_special',
+   subdir: 'scipy/special'
+ )
+ 
++ellip_harm_2_source = custom_target('ellip_harm_2_source',
++  output: '_ellip_harm_2.c',
++  input: '_ellip_harm_2.pyx',
++  depends: [_cython_tree, _ufuncs_pxi_pxd_sources, cython_special],
++  command: [cython, '-3', '--fast-fail', '--output-file', '@OUTPUT@', '--include-dir', '.', '@INPUT@']
++) 
++  
++py3.extension_module('_ellip_harm_2',
++  [ellip_harm_2_source, 'sf_error.c'],
++  c_args: cython_c_args,
++  include_directories: ['../_lib', '../_build_utils/src'],
++  link_args: version_link_args,
++  dependencies: [lapack, np_dep],
++  install: true,
++  subdir: 'scipy/special'
++)
++
+ py3.extension_module('_comb',
+   cython_gen.process('_comb.pyx'),
+   link_args: version_link_args,

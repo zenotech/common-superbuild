@@ -150,15 +150,15 @@ superbuild_set_revision(pythonmesonpython
   URL_MD5 0db4483e30df43dbd465254be9c7db8a)
 
 # https://pypi.org/project/scipy/#history
-set(scipy_version "1.7.1")
+set(scipy_version "1.11.2")
 if (WIN32)
   superbuild_set_revision(scipy
     URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp39-cp39-win_amd64.whl"
-    URL_MD5 f8d0f87aaa8929f059fcf840db345310)
+    URL_MD5 2e2b1fcf6ea9c311576700daf18ccc19)
 else ()
   superbuild_set_revision(scipy
     URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}.tar.gz"
-    URL_MD5 8ac74369cdcabc097f602682c951197c)
+    URL_MD5 27baf613b6cf3f9600a05161f132151c)
 endif ()
 
 superbuild_set_revision(pythonmpmath
