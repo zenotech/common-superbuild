@@ -261,8 +261,8 @@ endif ()
 
 superbuild_set_revision(pythonpycparser
   # https://pypi.org/project/pycparser/#history
-  URL     "https://www.paraview.org/files/dependencies/pycparser-2.20.tar.gz"
-  URL_MD5 b8f88de737db8c346ee8d31c07c7a25a)
+  URL     "https://www.paraview.org/files/dependencies/pycparser-2.21.tar.gz"
+  URL_MD5 48f7d743bf018f7bb2ffc5fb976d1492)
 
 superbuild_set_revision(pythontoml
   # https://pypi.org/project/toml/#history
