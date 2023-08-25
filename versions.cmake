@@ -116,8 +116,8 @@ superbuild_set_selectable_source(qt5
     URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.12.9.tar.xz"
     URL_MD5 "fa2646280cf38180689c29c393cddd05"
   SELECT 5.15 DEFAULT
-    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-src-5.15.2.tar.xz"
-    URL_MD5 "e1447db4f06c841d8947f0a6ce83a7b5")
+    URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-5.15.10.tar.xz"
+    URL_MD5 "fb41d86bea6bc4886030a5092c910b09")
 
 superbuild_set_revision(numpy
   # https://pypi.org/project/numpy/#history
