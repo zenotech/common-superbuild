@@ -321,8 +321,8 @@ superbuild_set_revision(pythonfrozenlist
 
 superbuild_set_revision(pythonaiohttp
   # https://pypi.org/project/aiohttp/#history
-  URL     "https://www.paraview.org/files/dependencies/aiohttp-3.7.4.post0.tar.gz"
-  URL_MD5 7052a8e9877921d73da98d2b18c9a145)
+  URL     "https://www.paraview.org/files/dependencies/aiohttp-3.8.5.tar.gz"
+  URL_MD5 4bb59a17563df9a692c64418224ade12)
 
 superbuild_set_revision(pythonasynctimeout
   # https://pypi.org/project/async-timeout/#history
