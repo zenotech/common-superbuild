@@ -92,8 +92,8 @@ superbuild_set_revision(fontconfig
 superbuild_set_revision(libxml2
   # https://gitlab.gnome.org/GNOME/libxml2/-/releases
   # Grab the "Official distribution tarball"
-  URL     "https://www.paraview.org/files/dependencies/libxml2-2.9.12.tar.gz"
-  URL_MD5 f433a39be087a9f0b197eb2307ad9f75)
+  URL     "https://www.paraview.org/files/dependencies/libxml2-2.11.5.tar.xz"
+  URL_MD5 b2e7332289f5784087448a0717f45ac3)
 
 superbuild_set_revision(nlohmannjson
   # https://github.com/nlohmann/json/releases
