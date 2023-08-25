@@ -487,8 +487,8 @@ superbuild_set_revision(ospraymaterials
 
 superbuild_set_revision(openimagedenoise
   # https://github.com/OpenImageDenoise/oidn/releases
-  URL     "https://www.paraview.org/files/dependencies/oidn-1.4.1.src.tar.gz"
-  URL_MD5 df4007b0ab93b1c41cdf223b075d01c0)
+  URL     "https://www.paraview.org/files/dependencies/oidn-2.0.1.src.tar.gz"
+  URL_MD5 9e13ff3d9eb640e923b699bea1c8d419)
 
 superbuild_set_revision(rkcommon
   # https://github.com/ospray/rkcommon/tags
