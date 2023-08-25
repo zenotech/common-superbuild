@@ -1,0 +1,63 @@
+diff -u -Nr -U5 matplotlib-3.7.2/setupext.py matplotlib-3.7.2.deps-on-windows/setupext.py
+--- matplotlib-3.7.2/setupext.py	2023-02-21 19:42:35.000000000 -0500
++++ matplotlib-3.7.2.deps-on-windows/setupext.py	2023-09-01 16:28:11.657412284 -0400
+@@ -253,11 +253,11 @@
+     return pkg_config
+ 
+ 
+ def pkg_config_setup_extension(
+         ext, package,
+-        atleast_version=None, alt_exec=None, default_libraries=()):
++        atleast_version=None, alt_exec=None, envprefix=None, default_libraries=()):
+     """Add parameters to the given *ext* for the given *package*."""
+ 
+     # First, try to get the flags from pkg-config.
+ 
+     pkg_config = get_pkg_config()
+@@ -291,10 +291,17 @@
+                           or os.getenv('CONDA_DEFAULT_ENV'))  # conda < 4.1
+         if conda_env_path and os.path.isdir(conda_env_path):
+             conda_env_path = Path(conda_env_path)
+             ext.include_dirs.append(str(conda_env_path / "Library/include"))
+             ext.library_dirs.append(str(conda_env_path / "Library/lib"))
++        elif envprefix:
++            env_include = os.getenv(envprefix + '_INCLUDE_DIRS')
++            if env_include:
++                ext.include_dirs.extend(env_include.split(';'))
++            env_library_dirs = os.getenv(envprefix + '_LIBRARY_DIRS')
++            if env_library_dirs:
++                ext.library_dirs.extend(env_library_dirs.split(';'))
+ 
+     # Default linked libs.
+     ext.libraries.extend(default_libraries)
+ 
+ 
+@@ -581,10 +588,11 @@
+                 # from the tarball.  For FreeType>=2.4, there is a conversion
+                 # table in docs/VERSIONS.txt in the FreeType source tree.
+                 ext, 'freetype2',
+                 atleast_version='9.11.3',
+                 alt_exec=['freetype-config'],
++                envprefix='FREETYPE',
+                 default_libraries=['freetype'])
+             ext.define_macros.append(('FREETYPE_BUILD_TYPE', 'system'))
+         else:
+             src_path = Path('build', f'freetype-{LOCAL_FREETYPE_VERSION}')
+             # Statically link to the locally-built freetype.
+@@ -758,10 +766,16 @@
+ 
+     @classmethod
+     def add_flags(cls, ext):
+         if options.get("system_qhull"):
+             ext.libraries.append("qhull_r")
++            env_include = os.getenv('QHULL_INCLUDE_DIRS')
++            if env_include:
++                ext.include_dirs.extend(env_include.split(';'))
++            env_library_dirs = os.getenv('QHULL_LIBRARY_DIRS')
++            if env_library_dirs:
++                ext.library_dirs.extend(env_library_dirs.split(';'))
+         else:
+             cls._extensions_to_update.append(ext)
+ 
+     def do_custom_build(self, env):
+         if options.get('system_qhull'):

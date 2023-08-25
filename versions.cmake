@@ -197,8 +197,8 @@ superbuild_set_revision(pythonfonttools
 
 superbuild_set_revision(matplotlib
   # https://pypi.org/project/matplotlib/#history
-  URL "https://www.paraview.org/files/dependencies/matplotlib-3.4.2.tar.gz"
-  URL_MD5 e34749a5f0661b8af74a1dc327fb74f6)
+  URL "https://www.paraview.org/files/dependencies/matplotlib-3.7.2.tar.gz"
+  URL_MD5 64c7053050be5f92eab9131f1d85b71d)
 
 superbuild_set_revision(pywin32
   # https://pypi.org/project/pywin32/#history
