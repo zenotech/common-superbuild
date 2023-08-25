@@ -76,8 +76,8 @@ endif()
 
 superbuild_set_revision(freetype
   # https://download.savannah.gnu.org/releases/freetype/
-  URL     "https://www.paraview.org/files/dependencies/freetype-2.12.0.tar.xz"
-  URL_MD5 9a07649ce73ba0d80d211092b3d1c2fa)
+  URL     "https://www.paraview.org/files/dependencies/freetype-2.13.1.tar.xz"
+  URL_MD5 e4c3f0d8453a2a7993ae784912d6f19a)
 
 superbuild_set_revision(gperf
   # https://ftp.gnu.org/pub/gnu/gperf/
