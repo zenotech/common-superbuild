@@ -501,8 +501,8 @@ superbuild_set_revision(openvkl
 
 superbuild_set_revision(ospray
   # https://github.com/ospray/ospray/releases
-  URL     "https://www.paraview.org/files/dependencies/ospray-v2.7.1.tar.gz"
-  URL_MD5 e027ca7a5119300a0c94c3f9be38b58d)
+  URL     "https://www.paraview.org/files/dependencies/ospray-2.12.0.tar.gz"
+  URL_MD5 44445f0d181d52ca1c06bbea3c808761)
 
 superbuild_set_revision(ospraymaterials
   # https://gitlab.kitware.com/paraview/materials/-/tags
