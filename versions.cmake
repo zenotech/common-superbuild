@@ -306,7 +306,7 @@ superbuild_set_revision(pythontypingextensions
 
 superbuild_set_revision(pythonyarl
   # https://pypi.org/project/yarl/#history
-  URL     "https://www.paraview.org/files/dependencies/yarl-1.6.3.tar.gz "
+  URL     "https://www.paraview.org/files/dependencies/yarl-1.6.3.tar.gz"
   URL_MD5 3b6f2da3db8c645a9440375fd6a414eb)
 
 superbuild_set_revision(pythoncffi
