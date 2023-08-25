@@ -466,8 +466,8 @@ superbuild_set_revision(ispc
 
 superbuild_set_revision(embree
   # https://github.com/embree/embree/releases
-  URL     "https://www.paraview.org/files/dependencies/embree-v3.13.1.tar.gz"
-  URL_MD5 71453f1e9af48a95090112e493982898)
+  URL     "https://www.paraview.org/files/dependencies/embree-4.2.0.tar.gz"
+  URL_MD5 9e6abbfb230a2ea07e80fa193ed94186)
 
 superbuild_set_revision(openvkl
   # https://github.com/openvkl/openvkl/releases

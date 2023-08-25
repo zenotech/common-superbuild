@@ -1,46 +1,40 @@
-set(embree_BUILD_ISA "DEFAULT" CACHE STRING "ISAs to build Embree for")
-mark_as_advanced(embree_BUILD_ISA)
-
-#by default, turn off very old and very new SIMD instruction sets
-#because they are problematic on our dashboards
-if (APPLE)
-  set(embree_allow_sse2 "-DEMBREE_ISA_SSE2:BOOL=OFF")
-  set(embree_allow_sse42 "-DEMBREE_ISA_SSE42:BOOL=OFF")
-endif()
-set(embree_allow_skx "-DEMBREE_ISA_AVX512SKX:BOOL=OFF")
-
-#build the list of SIMD instruction sets we will enable
-set(embree_isa_args)
-if(NOT (embree_BUILD_ISA STREQUAL "DEFAULT"))
-  if(embree_BUILD_ISA STREQUAL "ALL")
-    set(embree_BUILD_ISA SSE2 SSE42 AVX AVX2 AVX512KNL AVX512SKX)
-  endif()
-  list(APPEND embree_isa_args -DEMBREE_MAX_ISA:BOOL=NONE)
-  foreach(isa IN LISTS embree_BUILD_ISA)
-    list(APPEND embree_isa_args -DEMBREE_ISA_${isa}:BOOL=ON)
-    if (isa MATCHES "SSE2")
-      set(embree_allow_sse2)
-    endif()
-    if (isa MATCHES "SSE42")
-      set(embree_allow_sse42)
-    endif()
-    if (isa MATCHES "AVX512SKX")
-      set(embree_allow_skx)
-    endif()
-  endforeach()
-endif()
+set(embree_isas)
+if (CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64" OR
+    CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64" OR
+    CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+  list(APPEND embree_isas
+    -DEMBREE_ISA_AVX:BOOL=ON
+    -DEMBREE_ISA_AVX2:BOOL=ON
+    -DEMBREE_ISA_AVX512KNL:BOOL=OFF
+    -DEMBREE_ISA_AVX512SKX_8_WIDE:BOOL=OFF
+    -DEMBREE_ISA_SSE2:BOOL=ON
+    -DEMBREE_ISA_SSE42:BOOL=ON)
+  # MSVC does not support avx512
+  if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    list(APPEND embree_isas
+      -DEMBREE_ISA_AVX512:BOOL=OFF
+      -DEMBREE_ISA_AVX512SKX:BOOL=OFF)
+  else ()
+    list(APPEND embree_isas
+      -DEMBREE_ISA_AVX512:BOOL=ON
+      -DEMBREE_ISA_AVX512SKX:BOOL=ON)
+  endif ()
+elseif (CMAKE_SYSTEM_PROCESSOR MATCHES "arm64" OR
+        CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
+  list(APPEND embree_isas
+    -DEMBREE_ISA_NEON:BOOL=ON
+    -DEMBREE_ISA_NEON2X:BOOL=ON)
+endif ()
 
 superbuild_add_project(embree
   DEPENDS ispc tbb cxx11
   LICENSE_FILES
     LICENSE.txt
   CMAKE_ARGS
-    ${embree_isa_args}
-    ${embree_allow_sse2}
-    ${embree_allow_sse42}
-    ${embree_allow_skx}
+    ${embree_isas}
     -DBUILD_TESTING:BOOL=OFF
     -DEMBREE_ISPC_EXECUTABLE:PATH=<INSTALL_DIR>/bin/ispc
+    -DEMBREE_ISPC_SUPPORT:BOOL=ON
     -DEMBREE_GEOMETRY_HAIR:BOOL=ON
     -DEMBREE_GEOMETRY_LINES:BOOL=OFF
     -DEMBREE_GEOMETRY_QUADS:BOOL=OFF
