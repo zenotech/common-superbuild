@@ -371,8 +371,8 @@ superbuild_set_revision(ffi
 
 superbuild_set_revision(utillinux
   # https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/
-  URL     "https://www.paraview.org/files/dependencies/util-linux-2.37.1.tar.xz"
-  URL_MD5 6d244f0f59247e9109f47d6e5dd0556b)
+  URL     "https://www.paraview.org/files/dependencies/util-linux-2.39.2.tar.xz"
+  URL_MD5 2feb3e7c306f336a3d22a182dfffc942)
 
 superbuild_set_revision(pkgconf
   # https://distfiles.ariadne.space/pkgconf/
