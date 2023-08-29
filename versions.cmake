@@ -144,6 +144,11 @@ superbuild_set_revision(pythontomli
   URL     "https://www.paraview.org/files/dependencies/tomli-2.0.1.tar.gz"
   URL_MD5 d4341621d423a7ca6822e23d6d52bb9a)
 
+superbuild_set_revision(pythonmesonpython
+  # https://pypi.org/project/meson-python/#history
+  URL     "https://www.paraview.org/files/dependencies/meson_python-0.13.2.tar.gz"
+  URL_MD5 0db4483e30df43dbd465254be9c7db8a)
+
 # https://pypi.org/project/scipy/#history
 set(scipy_version "1.7.1")
 if (WIN32)
