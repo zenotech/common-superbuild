@@ -77,6 +77,7 @@ function (superbuild_find_projects var)
     pythonsetuptoolsscm
     pythonsix
     pythontoml
+    pythontomli
     pythontypingextensions
     pythonwheel
     pythonwslinkasync

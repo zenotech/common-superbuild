@@ -139,6 +139,11 @@ superbuild_set_revision(pythonpackaging
   URL     "https://www.paraview.org/files/dependencies/packaging-23.1.tar.gz"
   URL_MD5 f7d5c39c6f92cc2dfa1293ba8f6c097c)
 
+superbuild_set_revision(pythontomli
+  # https://pypi.org/project/tomli/#history
+  URL     "https://www.paraview.org/files/dependencies/tomli-2.0.1.tar.gz"
+  URL_MD5 d4341621d423a7ca6822e23d6d52bb9a)
+
 # https://pypi.org/project/scipy/#history
 set(scipy_version "1.7.1")
 if (WIN32)
