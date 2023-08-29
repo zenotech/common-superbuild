@@ -124,6 +124,11 @@ superbuild_set_revision(numpy
   URL     "https://www.paraview.org/files/dependencies/numpy-1.25.2.tar.gz"
   URL_MD5 cee1996a80032d47bdf1d9d17249c34e)
 
+superbuild_set_revision(pythonflitcore
+  # https://pypi.org/project/flit-core/#history
+  URL     "https://www.paraview.org/files/dependencies/flit_core-3.9.0.tar.gz"
+  URL_MD5 3bc52f1952b9a78361114147da63c35b)
+
 # https://pypi.org/project/scipy/#history
 set(scipy_version "1.7.1")
 if (WIN32)
