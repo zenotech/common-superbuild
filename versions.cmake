@@ -129,6 +129,11 @@ superbuild_set_revision(pythonflitcore
   URL     "https://www.paraview.org/files/dependencies/flit_core-3.9.0.tar.gz"
   URL_MD5 3bc52f1952b9a78361114147da63c35b)
 
+superbuild_set_revision(pythonpackaging
+  # https://pypi.org/project/packaging/#history
+  URL     "https://www.paraview.org/files/dependencies/packaging-23.1.tar.gz"
+  URL_MD5 f7d5c39c6f92cc2dfa1293ba8f6c097c)
+
 # https://pypi.org/project/scipy/#history
 set(scipy_version "1.7.1")
 if (WIN32)
