@@ -124,6 +124,11 @@ superbuild_set_revision(numpy
   URL     "https://www.paraview.org/files/dependencies/numpy-1.25.2.tar.gz"
   URL_MD5 cee1996a80032d47bdf1d9d17249c34e)
 
+superbuild_set_revision(pythonpyprojectmetadata
+  # https://pypi.org/project/pyproject-metadata/#history
+  URL     "https://www.paraview.org/files/dependencies/pyproject-metadata-0.7.1.tar.gz"
+  URL_MD5 ca5e9527cff96153a976e14530b53746)
+
 superbuild_set_revision(pythonflitcore
   # https://pypi.org/project/flit-core/#history
   URL     "https://www.paraview.org/files/dependencies/flit_core-3.9.0.tar.gz"
