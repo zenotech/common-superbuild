@@ -394,6 +394,11 @@ superbuild_set_revision(pythonpluggy
   URL     "https://www.paraview.org/files/dependencies/pluggy-1.3.0.tar.gz"
   URL_MD5 f31aad77be2f5af8ed3864159b7fd743)
 
+superbuild_set_revision(pythontroveclassifiers
+  # https://pypi.org/project/trove-classifiers/#history
+  URL     "https://www.paraview.org/files/dependencies/trove-classifiers-2023.8.7.tar.gz"
+  URL_MD5 6ae148c8374d131dd18e28c22275d56a)
+
 superbuild_set_revision(pythonattrs
   # https://pypi.org/project/attrs/#history
   URL     "https://www.paraview.org/files/dependencies/attrs-21.2.0.tar.gz"
