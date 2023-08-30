@@ -409,6 +409,11 @@ superbuild_set_revision(pythonhatchvcs
   URL     "https://www.paraview.org/files/dependencies/hatch_vcs-0.3.0.tar.gz"
   URL_MD5 c2f2cbe6851b7b2969cb4aa24c4b9b2f)
 
+superbuild_set_revision(pythonhatchfancypypireadme
+  # https://pypi.org/project/hatch-fancy-pypi-readme/#history
+  URL     "https://www.paraview.org/files/dependencies/hatch_fancy_pypi_readme-23.1.0.tar.gz"
+  URL_MD5 8755cce1a4a4d5e5d84992089801acbf)
+
 superbuild_set_revision(pythonattrs
   # https://pypi.org/project/attrs/#history
   URL     "https://www.paraview.org/files/dependencies/attrs-21.2.0.tar.gz"
