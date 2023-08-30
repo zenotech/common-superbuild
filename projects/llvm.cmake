@@ -118,7 +118,7 @@ superbuild_add_project(llvm
     -DLLVM_INCLUDE_RUNTIMES:BOOL=OFF
     ${llvm_configure_args}
     -DLLVM_TARGETS_TO_BUILD:STRING=${llvm_TARGETS_TO_BUILD}
-    -DPYTHON_EXECUTABLE:FILEPATH=${superbuild_python_executable})
+    -DPython3_EXECUTABLE:FILEPATH=${superbuild_python_executable})
 
 set(llvm_dir "<INSTALL_DIR>")
 
