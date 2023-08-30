@@ -511,7 +511,7 @@ macro (superbuild_add_project_python_wheel _name)
   # license files in wheels are recovered from the install
   set(license_files)
   foreach (license_file IN LISTS _superbuild_add_project_python_wheel_LICENSE_FILES_WHEEL)
-      list(APPEND license_files "${python_module_install_location}/${license_file}")
+    list(APPEND license_files "${python_module_install_location}/${license_file}")
   endforeach ()
 
   superbuild_add_project("${_name}"
