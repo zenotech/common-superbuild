@@ -61,6 +61,7 @@ function (superbuild_find_projects var)
     pythonmpi4py
     pythonmpmath
     pythonmultidict
+    pythonpandas
     pythonpillow
     pythonply
     pythonpycparser
