@@ -66,6 +66,7 @@ function (superbuild_find_projects var)
     pythonmultidict
     pythonpackaging
     pythonpandas
+    pythonpathspec
     pythonpillow
     pythonply
     pythonpycparser
