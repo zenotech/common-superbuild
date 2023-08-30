@@ -59,6 +59,7 @@ function (superbuild_find_projects var)
     pythonidna
     pythonkiwisolver
     pythonmako
+    pythonmarkupsafe
     pythonmesonpython
     pythonmpi4py
     pythonmpmath
