@@ -404,6 +404,11 @@ superbuild_set_revision(pythonhatchling
   URL     "https://www.paraview.org/files/dependencies/hatchling-1.18.0.tar.gz"
   URL_MD5 43f7203cacb6c3c178b93149b8a8151d)
 
+superbuild_set_revision(pythonhatchvcs
+  # https://pypi.org/project/hatch-vcs/#history
+  URL     "https://www.paraview.org/files/dependencies/hatch_vcs-0.3.0.tar.gz"
+  URL_MD5 c2f2cbe6851b7b2969cb4aa24c4b9b2f)
+
 superbuild_set_revision(pythonattrs
   # https://pypi.org/project/attrs/#history
   URL     "https://www.paraview.org/files/dependencies/attrs-21.2.0.tar.gz"
