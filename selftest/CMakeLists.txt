@@ -68,6 +68,7 @@ function (superbuild_find_projects var)
     pythonpandas
     pythonpathspec
     pythonpillow
+    pythonpluggy
     pythonply
     pythonpycparser
     pythonpygments

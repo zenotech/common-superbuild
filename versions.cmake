@@ -389,6 +389,11 @@ superbuild_set_revision(pythonpathspec
   URL     "https://www.paraview.org/files/dependencies/pathspec-0.11.2.tar.gz"
   URL_MD5 92ebd6d735d261952ff99d64083eeff4)
 
+superbuild_set_revision(pythonpluggy
+  # https://pypi.org/project/pluggy/#history
+  URL     "https://www.paraview.org/files/dependencies/pluggy-1.3.0.tar.gz"
+  URL_MD5 f31aad77be2f5af8ed3864159b7fd743)
+
 superbuild_set_revision(pythonattrs
   # https://pypi.org/project/attrs/#history
   URL     "https://www.paraview.org/files/dependencies/attrs-21.2.0.tar.gz"
