@@ -56,6 +56,7 @@ function (superbuild_find_projects var)
     pythondateutil
     pythonflitcore
     pythongast
+    pythonhatchling
     pythonidna
     pythonkiwisolver
     pythonmako
