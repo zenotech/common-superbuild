@@ -1,9 +1,3 @@
-set(netcdf_libdir)
-if (UNIX AND NOT APPLE)
-  set(netcdf_libdir
-    -DCMAKE_INSTALL_LIBDIR:BOOL=lib)
-endif ()
-
 set(netcdf_mpi_supported ${mpi_enabled})
 if (_netcdf_disable_mpi_support)
   set(netcdf_mpi_supported OFF)
@@ -28,7 +22,7 @@ superbuild_add_project(netcdf
     -DUSE_SZIP:BOOL=OFF
     -DENABLE_DAP:BOOL=OFF
     -DENABLE_NCZARR:BOOL=OFF
-    ${netcdf_libdir})
+    -DCMAKE_INSTALL_LIBDIR:BOOL=lib)
 
 superbuild_apply_patch(netcdf fix-size-uchar
   "fix check on size of uchar: test for existence first")
