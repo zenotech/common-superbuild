@@ -123,10 +123,31 @@ function (superbuild_setup_flags)
     "$ENV{LD_LIBRARY_PATH}")
   set(superbuild_ld_library_path "${superbuild_ld_library_path}" PARENT_SCOPE)
 
+  set(system_pkg_config_paths)
+  find_program(SUPERBUILD_PKG_CONFIG
+    NAMES pkg-config pkgconf
+    DOC "System pkgconfig location")
+  mark_as_advanced(SUPERBUILD_PKG_CONFIG)
+  if (SUPERBUILD_PKG_CONFIG)
+    execute_process(
+      COMMAND "${SUPERBUILD_PKG_CONFIG}"
+              --variable pc_path
+              pkg-config
+      OUTPUT_VARIABLE out
+      ERROR_VARIABLE err
+      RESULT_VARIABLE res
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      ERROR_STRIP_TRAILING_WHITESPACE)
+    if (NOT res)
+      set(system_pkg_config_paths "${out}")
+    endif ()
+  endif ()
+
   _superbuild_make_path_var(superbuild_pkg_config_path
     "${superbuild_install_location}/lib/pkgconfig"
     "${superbuild_install_location}/share/pkgconfig"
-    "$ENV{PKG_CONFIG_PATH}")
+    "$ENV{PKG_CONFIG_PATH}"
+    "${system_pkg_config_paths}")
   set(superbuild_pkg_config_path "${superbuild_pkg_config_path}" PARENT_SCOPE)
 
   if (CMAKE_CROSSCOMPILING)
