@@ -49,6 +49,7 @@ function (superbuild_find_projects var)
     pythonbeniget
     pythoncffi
     pythonchardet
+    pythoncharsetnormalizer
     pythoncppy
     pythoncryptography
     pythoncycler

@@ -304,6 +304,11 @@ superbuild_set_revision(pythonsetuptoolsrust
   URL     "https://www.paraview.org/files/dependencies/setuptools-rust-0.12.1.tar.gz"
   URL_MD5 33c3fd3bcde2877483ab782353bee54c)
 
+superbuild_set_revision(pythoncharsetnormalizer
+  # https://pypi.org/project/charset-normalizer/#history
+  URL     "https://www.paraview.org/files/dependencies/charset-normalizer-3.2.0.tar.gz"
+  URL_MD5 dbb8c5b745beddbaae67d06dce0b7c29)
+
 superbuild_set_revision(pythonaiohttp
   # https://pypi.org/project/aiohttp/#history
   URL     "https://www.paraview.org/files/dependencies/aiohttp-3.7.4.post0.tar.gz"
