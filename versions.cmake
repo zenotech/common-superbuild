@@ -434,6 +434,11 @@ superbuild_set_revision(pythonattrs
   URL     "https://www.paraview.org/files/dependencies/attrs-23.1.0.tar.gz"
   URL_MD5 6623fed7ffa22261ba25fccaf4d99539)
 
+superbuild_set_revision(pythontzdata
+  # https://pypi.org/project/tzdata/#history
+  URL     "https://www.paraview.org/files/dependencies/tzdata-2023.3.tar.gz"
+  URL_MD5 3c8f05d031770659a7d80de5159af202)
+
 superbuild_set_revision(pythonversioneer
   # https://pypi.org/project/versioneer/#history
   URL     "https://www.paraview.org/files/dependencies/versioneer-0.29.tar.gz"
