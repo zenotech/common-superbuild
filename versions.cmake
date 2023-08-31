@@ -434,6 +434,11 @@ superbuild_set_revision(pythonattrs
   URL     "https://www.paraview.org/files/dependencies/attrs-23.1.0.tar.gz"
   URL_MD5 6623fed7ffa22261ba25fccaf4d99539)
 
+superbuild_set_revision(pythonversioneer
+  # https://pypi.org/project/versioneer/#history
+  URL     "https://www.paraview.org/files/dependencies/versioneer-0.29.tar.gz"
+  URL_MD5 1703d6ced3656553066fa71e42c5eee6)
+
 superbuild_set_revision(pythonpandas
   # https://pypi.org/project/pandas/#history
   URL     "https://www.paraview.org/files/dependencies/pandas-1.3.1.tar.gz"

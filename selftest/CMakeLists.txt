@@ -90,6 +90,7 @@ function (superbuild_find_projects var)
     pythontomli
     pythontroveclassifiers
     pythontypingextensions
+    pythonversioneer
     pythonwheel
     pythonwslinkasync
     pythonyarl
