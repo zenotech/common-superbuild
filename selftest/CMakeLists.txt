@@ -60,6 +60,7 @@ function (superbuild_find_projects var)
     pythoncython
     pythondateutil
     pythonflitcore
+    pythonfonttools
     pythonfrozenlist
     pythongast
     pythonhatchfancypypireadme

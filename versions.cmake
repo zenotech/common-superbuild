@@ -190,6 +190,11 @@ superbuild_set_revision(pythoncontourpy
   URL "https://www.paraview.org/files/dependencies/contourpy-1.1.0.tar.gz"
   URL_MD5 cae5b781ade023c01bc1a8a53312f2ac)
 
+superbuild_set_revision(pythonfonttools
+  # https://pypi.org/project/fonttools/#history
+  URL "https://www.paraview.org/files/dependencies/fonttools-4.42.1.tar.gz"
+  URL_MD5 039956b85e9b84ba53373b0df644f5ad)
+
 superbuild_set_revision(matplotlib
   # https://pypi.org/project/matplotlib/#history
   URL "https://www.paraview.org/files/dependencies/matplotlib-3.4.2.tar.gz"
