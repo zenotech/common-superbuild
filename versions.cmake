@@ -185,6 +185,11 @@ superbuild_set_revision(pythonpillow
   URL     "https://www.paraview.org/files/dependencies/Pillow-10.0.0.tar.gz"
   URL_MD5 2a8f327ba2250aad26ed101337c8fa56)
 
+superbuild_set_revision(pythoncontourpy
+  # https://pypi.org/project/contourpy/#history
+  URL "https://www.paraview.org/files/dependencies/contourpy-1.1.0.tar.gz"
+  URL_MD5 cae5b781ade023c01bc1a8a53312f2ac)
+
 superbuild_set_revision(matplotlib
   # https://pypi.org/project/matplotlib/#history
   URL "https://www.paraview.org/files/dependencies/matplotlib-3.4.2.tar.gz"

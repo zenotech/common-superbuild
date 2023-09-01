@@ -53,6 +53,7 @@ function (superbuild_find_projects var)
     pythoncffi
     pythonchardet
     pythoncharsetnormalizer
+    pythoncontourpy
     pythoncppy
     pythoncryptography
     pythoncycler
