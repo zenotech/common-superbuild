@@ -41,6 +41,7 @@ function (superbuild_find_projects var)
     ospray
     ospraymaterials
     ospraymodulempi
+    pkgconf
     png
     python3
     pythonaiohttp
@@ -126,7 +127,6 @@ function (superbuild_find_projects var)
       ffmpeg
       gperf
       libxml2
-      pkgconf
       pybind11)
   endif ()
 
