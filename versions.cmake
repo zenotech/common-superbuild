@@ -314,6 +314,11 @@ superbuild_set_revision(pythonaiosignal
   URL     "https://www.paraview.org/files/dependencies/aiosignal-1.3.1.tar.gz"
   URL_MD5 2a15f4008b899377590cef4773020902)
 
+superbuild_set_revision(pythonfrozenlist
+  # https://pypi.org/project/frozenlist/#history
+  URL     "https://www.paraview.org/files/dependencies/frozenlist-1.4.0.tar.gz"
+  URL_MD5 4a14df2fe30853d9e18f73002493a860)
+
 superbuild_set_revision(pythonaiohttp
   # https://pypi.org/project/aiohttp/#history
   URL     "https://www.paraview.org/files/dependencies/aiohttp-3.7.4.post0.tar.gz"
