@@ -43,6 +43,7 @@ function (superbuild_find_projects var)
     ospraymodulempi
     pkgconf
     png
+    pybind11
     python3
     pythonaiohttp
     pythonaiosignal
@@ -126,8 +127,7 @@ function (superbuild_find_projects var)
       ffi
       ffmpeg
       gperf
-      libxml2
-      pybind11)
+      libxml2)
   endif ()
 
   if (NOT APPLE)
