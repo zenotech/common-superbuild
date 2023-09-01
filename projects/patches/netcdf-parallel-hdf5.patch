@@ -1,7 +1,21 @@
 diff -u -U5 -r netcdf-c-4.8.1/CMakeLists.txt netcdf-c-4.8.1.parallel-hdf5/CMakeLists.txt
 --- netcdf-c-4.8.1/CMakeLists.txt	2022-09-12 11:05:00.167194383 -0400
 +++ netcdf-c-4.8.1.parallel-hdf5/CMakeLists.txt	2022-09-12 11:14:33.792176070 -0400
-@@ -768,10 +768,13 @@
+@@ -870,10 +870,13 @@
+   ELSE(NOT HAVE_HDF5_H)
+     INCLUDE_DIRECTORIES(${HAVE_HDF5_H})
+   ENDIF(NOT HAVE_HDF5_H)
+ 
+   set (CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})
++  if (HDF5_PARALLEL)
++    list (APPEND CMAKE_REQUIRED_INCLUDES ${MPI_C_INCLUDE_PATH})
++  endif ()
+ 
+   # Check to ensure that HDF5 was built with zlib.
+   # This needs to be near the beginning since we
+   # need to know whether to add "-lz" to the symbol
+   # tests below.
+@@ -934,10 +937,13 @@
    IF(HDF5_IS_PARALLEL_MPIO)
      SET(HDF5_PARALLEL ON)
    ELSE()
@@ -13,26 +27,12 @@ diff -u -U5 -r netcdf-c-4.8.1/CMakeLists.txt netcdf-c-4.8.1.parallel-hdf5/CMakeL
  
    #Check to see if HDF5 library has collective metadata APIs, (HDF5 >= 1.10.0)
    CHECK_LIBRARY_EXISTS(${HDF5_C_LIBRARY_hdf5} H5Pset_all_coll_metadata_ops "" HDF5_HAS_COLL_METADATA_OPS)
-   CHECK_LIBRARY_EXISTS(${HDF5_C_LIBRARY_hdf5} H5free_memory "" HAVE_H5FREE_MEMORY)
-   CHECK_LIBRARY_EXISTS(${HDF5_C_LIBRARY_hdf5} H5allocate_memory "" HAVE_H5ALLOCATE_MEMORY)
-@@ -826,10 +829,13 @@
-     INCLUDE_DIRECTORIES(${HAVE_HDF5_H})
-   ENDIF(NOT HAVE_HDF5_H)
  
-   # Check to ensure that HDF5 was built with zlib.
-   set (CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})
-+  if (HDF5_PARALLEL)
-+    list (APPEND CMAKE_REQUIRED_INCLUDES ${MPI_C_INCLUDE_PATH})
-+  endif ()
- 
- 
-   CHECK_C_SOURCE_COMPILES("#include <H5public.h>
-    #if !H5_HAVE_ZLIB_H
-    #error
+   IF(HDF5_PARALLEL)
 diff -u -U5 -r netcdf-c-4.8.1/liblib/CMakeLists.txt netcdf-c-4.8.1.parallel-hdf5/liblib/CMakeLists.txt
 --- netcdf-c-4.8.1/liblib/CMakeLists.txt	2021-08-18 13:49:05.000000000 -0400
 +++ netcdf-c-4.8.1.parallel-hdf5/liblib/CMakeLists.txt	2022-09-12 11:25:44.981154641 -0400
-@@ -84,17 +84,24 @@
+@@ -110,17 +110,24 @@
        SET(HDF5_C_LIBRARIES ${HDF5_hdf5_LIBRARY})
      ENDIF()
      IF(HDF5_hdf5_hl_LIBRARY AND NOT HDF5_HL_LIBRARIES)
@@ -45,7 +45,7 @@ diff -u -U5 -r netcdf-c-4.8.1/liblib/CMakeLists.txt netcdf-c-4.8.1.parallel-hdf5
      # builds:
      # Make sure that HDF5_C_LIBRARY appears *after*
      # HDF5_HL_LIBRARY.
-     SET(TLL_LIBS ${HDF5_HL_LIBRARIES} ${HDF5_C_LIBRARIES} ${TLL_LIBS} ${SZIP_LIBRARY})
+     SET(TLL_LIBS ${HDF5_HL_LIBRARIES} ${HDF5_C_LIBRARIES} ${HDF5_LIBRARIES} ${TLL_LIBS} ${SZIP_LIBRARY})
    ELSE() # Windows CMake defines HDF5_LIBRARIES.
 -    SET(TLL_LIBS ${HDF5_LIBRARIES} ${TLL_LIBS} ${SZIP_LIBRARY})
 +    set(mpi_libs)
@@ -57,4 +57,21 @@ diff -u -U5 -r netcdf-c-4.8.1/liblib/CMakeLists.txt netcdf-c-4.8.1.parallel-hdf5
  ENDIF()
  
  IF(FOUND_CURL)
-   SET(TLL_LIBS ${TLL_LIBS} ${CURL_LIBRARY})
+   SET(TLL_LIBS ${TLL_LIBS} ${CURL_LIBRARIES})
+diff -u -Nr -U5 netcdf-c-4.9.2/plugins/CMakeLists.txt netcdf-c-4.9.2.mpi/plugins/CMakeLists.txt
+--- netcdf-c-4.9.2/plugins/CMakeLists.txt	2023-03-14 16:34:25.000000000 -0400
++++ netcdf-c-4.9.2.mpi/plugins/CMakeLists.txt	2023-08-31 15:20:30.873926427 -0400
+@@ -54,10 +54,13 @@
+     SET_TARGET_PROPERTIES(${TARGET} PROPERTIES ARCHIVE_OUTPUT_NAME ${MANGLELIB})
+     SET_TARGET_PROPERTIES(${TARGET} PROPERTIES RUNTIME_OUTPUT_NAME ${MANGLELIB})
+     SET_TARGET_PROPERTIES(${TARGET} PROPERTIES PREFIX "") # Critical that this be set to ""
+     SET_TARGET_PROPERTIES(${TARGET} PROPERTIES SUFFIX ".${PLUGINEXT}")
+     TARGET_LINK_LIBRARIES(${TARGET} ${ALL_TLL_LIBS};${ARGN})
++    if (HDF5_PARALLEL)
++        target_link_libraries(${TARGET} MPI::MPI_C)
++    endif ()
+   IF(MSVC)
+     target_compile_options(${TARGET} PRIVATE /Zi)
+     # Tell linker to include symbol data
+     set_target_properties(${TARGET} PROPERTIES LINK_FLAGS "/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF")
+     # Set file name & location

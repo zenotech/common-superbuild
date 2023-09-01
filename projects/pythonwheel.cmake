@@ -1,4 +1,5 @@
-superbuild_add_project_python(pythonwheel
+superbuild_add_project_python_pyproject(pythonwheel
   PACKAGE wheel
-  DEPENDS pythonsetuptools
+  DEPENDS pythonflitcore
+  PYPROJECT_TOML_NO_WHEEL
   LICENSE_FILES LICENSE.txt)

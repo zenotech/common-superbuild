@@ -2,14 +2,14 @@ diff --git a/Makefile.in b/Makefile.in
 index e11034b..2c6e54f 100644
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -5039,7 +5039,7 @@ PATHFILES = $(am__append_28) $(am__append_39) $(am__append_61) \
- ADOCFILES_COMMON = man-common/bugreports.adoc man-common/footer.adoc \
- 	man-common/footer-config.adoc man-common/footer-lib.adoc \
- 	man-common/manpage-stub.adoc man-common/translation.adoc
--MANPAGES = lib/terminal-colors.d.5 $(am__append_18) $(am__append_40) \
-+MANPAGES = $(am__append_18) $(am__append_40) \
- 	$(am__append_87) $(am__append_90) $(am__append_93) \
- 	$(am__append_96) $(am__append_99) $(am__append_102) \
- 	$(am__append_105) $(am__append_108) $(am__append_111) \
+@@ -5316,7 +5316,7 @@ ADOCFILES_COMMON = man-common/bugreports.adoc man-common/colors.adoc \
+ 	man-common/footer-lib.adoc man-common/help-version.adoc \
+ 	man-common/in-bytes.adoc man-common/manpage-stub.adoc \
+ 	man-common/translation.adoc
+-MANPAGES = lib/terminal-colors.d.5 $(am__append_20) $(am__append_44) \
++MANPAGES = $(am__append_20) $(am__append_44) \
+ 	$(am__append_91) $(am__append_94) $(am__append_97) \
+ 	$(am__append_100) $(am__append_103) $(am__append_106) \
+ 	$(am__append_109) $(am__append_112) $(am__append_115) \
 -- 
 2.34.1

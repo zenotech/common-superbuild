@@ -6,6 +6,7 @@ superbuild_add_project(lapack
   CMAKE_ARGS
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DBUILD_TESTING:BOOL=OFF
+    -DCBLAS:BOOL=ON
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
     -DCMAKE_INSTALL_NAME_DIR:STRING=<INSTALL_DIR>/lib
     -DCMAKE_INSTALL_LIBDIR:STRING=lib)
@@ -17,7 +18,3 @@ if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
     -fallow-argument-mismatch
     PROJECT_ONLY)
 endif ()
-
-# https://github.com/Reference-LAPACK/lapack/pull/640
-superbuild_apply_patch(lapack macosx-target-forward
-  "Forward the macOS target deployment to `try_compile` calls")

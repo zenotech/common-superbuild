@@ -1,4 +1,3 @@
-superbuild_add_project_python(pythontypingextensions
+superbuild_add_project_python_pyproject(pythontypingextensions
   PACKAGE typing_extensions
-  DEPENDS pythonsetuptools
   LICENSE_FILES LICENSE)

@@ -33,8 +33,5 @@ superbuild_add_project(utillinux
 superbuild_apply_patch(utillinux uuid-incdir
   "Fix uuid include dir for fontconfig")
 
-superbuild_apply_patch(utillinux fix-libuuid-restrict-keyword
-  "Fix restrict keyword compile error on older versions of gcc. Remove after 2.37.3+ when this patch makes it into the release. See https://github.com/util-linux/util-linux/issues/1405 for additional information")
-
 superbuild_apply_patch(utillinux remove-terminal-colors
   "Remove terminal colors from installation as it is a GPL licensed file which we do net need at all")

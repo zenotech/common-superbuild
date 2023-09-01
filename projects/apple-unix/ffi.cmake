@@ -25,3 +25,6 @@ superbuild_add_project(ffi
     $(MAKE)
   INSTALL_COMMAND
     make install)
+
+superbuild_apply_patch(ffi pcfiledir
+  "Use a pkgconf-compatible prefix setting")

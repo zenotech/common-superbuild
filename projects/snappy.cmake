@@ -2,9 +2,13 @@ superbuild_add_project(snappy
   LICENSE_FILES
     COPYING
   CMAKE_ARGS
+    -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DSNAPPY_BUILD_TESTS:BOOL=OFF
     -DCMAKE_INSTALL_LIBDIR:STRING=lib
     -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib
     -DSNAPPY_BUILD_BENCHMARKS:BOOL=OFF
     -DSNAPPY_INSTALL:BOOL=ON
 )
+
+superbuild_apply_patch(snappy no-werror
+  "Remove `-Werror` flag")

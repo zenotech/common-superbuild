@@ -42,7 +42,7 @@ if (NOT WIN32)
   set(numpy_depends_optional fortran lapack)
 endif()
 
-superbuild_add_project_python(numpy
+superbuild_add_project_python_pyproject(numpy
   PACKAGE numpy
   CAN_USE_SYSTEM
   DEPENDS

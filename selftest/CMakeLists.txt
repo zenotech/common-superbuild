@@ -44,28 +44,42 @@ function (superbuild_find_projects var)
     png
     python3
     pythonaiohttp
+    pythonaiosignal
     pythonasynctimeout
     pythonattrs
     pythonbeniget
     pythoncffi
     pythonchardet
+    pythoncharsetnormalizer
     pythoncppy
     pythoncryptography
     pythoncycler
     pythoncython
     pythondateutil
+    pythonflitcore
+    pythonfrozenlist
     pythongast
+    pythonhatchfancypypireadme
+    pythonhatchling
+    pythonhatchvcs
     pythonidna
     pythonkiwisolver
     pythonmako
+    pythonmarkupsafe
+    pythonmesonpython
     pythonmpi4py
     pythonmpmath
     pythonmultidict
+    pythonpackaging
+    pythonpandas
+    pythonpathspec
     pythonpillow
+    pythonpluggy
     pythonply
     pythonpycparser
     pythonpygments
     pythonpyparsing
+    pythonpyprojectmetadata
     pythonpythran
     pythonsemanticversion
     pythonsetuptools
@@ -73,7 +87,11 @@ function (superbuild_find_projects var)
     pythonsetuptoolsscm
     pythonsix
     pythontoml
+    pythontomli
+    pythontroveclassifiers
     pythontypingextensions
+    pythontzdata
+    pythonversioneer
     pythonwheel
     pythonwslinkasync
     pythonyarl

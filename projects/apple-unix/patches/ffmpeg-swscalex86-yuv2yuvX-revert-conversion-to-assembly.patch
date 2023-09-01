@@ -1,46 +1,2589 @@
-From 79987ec1c88462feb9917a6ab3ff6b57f0feab37 Mon Sep 17 00:00:00 2001
-From: Ben Boeckel <mathstuf@gmail.com>
-Date: Wed, 8 Sep 2021 17:42:39 -0400
-Subject: [PATCH 1/1] swscalex86/yuv2yuvX: revert conversion to assembly
-
-This change ends up causing VTK's FFMPEG writer to create videos with
-striped output. Until a solution can be found, revert the feature.
-
-Reverts the following commits:
-
-    c00567647e9002094255df755e18c719e75b3333 "swscale/x86/swscale: fix mix of inline and external function definitions"
-    c2bf1dcace8d331e672b955f9cf5b59211749f00 "swscale/x86/swscale: fix compilation with old yasm"
-    1371647fc381774d40b8beecf69604331262172d "checkasm/sw_scale: use av_free() instead of free()"
-    d52ceed9fd3655113657d9b572fc2c83b7f913cc "tests/checkasm/sw_scale: use memset() to fill dither"
-    ee18edb13a9ae3041df961dd5003c2055b5cab35 "checkasm/sw_scale: properly initialize src_pixer and filter_coeff buffers"
-    6bc2058d00b119d265c9970eac213d2922d15129 "tests/checkasm/sw_scale: adds additional tests sizes for yux2yuvX"
-    c23a5523b5c5bc63d206cd18a669875034e62ae5 "swscale/x86/swscale: Remove unused ASM constants"
-    95aacf30e3803c57d91ff62975b375e394f61d49 "libswscale/x86/swscale: Only call ff_yuv2yuvX functions if the input size is > 0"
-    d512ebbaedefc977d7628da4dc3ecfe4e52a066a "swscale/x86/yuv2yuvX: use the SPLATW helper macro"
-    ebb48d85a07551ca82965bb66b88e50606683b4d "swscale/x86/yuv2yuvX: use movq to load 8 bytes in all non-AVX2 functions"
-    1a555d3c604804dcedacd230d410cfc822da3f4c "swscale/x86/yuv2yuvX: use the movsxdifnidn helper macro"
-    4aeedf4c2a8f35be667d5dd40c84bd27730ef1db "libswscale/x86/yuv2yuvX: Removes unrolling for mmx and mmxext"
-    554c2bc7086f49ef5a6a989ad6bc4bc11807eb6f "swscale: move yuv2yuvX_sse3 to yasm, unrolls main loop"
----
- libswscale/x86/Makefile           |   1 -
- libswscale/x86/swscale.c          | 152 +++++++++++++++++-------------
- libswscale/x86/swscale_template.c |  83 ++++++++++++++++
- libswscale/x86/yuv2yuvX.asm       | 136 --------------------------
- tests/checkasm/sw_scale.c         | 101 --------------------
- 5 files changed, 172 insertions(+), 301 deletions(-)
- delete mode 100644 libswscale/x86/yuv2yuvX.asm
-
+diff --git a/libavcodec/x86/aacpsdsp.asm b/libavcodec/x86/aacpsdsp.asm
+index cc496d4df8..105e1af5c5 100644
+--- a/libavcodec/x86/aacpsdsp.asm
++++ b/libavcodec/x86/aacpsdsp.asm
+@@ -49,7 +49,7 @@ align 16
+     add  dstq, mmsize
+     add    nq, mmsize*2
+     jl .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse
+@@ -83,7 +83,7 @@ align 16
+     add   src2q, mmsize
+     add      nq, mmsize*2
+     jl .loop
+-    RET
++    REP_RET
+ 
+ ;***********************************************************************
+ ;void ff_ps_stereo_interpolate_sse3(float (*l)[2], float (*r)[2],
+@@ -116,7 +116,7 @@ align 16
+     movhps [rq+nq], m2
+     add      nq, 8
+     jl .loop
+-    RET
++    REP_RET
+ 
+ ;***************************************************************************
+ ;void ps_stereo_interpolate_ipdopd_sse3(float (*l)[2], float (*r)[2],
+@@ -164,7 +164,7 @@ align 16
+     movhps [rq+nq], m2
+     add      nq, 8
+     jl .loop
+-    RET
++    REP_RET
+ 
+ ;**********************************************************
+ ;void ps_hybrid_analysis_ileave_sse(float out[2][38][64],
+@@ -484,7 +484,7 @@ align 16
+     add    outq, strideq
+     add      nq, 64
+     jl .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse
+diff --git a/libavcodec/x86/ac3dsp.asm b/libavcodec/x86/ac3dsp.asm
+index a95d359d95..c11a94ca93 100644
+--- a/libavcodec/x86/ac3dsp.asm
++++ b/libavcodec/x86/ac3dsp.asm
+@@ -60,7 +60,7 @@ cglobal ac3_exponent_min, 3, 4, 2, exp, reuse_blks, expn, offset
+     sub        expnq, mmsize
+     jg .nextexp
+ .end:
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %define LOOP_ALIGN ALIGN 16
+@@ -126,7 +126,7 @@ cglobal float_to_fixed24, 3, 3, 9, dst, src, len
+     sub      lenq, 16
+ %endif
+     ja .loop
+-    RET
++    REP_RET
+ 
+ ;------------------------------------------------------------------------------
+ ; int ff_ac3_compute_mantissa_size(uint16_t mant_cnt[6][16])
+@@ -220,7 +220,7 @@ cglobal ac3_extract_exponents, 3, 3, 4, exp, coef, len
+ 
+     add     lenq, 4
+     jl .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %if HAVE_SSE2_EXTERNAL
+diff --git a/libavcodec/x86/alacdsp.asm b/libavcodec/x86/alacdsp.asm
+index 1cfd302de2..bb2069f785 100644
+--- a/libavcodec/x86/alacdsp.asm
++++ b/libavcodec/x86/alacdsp.asm
+@@ -100,7 +100,7 @@ align 16
+ 
+     add     lenq, mmsize*2
+     jl .loop
+-    RET
++    REP_RET
+ 
+ %if ARCH_X86_64
+ cglobal alac_append_extra_bits_mono, 2, 5, 3, buf, exbuf, exbits, ch, len
+@@ -130,4 +130,4 @@ align 16
+ 
+     add     lenq, mmsize*2
+     jl .loop
+-    RET
++    REP_RET
+diff --git a/libavcodec/x86/audiodsp.asm b/libavcodec/x86/audiodsp.asm
+index cf5baa9415..f64077cb13 100644
+--- a/libavcodec/x86/audiodsp.asm
++++ b/libavcodec/x86/audiodsp.asm
+@@ -123,7 +123,7 @@ cglobal vector_clip_int32%5, 5,5,%1, dst, src, min, max, len
+     add     dstq, mmsize*4*(%2+%3)
+     sub     lend, mmsize*(%2+%3)
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+diff --git a/libavcodec/x86/dirac_dwt.asm b/libavcodec/x86/dirac_dwt.asm
+index 1f3b238aee..6c8b3c0d88 100644
+--- a/libavcodec/x86/dirac_dwt.asm
++++ b/libavcodec/x86/dirac_dwt.asm
+@@ -75,7 +75,7 @@ cglobal vertical_compose53iL0_%1, 4,4,1, b0, b1, b2, width
+     COMPOSE_53iL0 m0, m1, [b2q+2*widthq], m2
+     mova    [b1q+2*widthq], m0
+     jg      .loop
+-    RET
++    REP_RET
+ 
+ ; void vertical_compose_dirac53iH0(IDWTELEM *b0, IDWTELEM *b1, IDWTELEM *b2,
+ ;                                  int width)
+@@ -93,7 +93,7 @@ cglobal vertical_compose_dirac53iH0_%1, 4,4,1, b0, b1, b2, width
+     paddw   m0, [b1q+2*widthq]
+     mova    [b1q+2*widthq], m0
+     jg      .loop
+-    RET
++    REP_RET
+ 
+ ; void vertical_compose_dd97iH0(IDWTELEM *b0, IDWTELEM *b1, IDWTELEM *b2,
+ ;                               IDWTELEM *b3, IDWTELEM *b4, int width)
+@@ -110,7 +110,7 @@ cglobal vertical_compose_dd97iH0_%1, 6,6,5, b0, b1, b2, b3, b4, width
+     COMPOSE_DD97iH0 [b2q+2*widthq], [b3q+2*widthq], [b4q+2*widthq]
+     mova    [b2q+2*widthq], m1
+     jg      .loop
+-    RET
++    REP_RET
+ 
+ ; void vertical_compose_dd137iL0(IDWTELEM *b0, IDWTELEM *b1, IDWTELEM *b2,
+ ;                                IDWTELEM *b3, IDWTELEM *b4, int width)
+@@ -139,7 +139,7 @@ cglobal vertical_compose_dd137iL0_%1, 6,6,6, b0, b1, b2, b3, b4, width
+     psubw   m5, m1
+     mova    [b2q+2*widthq], m5
+     jg      .loop
+-    RET
++    REP_RET
+ 
+ ; void vertical_compose_haar(IDWTELEM *b0, IDWTELEM *b1, int width)
+ cglobal vertical_compose_haar_%1, 3,4,3, b0, b1, width
+@@ -159,7 +159,7 @@ cglobal vertical_compose_haar_%1, 3,4,3, b0, b1, width
+     paddw   m2, m0
+     mova    [b1q+2*widthq], m2
+     jg      .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ ; extend the left and right edges of the tmp array by %1 and %2 respectively
+@@ -225,7 +225,7 @@ cglobal horizontal_compose_haar%2i_%1, 3,6,4, b, tmp, w, x, w2, b_w2
+     cmp     xq, w2q
+     jl      .highpass_loop
+ .end:
+-    RET
++    REP_RET
+ %endmacro
+ 
+ 
+@@ -290,7 +290,7 @@ cglobal horizontal_compose_dd97i_ssse3, 3,6,8, b, tmp, w, x, w2, b_w2
+     cmp     xd, w2d
+     jl      .highpass_loop
+ .end:
+-    RET
++    REP_RET
+ 
+ 
+ INIT_XMM
+diff --git a/libavcodec/x86/fft.asm b/libavcodec/x86/fft.asm
+index 34c3fc9a0f..a44596e565 100644
+--- a/libavcodec/x86/fft.asm
++++ b/libavcodec/x86/fft.asm
+@@ -475,7 +475,7 @@ cglobal fft_calc, 2,5,8
+     mov     r0, r1
+     mov     r1, r3
+     FFT_DISPATCH _interleave %+ SUFFIX, r1
+-    RET
++    REP_RET
+ 
+ %endif
+ 
+@@ -510,7 +510,7 @@ cglobal fft_calc, 2,5,8
+     add      r2, mmsize*2
+     jl       .loop
+ .end:
+-    RET
++    REP_RET
+ 
+ cglobal fft_permute, 2,7,1
+     mov     r4,  [r0 + FFTContext.revtab]
+@@ -543,7 +543,7 @@ cglobal fft_permute, 2,7,1
+     movaps  [r1 + r2 + 16], xmm1
+     add     r2, 32
+     jl      .loopcopy
+-    RET
++    REP_RET
+ 
+ INIT_XMM sse
+ cglobal imdct_calc, 3,5,3
+@@ -583,7 +583,7 @@ cglobal imdct_calc, 3,5,3
+     sub     r3, mmsize
+     add     r2, mmsize
+     jl      .loop
+-    RET
++    REP_RET
+ 
+ %ifdef PIC
+ %define SECTION_REL - $$
+diff --git a/libavcodec/x86/flacdsp.asm b/libavcodec/x86/flacdsp.asm
+index 44416e4dfd..6d755f4972 100644
+--- a/libavcodec/x86/flacdsp.asm
++++ b/libavcodec/x86/flacdsp.asm
+@@ -79,7 +79,7 @@ ALIGN 16
+     movd   [decodedq+4], m1
+     jg .loop_sample
+ .ret:
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %if HAVE_XOP_EXTERNAL
+@@ -133,7 +133,7 @@ align 16
+     mova [outq + lenq], m%2
+     add      lenq, 16
+     jl .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -177,7 +177,7 @@ align 16
+     add      outq, mmsize*2
+     sub      lend, mmsize/4
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -302,7 +302,7 @@ align 16
+     add      outq, mmsize*REPCOUNT
+     sub      lend, mmsize/4
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM ssse3
+diff --git a/libavcodec/x86/h264_chromamc.asm b/libavcodec/x86/h264_chromamc.asm
+index e70bc492b2..a5c53034a2 100644
+--- a/libavcodec/x86/h264_chromamc.asm
++++ b/libavcodec/x86/h264_chromamc.asm
+@@ -112,7 +112,7 @@ cglobal %1_%2_chroma_mc8%3, 6, 7 + extra_regs, 0
+     jne .at_least_one_non_zero
+     ; mx == 0 AND my == 0 - no filter needed
+     mv0_pixels_mc8
+-    RET
++    REP_RET
+ 
+ .at_least_one_non_zero:
+ %ifidn %2, rv40
+@@ -192,7 +192,7 @@ cglobal %1_%2_chroma_mc8%3, 6, 7 + extra_regs, 0
+     add           r1, r2
+     dec           r3d
+     jne .next1drow
+-    RET
++    REP_RET
+ 
+ .both_non_zero: ; general case, bilinear
+     movd          m4, r4d         ; x
+@@ -365,7 +365,7 @@ cglobal %1_%2_chroma_mc4, 6, 6 + extra_regs, 0
+     add           r0, r2
+     sub          r3d, 2
+     jnz .next2rows
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro chroma_mc2_mmx_func 2
+@@ -407,7 +407,7 @@ cglobal %1_%2_chroma_mc2, 6, 7, 0
+     add           r0, r2
+     sub          r3d, 1
+     jnz .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %define rnd_1d_h264 pw_4
+@@ -453,7 +453,7 @@ cglobal %1_%2_chroma_mc8%3, 6, 7, 8
+     jne .at_least_one_non_zero
+     ; mx == 0 AND my == 0 - no filter needed
+     mv0_pixels_mc8
+-    RET
++    REP_RET
+ 
+ .at_least_one_non_zero:
+     test         r5d, r5d
+@@ -514,7 +514,7 @@ cglobal %1_%2_chroma_mc8%3, 6, 7, 8
+     sub          r3d, 2
+     lea           r0, [r0+r2*2]
+     jg .next2rows
+-    RET
++    REP_RET
+ 
+ .my_is_zero:
+     mov          r5d, r4d
+@@ -551,7 +551,7 @@ cglobal %1_%2_chroma_mc8%3, 6, 7, 8
+     lea           r0, [r0+r2*2]
+     lea           r1, [r1+r2*2]
+     jg .next2xrows
+-    RET
++    REP_RET
+ 
+ .mx_is_zero:
+     mov          r4d, r5d
+@@ -588,7 +588,7 @@ cglobal %1_%2_chroma_mc8%3, 6, 7, 8
+     sub          r3d, 2
+     lea           r0, [r0+r2*2]
+     jg .next2yrows
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro chroma_mc4_ssse3_func 2
+@@ -638,7 +638,7 @@ cglobal %1_%2_chroma_mc4, 6, 7, 0
+     sub          r3d, 2
+     lea           r0, [r0+r2*2]
+     jg .next2rows
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %define CHROMAMC_AVG NOTHING
+diff --git a/libavcodec/x86/h264_chromamc_10bit.asm b/libavcodec/x86/h264_chromamc_10bit.asm
+index d4f92c90c7..fdc4f407c7 100644
+--- a/libavcodec/x86/h264_chromamc_10bit.asm
++++ b/libavcodec/x86/h264_chromamc_10bit.asm
+@@ -67,7 +67,7 @@ cglobal %1_h264_chroma_mc8_10, 6,7,8
+     jne .at_least_one_non_zero
+     ; mx == 0 AND my == 0 - no filter needed
+     MV0_PIXELS_MC8
+-    RET
++    REP_RET
+ 
+ .at_least_one_non_zero:
+     mov          r6d, 2
+@@ -102,7 +102,7 @@ cglobal %1_h264_chroma_mc8_10, 6,7,8
+     add           r1, r2
+     dec           r3d
+     jne .next1drow
+-    RET
++    REP_RET
+ 
+ .xy_interpolation: ; general case, bilinear
+     movd          m4, r4m         ; x
+@@ -144,7 +144,7 @@ cglobal %1_h264_chroma_mc8_10, 6,7,8
+     add           r0, r2
+     dec          r3d
+     jne .next2drow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ ;-----------------------------------------------------------------------------
+@@ -194,7 +194,7 @@ cglobal %1_h264_chroma_mc4_10, 6,6,7
+     MC4_OP m6, m0
+     sub   r3d, 2
+     jnz .next2rows
+-    RET
++    REP_RET
+ %endmacro
+ 
+ ;-----------------------------------------------------------------------------
+@@ -234,7 +234,7 @@ cglobal %1_h264_chroma_mc2_10, 6,7
+     add           r0, r2
+     dec          r3d
+     jnz .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro NOTHING 2-3
+diff --git a/libavcodec/x86/h264_deblock_10bit.asm b/libavcodec/x86/h264_deblock_10bit.asm
+index 033f2f4d55..23971b5cb5 100644
+--- a/libavcodec/x86/h264_deblock_10bit.asm
++++ b/libavcodec/x86/h264_deblock_10bit.asm
+@@ -372,7 +372,7 @@ cglobal deblock_v_luma_10, 5,5,15
+     add         r4, 2
+     dec         r3
+     jg .loop
+-    RET
++    REP_RET
+ 
+ cglobal deblock_h_luma_10, 5,7,15
+     shl        r2d, 2
+@@ -411,7 +411,7 @@ cglobal deblock_h_luma_10, 5,7,15
+     lea         r5, [r5+r1*8]
+     dec         r6
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -648,7 +648,7 @@ cglobal deblock_v_luma_intra_10, 4,7,16
+     add     r4, mmsize
+     dec     r6
+     jg .loop
+-    RET
++    REP_RET
+ 
+ ;-----------------------------------------------------------------------------
+ ; void ff_deblock_h_luma_intra_10(uint16_t *pix, int stride, int alpha,
+diff --git a/libavcodec/x86/h264_idct.asm b/libavcodec/x86/h264_idct.asm
+index 1f86e51d82..9b5920d3b0 100644
+--- a/libavcodec/x86/h264_idct.asm
++++ b/libavcodec/x86/h264_idct.asm
+@@ -354,7 +354,7 @@ INIT_MMX cpuname
+     add          r2, 128
+     cmp          r5, 16
+     jl .nextblock
+-    RET
++    REP_RET
+ .no_dc:
+ INIT_XMM cpuname
+     mov       dst2d, dword [r1+r5*4]
+@@ -368,7 +368,7 @@ INIT_XMM cpuname
+     add          r2, 128
+     cmp          r5, 16
+     jl .nextblock
+-    RET
++    REP_RET
+ 
+ INIT_MMX mmx
+ h264_idct_add8_mmx_plane:
+@@ -508,7 +508,7 @@ cglobal h264_idct_add16_8, 5, 5 + ARCH_X86_64, 8
+     add16_sse2_cycle 5, 0x24
+     add16_sse2_cycle 6, 0x1e
+     add16_sse2_cycle 7, 0x26
+-RET
++REP_RET
+ 
+ %macro add16intra_sse2_cycle 2
+     movzx       r0, word [r4+%2]
+@@ -555,7 +555,7 @@ cglobal h264_idct_add16intra_8, 5, 7 + ARCH_X86_64, 8
+     add16intra_sse2_cycle 5, 0x24
+     add16intra_sse2_cycle 6, 0x1e
+     add16intra_sse2_cycle 7, 0x26
+-RET
++REP_RET
+ 
+ %macro add8_sse2_cycle 2
+     movzx       r0, word [r4+%2]
+@@ -610,7 +610,7 @@ cglobal h264_idct_add8_8, 5, 7 + ARCH_X86_64, 8
+ %endif
+     add8_sse2_cycle 2, 0x5c
+     add8_sse2_cycle 3, 0x64
+-RET
++REP_RET
+ 
+ ;void ff_h264_luma_dc_dequant_idct_mmx(int16_t *output, int16_t *input, int qmul)
+ 
+diff --git a/libavcodec/x86/h264_idct_10bit.asm b/libavcodec/x86/h264_idct_10bit.asm
+index b990db7121..9fd05abb2b 100644
+--- a/libavcodec/x86/h264_idct_10bit.asm
++++ b/libavcodec/x86/h264_idct_10bit.asm
+@@ -155,7 +155,7 @@ cglobal h264_idct_add16_10, 5,6
+     ADD16_OP 13, 7+3*8
+     ADD16_OP 14, 6+4*8
+     ADD16_OP 15, 7+4*8
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -292,7 +292,7 @@ cglobal h264_idct_add16intra_10,5,7,8
+     ADD16_OP_INTRA 10, 4+4*8
+     ADD16_OP_INTRA 12, 6+3*8
+     ADD16_OP_INTRA 14, 6+4*8
+-    RET
++    REP_RET
+     AC 8
+     AC 10
+     AC 12
+@@ -335,7 +335,7 @@ cglobal h264_idct_add8_10,5,8,7
+ %endif
+     ADD16_OP_INTRA 32, 4+11*8
+     ADD16_OP_INTRA 34, 4+12*8
+-    RET
++    REP_RET
+     AC 16
+     AC 18
+     AC 32
+@@ -384,7 +384,7 @@ cglobal h264_idct_add8_422_10, 5, 8, 7
+     ADD16_OP_INTRA 34, 4+12*8
+     ADD16_OP_INTRA 40, 4+13*8 ; i+4
+     ADD16_OP_INTRA 42, 4+14*8 ; i+4
+-RET
++REP_RET
+     AC 16
+     AC 18
+     AC 24 ; i+4
+diff --git a/libavcodec/x86/h264_intrapred.asm b/libavcodec/x86/h264_intrapred.asm
+index 8a38ba2bb5..31840a1472 100644
+--- a/libavcodec/x86/h264_intrapred.asm
++++ b/libavcodec/x86/h264_intrapred.asm
+@@ -62,7 +62,7 @@ cglobal pred16x16_vertical_8, 2,3
+     lea   r0, [r0+r1*2]
+     dec   r2
+     jg .loop
+-    RET
++    REP_RET
+ 
+ ;-----------------------------------------------------------------------------
+ ; void ff_pred16x16_horizontal_8(uint8_t *src, ptrdiff_t stride)
+@@ -95,7 +95,7 @@ cglobal pred16x16_horizontal_8, 2,3
+     lea       r0, [r0+r1*2]
+     dec       r2
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -146,7 +146,7 @@ cglobal pred16x16_dc_8, 2,7
+     lea   r4, [r4+r1*2]
+     dec   r3d
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -192,7 +192,7 @@ cglobal pred16x16_tm_vp8_8, 2,6,6
+     lea          r0, [r0+r1*2]
+     dec         r5d
+     jg .loop
+-    RET
++    REP_RET
+ 
+ %if HAVE_AVX2_EXTERNAL
+ INIT_YMM avx2
+@@ -228,7 +228,7 @@ cglobal pred16x16_tm_vp8_8, 2, 4, 5, dst, stride, stride3, iteration
+     lea                       dstq, [dstq+strideq*4]
+     dec                 iterationd
+     jg .loop
+-    RET
++    REP_RET
+ %endif
+ 
+ ;-----------------------------------------------------------------------------
+@@ -427,7 +427,7 @@ cglobal pred16x16_plane_%1_8, 2,9,7
+     lea          r0, [r0+r2*2]
+     dec          r4
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -556,7 +556,7 @@ ALIGN 16
+     lea          r0, [r0+r2*2]
+     dec          r4
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -599,7 +599,7 @@ cglobal pred8x8_horizontal_8, 2,3
+     lea       r0, [r0+r1*2]
+     dec       r2
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -737,7 +737,7 @@ cglobal pred8x8_dc_rv40_8, 2,7
+     lea   r4, [r4+r1*2]
+     dec   r3d
+     jg .loop
+-    RET
++    REP_RET
+ 
+ ;-----------------------------------------------------------------------------
+ ; void ff_pred8x8_tm_vp8_8(uint8_t *src, ptrdiff_t stride)
+@@ -770,7 +770,7 @@ cglobal pred8x8_tm_vp8_8, 2,6,4
+     lea          r0, [r0+r1*2]
+     dec         r5d
+     jg .loop
+-    RET
++    REP_RET
+ 
+ INIT_XMM ssse3
+ cglobal pred8x8_tm_vp8_8, 2,3,6
+@@ -797,7 +797,7 @@ cglobal pred8x8_tm_vp8_8, 2,3,6
+     lea          r0, [r0+r1*2]
+     dec         r2d
+     jg .loop
+-    RET
++    REP_RET
+ 
+ ; dest, left, right, src, tmp
+ ; output: %1 = (t[n-1] + t[n]*2 + t[n+1] + 2) >> 2
+@@ -1802,7 +1802,7 @@ cglobal pred4x4_tm_vp8_8, 3,6
+     lea        r0, [r0+r2*2]
+     dec       r5d
+     jg .loop
+-    RET
++    REP_RET
+ 
+ INIT_XMM ssse3
+ cglobal pred4x4_tm_vp8_8, 3,3
+diff --git a/libavcodec/x86/h264_intrapred_10bit.asm b/libavcodec/x86/h264_intrapred_10bit.asm
+index 2f30807332..c4645d434e 100644
+--- a/libavcodec/x86/h264_intrapred_10bit.asm
++++ b/libavcodec/x86/h264_intrapred_10bit.asm
+@@ -327,7 +327,7 @@ cglobal pred8x8_horizontal_10, 2, 3
+     lea          r0, [r0+r1*2]
+     dec          r2d
+     jg .loop
+-    RET
++    REP_RET
+ 
+ ;-----------------------------------------------------------------------------
+ ; void ff_predict_8x8_dc_10(pixel *src, ptrdiff_t stride)
+@@ -481,7 +481,7 @@ cglobal pred8x8_plane_10, 2, 7, 7
+     add       r0, r1
+     dec r2d
+     jg .loop
+-    RET
++    REP_RET
+ 
+ 
+ ;-----------------------------------------------------------------------------
+@@ -994,7 +994,7 @@ cglobal pred16x16_vertical_10, 2, 3
+     lea   r0, [r0+r1*2]
+     dec   r2d
+     jg .loop
+-    RET
++    REP_RET
+ 
+ ;-----------------------------------------------------------------------------
+ ; void ff_pred16x16_horizontal_10(pixel *src, ptrdiff_t stride)
+@@ -1012,7 +1012,7 @@ cglobal pred16x16_horizontal_10, 2, 3
+     lea    r0, [r0+r1*2]
+     dec    r2d
+     jg .vloop
+-    RET
++    REP_RET
+ 
+ ;-----------------------------------------------------------------------------
+ ; void ff_pred16x16_dc_10(pixel *src, ptrdiff_t stride)
+@@ -1048,7 +1048,7 @@ cglobal pred16x16_dc_10, 2, 6
+     lea        r5, [r5+r1*2]
+     dec       r3d
+     jg .loop
+-    RET
++    REP_RET
+ 
+ ;-----------------------------------------------------------------------------
+ ; void ff_pred16x16_top_dc_10(pixel *src, ptrdiff_t stride)
+@@ -1070,7 +1070,7 @@ cglobal pred16x16_top_dc_10, 2, 3
+     lea        r0, [r0+r1*2]
+     dec       r2d
+     jg .loop
+-    RET
++    REP_RET
+ 
+ ;-----------------------------------------------------------------------------
+ ; void ff_pred16x16_left_dc_10(pixel *src, ptrdiff_t stride)
+@@ -1101,7 +1101,7 @@ cglobal pred16x16_left_dc_10, 2, 6
+     lea        r5, [r5+r1*2]
+     dec       r3d
+     jg .loop
+-    RET
++    REP_RET
+ 
+ ;-----------------------------------------------------------------------------
+ ; void ff_pred16x16_128_dc_10(pixel *src, ptrdiff_t stride)
+@@ -1116,4 +1116,4 @@ cglobal pred16x16_128_dc_10, 2,3
+     lea        r0, [r0+r1*2]
+     dec       r2d
+     jg .loop
+-    RET
++    REP_RET
+diff --git a/libavcodec/x86/h264_qpel_10bit.asm b/libavcodec/x86/h264_qpel_10bit.asm
+index 80483b15ba..c862cb2226 100644
+--- a/libavcodec/x86/h264_qpel_10bit.asm
++++ b/libavcodec/x86/h264_qpel_10bit.asm
+@@ -211,7 +211,7 @@ cglobal %1_h264_qpel16_mc00_10, 3,4
+     lea            r1, [r1+r2*2]
+     dec r3d
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %define OP_MOV mova
+diff --git a/libavcodec/x86/h264_qpel_8bit.asm b/libavcodec/x86/h264_qpel_8bit.asm
+index 4e64329991..6269b3cf4f 100644
+--- a/libavcodec/x86/h264_qpel_8bit.asm
++++ b/libavcodec/x86/h264_qpel_8bit.asm
+@@ -89,7 +89,7 @@ cglobal %1_h264_qpel4_h_lowpass, 4,5 ; dst, src, dstStride, srcStride
+     add           r1, r3
+     dec          r4d
+     jg         .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -149,7 +149,7 @@ cglobal %1_h264_qpel8_h_lowpass, 4,5 ; dst, src, dstStride, srcStride
+     add           r1, r3
+     dec          r4d
+     jg         .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -192,7 +192,7 @@ cglobal %1_h264_qpel8_h_lowpass, 4,5,8 ; dst, src, dstStride, srcStride
+     add           r0, r2
+     dec          r4d
+     jne        .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM ssse3
+@@ -239,7 +239,7 @@ cglobal %1_h264_qpel4_h_lowpass_l2, 5,6 ; dst, src, src2, dstStride, srcStride
+     add           r2, r4
+     dec          r5d
+     jg         .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -303,7 +303,7 @@ cglobal %1_h264_qpel8_h_lowpass_l2, 5,6 ; dst, src, src2, dstStride, srcStride
+     add           r2, r4
+     dec          r5d
+     jg         .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -350,7 +350,7 @@ cglobal %1_h264_qpel8_h_lowpass_l2, 5,6,8 ; dst, src, src2, dstStride, src2Strid
+     add           r2, r4
+     dec          r5d
+     jg         .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM ssse3
+@@ -458,7 +458,7 @@ cglobal %1_h264_qpel8or16_v_lowpass_op, 5,5,8 ; dst, src, dstStride, srcStride,
+     FILT_V        %1
+     FILT_V        %1
+ .end:
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -531,7 +531,7 @@ cglobal %1_h264_qpel4_hv_lowpass_h, 3,4 ; tmp, dst, dstStride
+     add           r1, r2
+     dec          r3d
+     jnz        .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -574,7 +574,7 @@ cglobal %1_h264_qpel8or16_hv1_lowpass_op, 4,4,8 ; src, tmp, srcStride, size
+     FILT_HV    14*48
+     FILT_HV    15*48
+ .end:
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -619,7 +619,7 @@ cglobal %1_h264_qpel8or16_hv2_lowpass_op, 5,5 ; dst, tmp, dstStride, unused, h
+     add           r0, r2
+     dec          r4d
+     jne        .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -710,7 +710,7 @@ cglobal %1_h264_qpel8or16_hv2_lowpass, 5,5,8 ; dst, tmp, dstStride, tmpStride, s
+     dec          r4d
+     jne        .op16
+ .done:
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM ssse3
+@@ -776,7 +776,7 @@ cglobal %1_pixels8_l2_shift5, 6, 6 ; dst, src16, src8, dstStride, src8Stride, h
+     lea           r0, [r0+2*r3]
+     sub          r5d, 2
+     jne        .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -845,7 +845,7 @@ cglobal %1_h264_qpel16_h_lowpass_l2, 5, 6, 16 ; dst, src, src2, dstStride, src2S
+     add           r2, r4
+     dec          r5d
+     jg         .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM ssse3
+diff --git a/libavcodec/x86/h264_weight.asm b/libavcodec/x86/h264_weight.asm
+index 66353d1a9c..6076e64ae0 100644
+--- a/libavcodec/x86/h264_weight.asm
++++ b/libavcodec/x86/h264_weight.asm
+@@ -79,7 +79,7 @@ cglobal h264_weight_%1, 6, 6, %2
+     add        r0, r1
+     dec        r2d
+     jnz .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -102,7 +102,7 @@ cglobal h264_weight_%1, 6, 6, %2
+     add        r0, r3
+     dec        r2d
+     jnz .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -196,7 +196,7 @@ cglobal h264_biweight_%1, 7, 8, %2
+     add        r1, r2
+     dec        r3d
+     jnz .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -223,7 +223,7 @@ cglobal h264_biweight_%1, 7, 8, %2
+     add        r1, r4
+     dec        r3d
+     jnz .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -258,7 +258,7 @@ cglobal h264_biweight_16, 7, 8, 8
+     add        r1, r2
+     dec        r3d
+     jnz .nextrow
+-    RET
++    REP_RET
+ 
+ INIT_XMM ssse3
+ cglobal h264_biweight_8, 7, 8, 8
+@@ -281,4 +281,4 @@ cglobal h264_biweight_8, 7, 8, 8
+     add        r1, r4
+     dec        r3d
+     jnz .nextrow
+-    RET
++    REP_RET
+diff --git a/libavcodec/x86/h264_weight_10bit.asm b/libavcodec/x86/h264_weight_10bit.asm
+index 356871bc62..f924e55854 100644
+--- a/libavcodec/x86/h264_weight_10bit.asm
++++ b/libavcodec/x86/h264_weight_10bit.asm
+@@ -101,7 +101,7 @@ cglobal h264_weight_16_10
+     add       r0, r1
+     dec       r2d
+     jnz .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -120,7 +120,7 @@ cglobal h264_weight_8_10
+     add        r0, r1
+     dec        r2d
+     jnz .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -142,7 +142,7 @@ cglobal h264_weight_4_10
+     add         r0, r3
+     dec         r2d
+     jnz .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -234,7 +234,7 @@ cglobal h264_biweight_16_10
+     add       r1, r2
+     dec       r3d
+     jnz .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -253,7 +253,7 @@ cglobal h264_biweight_8_10
+     add      r1, r2
+     dec      r3d
+     jnz .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -275,7 +275,7 @@ cglobal h264_biweight_4_10
+     add         r1, r4
+     dec         r3d
+     jnz .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+diff --git a/libavcodec/x86/hevc_sao.asm b/libavcodec/x86/hevc_sao.asm
+index 8abb16150d..2eb8924da8 100644
+--- a/libavcodec/x86/hevc_sao.asm
++++ b/libavcodec/x86/hevc_sao.asm
+@@ -166,7 +166,7 @@ INIT_YMM cpuname
+     add             srcq, srcstrideq             ; src += srcstride
+     dec          heightd                         ; cmp height
+     jnz               .loop                      ; height loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ 
+diff --git a/libavcodec/x86/hevc_sao_10bit.asm b/libavcodec/x86/hevc_sao_10bit.asm
+index 0daa9c645c..38005740e5 100644
+--- a/libavcodec/x86/hevc_sao_10bit.asm
++++ b/libavcodec/x86/hevc_sao_10bit.asm
+@@ -145,7 +145,7 @@ align 16
+     add             srcq, srcstrideq
+     dec          heightd
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro HEVC_SAO_BAND_FILTER_FUNCS 0
+diff --git a/libavcodec/x86/hpeldsp.asm b/libavcodec/x86/hpeldsp.asm
+index 7a2b7135d8..b3a270a173 100644
+--- a/libavcodec/x86/hpeldsp.asm
++++ b/libavcodec/x86/hpeldsp.asm
+@@ -78,7 +78,7 @@ cglobal put_pixels8_x2, 4,5
+     add          r0, r4
+     sub         r3d, 4
+     jne .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -120,7 +120,7 @@ cglobal put_pixels16_x2, 4,5
+     add          r0, r4
+     sub         r3d, 4
+     jne .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -162,7 +162,7 @@ cglobal put_no_rnd_pixels8_x2, 4,5
+     add          r0, r4
+     sub         r3d, 4
+     jne .loop
+-    RET
++    REP_RET
+ 
+ 
+ ; void ff_put_pixels8_y2(uint8_t *block, const uint8_t *pixels, ptrdiff_t line_size, int h)
+@@ -194,7 +194,7 @@ cglobal put_pixels8_y2, 4,5
+     add          r0, r4
+     sub         r3d, 4
+     jne .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -232,7 +232,7 @@ cglobal put_no_rnd_pixels8_y2, 4,5
+     add          r0, r4
+     sub         r3d, 4
+     jne .loop
+-    RET
++    REP_RET
+ 
+ 
+ ; void ff_avg_pixels8_x2(uint8_t *block, const uint8_t *pixels, ptrdiff_t line_size, int h)
+@@ -280,7 +280,7 @@ cglobal avg_pixels8_x2, 4,5
+     add          r0, r4
+     sub         r3d, 4
+     jne .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -323,7 +323,7 @@ cglobal avg_pixels8_y2, 4,5
+     add          r0, r4
+     sub         r3d, 4
+     jne .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -370,7 +370,7 @@ cglobal avg_approx_pixels8_xy2, 4,5
+     add          r0, r4
+     sub         r3d, 4
+     jne .loop
+-    RET
++    REP_RET
+ 
+ 
+ ; void ff_avg_pixels16_xy2(uint8_t *block, const uint8_t *pixels, ptrdiff_t line_size, int h)
+@@ -448,7 +448,7 @@ cglobal %1_pixels8_xy2, 4,5
+     add         r4, r2
+     sub        r3d, 2
+     jnz .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -514,7 +514,7 @@ cglobal %1_pixels8_xy2, 4,5
+     add         r4, r2
+     sub        r3d, 2
+     jnz .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX ssse3
+diff --git a/libavcodec/x86/hpeldsp_vp3.asm b/libavcodec/x86/hpeldsp_vp3.asm
+index e580133e45..88ca8e8e0a 100644
+--- a/libavcodec/x86/hpeldsp_vp3.asm
++++ b/libavcodec/x86/hpeldsp_vp3.asm
+@@ -60,7 +60,7 @@ cglobal put_no_rnd_pixels8_x2_exact, 4,5
+     lea          r0, [r0+r2*4]
+     sub         r3d, 4
+     jg .loop
+-    RET
++    REP_RET
+ 
+ 
+ ; void ff_put_no_rnd_pixels8_y2_exact(uint8_t *block, const uint8_t *pixels, ptrdiff_t line_size, int h)
+@@ -96,4 +96,4 @@ cglobal put_no_rnd_pixels8_y2_exact, 4,5
+     lea          r0, [r0+r2*4]
+     sub         r3d, 4
+     jg .loop
+-    RET
++    REP_RET
+diff --git a/libavcodec/x86/huffyuvdsp.asm b/libavcodec/x86/huffyuvdsp.asm
+index c1b375f479..c5c40e991b 100644
+--- a/libavcodec/x86/huffyuvdsp.asm
++++ b/libavcodec/x86/huffyuvdsp.asm
+@@ -74,7 +74,7 @@ cglobal add_hfyu_left_pred_bgr32, 4,4,3, dst, src, w, left
+     jl         .loop
+     movd          m0, [dstq-4]
+     movd     [leftq], m0
+-    RET
++    REP_RET
+ 
+ 
+ ; void add_hfyu_median_prediction_mmxext(uint8_t *dst, const uint8_t *top, const uint8_t *diff, int mask, int w, int *left, int *left_top)
+diff --git a/libavcodec/x86/jpeg2000dsp.asm b/libavcodec/x86/jpeg2000dsp.asm
+index c61cc70784..61dfdd4f71 100644
+--- a/libavcodec/x86/jpeg2000dsp.asm
++++ b/libavcodec/x86/jpeg2000dsp.asm
+@@ -113,7 +113,7 @@ align 16
+     movaps   [src1q+csizeq], m5
+     add  csizeq, mmsize
+     jl .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse
+@@ -153,7 +153,7 @@ align 16
+     mova   [src0q+csizeq], m2
+     add  csizeq, mmsize
+     jl .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+diff --git a/libavcodec/x86/lossless_videodsp.asm b/libavcodec/x86/lossless_videodsp.asm
+index 7159aafe67..eb1b80506e 100644
+--- a/libavcodec/x86/lossless_videodsp.asm
++++ b/libavcodec/x86/lossless_videodsp.asm
+@@ -229,7 +229,7 @@ cglobal add_bytes, 3,4,2, dst, src, w, size
+     inc     wq
+     jl .3
+ .end:
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+diff --git a/libavcodec/x86/lossless_videoencdsp.asm b/libavcodec/x86/lossless_videoencdsp.asm
+index 8ccaea9139..c579891d6a 100644
+--- a/libavcodec/x86/lossless_videoencdsp.asm
++++ b/libavcodec/x86/lossless_videoencdsp.asm
+@@ -110,7 +110,7 @@ cglobal diff_bytes, 4,5,2, dst, src1, src2, w
+     inc               wq
+         jl .loop_gpr_%1%2
+ .end_%1%2:
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+diff --git a/libavcodec/x86/me_cmp.asm b/libavcodec/x86/me_cmp.asm
+index 923eb8078b..eb036ee4bc 100644
+--- a/libavcodec/x86/me_cmp.asm
++++ b/libavcodec/x86/me_cmp.asm
+@@ -458,7 +458,7 @@ cglobal hf_noise%1, 3,3,0, pix1, lsize, h
+     psrlq      m6, 32
+     paddd      m0, m6
+     movd      eax, m0   ; eax = result of hf_noise8;
+-    RET                 ; return eax;
++    REP_RET                 ; return eax;
+ %endmacro
+ 
+ INIT_MMX mmx
+diff --git a/libavcodec/x86/pngdsp.asm b/libavcodec/x86/pngdsp.asm
+index efaf652cd4..7bc43c79a0 100644
+--- a/libavcodec/x86/pngdsp.asm
++++ b/libavcodec/x86/pngdsp.asm
+@@ -75,7 +75,7 @@ cglobal add_bytes_l2, 4, 6, 2, dst, src1, src2, wa, w, i
+ .end_s:
+     cmp                 iq, wq
+     jl .loop_s
+-    RET
++    REP_RET
+ 
+ %macro ADD_PAETH_PRED_FN 1
+ cglobal add_png_paeth_prediction, 5, 7, %1, dst, src, top, w, bpp, end, cntr
+diff --git a/libavcodec/x86/qpel.asm b/libavcodec/x86/qpel.asm
+index 481251314a..4e72d5084f 100644
+--- a/libavcodec/x86/qpel.asm
++++ b/libavcodec/x86/qpel.asm
+@@ -81,7 +81,7 @@ cglobal %1_pixels4_l2, 6,6
+     add          r2, 16
+     sub         r5d, 4
+     jne       .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -125,7 +125,7 @@ cglobal %1_pixels8_l2, 6,6
+     add          r2, 32
+     sub         r5d, 4
+     jne       .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -171,7 +171,7 @@ cglobal %1_pixels16_l2, 6,6
+     add          r2, 32
+     sub         r5d, 2
+     jne       .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+diff --git a/libavcodec/x86/qpeldsp.asm b/libavcodec/x86/qpeldsp.asm
+index 30d26a5acc..3a6a650654 100644
+--- a/libavcodec/x86/qpeldsp.asm
++++ b/libavcodec/x86/qpeldsp.asm
+@@ -92,7 +92,7 @@ cglobal put_no_rnd_pixels8_l2, 6,6
+     add          r2, 32
+     sub         r5d, 4
+     jne .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -161,7 +161,7 @@ cglobal put_no_rnd_pixels16_l2, 6,6
+     add          r2, 32
+     sub         r5d, 2
+     jne .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -274,7 +274,7 @@ cglobal %1_mpeg4_qpel16_h_lowpass, 5, 5, 0, 16
+     add          r0, r2
+     dec r4d
+     jne .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro PUT_OP 2-3
+@@ -357,7 +357,7 @@ cglobal %1_mpeg4_qpel8_h_lowpass, 5, 5, 0, 8
+     add          r0, r2
+     dec r4d
+     jne .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -466,7 +466,7 @@ cglobal %1_mpeg4_qpel16_v_lowpass, 4, 6, 0, 544
+     add    r0, r1
+     dec r4d
+     jne .loopv
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro PUT_OPH 2-3
+@@ -543,7 +543,7 @@ cglobal %1_mpeg4_qpel8_v_lowpass, 4, 6, 0, 288
+     add    r0, r1
+     dec r4d
+     jne .loopv
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+diff --git a/libavcodec/x86/rv34dsp.asm b/libavcodec/x86/rv34dsp.asm
+index f29bfd715c..0a3d99c53f 100644
+--- a/libavcodec/x86/rv34dsp.asm
++++ b/libavcodec/x86/rv34dsp.asm
+@@ -54,7 +54,7 @@ cglobal rv34_idct_dc_noround, 1, 2, 0
+     movq    [r0+ 8], m0
+     movq    [r0+16], m0
+     movq    [r0+24], m0
+-    RET
++    REP_RET
+ 
+ ; Load coeffs and perform row transform
+ ; Output: coeffs in mm[0467], rounder in mm5
+diff --git a/libavcodec/x86/rv40dsp.asm b/libavcodec/x86/rv40dsp.asm
+index e02ad2c63f..f2ce236d44 100644
+--- a/libavcodec/x86/rv40dsp.asm
++++ b/libavcodec/x86/rv40dsp.asm
+@@ -170,7 +170,7 @@ cglobal %1_rv40_qpel_v, 6,6+npicregs,12, dst, dststride, src, srcstride, height,
+     add     srcq, srcstrideq
+     dec  heightd                           ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro FILTER_H  1
+@@ -227,7 +227,7 @@ cglobal %1_rv40_qpel_h, 6, 6+npicregs, 12, dst, dststride, src, srcstride, heigh
+     add     srcq, srcstrideq
+     dec  heightd            ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM  sse2
+@@ -280,7 +280,7 @@ cglobal %1_rv40_qpel_v, 6,6+npicregs,8, dst, dststride, src, srcstride, height,
+     add     srcq, srcstrideq
+     dec       heightd                          ; next row
+     jg       .nextrow
+-    RET
++    REP_RET
+ 
+ cglobal %1_rv40_qpel_h, 6,6+npicregs,8, dst, dststride, src, srcstride, height, mx, picreg
+ %ifdef PIC
+@@ -313,7 +313,7 @@ cglobal %1_rv40_qpel_h, 6,6+npicregs,8, dst, dststride, src, srcstride, height,
+     add     srcq, srcstrideq
+     dec  heightd            ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM ssse3
+@@ -464,7 +464,7 @@ cglobal rv40_weight_func_%1_%2, 6, 7, 8
+ .loop:
+     MAIN_LOOP  %2, RND
+     jnz        .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+diff --git a/libavcodec/x86/sbrdsp.asm b/libavcodec/x86/sbrdsp.asm
+index d02f70d704..87dcdc43ce 100644
+--- a/libavcodec/x86/sbrdsp.asm
++++ b/libavcodec/x86/sbrdsp.asm
+@@ -208,7 +208,7 @@ cglobal sbr_sum64x5, 1,2,4,z
+     add     zq, 32
+     cmp     zq, r1q
+     jne  .loop
+-    RET
++    REP_RET
+ 
+ INIT_XMM sse
+ cglobal sbr_qmf_post_shuffle, 2,3,4,W,z
+@@ -227,7 +227,7 @@ cglobal sbr_qmf_post_shuffle, 2,3,4,W,z
+     add               zq, 16
+     cmp               zq, r2q
+     jl             .loop
+-    RET
++    REP_RET
+ 
+ INIT_XMM sse
+ cglobal sbr_neg_odd_64, 1,2,4,z
+@@ -248,7 +248,7 @@ cglobal sbr_neg_odd_64, 1,2,4,z
+     add         zq, 64
+     cmp         zq, r1q
+     jne      .loop
+-    RET
++    REP_RET
+ 
+ ; void ff_sbr_qmf_deint_bfly_sse2(float *v, const float *src0, const float *src1)
+ INIT_XMM sse2
+@@ -276,7 +276,7 @@ cglobal sbr_qmf_deint_bfly, 3,5,8, v,src0,src1,vrev,c
+     add            vrevq, 2*mmsize
+     sub               cq, 2*mmsize
+     jge            .loop
+-    RET
++    REP_RET
+ 
+ INIT_XMM sse2
+ cglobal sbr_qmf_pre_shuffle, 1,4,6,z
+@@ -306,7 +306,7 @@ cglobal sbr_qmf_pre_shuffle, 1,4,6,z
+     jge      .loop
+     movq       m2, [zq]
+     movq    [r2q], m2
+-    RET
++    REP_RET
+ 
+ %ifdef PIC
+ %define NREGS 1
+@@ -432,7 +432,7 @@ cglobal sbr_qmf_deint_neg, 2,4,4,v,src,vrev,c
+     sub        vq, mmsize
+     add        cq, mmsize
+     jl      .loop
+-    RET
++    REP_RET
+ 
+ %macro SBR_AUTOCORRELATE 0
+ cglobal sbr_autocorrelate, 2,3,8,32, x, phi, cnt
+diff --git a/libavcodec/x86/takdsp.asm b/libavcodec/x86/takdsp.asm
+index be8e1ab553..5f3ded3ea2 100644
+--- a/libavcodec/x86/takdsp.asm
++++ b/libavcodec/x86/takdsp.asm
+@@ -43,7 +43,7 @@ cglobal tak_decorrelate_ls, 3, 3, 2, p1, p2, length
+     mova     [p2q+lengthq+mmsize*1], m1
+     add                     lengthq, mmsize*2
+     jl .loop
+-    RET
++    REP_RET
+ 
+ cglobal tak_decorrelate_sr, 3, 3, 2, p1, p2, length
+     shl                     lengthd, 2
+@@ -60,7 +60,7 @@ cglobal tak_decorrelate_sr, 3, 3, 2, p1, p2, length
+     mova     [p1q+lengthq+mmsize*1], m1
+     add                     lengthq, mmsize*2
+     jl .loop
+-    RET
++    REP_RET
+ 
+ cglobal tak_decorrelate_sm, 3, 3, 6, p1, p2, length
+     shl                     lengthd, 2
+@@ -87,7 +87,7 @@ cglobal tak_decorrelate_sm, 3, 3, 6, p1, p2, length
+     mova       [p2q+lengthq+mmsize], m4
+     add                     lengthq, mmsize*2
+     jl .loop
+-    RET
++    REP_RET
+ 
+ INIT_XMM sse4
+ cglobal tak_decorrelate_sf, 3, 3, 5, p1, p2, length, dshift, dfactor
+@@ -113,4 +113,4 @@ cglobal tak_decorrelate_sf, 3, 3, 5, p1, p2, length, dshift, dfactor
+     mova      [p1q+lengthq], m1
+     add             lengthq, mmsize
+     jl .loop
+-    RET
++    REP_RET
+diff --git a/libavcodec/x86/utvideodsp.asm b/libavcodec/x86/utvideodsp.asm
+index 9d54deeb32..b799c44b64 100644
+--- a/libavcodec/x86/utvideodsp.asm
++++ b/libavcodec/x86/utvideodsp.asm
+@@ -69,7 +69,7 @@ DEFINE_ARGS src_r, src_g, src_b, linesize_r, linesize_g, linesize_b, x
+     add        src_bq, linesize_bq
+     sub        hd, 1
+     jg .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -125,7 +125,7 @@ DEFINE_ARGS src_r, src_g, src_b, linesize_r, linesize_g, linesize_b, x
+     add        src_bq, linesize_bq
+     sub        hd, 1
+     jg .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+diff --git a/libavcodec/x86/v210.asm b/libavcodec/x86/v210.asm
+index 8ae592205f..f247737ed0 100644
+--- a/libavcodec/x86/v210.asm
++++ b/libavcodec/x86/v210.asm
+@@ -116,7 +116,7 @@ cglobal v210_planar_unpack_%1, 5, 5, 6 + 2 * cpuflag(avx2), src, y, u, v, w
+     add wq, (mmsize*3)/8
+     jl  .loop
+ 
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM ssse3
+diff --git a/libavcodec/x86/vc1dsp_mc.asm b/libavcodec/x86/vc1dsp_mc.asm
+index c1b3ed1bc3..0e6d87dd8b 100644
+--- a/libavcodec/x86/vc1dsp_mc.asm
++++ b/libavcodec/x86/vc1dsp_mc.asm
+@@ -139,7 +139,7 @@ cglobal vc1_put_ver_16b_shift2, 4,7,0, dst, src, stride
+     add              dstq, 8
+     dec                 i
+         jnz         .loop
+-    RET
++    REP_RET
+ %undef rnd
+ %undef shift
+ %undef stride_neg2
+diff --git a/libavcodec/x86/videodsp.asm b/libavcodec/x86/videodsp.asm
+index 3cc07878d3..b19a8300c5 100644
+--- a/libavcodec/x86/videodsp.asm
++++ b/libavcodec/x86/videodsp.asm
+@@ -433,4 +433,4 @@ cglobal prefetch, 3, 3, 0, buf, stride, h
+     add      bufq, strideq
+     dec        hd
+     jg .loop
+-    RET
++    REP_RET
+diff --git a/libavcodec/x86/vp8dsp.asm b/libavcodec/x86/vp8dsp.asm
+index 6ac5a7721b..33d488bf6f 100644
+--- a/libavcodec/x86/vp8dsp.asm
++++ b/libavcodec/x86/vp8dsp.asm
+@@ -200,7 +200,7 @@ cglobal put_vp8_epel%1_h6, 6, 6 + npicregs, 8, dst, dststride, src, srcstride, h
+     add     srcq, srcstrideq
+     dec  heightd            ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ 
+ cglobal put_vp8_epel%1_h4, 6, 6 + npicregs, 7, dst, dststride, src, srcstride, height, mx, picreg
+     shl      mxd, 4
+@@ -230,7 +230,7 @@ cglobal put_vp8_epel%1_h4, 6, 6 + npicregs, 7, dst, dststride, src, srcstride, h
+     add     srcq, srcstrideq
+     dec  heightd            ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ 
+ cglobal put_vp8_epel%1_v4, 7, 7, 8, dst, dststride, src, srcstride, height, picreg, my
+     shl      myd, 4
+@@ -268,7 +268,7 @@ cglobal put_vp8_epel%1_v4, 7, 7, 8, dst, dststride, src, srcstride, height, picr
+     add      srcq, srcstrideq
+     dec   heightd                          ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ 
+ cglobal put_vp8_epel%1_v6, 7, 7, 8, dst, dststride, src, srcstride, height, picreg, my
+     lea      myd, [myq*3]
+@@ -314,7 +314,7 @@ cglobal put_vp8_epel%1_v6, 7, 7, 8, dst, dststride, src, srcstride, height, picr
+     add      srcq, srcstrideq
+     dec   heightd                          ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX ssse3
+@@ -368,7 +368,7 @@ cglobal put_vp8_epel4_h4, 6, 6 + npicregs, 0, dst, dststride, src, srcstride, he
+     add      srcq, srcstrideq
+     dec   heightd                          ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ 
+ ; 4x4 block, H-only 6-tap filter
+ INIT_MMX mmxext
+@@ -426,7 +426,7 @@ cglobal put_vp8_epel4_h6, 6, 6 + npicregs, 0, dst, dststride, src, srcstride, he
+     add      srcq, srcstrideq
+     dec   heightd                          ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ 
+ INIT_XMM sse2
+ cglobal put_vp8_epel8_h4, 6, 6 + npicregs, 10, dst, dststride, src, srcstride, height, mx, picreg
+@@ -474,7 +474,7 @@ cglobal put_vp8_epel8_h4, 6, 6 + npicregs, 10, dst, dststride, src, srcstride, h
+     add     srcq, srcstrideq
+     dec  heightd            ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ 
+ INIT_XMM sse2
+ cglobal put_vp8_epel8_h6, 6, 6 + npicregs, 14, dst, dststride, src, srcstride, height, mx, picreg
+@@ -537,7 +537,7 @@ cglobal put_vp8_epel8_h6, 6, 6 + npicregs, 14, dst, dststride, src, srcstride, h
+     add     srcq, srcstrideq
+     dec  heightd            ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ 
+ %macro FILTER_V 1
+ ; 4x4 block, V-only 4-tap filter
+@@ -590,7 +590,7 @@ cglobal put_vp8_epel%1_v4, 7, 7, 8, dst, dststride, src, srcstride, height, picr
+     add     srcq, srcstrideq
+     dec  heightd                           ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ 
+ 
+ ; 4x4 block, V-only 6-tap filter
+@@ -655,7 +655,7 @@ cglobal put_vp8_epel%1_v6, 7, 7, 8, dst, dststride, src, srcstride, height, picr
+     add     srcq, srcstrideq
+     dec  heightd                           ; next row
+     jg .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -738,7 +738,7 @@ cglobal put_vp8_bilinear%1_v, 7, 7, 7, dst, dststride, src, srcstride, height, p
+     lea     srcq, [srcq+srcstrideq*2]
+     sub  heightd, 2
+     jg .nextrow
+-    RET
++    REP_RET
+ 
+ %if cpuflag(ssse3)
+ cglobal put_vp8_bilinear%1_h, 6, 6 + npicregs, 5, dst, dststride, src, srcstride, height, mx, picreg
+@@ -815,7 +815,7 @@ cglobal put_vp8_bilinear%1_h, 6, 6 + npicregs, 7, dst, dststride, src, srcstride
+     lea     srcq, [srcq+srcstrideq*2]
+     sub  heightd, 2
+     jg .nextrow
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_MMX mmxext
+@@ -838,7 +838,7 @@ cglobal put_vp8_pixels8, 5, 5, 0, dst, dststride, src, srcstride, height
+     lea    dstq, [dstq+dststrideq*2]
+     sub heightd, 2
+     jg .nextrow
+-    RET
++    REP_RET
+ 
+ INIT_XMM sse
+ cglobal put_vp8_pixels16, 5, 5, 2, dst, dststride, src, srcstride, height
+@@ -851,7 +851,7 @@ cglobal put_vp8_pixels16, 5, 5, 2, dst, dststride, src, srcstride, height
+     lea    dstq, [dstq+dststrideq*2]
+     sub heightd, 2
+     jg .nextrow
+-    RET
++    REP_RET
+ 
+ ;-----------------------------------------------------------------------------
+ ; void ff_vp8_idct_dc_add_<opt>(uint8_t *dst, int16_t block[16], ptrdiff_t stride);
+diff --git a/libavfilter/x86/af_volume.asm b/libavfilter/x86/af_volume.asm
+index 35a00784a2..723ab1f8fb 100644
+--- a/libavfilter/x86/af_volume.asm
++++ b/libavfilter/x86/af_volume.asm
+@@ -56,7 +56,7 @@ cglobal scale_samples_s16, 4,4,4, dst, src, len, volume
+     mova  [dstq+lenq], m3
+     sub       lenq, mmsize
+     jge .loop
+-    RET
++    REP_RET
+ 
+ ;------------------------------------------------------------------------------
+ ; void ff_scale_samples_s32(uint8_t *dst, const uint8_t *src, int len,
+@@ -93,7 +93,7 @@ cglobal scale_samples_s32, 4,4,4, dst, src, len, volume
+ %endif
+     sub            lenq, mmsize
+     jge .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -137,4 +137,4 @@ cglobal scale_samples_s32, 4,4,8, dst, src, len, volume
+     mova  [dstq+lenq], m0
+     sub       lenq, mmsize
+     jge .loop
+-    RET
++    REP_RET
+diff --git a/libavfilter/x86/avf_showcqt.asm b/libavfilter/x86/avf_showcqt.asm
+index 16af0de9b0..63e58408cd 100644
+--- a/libavfilter/x86/avf_showcqt.asm
++++ b/libavfilter/x86/avf_showcqt.asm
+@@ -127,7 +127,7 @@ cglobal showcqt_cqt_calc, 5, 10, 12, dst, src, coeffs, len, fft_len, x, coeffs_v
+         lea     dstq, [dstq + 16]
+         lea     coeffsq, [coeffsq + 2*Coeffs.sizeof]
+         jnz     .loop_k
+-        RET
++        REP_RET
+         align   16
+         .check_loop_a:
+         cmp     xd, [coeffsq + Coeffs.len]
+@@ -170,7 +170,7 @@ cglobal showcqt_cqt_calc, 4, 7, 8, dst, src, coeffs, len, x, coeffs_val, i
+         lea     dstq, [dstq + 8]
+         lea     coeffsq, [coeffsq + Coeffs.sizeof]
+         jnz     .loop_k
+-        RET
++        REP_RET
+ %endif ; ARCH_X86_64
+ %endmacro ; DECLARE_CQT_CALC
+ 
+diff --git a/libavfilter/x86/scene_sad.asm b/libavfilter/x86/scene_sad.asm
+index bf7236b3a3..d38d71ccca 100644
+--- a/libavfilter/x86/scene_sad.asm
++++ b/libavfilter/x86/scene_sad.asm
+@@ -53,7 +53,7 @@ cglobal scene_sad, 6, 7, 2, src1, stride1, src2, stride2, width, end, x
+ 
+     mov         r0q, r6mp
+     movu      [r0q], m1      ; sum
+-RET
++REP_RET
+ %endmacro
+ 
+ 
+diff --git a/libavfilter/x86/vf_blend.asm b/libavfilter/x86/vf_blend.asm
+index 362020ec95..277b100e4d 100644
+--- a/libavfilter/x86/vf_blend.asm
++++ b/libavfilter/x86/vf_blend.asm
+@@ -63,7 +63,7 @@ cglobal blend_%1, 5, 7, %2, top, top_linesize, bottom, bottom_linesize, dst, end
+     add          dstq, dst_linesizeq
+     sub          endd, 1
+     jg .nextrow
+-RET
++REP_RET
+ %endmacro
+ 
+ %macro BLEND_SIMPLE 2-3 0
+diff --git a/libavfilter/x86/vf_framerate.asm b/libavfilter/x86/vf_framerate.asm
+index b5505b4ff8..7a30c870bd 100644
+--- a/libavfilter/x86/vf_framerate.asm
++++ b/libavfilter/x86/vf_framerate.asm
+@@ -84,7 +84,7 @@ cglobal blend_frames%1, 5, 7, 5, src1, src1_linesize, src2, src2_linesize, dst,
+     add      dstq, dst_linesizeq
+     sub      endd, 1
+     jg .nextrow
+-RET
++REP_RET
+ %endmacro
+ 
+ 
+diff --git a/libavfilter/x86/vf_gradfun.asm b/libavfilter/x86/vf_gradfun.asm
+index d106d52100..3581f89fe8 100644
+--- a/libavfilter/x86/vf_gradfun.asm
++++ b/libavfilter/x86/vf_gradfun.asm
+@@ -64,7 +64,7 @@ cglobal gradfun_filter_line, 6, 6
+     add       r0, 4
+     jl .loop
+ .end:
+-    RET
++    REP_RET
+ 
+ INIT_XMM ssse3
+ cglobal gradfun_filter_line, 6, 6, 8
+@@ -78,7 +78,7 @@ cglobal gradfun_filter_line, 6, 6, 8
+     FILTER_LINE m4
+     add        r0, 8
+     jl .loop
+-    RET
++    REP_RET
+ 
+ %macro BLUR_LINE 1
+ cglobal gradfun_blur_line_%1, 6, 6, 8
+@@ -102,7 +102,7 @@ cglobal gradfun_blur_line_%1, 6, 6, 8
+     mova   [r3+r0], m0
+     add         r0, 16
+     jl .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+diff --git a/libavfilter/x86/vf_hqdn3d.asm b/libavfilter/x86/vf_hqdn3d.asm
+index 2c0ca45571..e3b1bdca53 100644
+--- a/libavfilter/x86/vf_hqdn3d.asm
++++ b/libavfilter/x86/vf_hqdn3d.asm
+@@ -97,7 +97,7 @@ ALIGN 16
+     inc    xq
+     jl .loop
+     je .loop2
+-    RET
++    REP_RET
+ %endmacro ; HQDN3D_ROW
+ 
+ HQDN3D_ROW 8
+diff --git a/libavfilter/x86/vf_interlace.asm b/libavfilter/x86/vf_interlace.asm
+index c28f9fbe3e..f4a405c754 100644
+--- a/libavfilter/x86/vf_interlace.asm
++++ b/libavfilter/x86/vf_interlace.asm
+@@ -73,7 +73,7 @@ SECTION .text
+     jl .loop
+ 
+ .end:
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro LOWPASS_LINE 0
+@@ -146,7 +146,7 @@ cglobal lowpass_line_complex, 5, 5, 8, dst, h, src, mref, pref
+     add srcq, mmsize
+     sub hd, mmsize
+     jg .loop
+-RET
++REP_RET
+ 
+ cglobal lowpass_line_complex_12, 5, 5, 8, 16, dst, h, src, mref, pref, clip_max
+     movd m7, DWORD clip_maxm
+@@ -208,7 +208,7 @@ cglobal lowpass_line_complex_12, 5, 5, 8, 16, dst, h, src, mref, pref, clip_max
+     add srcq, 2*mmsize
+     sub hd, mmsize
+     jg .loop
+-RET
++REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+diff --git a/libavfilter/x86/vf_maskedmerge.asm b/libavfilter/x86/vf_maskedmerge.asm
+index d9bd4688fd..1028299087 100644
+--- a/libavfilter/x86/vf_maskedmerge.asm
++++ b/libavfilter/x86/vf_maskedmerge.asm
+@@ -81,4 +81,4 @@ cglobal maskedmerge8, 5, 7, 8, bsrc, osrc, msrc, dst, blinesize, w, x
+     add          dstq, dlinesizeq
+     sub         hd, 1
+     jg .nextrow
+-RET
++REP_RET
+diff --git a/libavfilter/x86/vf_stereo3d.asm b/libavfilter/x86/vf_stereo3d.asm
+index b6a293b18e..a057e495f1 100644
+--- a/libavfilter/x86/vf_stereo3d.asm
++++ b/libavfilter/x86/vf_stereo3d.asm
+@@ -213,4 +213,4 @@ cglobal anaglyph, 3, 6, 8, 2*9*mmsize, dst, lsrc, rsrc, dst_linesize, o, cnt
+     add         rsrcq, r_linesizeq
+     sub       heightd, 1
+     jg .nextrow
+-RET
++REP_RET
+diff --git a/libavfilter/x86/vf_w3fdif.asm b/libavfilter/x86/vf_w3fdif.asm
+index 3010469f97..52628c38d7 100644
+--- a/libavfilter/x86/vf_w3fdif.asm
++++ b/libavfilter/x86/vf_w3fdif.asm
+@@ -38,7 +38,7 @@ cglobal w3fdif_scale, 3, 3, 2, 0, out_pixel, work_pixel, linesize
+     add                 work_pixelq, mmsize*2
+     sub                   linesized, mmsize/2
+     jg .loop
+-RET
++REP_RET
+ 
+ cglobal w3fdif_simple_low, 4, 5, 6, 0, work_line, in_lines_cur0, coef, linesize, offset
+     movd                  m1, [coefq]
+@@ -63,7 +63,7 @@ cglobal w3fdif_simple_low, 4, 5, 6, 0, work_line, in_lines_cur0, coef, linesize,
+     add                               offsetq, mmsize/2
+     sub                             linesized, mmsize/2
+     jg .loop
+-RET
++REP_RET
+ 
+ cglobal w3fdif_complex_low, 4, 7, 8, 0, work_line, in_lines_cur0, coef, linesize
+     movq                  m0, [coefq]
+@@ -99,7 +99,7 @@ cglobal w3fdif_complex_low, 4, 7, 8, 0, work_line, in_lines_cur0, coef, linesize
+     add                               offsetq, mmsize/2
+     sub                             linesized, mmsize/2
+     jg .loop
+-RET
++REP_RET
+ 
+ %if ARCH_X86_64
+ cglobal w3fdif_simple_high, 5, 9, 8, 0, work_line, in_lines_cur0, in_lines_adj0, coef, linesize
+@@ -179,7 +179,7 @@ cglobal w3fdif_simple_high, 4, 7, 8, 0, work_line, in_lines_cur0, in_lines_adj0,
+     add                               offsetq, mmsize/2
+     sub                             linesized, mmsize/2
+     jg .loop
+-RET
++REP_RET
+ 
+ %if ARCH_X86_64
+ 
+@@ -254,6 +254,6 @@ cglobal w3fdif_complex_high, 5, 13, 10, 0, work_line, in_lines_cur0, in_lines_ad
+     add                               offsetq, mmsize/2
+     sub                             linesized, mmsize/2
+     jg .loop
+-RET
++REP_RET
+ 
+ %endif
+diff --git a/libavutil/x86/float_dsp.asm b/libavutil/x86/float_dsp.asm
+index e84ba52566..ff608f5f5a 100644
+--- a/libavutil/x86/float_dsp.asm
++++ b/libavutil/x86/float_dsp.asm
+@@ -48,7 +48,7 @@ ALIGN 16
+ 
+     sub       lenq, 64
+     jge       .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse
+@@ -141,7 +141,7 @@ cglobal vector_fmac_scalar, 4,4,5, dst, src, mul, len
+ %endif ; mmsize
+     sub    lenq, 64
+     jge .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse
+@@ -178,7 +178,7 @@ cglobal vector_fmul_scalar, 4,4,3, dst, src, mul, len
+     mova  [dstq+lenq], m1
+     sub    lenq, mmsize
+     jge .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse
+@@ -233,7 +233,7 @@ cglobal vector_dmac_scalar, 4,4,5, dst, src, mul, len
+     movaps [dstq+lenq+3*mmsize], m4
+     sub    lenq, mmsize*4
+     jge .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -280,7 +280,7 @@ cglobal vector_dmul_scalar, 4,4,3, dst, src, mul, len
+     movaps [dstq+lenq+mmsize], m2
+     sub          lenq, 2*mmsize
+     jge .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse2
+@@ -323,7 +323,7 @@ cglobal vector_fmul_window, 5, 6, 6, dst, src0, src1, win, len, len1
+     sub       len1q, mmsize
+     add       lenq,  mmsize
+     jl .loop
+-    RET
++    REP_RET
+ 
+ ;-----------------------------------------------------------------------------
+ ; vector_fmul_add(float *dst, const float *src0, const float *src1,
+@@ -352,7 +352,7 @@ ALIGN 16
+ 
+     sub     lenq,   2*mmsize
+     jge     .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse
+@@ -401,7 +401,7 @@ ALIGN 16
+     add     src1q, 2*mmsize
+     sub     lenq,  2*mmsize
+     jge     .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ INIT_XMM sse
+@@ -585,4 +585,4 @@ cglobal butterflies_float, 3,3,3, src0, src1, len
+     mova        [src0q + lenq], m0
+     add       lenq, mmsize
+     jl .loop
+-    RET
++    REP_RET
+diff --git a/libavutil/x86/lls.asm b/libavutil/x86/lls.asm
+index e8141e6c4f..d2526d1ff4 100644
+--- a/libavutil/x86/lls.asm
++++ b/libavutil/x86/lls.asm
+@@ -123,7 +123,7 @@ cglobal update_lls, 2,5,8, ctx, var, i, j, covar2
+     test    id, id
+     jle .loop2x1
+ .ret:
+-    RET
++    REP_RET
+ 
+ %macro UPDATE_LLS 0
+ cglobal update_lls, 3,6,8, ctx, var, count, i, j, count2
+@@ -240,7 +240,7 @@ cglobal update_lls, 3,6,8, ctx, var, count, i, j, count2
+     cmp     id, countd
+     jle .loop2x1
+ .ret:
+-    RET
++    REP_RET
+ %endmacro ; UPDATE_LLS
+ 
+ %if HAVE_AVX_EXTERNAL
+diff --git a/libswresample/x86/audio_convert.asm b/libswresample/x86/audio_convert.asm
+index ad65008e23..d6d6a81495 100644
+--- a/libswresample/x86/audio_convert.asm
++++ b/libswresample/x86/audio_convert.asm
+@@ -85,7 +85,7 @@ pack_2ch_%2_to_%1_u_int %+ SUFFIX:
+     add lenq, 2*mmsize/(2<<%4)
+ %endif
+         jl .next
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro UNPACK_2CH 5-7
+@@ -157,7 +157,7 @@ unpack_2ch_%2_to_%1_u_int %+ SUFFIX:
+     add lenq, mmsize/(1<<%4)
+ %endif
+         jl .next
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro CONV 5-7
+@@ -198,7 +198,7 @@ cglobal %2_to_%1_%3, 3, 3, 6, dst, src, len
+     emms
+     RET
+ %else
+-    RET
++    REP_RET
+ %endif
+ %endmacro
+ 
+@@ -301,7 +301,7 @@ pack_6ch_%2_to_%1_u_int %+ SUFFIX:
+     emms
+     RET
+ %else
+-    RET
++    REP_RET
+ %endif
+ %endmacro
+ 
+@@ -375,7 +375,7 @@ unpack_6ch_%2_to_%1_u_int %+ SUFFIX:
+     add      dstq, mmsize
+     sub      lend, mmsize/4
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %define PACK_8CH_GPRS (10 * ARCH_X86_64) + ((6 + HAVE_ALIGNED_STACK) * ARCH_X86_32)
+@@ -525,7 +525,7 @@ pack_8ch_%2_to_%1_u_int %+ SUFFIX:
+ %endif
+     sub      lend, mmsize/4
+     jg .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro INT16_TO_INT32_N 6
+diff --git a/libswresample/x86/rematrix.asm b/libswresample/x86/rematrix.asm
+index e2b2a86317..968010701e 100644
+--- a/libswresample/x86/rematrix.asm
++++ b/libswresample/x86/rematrix.asm
+@@ -68,7 +68,7 @@ mix_2_1_float_u_int %+ SUFFIX:
+     mov%1  [outq + lenq + mmsize], m2
+     add        lenq, mmsize*2
+         jl .next
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro MIX1_FLT 1
+@@ -100,7 +100,7 @@ mix_1_1_float_u_int %+ SUFFIX:
+     mov%1  [outq + lenq + mmsize], m1
+     add        lenq, mmsize*2
+         jl .next
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %macro MIX1_INT16 1
+@@ -152,7 +152,7 @@ mix_1_1_int16_u_int %+ SUFFIX:
+     emms
+     RET
+ %else
+-    RET
++    REP_RET
+ %endif
+ %endmacro
+ 
+@@ -218,7 +218,7 @@ mix_2_1_int16_u_int %+ SUFFIX:
+     emms
+     RET
+ %else
+-    RET
++    REP_RET
+ %endif
+ %endmacro
+ 
 diff --git a/libswscale/x86/Makefile b/libswscale/x86/Makefile
-index bfe383364e..831d5359aa 100644
+index 68391494be..598183f6ce 100644
 --- a/libswscale/x86/Makefile
 +++ b/libswscale/x86/Makefile
-@@ -13,4 +13,3 @@ X86ASM-OBJS                     += x86/input.o                          \
-                                    x86/scale.o                          \
+@@ -14,4 +14,3 @@ X86ASM-OBJS                     += x86/input.o                          \
+                                    x86/scale_avx2.o                          \
                                     x86/rgb_2_rgb.o                      \
                                     x86/yuv_2_rgb.o                      \
 -                                   x86/yuv2yuvX.o                       \
+diff --git a/libswscale/x86/input.asm b/libswscale/x86/input.asm
+index a197183f1f..fcdfe2fcd8 100644
+--- a/libswscale/x86/input.asm
++++ b/libswscale/x86/input.asm
+@@ -133,18 +133,23 @@ SECTION .text
+ ; %2 = rgb or bgr
+ %macro RGB24_TO_Y_FN 2-3
+ cglobal %2 %+ 24ToY, 6, 6, %1, dst, src, u1, u2, w, table
+-%if ARCH_X86_64
++%if mmsize == 8
++    mova           m5, [%2_Ycoeff_12x4]
++    mova           m6, [%2_Ycoeff_3x56]
++%define coeff1 m5
++%define coeff2 m6
++%elif ARCH_X86_64
+     mova           m8, [%2_Ycoeff_12x4]
+     mova           m9, [%2_Ycoeff_3x56]
+ %define coeff1 m8
+ %define coeff2 m9
+-%else ; x86-32
++%else ; x86-32 && mmsize == 16
+ %define coeff1 [%2_Ycoeff_12x4]
+ %define coeff2 [%2_Ycoeff_3x56]
+-%endif ; x86-32/64
+-%if ARCH_X86_64 && %0 == 3
++%endif ; x86-32/64 && mmsize == 8/16
++%if (ARCH_X86_64 || mmsize == 8) && %0 == 3
+     jmp mangle(private_prefix %+ _ %+ %3 %+ 24ToY %+ SUFFIX).body
+-%else ; ARCH_X86_64 && %0 == 3
++%else ; (ARCH_X86_64 && %0 == 3) || mmsize == 8
+ .body:
+ %if cpuflag(ssse3)
+     mova           m7, [shuf_rgb_12x4]
+@@ -179,6 +184,7 @@ cglobal %2 %+ 24ToY, 6, 6, %1, dst, src, u1, u2, w, table
+     movd           m1, [srcq+2]           ; (byte) { R0, B1, G1, R1 }
+     movd           m2, [srcq+6]           ; (byte) { B2, G2, R2, B3 }
+     movd           m3, [srcq+8]           ; (byte) { R2, B3, G3, R3 }
++%if mmsize == 16 ; i.e. sse2
+     punpckldq      m0, m2                 ; (byte) { B0, G0, R0, B1, B2, G2, R2, B3 }
+     punpckldq      m1, m3                 ; (byte) { R0, B1, G1, R1, R2, B3, G3, R3 }
+     movd           m2, [srcq+12]          ; (byte) { B4, G4, R4, B5 }
+@@ -187,6 +193,7 @@ cglobal %2 %+ 24ToY, 6, 6, %1, dst, src, u1, u2, w, table
+     movd           m6, [srcq+20]          ; (byte) { R6, B7, G7, R7 }
+     punpckldq      m2, m5                 ; (byte) { B4, G4, R4, B5, B6, G6, R6, B7 }
+     punpckldq      m3, m6                 ; (byte) { R4, B5, G5, R5, R6, B7, G7, R7 }
++%endif ; mmsize == 16
+     punpcklbw      m0, m7                 ; (word) { B0, G0, R0, B1, B2, G2, R2, B3 }
+     punpcklbw      m1, m7                 ; (word) { R0, B1, G1, R1, R2, B3, G3, R3 }
+     punpcklbw      m2, m7                 ; (word) { B4, G4, R4, B5, B6, G6, R6, B7 }
+@@ -207,8 +214,8 @@ cglobal %2 %+ 24ToY, 6, 6, %1, dst, src, u1, u2, w, table
+     mova    [dstq+wq], m0
+     add            wq, mmsize
+     jl .loop
+-    RET
+-%endif ; ARCH_X86_64 && %0 == 3
++    REP_RET
++%endif ; (ARCH_X86_64 && %0 == 3) || mmsize == 8
+ %endmacro
+ 
+ ; %1 = nr. of XMM registers
+@@ -268,10 +275,12 @@ cglobal %2 %+ 24ToUV, 7, 7, %1, dstU, dstV, u1, src, u2, w, table
+     movd           m1, [srcq+2]           ; (byte) { R0, B1, G1, R1 }
+     movd           m4, [srcq+6]           ; (byte) { B2, G2, R2, B3 }
+     movd           m5, [srcq+8]           ; (byte) { R2, B3, G3, R3 }
++%if mmsize == 16
+     punpckldq      m0, m4                 ; (byte) { B0, G0, R0, B1, B2, G2, R2, B3 }
+     punpckldq      m1, m5                 ; (byte) { R0, B1, G1, R1, R2, B3, G3, R3 }
+     movd           m4, [srcq+12]          ; (byte) { B4, G4, R4, B5 }
+     movd           m5, [srcq+14]          ; (byte) { R4, B5, G5, R5 }
++%endif ; mmsize == 16
+     punpcklbw      m0, m7                 ; (word) { B0, G0, R0, B1, B2, G2, R2, B3 }
+     punpcklbw      m1, m7                 ; (word) { R0, B1, G1, R1, R2, B3, G3, R3 }
+ %endif ; cpuflag(ssse3)
+@@ -285,10 +294,12 @@ cglobal %2 %+ 24ToUV, 7, 7, %1, dstU, dstV, u1, src, u2, w, table
+     pshufb         m5, m4, shuf_rgb2      ; (word) { R4, B5, G5, R5, R6, B7, G7, R7 }
+     pshufb         m4, shuf_rgb1          ; (word) { B4, G4, R4, B5, B6, G6, R6, B7 }
+ %else ; !cpuflag(ssse3)
++%if mmsize == 16
+     movd           m1, [srcq+18]          ; (byte) { B6, G6, R6, B7 }
+     movd           m3, [srcq+20]          ; (byte) { R6, B7, G7, R7 }
+     punpckldq      m4, m1                 ; (byte) { B4, G4, R4, B5, B6, G6, R6, B7 }
+     punpckldq      m5, m3                 ; (byte) { R4, B5, G5, R5, R6, B7, G7, R7 }
++%endif ; mmsize == 16 && !cpuflag(ssse3)
+     punpcklbw      m4, m7                 ; (word) { B4, G4, R4, B5, B6, G6, R6, B7 }
+     punpcklbw      m5, m7                 ; (word) { R4, B5, G5, R5, R6, B7, G7, R7 }
+ %endif ; cpuflag(ssse3)
+@@ -309,11 +320,16 @@ cglobal %2 %+ 24ToUV, 7, 7, %1, dstU, dstV, u1, src, u2, w, table
+     psrad          m4, 9
+     packssdw       m0, m1                 ; (word) { U[0-7] }
+     packssdw       m2, m4                 ; (word) { V[0-7] }
++%if mmsize == 8
+     mova   [dstUq+wq], m0
+     mova   [dstVq+wq], m2
++%else ; mmsize == 16
++    mova   [dstUq+wq], m0
++    mova   [dstVq+wq], m2
++%endif ; mmsize == 8/16
+     add            wq, mmsize
+     jl .loop
+-    RET
++    REP_RET
+ %endif ; ARCH_X86_64 && %0 == 3
+ %endmacro
+ 
+@@ -326,6 +342,11 @@ RGB24_TO_UV_FN %2, rgb
+ RGB24_TO_UV_FN %2, bgr, rgb
+ %endmacro
+ 
++%if ARCH_X86_32
++INIT_MMX mmx
++RGB24_FUNCS 0, 0
++%endif
++
+ INIT_XMM sse2
+ RGB24_FUNCS 10, 12
+ 
+@@ -394,7 +415,7 @@ cglobal %2%3%4%5 %+ ToY, 6, 6, %1, dst, src, u1, u2, w, table
+     add            wq, 2
+     jl .loop2
+ .end:
+-    RET
++    REP_RET
+ %endif ; %0 == 3
+ %endmacro
+ 
+@@ -462,8 +483,13 @@ cglobal %2%3%4%5 %+ ToUV, 7, 7, %1, dstU, dstV, u1, src, u2, w, table
+     psrad          m1, 9
+     packssdw       m0, m4                 ; (word) { U[0-7] }
+     packssdw       m2, m1                 ; (word) { V[0-7] }
++%if mmsize == 8
+     mova   [dstUq+wq], m0
+     mova   [dstVq+wq], m2
++%else ; mmsize == 16
++    mova   [dstUq+wq], m0
++    mova   [dstVq+wq], m2
++%endif ; mmsize == 8/16
+     add            wq, mmsize
+     jl .loop
+     sub            wq, mmsize - 1
+@@ -491,7 +517,7 @@ cglobal %2%3%4%5 %+ ToUV, 7, 7, %1, dstU, dstV, u1, src, u2, w, table
+     add            wq, 2
+     jl .loop2
+ .end:
+-    RET
++    REP_RET
+ %endif ; ARCH_X86_64 && %0 == 3
+ %endmacro
+ 
+@@ -509,6 +535,11 @@ RGB32_TO_UV_FN %2, a, r, g, b, rgba
+ RGB32_TO_UV_FN %2, a, b, g, r, rgba
+ %endmacro
+ 
++%if ARCH_X86_32
++INIT_MMX mmx
++RGB32_FUNCS 0, 0
++%endif
++
+ INIT_XMM sse2
+ RGB32_FUNCS 8, 12
+ 
+@@ -543,7 +574,7 @@ RGB32_FUNCS 8, 12
+     mova    [dstq+wq], m0
+     add            wq, mmsize
+     jl .loop_%1
+-    RET
++    REP_RET
+ %endmacro
+ 
+ ; %1 = nr. of XMM registers
+@@ -557,18 +588,25 @@ cglobal %2ToY, 5, 5, %1, dst, unused0, unused1, src, w
+     movsxd         wq, wd
+ %endif
+     add          dstq, wq
++%if mmsize == 16
+     test         srcq, 15
++%endif
+     lea          srcq, [srcq+wq*2]
+ %ifidn %2, yuyv
+     pcmpeqb        m2, m2                 ; (byte) { 0xff } x 16
+     psrlw          m2, 8                  ; (word) { 0x00ff } x 8
+ %endif ; yuyv
++%if mmsize == 16
+     jnz .loop_u_start
+     neg            wq
+     LOOP_YUYV_TO_Y  a, %2
+ .loop_u_start:
+     neg            wq
+     LOOP_YUYV_TO_Y  u, %2
++%else ; mmsize == 8
++    neg            wq
++    LOOP_YUYV_TO_Y  a, %2
++%endif ; mmsize == 8/16
+ %endmacro
+ 
+ ; %1 = a (aligned) or u (unaligned)
+@@ -594,12 +632,19 @@ cglobal %2ToY, 5, 5, %1, dst, unused0, unused1, src, w
+     packuswb       m0, m1                 ; (byte) { U0, V0, ..., U7, V7 }
+     pand           m1, m0, m2             ; (word) { U0, U1, ..., U7 }
+     psrlw          m0, 8                  ; (word) { V0, V1, ..., V7 }
++%if mmsize == 16
+     packuswb       m1, m0                 ; (byte) { U0, ... U7, V1, ... V7 }
+     movh   [dstUq+wq], m1
+     movhps [dstVq+wq], m1
++%else ; mmsize == 8
++    packuswb       m1, m1                 ; (byte) { U0, ... U3 }
++    packuswb       m0, m0                 ; (byte) { V0, ... V3 }
++    movh   [dstUq+wq], m1
++    movh   [dstVq+wq], m0
++%endif ; mmsize == 8/16
+     add            wq, mmsize / 2
+     jl .loop_%1
+-    RET
++    REP_RET
+ %endmacro
+ 
+ ; %1 = nr. of XMM registers
+@@ -616,24 +661,24 @@ cglobal %2ToUV, 4, 5, %1, dstU, dstV, unused, src, w
+ %endif
+     add         dstUq, wq
+     add         dstVq, wq
+-%if %0 == 2
++%if mmsize == 16 && %0 == 2
+     test         srcq, 15
+ %endif
+     lea          srcq, [srcq+wq*4]
+     pcmpeqb        m2, m2                 ; (byte) { 0xff } x 16
+     psrlw          m2, 8                  ; (word) { 0x00ff } x 8
+     ; NOTE: if uyvy+avx, u/a are identical
+-%if %0 == 2
++%if mmsize == 16 && %0 == 2
+     jnz .loop_u_start
+     neg            wq
+     LOOP_YUYV_TO_UV a, %2
+ .loop_u_start:
+     neg            wq
+     LOOP_YUYV_TO_UV u, %2
+-%else
++%else ; mmsize == 8
+     neg            wq
+     LOOP_YUYV_TO_UV a, %2
+-%endif
++%endif ; mmsize == 8/16
+ %endmacro
+ 
+ ; %1 = a (aligned) or u (unaligned)
+@@ -657,7 +702,7 @@ cglobal %2ToUV, 4, 5, %1, dstU, dstV, unused, src, w
+ %endif ; nv12/21
+     add            wq, mmsize
+     jl .loop_%1
+-    RET
++    REP_RET
+ %endmacro
+ 
+ ; %1 = nr. of XMM registers
+@@ -671,18 +716,35 @@ cglobal %2ToUV, 4, 5, %1, dstU, dstV, unused, src, w
+ %endif
+     add         dstUq, wq
+     add         dstVq, wq
++%if mmsize == 16
+     test         srcq, 15
++%endif
+     lea          srcq, [srcq+wq*2]
+     pcmpeqb        m5, m5                 ; (byte) { 0xff } x 16
+     psrlw          m5, 8                  ; (word) { 0x00ff } x 8
++%if mmsize == 16
+     jnz .loop_u_start
+     neg            wq
+     LOOP_NVXX_TO_UV a, %2
+ .loop_u_start:
+     neg            wq
+     LOOP_NVXX_TO_UV u, %2
++%else ; mmsize == 8
++    neg            wq
++    LOOP_NVXX_TO_UV a, %2
++%endif ; mmsize == 8/16
+ %endmacro
+ 
++%if ARCH_X86_32
++INIT_MMX mmx
++YUYV_TO_Y_FN  0, yuyv
++YUYV_TO_Y_FN  0, uyvy
++YUYV_TO_UV_FN 0, yuyv
++YUYV_TO_UV_FN 0, uyvy
++NVXX_TO_UV_FN 0, nv12
++NVXX_TO_UV_FN 0, nv21
++%endif
++
+ INIT_XMM sse2
+ YUYV_TO_Y_FN  3, yuyv
+ YUYV_TO_Y_FN  2, uyvy
+diff --git a/libswscale/x86/output.asm b/libswscale/x86/output.asm
+index 95ec2fa885..3668635fa2 100644
+--- a/libswscale/x86/output.asm
++++ b/libswscale/x86/output.asm
+@@ -297,7 +297,7 @@ cglobal yuv2planeX_%1, %3, 8, %2, filter, fltsize, src, dst, w, dither, offset
+     test          dstq, 15
+     jnz .unaligned
+     yuv2planeX_mainloop %1, a
+-    RET
++    REP_RET
+ .unaligned:
+     yuv2planeX_mainloop %1, u
+ %endif ; mmsize == 8/16
+@@ -307,16 +307,18 @@ cglobal yuv2planeX_%1, %3, 8, %2, filter, fltsize, src, dst, w, dither, offset
+     ADD             rsp, pad
+     RET
+ %else ; x86-64
+-    RET
++    REP_RET
+ %endif ; x86-32/64
+ %else ; %1 == 9/10/16
+-    RET
++    REP_RET
+ %endif ; %1 == 8/9/10/16
+ %endmacro
+ 
+-%if ARCH_X86_32 && HAVE_ALIGNED_STACK == 0
++%if ARCH_X86_32
+ INIT_MMX mmxext
+ yuv2planeX_fn  8,  0, 7
++yuv2planeX_fn  9,  0, 5
++yuv2planeX_fn 10,  0, 5
+ %endif
+ 
+ INIT_XMM sse2
+@@ -407,11 +409,19 @@ cglobal yuv2plane1_%1, %3, %3, %2, src, dst, w, dither, offset
+     movq            m3, [ditherq]        ; dither
+     test       offsetd, offsetd
+     jz              .no_rot
++%if mmsize == 16
+     punpcklqdq      m3, m3
++%endif ; mmsize == 16
+     PALIGNR         m3, m3, 3, m2
+ .no_rot:
++%if mmsize == 8
++    mova            m2, m3
++    punpckhbw       m3, m4               ; byte->word
++    punpcklbw       m2, m4               ; byte->word
++%else
+     punpcklbw       m3, m4
+     mova            m2, m3
++%endif
+ %elif %1 == 9
+     pxor            m4, m4
+     mova            m3, [pw_512]
+@@ -423,22 +433,36 @@ cglobal yuv2plane1_%1, %3, %3, %2, src, dst, w, dither, offset
+ %else ; %1 == 16
+ %if cpuflag(sse4) ; sse4/avx
+     mova            m4, [pd_4]
+-%else ; sse2
++%else ; mmx/sse2
+     mova            m4, [pd_4min0x40000]
+     mova            m5, [minshort]
+-%endif ; sse2/sse4/avx
++%endif ; mmx/sse2/sse4/avx
+ %endif ; %1 == ..
+ 
+     ; actual pixel scaling
++%if mmsize == 8
++    yuv2plane1_mainloop %1, a
++%else ; mmsize == 16
+     test          dstq, 15
+     jnz .unaligned
+     yuv2plane1_mainloop %1, a
+-    RET
++    REP_RET
+ .unaligned:
+     yuv2plane1_mainloop %1, u
+-    RET
++%endif ; mmsize == 8/16
++    REP_RET
+ %endmacro
+ 
++%if ARCH_X86_32
++INIT_MMX mmx
++yuv2plane1_fn  8, 0, 5
++yuv2plane1_fn 16, 0, 3
++
++INIT_MMX mmxext
++yuv2plane1_fn  9, 0, 3
++yuv2plane1_fn 10, 0, 3
++%endif
++
+ INIT_XMM sse2
+ yuv2plane1_fn  8, 5, 5
+ yuv2plane1_fn  9, 5, 3
+diff --git a/libswscale/x86/scale.asm b/libswscale/x86/scale.asm
+index 2e14c8c023..83cabff722 100644
+--- a/libswscale/x86/scale.asm
++++ b/libswscale/x86/scale.asm
+@@ -61,11 +61,13 @@ cglobal hscale%1to%2_%4, %5, 10, %6, pos0, dst, w, srcmem, filter, fltpos, fltsi
+ %define mov32 mov
+ %endif ; x86-64
+ %if %2 == 19
+-%if cpuflag(sse4)
++%if mmsize == 8 ; mmx
++    mova          m2, [max_19bit_int]
++%elif cpuflag(sse4)
+     mova          m2, [max_19bit_int]
+ %else ; ssse3/sse2
+     mova          m2, [max_19bit_flt]
+-%endif ; sse2/ssse3/sse4
++%endif ; mmx/sse2/ssse3/sse4
+ %endif ; %2 == 19
+ %if %1 == 16
+     mova          m6, [minshort]
+@@ -142,7 +144,12 @@ cglobal hscale%1to%2_%4, %5, 10, %6, pos0, dst, w, srcmem, filter, fltpos, fltsi
+     pmaddwd       m1, [filterq+wq*8+mmsize*1]   ; *= filter[{8,9,..,14,15}]
+ 
+     ; add up horizontally (4 srcpix * 4 coefficients -> 1 dstpix)
+-%if notcpuflag(ssse3) ; sse2
++%if mmsize == 8 ; mmx
++    movq          m4, m0
++    punpckldq     m0, m1
++    punpckhdq     m4, m1
++    paddd         m0, m4
++%elif notcpuflag(ssse3) ; sse2
+     mova          m4, m0
+     shufps        m0, m1, 10001000b
+     shufps        m4, m1, 11011101b
+@@ -152,7 +159,7 @@ cglobal hscale%1to%2_%4, %5, 10, %6, pos0, dst, w, srcmem, filter, fltpos, fltsi
+                                                 ; filter[{ 4, 5, 6, 7}]*src[filterPos[1]+{0,1,2,3}],
+                                                 ; filter[{ 8, 9,10,11}]*src[filterPos[2]+{0,1,2,3}],
+                                                 ; filter[{12,13,14,15}]*src[filterPos[3]+{0,1,2,3}]
+-%endif ; sse2/ssse3/sse4
++%endif ; mmx/sse2/ssse3/sse4
+ %else ; %3 == 8, i.e. filterSize == 8 scaling
+     ; load 2x8 or 4x8 source pixels into m0, m1, m4 and m5
+     mov32      pos0q, dword [fltposq+wq*2+0]    ; filterPos[0]
+@@ -190,7 +197,14 @@ cglobal hscale%1to%2_%4, %5, 10, %6, pos0, dst, w, srcmem, filter, fltpos, fltsi
+     pmaddwd       m5, [filterq+wq*8+mmsize*3]   ; *= filter[{24,25,..,30,31}]
+ 
+     ; add up horizontally (8 srcpix * 8 coefficients -> 1 dstpix)
+-%if notcpuflag(ssse3) ; sse2
++%if mmsize == 8
++    paddd         m0, m1
++    paddd         m4, m5
++    movq          m1, m0
++    punpckldq     m0, m4
++    punpckhdq     m1, m4
++    paddd         m0, m1
++%elif notcpuflag(ssse3) ; sse2
+ %if %1 == 8
+ %define mex m6
+ %else
+@@ -219,7 +233,7 @@ cglobal hscale%1to%2_%4, %5, 10, %6, pos0, dst, w, srcmem, filter, fltpos, fltsi
+                                                 ; filter[{ 8, 9,...,14,15}]*src[filterPos[1]+{0,1,...,6,7}],
+                                                 ; filter[{16,17,...,22,23}]*src[filterPos[2]+{0,1,...,6,7}],
+                                                 ; filter[{24,25,...,30,31}]*src[filterPos[3]+{0,1,...,6,7}]
+-%endif ; sse2/ssse3/sse4
++%endif ; mmx/sse2/ssse3/sse4
+ %endif ; %3 == 4/8
+ 
+ %else ; %3 == X, i.e. any filterSize scaling
+@@ -260,7 +274,7 @@ cglobal hscale%1to%2_%4, %5, 10, %6, pos0, dst, w, srcmem, filter, fltpos, fltsi
+     mov         srcq, srcmemmp
+ 
+ .innerloop:
+-    ; load 2x8 (sse) source pixels into m0/m1 -> m4/m5
++    ; load 2x4 (mmx) or 2x8 (sse) source pixels into m0/m1 -> m4/m5
+     movbh         m0, [srcq+ pos0q     *srcmul] ; src[filterPos[0] + {0,1,2,3(,4,5,6,7)}]
+     movbh         m1, [srcq+(pos1q+dlt)*srcmul] ; src[filterPos[1] + {0,1,2,3(,4,5,6,7)}]
+ %if %1 == 8
+@@ -305,6 +319,12 @@ cglobal hscale%1to%2_%4, %5, 10, %6, pos0, dst, w, srcmem, filter, fltpos, fltsi
+ 
+     lea      filterq, [filterq+(fltsizeq+dlt)*2]
+ 
++%if mmsize == 8 ; mmx
++    movq          m0, m4
++    punpckldq     m4, m5
++    punpckhdq     m0, m5
++    paddd         m0, m4
++%else ; mmsize == 16
+ %if notcpuflag(ssse3) ; sse2
+     mova          m1, m4
+     punpcklqdq    m4, m5
+@@ -324,6 +344,7 @@ cglobal hscale%1to%2_%4, %5, 10, %6, pos0, dst, w, srcmem, filter, fltpos, fltsi
+     phaddd        m4, m4
+     SWAP           0, 4
+ %endif ; sse2/ssse3/sse4
++%endif ; mmsize == 8/16
+ %endif ; %3 ==/!= X
+ 
+ %if %1 == 16 ; add 0x8000 * sum(coeffs), i.e. back from signed -> unsigned
+@@ -351,21 +372,25 @@ cglobal hscale%1to%2_%4, %5, 10, %6, pos0, dst, w, srcmem, filter, fltpos, fltsi
+ %endif ; %3 ==/!= X
+ %endif ; %2 == 15/19
+ %ifnidn %3, X
+-    add           wq, (mmsize<<wshr)/4          ; both 8tap and 4tap really only do 4 pixels
++    add           wq, (mmsize<<wshr)/4          ; both 8tap and 4tap really only do 4 pixels (or for mmx: 2 pixels)
+                                                 ; per iteration. see "shl wq,1" above as for why we do this
+ %else ; %3 == X
+     add           wq, 2
+ %endif ; %3 ==/!= X
+     jl .loop
+-    RET
++    REP_RET
+ %endmacro
+ 
+ ; SCALE_FUNCS source_width, intermediate_nbits, n_xmm
+ %macro SCALE_FUNCS 3
+ SCALE_FUNC %1, %2, 4, 4,  6, %3
+ SCALE_FUNC %1, %2, 8, 8,  6, %3
++%if mmsize == 8
++SCALE_FUNC %1, %2, X, X,  7, %3
++%else
+ SCALE_FUNC %1, %2, X, X4, 7, %3
+ SCALE_FUNC %1, %2, X, X8, 7, %3
++%endif
+ %endmacro
+ 
+ ; SCALE_FUNCS2 8_xmm_args, 9to10_xmm_args, 16_xmm_args
+@@ -386,6 +411,10 @@ SCALE_FUNCS 14, 19, %2
+ SCALE_FUNCS 16, 19, %3
+ %endmacro
+ 
++%if ARCH_X86_32
++INIT_MMX mmx
++SCALE_FUNCS2 0, 0, 0
++%endif
+ INIT_XMM sse2
+ SCALE_FUNCS2 7, 6, 8
+ INIT_XMM ssse3
+diff --git a/libswscale/x86/scale_avx2.asm b/libswscale/x86/scale_avx2.asm
+index 179895666a..37095e596a 100644
+--- a/libswscale/x86/scale_avx2.asm
++++ b/libswscale/x86/scale_avx2.asm
+@@ -144,7 +144,7 @@ cglobal hscale8to15_%1, 7, 9, 16, pos0, dst, w, srcmem, filter, fltpos, fltsize,
+     cmp countq, wq
+     jl .tail_loop
+ .end:
+-RET
++REP_RET
+ %endmacro
+ 
+ %if ARCH_X86_64
 diff --git a/libswscale/x86/swscale.c b/libswscale/x86/swscale.c
-index 0848a31461..15c0b22f20 100644
+index ff16398988..4363b61eb7 100644
 --- a/libswscale/x86/swscale.c
 +++ b/libswscale/x86/swscale.c
 @@ -44,6 +44,15 @@ const DECLARE_ALIGNED(8, uint64_t, ff_dither8)[2] = {
@@ -59,7 +2602,22 @@ index 0848a31461..15c0b22f20 100644
  
  DECLARE_ASM_ALIGNED(8, const uint64_t, ff_M24A)         = 0x00FF0000FF0000FFLL;
  DECLARE_ASM_ALIGNED(8, const uint64_t, ff_M24B)         = 0xFF0000FF0000FF00LL;
-@@ -187,56 +196,87 @@ void ff_updateMMXDitherTables(SwsContext *c, int dstY)
+@@ -54,6 +63,14 @@ DECLARE_ASM_ALIGNED(8, const uint64_t, ff_bgr2UVOffset) = 0x8080808080808080ULL;
+ DECLARE_ASM_ALIGNED(8, const uint64_t, ff_w1111)        = 0x0001000100010001ULL;
+ 
+ 
++//MMX versions
++#if HAVE_MMX_INLINE
++#undef RENAME
++#define COMPILE_TEMPLATE_MMXEXT 0
++#define RENAME(a) a ## _mmx
++#include "swscale_template.c"
++#endif
++
+ // MMXEXT versions
+ #if HAVE_MMXEXT_INLINE
+ #undef RENAME
+@@ -179,53 +196,87 @@ void ff_updateMMXDitherTables(SwsContext *c, int dstY)
          }
      }
  }
@@ -89,13 +2647,13 @@ index 0848a31461..15c0b22f20 100644
 -    int remainder = (dstW % step); \
 -    int pixelsProcessed = dstW - remainder; \
 -    if(((uintptr_t)dest) & 15){ \
--        yuv2yuvX_mmx(filter, filterSize, src, dest, dstW, dither, offset); \
+-        yuv2yuvX_mmxext(filter, filterSize, src, dest, dstW, dither, offset); \
 -        return; \
 -    } \
 -    if(pixelsProcessed > 0) \
 -        ff_yuv2yuvX_ ##opt(filter, filterSize - 1, 0, dest - offset, pixelsProcessed + offset, dither, offset); \
 -    if(remainder > 0){ \
--      ff_yuv2yuvX_mmx(filter, filterSize - 1, pixelsProcessed, dest - offset, pixelsProcessed + remainder + offset, dither, offset); \
+-      ff_yuv2yuvX_mmxext(filter, filterSize - 1, pixelsProcessed, dest - offset, pixelsProcessed + remainder + offset, dither, offset); \
 -    } \
 -    return; \
 +#if HAVE_MMXEXT
@@ -175,9 +2733,6 @@ index 0848a31461..15c0b22f20 100644
 +    }
  }
 -
--#if HAVE_MMX_EXTERNAL
--YUV2YUVX_FUNC_MMX(mmx, 16)
--#endif
 -#if HAVE_MMXEXT_EXTERNAL
 -YUV2YUVX_FUNC_MMX(mmxext, 16)
 -#endif
@@ -193,16 +2748,60 @@ index 0848a31461..15c0b22f20 100644
  #define SCALE_FUNC(filter_n, from_bpc, to_bpc, opt) \
  void ff_hscale ## from_bpc ## to ## to_bpc ## _ ## filter_n ## _ ## opt( \
                                                  SwsContext *c, int16_t *data, \
-@@ -363,25 +403,11 @@ av_cold void ff_sws_init_swscale_x86(SwsContext *c)
+@@ -258,6 +309,9 @@ void ff_hscale ## from_bpc ## to ## to_bpc ## _ ## filter_n ## _ ## opt( \
+     SCALE_FUNCS(X4, opt); \
+     SCALE_FUNCS(X8, opt)
+ 
++#if ARCH_X86_32
++SCALE_FUNCS_MMX(mmx);
++#endif
+ SCALE_FUNCS_SSE(sse2);
+ SCALE_FUNCS_SSE(ssse3);
+ SCALE_FUNCS_SSE(sse4);
+@@ -274,7 +328,9 @@ void ff_yuv2planeX_ ## size ## _ ## opt(const int16_t *filter, int filterSize, \
+     VSCALEX_FUNC(9,  opt); \
+     VSCALEX_FUNC(10, opt)
+ 
+-VSCALEX_FUNC(8, mmxext);
++#if ARCH_X86_32
++VSCALEX_FUNCS(mmxext);
++#endif
+ VSCALEX_FUNCS(sse2);
+ VSCALEX_FUNCS(sse4);
+ VSCALEX_FUNC(16, sse4);
+@@ -289,6 +345,9 @@ void ff_yuv2plane1_ ## size ## _ ## opt(const int16_t *src, uint8_t *dst, int ds
+     VSCALE_FUNC(10, opt2); \
+     VSCALE_FUNC(16, opt1)
+ 
++#if ARCH_X86_32
++VSCALE_FUNCS(mmx, mmxext);
++#endif
+ VSCALE_FUNCS(sse2, sse2);
+ VSCALE_FUNC(16, sse4);
+ VSCALE_FUNCS(avx, avx);
+@@ -318,6 +377,9 @@ void ff_ ## fmt ## ToUV_ ## opt(uint8_t *dstU, uint8_t *dstV, \
+     INPUT_FUNC(rgb24, opt); \
+     INPUT_FUNC(bgr24, opt)
+ 
++#if ARCH_X86_32
++INPUT_FUNCS(mmx);
++#endif
+ INPUT_FUNCS(sse2);
+ INPUT_FUNCS(ssse3);
+ INPUT_FUNCS(avx);
+@@ -451,32 +513,18 @@ av_cold void ff_sws_init_swscale_x86(SwsContext *c)
+ {
+     int cpu_flags = av_get_cpu_flags();
+ 
++#if HAVE_MMX_INLINE
++    if (INLINE_MMX(cpu_flags))
++        sws_init_swscale_mmx(c);
++#endif
  #if HAVE_MMXEXT_INLINE
      if (INLINE_MMXEXT(cpu_flags))
          sws_init_swscale_mmxext(c);
 -#endif
 -    if(c->use_mmx_vfilter && !(c->flags & SWS_ACCURATE_RND)) {
--#if HAVE_MMX_EXTERNAL
--        if (EXTERNAL_MMX(cpu_flags))
--            c->yuv2planeX = yuv2yuvX_mmx;
--#endif
 -#if HAVE_MMXEXT_EXTERNAL
 -        if (EXTERNAL_MMXEXT(cpu_flags))
 -            c->yuv2planeX = yuv2yuvX_mmxext;
@@ -218,16 +2817,93 @@ index 0848a31461..15c0b22f20 100644
 -            c->yuv2planeX = yuv2yuvX_avx2;
 -#endif
      }
+-#if ARCH_X86_32 && !HAVE_ALIGNED_STACK
+-    // The better yuv2planeX_8 functions need aligned stack on x86-32,
+-    // so we use MMXEXT in this case if they are not available.
+-    if (EXTERNAL_MMXEXT(cpu_flags)) {
+-        if (c->dstBpc == 8 && !c->use_mmx_vfilter)
+-            c->yuv2planeX = ff_yuv2planeX_8_mmxext;
+-    }
+-#endif /* ARCH_X86_32 && !HAVE_ALIGNED_STACK */
 +#endif
  
  #define ASSIGN_SCALE_FUNC2(hscalefn, filtersize, opt1, opt2) do { \
      if (c->srcBpc == 8) { \
+@@ -500,6 +548,12 @@ av_cold void ff_sws_init_swscale_x86(SwsContext *c)
+                                      ff_hscale16to19_ ## filtersize ## _ ## opt1; \
+     } \
+ } while (0)
++#define ASSIGN_MMX_SCALE_FUNC(hscalefn, filtersize, opt1, opt2) \
++    switch (filtersize) { \
++    case 4:  ASSIGN_SCALE_FUNC2(hscalefn, 4, opt1, opt2); break; \
++    case 8:  ASSIGN_SCALE_FUNC2(hscalefn, 8, opt1, opt2); break; \
++    default: ASSIGN_SCALE_FUNC2(hscalefn, X, opt1, opt2); break; \
++    }
+ #define ASSIGN_VSCALEX_FUNC(vscalefn, opt, do_16_case, condition_8bit) \
+ switch(c->dstBpc){ \
+     case 16:                          do_16_case;                          break; \
+@@ -521,6 +575,46 @@ switch(c->dstBpc){ \
+             if (!c->chrSrcHSubSample) \
+                 c->chrToYV12 = ff_ ## x ## ToUV_ ## opt; \
+             break
++#if ARCH_X86_32
++    if (EXTERNAL_MMX(cpu_flags)) {
++        ASSIGN_MMX_SCALE_FUNC(c->hyScale, c->hLumFilterSize, mmx, mmx);
++        ASSIGN_MMX_SCALE_FUNC(c->hcScale, c->hChrFilterSize, mmx, mmx);
++        ASSIGN_VSCALE_FUNC(c->yuv2plane1, mmx, mmxext, cpu_flags & AV_CPU_FLAG_MMXEXT);
++
++        switch (c->srcFormat) {
++        case AV_PIX_FMT_YA8:
++            c->lumToYV12 = ff_yuyvToY_mmx;
++            if (c->needAlpha)
++                c->alpToYV12 = ff_uyvyToY_mmx;
++            break;
++        case AV_PIX_FMT_YUYV422:
++            c->lumToYV12 = ff_yuyvToY_mmx;
++            c->chrToYV12 = ff_yuyvToUV_mmx;
++            break;
++        case AV_PIX_FMT_UYVY422:
++            c->lumToYV12 = ff_uyvyToY_mmx;
++            c->chrToYV12 = ff_uyvyToUV_mmx;
++            break;
++        case AV_PIX_FMT_NV12:
++            c->chrToYV12 = ff_nv12ToUV_mmx;
++            break;
++        case AV_PIX_FMT_NV21:
++            c->chrToYV12 = ff_nv21ToUV_mmx;
++            break;
++        case_rgb(rgb24, RGB24, mmx);
++        case_rgb(bgr24, BGR24, mmx);
++        case_rgb(bgra,  BGRA,  mmx);
++        case_rgb(rgba,  RGBA,  mmx);
++        case_rgb(abgr,  ABGR,  mmx);
++        case_rgb(argb,  ARGB,  mmx);
++        default:
++            break;
++        }
++    }
++    if (EXTERNAL_MMXEXT(cpu_flags)) {
++        ASSIGN_VSCALEX_FUNC(c->yuv2planeX, mmxext, , 1);
++    }
++#endif /* ARCH_X86_32 */
+ #define ASSIGN_SSE_SCALE_FUNC(hscalefn, filtersize, opt1, opt2) \
+     switch (filtersize) { \
+     case 4:  ASSIGN_SCALE_FUNC2(hscalefn, 4, opt1, opt2); break; \
 diff --git a/libswscale/x86/swscale_template.c b/libswscale/x86/swscale_template.c
-index 97d8cae613..823056c2ea 100644
+index 6190fcb4fe..823056c2ea 100644
 --- a/libswscale/x86/swscale_template.c
 +++ b/libswscale/x86/swscale_template.c
-@@ -38,6 +38,88 @@
- #endif
+@@ -29,10 +29,97 @@
+ #undef PREFETCH
+ 
+ 
++#if COMPILE_TEMPLATE_MMXEXT
+ #define REAL_MOVNTQ(a,b) "movntq " #a ", " #b " \n\t"
+ #define MOVNTQ2 "movntq "
++#else
++#define REAL_MOVNTQ(a,b) "movq " #a ", " #b " \n\t"
++#define MOVNTQ2 "movq "
++#endif
  #define MOVNTQ(a,b)  REAL_MOVNTQ(a,b)
  
 +#if !COMPILE_TEMPLATE_MMXEXT
@@ -315,7 +2991,21 @@ index 97d8cae613..823056c2ea 100644
  #define YSCALEYUV2PACKEDX_UV \
      __asm__ volatile(\
          "xor                %%"FF_REG_a", %%"FF_REG_a"  \n\t"\
-@@ -1435,6 +1517,7 @@ static av_cold void RENAME(sws_init_swscale)(SwsContext *c)
+@@ -595,8 +682,13 @@ static void RENAME(yuv2rgb555_X)(SwsContext *c, const int16_t *lumFilter,
+     "cmp   "dstw", "#index"     \n\t"\
+     " jb       1b               \n\t"
+ 
++#if COMPILE_TEMPLATE_MMXEXT
+ #undef WRITEBGR24
+ #define WRITEBGR24(dst, dstw, index)  WRITEBGR24MMXEXT(dst, dstw, index)
++#else
++#undef WRITEBGR24
++#define WRITEBGR24(dst, dstw, index)  WRITEBGR24MMX(dst, dstw, index)
++#endif
+ 
+ #if HAVE_6REGS
+ static void RENAME(yuv2bgr24_X_ar)(SwsContext *c, const int16_t *lumFilter,
+@@ -1425,6 +1517,7 @@ static av_cold void RENAME(sws_init_swscale)(SwsContext *c)
                  }
              } else {
                  c->use_mmx_vfilter= 1;
@@ -323,12 +3013,38 @@ index 97d8cae613..823056c2ea 100644
                  if (!(c->flags & SWS_FULL_CHR_H_INT)) {
                      switch (c->dstFormat) {
                      case AV_PIX_FMT_RGB32:   c->yuv2packedX = RENAME(yuv2rgb32_X);   break;
+@@ -1468,13 +1561,17 @@ static av_cold void RENAME(sws_init_swscale)(SwsContext *c)
+     }
+ 
+     if (c->srcBpc == 8 && c->dstBpc <= 14) {
+-        // Use the new MMX scaler if the MMXEXT one can't be used (it is faster than the x86 ASM one).
+-        if (c->flags & SWS_FAST_BILINEAR && c->canMMXEXTBeUsed) {
+-            c->hyscale_fast = ff_hyscale_fast_mmxext;
+-            c->hcscale_fast = ff_hcscale_fast_mmxext;
+-        } else {
+-            c->hyscale_fast = NULL;
+-            c->hcscale_fast = NULL;
+-        }
++    // Use the new MMX scaler if the MMXEXT one can't be used (it is faster than the x86 ASM one).
++#if COMPILE_TEMPLATE_MMXEXT
++    if (c->flags & SWS_FAST_BILINEAR && c->canMMXEXTBeUsed) {
++        c->hyscale_fast = ff_hyscale_fast_mmxext;
++        c->hcscale_fast = ff_hcscale_fast_mmxext;
++    } else {
++#endif /* COMPILE_TEMPLATE_MMXEXT */
++        c->hyscale_fast = NULL;
++        c->hcscale_fast = NULL;
++#if COMPILE_TEMPLATE_MMXEXT
++    }
++#endif /* COMPILE_TEMPLATE_MMXEXT */
+     }
+ }
 diff --git a/libswscale/x86/yuv2yuvX.asm b/libswscale/x86/yuv2yuvX.asm
 deleted file mode 100644
-index b6294cb919..0000000000
+index 369c850674..0000000000
 --- a/libswscale/x86/yuv2yuvX.asm
 +++ /dev/null
-@@ -1,136 +0,0 @@
+@@ -1,134 +0,0 @@
 -;******************************************************************************
 -;* x86-optimized yuv2yuvX
 -;* Copyright 2020 Google LLC
@@ -452,11 +3168,9 @@ index b6294cb919..0000000000
 -    mov                  filterSizeq, filterq
 -    cmp                  offsetq, dstWq
 -    jb                  .outerloop
--    REP_RET
+-    RET
 -%endmacro
 -
--INIT_MMX mmx
--YUV2YUVX_FUNC
 -INIT_MMX mmxext
 -YUV2YUVX_FUNC
 -INIT_XMM sse3
@@ -465,59 +3179,51 @@ index b6294cb919..0000000000
 -INIT_YMM avx2
 -YUV2YUVX_FUNC
 -%endif
+diff --git a/libswscale/x86/yuv_2_rgb.asm b/libswscale/x86/yuv_2_rgb.asm
+index e3470fd9ad..c5fa3ee690 100644
+--- a/libswscale/x86/yuv_2_rgb.asm
++++ b/libswscale/x86/yuv_2_rgb.asm
+@@ -354,7 +354,7 @@ add imageq, 8 * depth * time_num
+ add indexq, 4 * time_num
+ js .loop0
+ 
+-RET
++REP_RET
+ 
+ %endmacro
+ 
 diff --git a/tests/checkasm/sw_scale.c b/tests/checkasm/sw_scale.c
-index 3ac0f9082f..8741b3943c 100644
+index 3b8dd310ec..d3df5864b3 100644
 --- a/tests/checkasm/sw_scale.c
 +++ b/tests/checkasm/sw_scale.c
-@@ -36,105 +36,6 @@
-             AV_WN32(buf + j, rnd());      \
-     } while (0)
+@@ -156,103 +156,6 @@ static void check_yuv2yuv1(int accurate)
+     sws_freeContext(ctx);
+ }
  
--// This reference function is the same approximate algorithm employed by the
--// SIMD functions
--static void ref_function(const int16_t *filter, int filterSize,
--                                                 const int16_t **src, uint8_t *dest, int dstW,
--                                                 const uint8_t *dither, int offset)
--{
--    int i, d;
--    d = ((filterSize - 1) * 8 + dither[0]) >> 4;
--    for ( i = 0; i < dstW; i++) {
--        int16_t val = d;
--        int j;
--        union {
--            int val;
--            int16_t v[2];
--        } t;
--        for (j = 0; j < filterSize; j++){
--            t.val = (int)src[j][i + offset] * (int)filter[j];
--            val += t.v[1];
--        }
--        dest[i]= av_clip_uint8(val>>3);
--    }
--}
--
--static void check_yuv2yuvX(void)
+-static void check_yuv2yuvX(int accurate)
 -{
 -    struct SwsContext *ctx;
 -    int fsi, osi, isi, i, j;
 -    int dstW;
 -#define LARGEST_FILTER 16
--#define FILTER_SIZES 4
--    static const int filter_sizes[FILTER_SIZES] = {1, 4, 8, 16};
+-    // ff_yuv2planeX_8_sse2 can't handle odd filter sizes
+-    const int filter_sizes[] = {2, 4, 8, 16};
+-    const int FILTER_SIZES = sizeof(filter_sizes)/sizeof(filter_sizes[0]);
 -#define LARGEST_INPUT_SIZE 512
--#define INPUT_SIZES 6
--    static const int input_sizes[INPUT_SIZES] = {8, 24, 128, 144, 256, 512};
+-    static const int input_sizes[] = {8, 24, 128, 144, 256, 512};
+-    const int INPUT_SIZES = sizeof(input_sizes)/sizeof(input_sizes[0]);
+-    const char *accurate_str = (accurate) ? "accurate" : "approximate";
 -
 -    declare_func_emms(AV_CPU_FLAG_MMX, void, const int16_t *filter,
 -                      int filterSize, const int16_t **src, uint8_t *dest,
 -                      int dstW, const uint8_t *dither, int offset);
 -
 -    const int16_t **src;
--    LOCAL_ALIGNED_8(int16_t, src_pixels, [LARGEST_FILTER * LARGEST_INPUT_SIZE]);
--    LOCAL_ALIGNED_8(int16_t, filter_coeff, [LARGEST_FILTER]);
--    LOCAL_ALIGNED_8(uint8_t, dst0, [LARGEST_INPUT_SIZE]);
--    LOCAL_ALIGNED_8(uint8_t, dst1, [LARGEST_INPUT_SIZE]);
--    LOCAL_ALIGNED_8(uint8_t, dither, [LARGEST_INPUT_SIZE]);
+-    LOCAL_ALIGNED_16(int16_t, src_pixels, [LARGEST_FILTER * LARGEST_INPUT_SIZE]);
+-    LOCAL_ALIGNED_16(int16_t, filter_coeff, [LARGEST_FILTER]);
+-    LOCAL_ALIGNED_16(uint8_t, dst0, [LARGEST_INPUT_SIZE]);
+-    LOCAL_ALIGNED_16(uint8_t, dst1, [LARGEST_INPUT_SIZE]);
+-    LOCAL_ALIGNED_16(uint8_t, dither, [LARGEST_INPUT_SIZE]);
 -    union VFilterData{
 -        const int16_t *src;
 -        uint16_t coeff[8];
@@ -525,42 +3231,62 @@ index 3ac0f9082f..8741b3943c 100644
 -    uint8_t d_val = rnd();
 -    memset(dither, d_val, LARGEST_INPUT_SIZE);
 -    randomize_buffers((uint8_t*)src_pixels, LARGEST_FILTER * LARGEST_INPUT_SIZE * sizeof(int16_t));
--    randomize_buffers((uint8_t*)filter_coeff, LARGEST_FILTER * sizeof(int16_t));
 -    ctx = sws_alloc_context();
+-    if (accurate)
+-        ctx->flags |= SWS_ACCURATE_RND;
 -    if (sws_init_context(ctx, NULL, NULL) < 0)
 -        fail();
 -
--    ff_getSwsFunc(ctx);
+-    ff_sws_init_scale(ctx);
 -    for(isi = 0; isi < INPUT_SIZES; ++isi){
 -        dstW = input_sizes[isi];
 -        for(osi = 0; osi < 64; osi += 16){
--            for(fsi = 0; fsi < FILTER_SIZES; ++fsi){
+-            if (dstW <= osi)
+-                continue;
+-            for (fsi = 0; fsi < FILTER_SIZES; ++fsi) {
+-                // Generate filter coefficients for the given filter size,
+-                // with some properties:
+-                // - The coefficients add up to the intended sum (4096, 1<<12)
+-                // - The coefficients contain negative values
+-                // - The filter intermediates don't overflow for worst case
+-                //   inputs (all positive coefficients are coupled with
+-                //   input_max and all negative coefficients with input_min,
+-                //   or vice versa).
+-                // Produce a filter with all coefficients set to
+-                // -((1<<12)/(filter_size-1)) except for one (randomly chosen)
+-                // which is set to ((1<<13)-1).
+-                for (i = 0; i < filter_sizes[fsi]; ++i)
+-                    filter_coeff[i] = -((1 << 12) / (filter_sizes[fsi] - 1));
+-                filter_coeff[rnd() % filter_sizes[fsi]] = (1 << 13) - 1;
+-
 -                src = av_malloc(sizeof(int16_t*) * filter_sizes[fsi]);
 -                vFilterData = av_malloc((filter_sizes[fsi] + 2) * sizeof(union VFilterData));
 -                memset(vFilterData, 0, (filter_sizes[fsi] + 2) * sizeof(union VFilterData));
--                for(i = 0; i < filter_sizes[fsi]; ++i){
+-                for (i = 0; i < filter_sizes[fsi]; ++i) {
 -                    src[i] = &src_pixels[i * LARGEST_INPUT_SIZE];
--                    vFilterData[i].src = src[i];
+-                    vFilterData[i].src = src[i] - osi;
 -                    for(j = 0; j < 4; ++j)
 -                        vFilterData[i].coeff[j + 4] = filter_coeff[i];
 -                }
--                if (check_func(ctx->yuv2planeX, "yuv2yuvX_%d_%d_%d", filter_sizes[fsi], osi, dstW)){
+-                if (check_func(ctx->yuv2planeX, "yuv2yuvX_%d_%d_%d_%s", filter_sizes[fsi], osi, dstW, accurate_str)){
+-                    // use vFilterData for the mmx function
+-                    const int16_t *filter = ctx->use_mmx_vfilter ? (const int16_t*)vFilterData : &filter_coeff[0];
 -                    memset(dst0, 0, LARGEST_INPUT_SIZE * sizeof(dst0[0]));
 -                    memset(dst1, 0, LARGEST_INPUT_SIZE * sizeof(dst1[0]));
 -
--                    // The reference function is not the scalar function selected when mmx
--                    // is deactivated as the SIMD functions do not give the same result as
--                    // the scalar ones due to rounding. The SIMD functions are activated by
--                    // the flag SWS_ACCURATE_RND
--                    ref_function(&filter_coeff[0], filter_sizes[fsi], src, dst0, dstW - osi, dither, osi);
--                    // There's no point in calling new for the reference function
--                    if(ctx->use_mmx_vfilter){
--                        call_new((const int16_t*)vFilterData, filter_sizes[fsi], src, dst1, dstW - osi, dither, osi);
--                        if (memcmp(dst0, dst1, LARGEST_INPUT_SIZE * sizeof(dst0[0])))
--                            fail();
--                        if(dstW == LARGEST_INPUT_SIZE)
--                            bench_new((const int16_t*)vFilterData, filter_sizes[fsi], src, dst1, dstW - osi, dither, osi);
+-                    // We can't use call_ref here, because we don't know if use_mmx_vfilter was set for that
+-                    // function or not, so we can't pass it the parameters correctly.
+-                    yuv2planeX_8_ref(&filter_coeff[0], filter_sizes[fsi], src, dst0, dstW - osi, dither, osi);
+-
+-                    call_new(filter, filter_sizes[fsi], src, dst1, dstW - osi, dither, osi);
+-                    if (cmp_off_by_n(dst0, dst1, LARGEST_INPUT_SIZE * sizeof(dst0[0]), accurate ? 0 : 2)) {
+-                        fail();
+-                        printf("failed: yuv2yuvX_%d_%d_%d_%s\n", filter_sizes[fsi], osi, dstW, accurate_str);
+-                        show_differences(dst0, dst1, LARGEST_INPUT_SIZE * sizeof(dst0[0]));
 -                    }
+-                    if(dstW == LARGEST_INPUT_SIZE)
+-                        bench_new((const int16_t*)vFilterData, filter_sizes[fsi], src, dst1, dstW - osi, dither, osi);
+-
 -                }
 -                av_freep(&src);
 -                av_freep(&vFilterData);
@@ -571,17 +3297,27 @@ index 3ac0f9082f..8741b3943c 100644
 -#undef FILTER_SIZES
 -}
 -
--#undef SRC_PIXELS
- #define SRC_PIXELS 128
+ #undef SRC_PIXELS
+ #define SRC_PIXELS 512
  
- static void check_hscale(void)
-@@ -231,6 +132,4 @@ void checkasm_check_sw_scale(void)
- {
-     check_hscale();
-     report("hscale");
--    check_yuv2yuvX();
+@@ -365,7 +268,4 @@ void checkasm_check_sw_scale(void)
+     check_yuv2yuv1(0);
+     check_yuv2yuv1(1);
+     report("yuv2yuv1");
+-    check_yuv2yuvX(0);
+-    check_yuv2yuvX(1);
 -    report("yuv2yuvX");
  }
--- 
-2.31.1
-
+diff --git a/tests/checkasm/x86/checkasm.asm b/tests/checkasm/x86/checkasm.asm
+index ab11bcba64..683aae80e3 100644
+--- a/tests/checkasm/x86/checkasm.asm
++++ b/tests/checkasm/x86/checkasm.asm
+@@ -234,7 +234,7 @@ cglobal checked_call%1, 1,7
+ .emms_ok:
+ %endif
+     add  esp, max_args*4
+-    RET
++    REP_RET
+ %endmacro
+ 
+ %endif ; ARCH_X86_64
