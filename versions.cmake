@@ -309,6 +309,11 @@ superbuild_set_revision(pythoncharsetnormalizer
   URL     "https://www.paraview.org/files/dependencies/charset-normalizer-3.2.0.tar.gz"
   URL_MD5 dbb8c5b745beddbaae67d06dce0b7c29)
 
+superbuild_set_revision(pythonaiosignal
+  # https://pypi.org/project/aiosignal/#history
+  URL     "https://www.paraview.org/files/dependencies/aiosignal-1.3.1.tar.gz"
+  URL_MD5 2a15f4008b899377590cef4773020902)
+
 superbuild_set_revision(pythonaiohttp
   # https://pypi.org/project/aiohttp/#history
   URL     "https://www.paraview.org/files/dependencies/aiohttp-3.7.4.post0.tar.gz"

@@ -44,6 +44,7 @@ function (superbuild_find_projects var)
     png
     python3
     pythonaiohttp
+    pythonaiosignal
     pythonasynctimeout
     pythonattrs
     pythonbeniget
