@@ -185,15 +185,25 @@ superbuild_set_revision(pythonpillow
   URL     "https://www.paraview.org/files/dependencies/Pillow-10.0.0.tar.gz"
   URL_MD5 2a8f327ba2250aad26ed101337c8fa56)
 
+superbuild_set_revision(pythoncontourpy
+  # https://pypi.org/project/contourpy/#history
+  URL "https://www.paraview.org/files/dependencies/contourpy-1.1.0.tar.gz"
+  URL_MD5 cae5b781ade023c01bc1a8a53312f2ac)
+
+superbuild_set_revision(pythonfonttools
+  # https://pypi.org/project/fonttools/#history
+  URL "https://www.paraview.org/files/dependencies/fonttools-4.42.1.tar.gz"
+  URL_MD5 039956b85e9b84ba53373b0df644f5ad)
+
 superbuild_set_revision(matplotlib
   # https://pypi.org/project/matplotlib/#history
-  URL "https://www.paraview.org/files/dependencies/matplotlib-3.4.2.tar.gz"
-  URL_MD5 e34749a5f0661b8af74a1dc327fb74f6)
+  URL "https://www.paraview.org/files/dependencies/matplotlib-3.7.2.tar.gz"
+  URL_MD5 64c7053050be5f92eab9131f1d85b71d)
 
 superbuild_set_revision(pywin32
   # https://pypi.org/project/pywin32/#history
-  URL "https://www.paraview.org/files/dependencies/pywin32-301-cp39-cp39-win_amd64.whl"
-  URL_MD5 3fe9793d6bee6e9b6515bc744f7585df)
+  URL "https://www.paraview.org/files/dependencies/pywin32-306-cp39-cp39-win_amd64.whl"
+  URL_MD5 8825c29dd5dc6e8d906d82c666a7081f)
 
 superbuild_set_revision(mpi
   # https://github.com/pmodels/mpich/releases
@@ -273,15 +283,15 @@ superbuild_set_revision(pythonwheel
   URL_MD5 b5f1f03ec0ad347b8b17c33077513863)
 
 # https://pypi.org/project/mpi4py/#history
-set(mpi4py_ver "3.1.3")
+set(mpi4py_ver "3.1.4")
 if (WIN32)
   superbuild_set_revision(pythonmpi4py
     URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp39-cp39-win_amd64.whl"
-    URL_MD5 e9e890b7058b81cd1099627c61852967)
+    URL_MD5 e8387c642919358a7d5739c8e7128f89)
 else ()
   superbuild_set_revision(pythonmpi4py
     URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}.tar.gz"
-    URL_MD5 e6d0644a2a3c7aa5119825d35ebeb8ee)
+    URL_MD5 09e20c0128207303a3d0462eb6b0c0e3)
 endif ()
 
 superbuild_set_revision(pythonpycparser
@@ -507,15 +517,15 @@ superbuild_set_selectable_source(llvm
   # https://github.com/llvm/llvm-project/releases
   SELECTS_WITH mesa
   SELECT 23.1.6
-    URL     "https://www.paraview.org/files/dependencies/llvm-project-15.0.6.src.tar.xz"
-    URL_MD5 8202ece5dfaad502ee513a8eaaa4ada3
+    URL     "https://www.paraview.org/files/dependencies/llvm-project-16.0.6.src.tar.xz"
+    URL_MD5 7d986cda69719a35bd5ecb266fcf1f65
   SELECT 22.3.3
     URL     "https://www.paraview.org/files/dependencies/llvm-project-15.0.6.src.tar.xz"
     URL_MD5 8202ece5dfaad502ee513a8eaaa4ada3
   SELECT 21.2.1
     URL     "https://www.paraview.org/files/dependencies/llvm-7.0.0.src.tar.xz"
     URL_MD5 e0140354db83cdeb8668531b431398f0)
-set(llvm_version_23.1.6 "15.0.6")
+set(llvm_version_23.1.6 "16.0.6")
 set(llvm_version_22.3.3 "15.0.6")
 set(llvm_version_21.2.1 "7.0.0")
 

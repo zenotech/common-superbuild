@@ -37,16 +37,27 @@ endif ()
 set(numpy_python_build_args
   "--fcompiler=${numpy_fortran_compiler}")
 
+set(numpy_depends)
 set(numpy_depends_optional)
 if (NOT WIN32)
-  set(numpy_depends_optional fortran lapack)
+  if (APPLE)
+    # If `lapack` is not a hard requirement, we end up linking to
+    # `Accelerate.framework` which is not wanted.
+    list(APPEND numpy_depends
+      lapack pkgconf)
+  else ()
+    list(APPEND numpy_depends_optional
+      lapack)
+  endif ()
+  list(APPEND numpy_depends_optional
+    fortran)
 endif()
 
 superbuild_add_project_python_pyproject(numpy
   PACKAGE numpy
   CAN_USE_SYSTEM
   DEPENDS
-    pythoncython
+    pythoncython ${numpy_depends}
   DEPENDS_OPTIONAL ${numpy_depends_optional}
   LICENSE_FILES
     LICENSE.txt

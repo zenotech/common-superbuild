@@ -49,6 +49,15 @@ function (check_binary path)
       set(ok 1)
       set(found_mode "")
 
+    # XXX(scipy): Matplotlib on x86_64 is special for some reason. 10.9
+    # binaries are OK here.
+    elseif (path MATCHES "/matplotlib/" AND
+            found_mode STREQUAL "LC_VERSION_MIN_MACOSX")
+      if (item MATCHES "version 10.9")
+        set(ok 1)
+        set(found_mode "")
+      endif ()
+
     # XXX(scipy): SciPy is special for some reason. 10.9 binaries are OK here.
     elseif (path MATCHES "/scipy/")
       if (found_mode STREQUAL "LC_VERSION_MIN_MACOSX" AND
