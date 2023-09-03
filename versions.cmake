@@ -18,13 +18,13 @@ superbuild_set_revision(bzip2
 
 superbuild_set_revision(cgns
   # https://github.com/CGNS/CGNS/releases
-  URL     "https://www.paraview.org/files/dependencies/cgns-4.3.0.tar.gz"
-  URL_MD5 bce0461cd385ec5daeb04986093290d1)
+  URL     "https://www.paraview.org/files/dependencies/cgns-4.4.0.tar.gz"
+  URL_MD5 7d82f6834c11ee873232cf131fadfba6)
 
 superbuild_set_revision(seacas
   # https://github.com/sandialabs/seacas/releases
-  URL     "https://www.paraview.org/files/dependencies/seacas-2022-08-01.tar.gz"
-  URL_MD5 1d50fdd11b1293a7bbb87eb15ca4b6e2)
+  URL     "https://www.paraview.org/files/dependencies/seacas-2023-05-30.tar.gz"
+  URL_MD5 03f0eca3e201cd2fd352b80c10536669)
 
 superbuild_set_revision(zlib
   # https://github.com/madler/zlib/releases
@@ -48,8 +48,8 @@ superbuild_set_revision(szip
 
 superbuild_set_revision(hdf5
   # https://github.com/HDFGroup/hdf5/releases
-  URL     "https://www.paraview.org/files/dependencies/hdf5-1.12.1.tar.bz2"
-  URL_MD5  442469fbf43626006346e679c22cf10a)
+  URL     "https://www.paraview.org/files/dependencies/hdf5-1_14_2.tar.gz"
+  URL_MD5  dc95b307eb8a46335ec59e7ffa1948a4)
 
 superbuild_set_revision(boost
   # https://www.boost.org/users/download/
@@ -97,9 +97,9 @@ superbuild_set_revision(libxml2
 
 superbuild_set_revision(nlohmannjson
   # https://github.com/nlohmann/json/releases
-  # Note: downloaded assets need renamed from `json.tar.xz`
-  URL     "https://www.paraview.org/files/dependencies/nlohmannjson-v3.9.1.tar.gz"
-  URL_MD5 e386222fb57dd2fcb8a7879fc016d037)
+  # Be sure to grab the full source code, not one of the subdirectory archives.
+  URL     "https://www.paraview.org/files/dependencies/nlohmannjson-3.11.2.tar.gz"
+  URL_MD5 e8d56bc54621037842ee9f0aeae27746)
 
 # https://download.qt.io/official_releases/qt/
 superbuild_set_selectable_source(qt5

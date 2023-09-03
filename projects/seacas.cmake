@@ -20,6 +20,11 @@ if (superbuild_build_phase AND NOT seacas_has_component)
     "work.")
 endif ()
 
+if (superbuild_build_phase AND CMAKE_VERSION VERSION_LESS "3.22")
+  message(FATAL_ERROR
+    "Seacas requires at least CMake 3.22")
+endif ()
+
 list(REMOVE_DUPLICATES seacas_depends)
 list(REMOVE_DUPLICATES seacas_depends_optional)
 
@@ -41,6 +46,10 @@ superbuild_add_project(seacas
     -DSeacas_INSTALL_EXECUTABLES:BOOL=OFF
     -DSeacas_SKIP_CTEST_ADD_TEST:BOOL=ON
     -DTPL_ENABLE_DLlib:BOOL=OFF
+
+    # TriBITS fixes.
+    # Imported targets confuse the vendored TriBITS code.
+    -DHDF5_NO_FIND_PACKAGE_CONFIG_FILE:BOOL=ON
 
     # exodus
     -DSeacas_ENABLE_SEACASExodus:BOOL=${exodus_enabled}
