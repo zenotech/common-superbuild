@@ -22,7 +22,7 @@ endif ()
 
 
 superbuild_add_project(fontconfig
-  DEPENDS freetype libxml2 png gperf ${fontconfig_depends}
+  DEPENDS freetype libxml2 png gperf python3 ${fontconfig_depends}
   LICENSE_FILES
     COPYING
   BUILD_IN_SOURCE 1
