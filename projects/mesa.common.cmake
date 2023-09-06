@@ -67,6 +67,7 @@ set(mesa_common_config_args
   --prefix=<INSTALL_DIR>
   ${mesa_swr_arch}
   -Dauto_features=disabled
+  -Dzstd=disabled
   -Dgallium-drivers=${mesa_drivers}
   -Dvulkan-drivers=
   -Dshared-glapi=enabled
