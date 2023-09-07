@@ -47,4 +47,24 @@ else ()
     "${source_dir}/lib/"
     DESTINATION "${install_location}/lib"
     USE_SOURCE_PERMISSIONS)
+
+  if (APPLE)
+    set(libraries
+      libispcrt.1.dylib
+      libispcrt_device_cpu.1.dylib)
+    foreach (library IN LISTS libraries)
+      execute_process(
+        COMMAND
+          install_name_tool
+          -id "${install_location}/lib/${library}"
+          "${install_location}/lib/${library}"
+        RESULT_VARIABLE res
+        OUTPUT_VARIABLE out
+        ERROR_VARIABLE err)
+      if (res)
+        message(FATAL_ERROR
+          "Failed to update the library id of ${library}")
+      endif ()
+    endforeach ()
+  endif ()
 endif ()
