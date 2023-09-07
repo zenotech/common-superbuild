@@ -83,6 +83,7 @@ set(llvm_source_args_15.0.6
   SOURCE_SUBDIR llvm)
 
 set(llvm_configure_args_7.0.0
+  -DPYTHON_EXECUTABLE:FILEPATH=${superbuild_python_executable}
   -DLLVM_INCLUDE_UTILS:BOOL=ON)
 set(llvm_configure_args_15.0.6
   -DLLVM_INCLUDE_TESTS:BOOL=OFF
