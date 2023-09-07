@@ -4,7 +4,7 @@ message("Avoid CTest truncation: CTEST_FULL_OUTPUT")
 
 find_program(FILE_COMMAND NAMES file)
 
-function (check_binary path)
+function (check_binary_deploy_target path)
   if (NOT deployment_target)
     return ()
   endif ()
@@ -129,7 +129,7 @@ foreach (binary IN LISTS binaries)
       "Invalid architecture for ${binary}: ${out}")
   endif ()
 
-  check_binary("${binary}")
+  check_binary_deploy_target("${binary}")
 endforeach ()
 
 file(GLOB_RECURSE libraries
@@ -158,5 +158,5 @@ foreach (library IN LISTS libraries)
       "Invalid architecture for ${library}: ${out}")
   endif ()
 
-  check_binary("${library}")
+  check_binary_deploy_target("${library}")
 endforeach ()
