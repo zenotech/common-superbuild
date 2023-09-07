@@ -105,6 +105,87 @@ function (check_binary_deploy_target path)
   endif ()
 endfunction ()
 
+function (check_binary_library_id path)
+  execute_process(
+    COMMAND otool -l "${path}"
+    OUTPUT_VARIABLE out
+    ERROR_VARIABLE  err
+    RESULT_VARIABLE res
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  if (res)
+    message(SEND_ERROR
+      "Failed to run `otool -l` on ${path}: ${err}")
+  endif ()
+
+  string(REPLACE "\n" ";" out "${out}")
+  list(FILTER out INCLUDE REGEX "(LC_ID_DYLIB| name )")
+
+  if (NOT out)
+    if (NOT path MATCHES "lib/python3.*-darwin.so$")
+      message(WARNING
+        "No library id for ${path}")
+    endif ()
+
+    return ()
+  endif ()
+
+  set(ok 0)
+  set(found_mode "")
+  set(found_lines)
+  foreach (item IN LISTS out)
+    string(STRIP "${item}" item)
+
+    if (item MATCHES "LC_ID_DYLIB") # library id
+      set(found_mode "LC_ID_DYLIB")
+    elseif (found_mode STREQUAL "LC_ID_DYLIB" AND
+            item MATCHES "name")
+      if (item MATCHES "@rpath/")
+        # Wheel libraries don't get linked to.
+        if (path MATCHES "lib/python3.*.abi3.so$")
+          return ()
+        endif ()
+
+        message(SEND_ERROR
+          "`@rpath/` library id found in ${path}")
+        return ()
+      elseif (IS_SYMLINK "${path}")
+        # skip
+      else ()
+        string(REGEX REPLACE "[\\t ]*name[\\t ]*" "" library_id "${item}")
+        string(REGEX REPLACE " \\(offset .*\\)$" "" library_id "${library_id}")
+        if (library_id STREQUAL path)
+          # ok
+        else ()
+          get_filename_component(id_dir "${library_id}" DIRECTORY)
+          get_filename_component(path_dir "${path}" DIRECTORY)
+          if (id_dir STREQUAL path_dir)
+            # ok
+          elseif (path MATCHES "lib/python3.*/mpi4py/lib-pmpi/")
+            # ignore
+          else ()
+            message(SEND_ERROR
+              "Library id for ${path} is ${library_id}, which is not pointing to its own directory")
+          endif ()
+        endif ()
+      endif ()
+      set(ok 1)
+      set(found_mode "")
+
+    elseif (found_mode)
+      list(APPEND found_lines "${item}")
+    endif ()
+  endforeach ()
+
+  if (NOT ok)
+    if (NOT path MATCHES "lib/python3.*-darwin.so$" AND
+        NOT path MATCHES "lib/engines-.*.dylib$") # OpenSSL plugins
+      message(SEND_ERROR
+        "Missing library id for ${path}: ${found_lines}")
+    endif ()
+  endif ()
+endfunction ()
+
 file(GLOB binaries "${install_dir}/bin/*")
 foreach (binary IN LISTS binaries)
   execute_process(
@@ -159,4 +240,5 @@ foreach (library IN LISTS libraries)
   endif ()
 
   check_binary_deploy_target("${library}")
+  check_binary_library_id("${library}")
 endforeach ()
