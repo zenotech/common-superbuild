@@ -1,0 +1,16 @@
+diff -u -Nr -U5 llvm-project-16.0.6.src/llvm/CMakeLists.txt llvm-project-16.0.6.src.no-force-install-name-dir/llvm/CMakeLists.txt
+--- llvm-project-16.0.6.src/llvm/CMakeLists.txt	2023-06-10 18:58:16.000000000 -0400
++++ llvm-project-16.0.6.src.no-force-install-name-dir/llvm/CMakeLists.txt	2023-09-07 14:43:10.964210062 -0400
+@@ -11,11 +11,11 @@
+ 
+ set(LLVM_COMMON_CMAKE_UTILS ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
+ include(${LLVM_COMMON_CMAKE_UTILS}/Modules/CMakePolicy.cmake
+   NO_POLICY_SCOPE)
+ 
+-set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
++#set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
+ 
+ if(NOT DEFINED LLVM_VERSION_MAJOR)
+   set(LLVM_VERSION_MAJOR 16)
+ endif()
+ if(NOT DEFINED LLVM_VERSION_MINOR)

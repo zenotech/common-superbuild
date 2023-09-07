@@ -106,9 +106,13 @@ superbuild_add_project(llvm
     ${llvm_licenses}
   ${llvm_source_args}
   CMAKE_ARGS
+    # Handle rpath settings
+    -DCMAKE_INSTALL_RPATH:STRING=:
+
     -DCMAKE_BUILD_TYPE:STRING=Release
     ${llvm_cmake_shared_flags}
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+    -DCMAKE_INSTALL_NAME_DIR:STRING=<INSTALL_DIR>/lib
     -DLLVM_ENABLE_RTTI:BOOL=ON
     -DLLVM_INSTALL_UTILS:BOOL=ON
     -DLLVM_ENABLE_LIBXML2:BOOL=OFF
@@ -127,3 +131,6 @@ if (llvm_version VERSION_LESS_EQUAL "7.0.0")
   superbuild_apply_patch(llvm intel
     "Fix ambiguous namespace reference with Intel compiler")
 endif ()
+
+superbuild_apply_patch(llvm ${llvm_version}-no-force-install-name-dir
+  "Don't force using the install name dir in the build tree")
