@@ -29,10 +29,14 @@ if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "oldmesa")
   set(_ci_only_projects mesa osmesa)
 endif ()
 
-if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "oldospray")
+# test two old configs together - ospray and python 3.9
+if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "oldospraypython")
   set(ospray_SOURCE_SELECTION "2.7.1" CACHE STRING "")
-  # Only build `ospray`.
+  set(python3_SOURCE_SELECTION "3.9" CACHE STRING "")
+  # Only build relevant old projects: `ospray`
   set(_ci_only_projects ospray)
+  # and python 3.9 whl projects and numpy
+  list(APPEND _ci_only_projects python3 cryptography numpy scipy pywin32)
 endif ()
 
 enable_project(alembic)

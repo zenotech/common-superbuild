@@ -48,9 +48,9 @@ linux-oldmesa:build:
         - .linux_builder_tags
         - .run_manually
 
-linux-oldospray:build:
+linux-oldospraypython:build:
     extends:
-        - .linux_oldospray
+        - .linux_oldospraypython
         - .cmake_build_linux
         - .cmake_build_artifacts
         - .linux_builder_tags
@@ -76,9 +76,9 @@ macos-arm64:build:
         - .macos_arm64_builder_tags
         - .run_manually
 
-macos-arm64-oldospray:build:
+macos-arm64-oldospraypython:build:
     extends:
-        - .macos_arm64_oldospray
+        - .macos_arm64_oldospraypython
         - .cmake_build_macos
         - .cmake_build_artifacts
         - .macos_arm64_builder_tags
@@ -92,9 +92,9 @@ macos-x86_64:build:
         - .macos_builder_tags
         - .run_manually
 
-macos-x86_64-oldospray:build:
+macos-x86_64-oldospraypython:build:
     extends:
-        - .macos_x86_64_oldospray
+        - .macos_x86_64_oldospraypython
         - .cmake_build_macos
         - .cmake_build_artifacts
         - .macos_builder_tags
@@ -120,9 +120,9 @@ windows-vs2022:build:
         - .windows_builder_tags
         - .run_manually
 
-windows-oldospray-vs2022:build:
+windows-oldospraypython-vs2022:build:
     extends:
-        - .windows_oldospray_vs2022
+        - .windows_oldospraypython_vs2022
         - .cmake_build_windows
         - .cmake_build_artifacts
         - .windows_builder_tags

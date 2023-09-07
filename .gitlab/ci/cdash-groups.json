@@ -13,7 +13,7 @@
         {
             "group": "master",
             "site": "gitlab-ci",
-            "buildname": "[linux_oldospray]"
+            "buildname": "[linux_oldospraypython]"
         },
         {
             "group": "master",
@@ -28,7 +28,7 @@
         {
             "group": "master",
             "site": "gitlab-ci",
-            "buildname": "[macos_arm64_oldospray]"
+            "buildname": "[macos_arm64_oldospraypython]"
         },
         {
             "group": "master",
@@ -38,7 +38,7 @@
         {
             "group": "master",
             "site": "gitlab-ci",
-            "buildname": "[macos_x86_64_oldospray]"
+            "buildname": "[macos_x86_64_oldospraypython]"
         },
         {
             "group": "master",
@@ -48,7 +48,7 @@
         {
             "group": "master",
             "site": "gitlab-ci",
-            "buildname": "[windows_oldospray_vs2022]"
+            "buildname": "[windows_oldospraypython_vs2022]"
         },
         {
             "group": "master",

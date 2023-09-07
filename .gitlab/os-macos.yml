@@ -20,11 +20,11 @@
     variables:
         CMAKE_CONFIGURATION: macos_arm64
 
-.macos_arm64_oldospray:
+.macos_arm64_oldospraypython:
     extends: .macos_core
 
     variables:
-        CMAKE_CONFIGURATION: macos_arm64_oldospray
+        CMAKE_CONFIGURATION: macos_arm64_oldospraypython
 
 .macos_x86_64:
     extends: .macos_core
@@ -32,11 +32,11 @@
     variables:
         CMAKE_CONFIGURATION: macos_x86_64
 
-.macos_x86_64_oldospray:
+.macos_x86_64_oldospraypython:
     extends: .macos_core
 
     variables:
-        CMAKE_CONFIGURATION: macos_x86_64_oldospray
+        CMAKE_CONFIGURATION: macos_x86_64_oldospraypython
 
 .macos_x86_64_openssl:
     extends: .macos_core
