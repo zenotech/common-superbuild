@@ -83,6 +83,7 @@ set(llvm_source_args_15.0.6
   SOURCE_SUBDIR llvm)
 
 set(llvm_configure_args_7.0.0
+  -DPYTHON_EXECUTABLE:FILEPATH=${superbuild_python_executable}
   -DLLVM_INCLUDE_UTILS:BOOL=ON)
 set(llvm_configure_args_15.0.6
   -DLLVM_INCLUDE_TESTS:BOOL=OFF
@@ -106,9 +107,13 @@ superbuild_add_project(llvm
     ${llvm_licenses}
   ${llvm_source_args}
   CMAKE_ARGS
+    # Handle rpath settings
+    -DCMAKE_INSTALL_RPATH:STRING=:
+
     -DCMAKE_BUILD_TYPE:STRING=Release
     ${llvm_cmake_shared_flags}
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+    -DCMAKE_INSTALL_NAME_DIR:STRING=<INSTALL_DIR>/lib
     -DLLVM_ENABLE_RTTI:BOOL=ON
     -DLLVM_INSTALL_UTILS:BOOL=ON
     -DLLVM_ENABLE_LIBXML2:BOOL=OFF
@@ -127,3 +132,6 @@ if (llvm_version VERSION_LESS_EQUAL "7.0.0")
   superbuild_apply_patch(llvm intel
     "Fix ambiguous namespace reference with Intel compiler")
 endif ()
+
+superbuild_apply_patch(llvm ${llvm_version}-no-force-install-name-dir
+  "Don't force using the install name dir in the build tree")

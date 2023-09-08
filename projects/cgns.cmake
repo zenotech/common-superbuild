@@ -4,6 +4,7 @@ superbuild_add_project(cgns
   LICENSE_FILES
     license.txt
   CMAKE_ARGS
+    -DCMAKE_INSTALL_NAME_DIR:STRING=<INSTALL_DIR>/lib
     -DCGNS_BUILD_CGNSTOOLS:BOOL=OFF
     -DCGNS_BUILD_TESTING:BOOL=OFF
     -DCGNS_ENABLE_HDF5:BOOL=${hdf5_enabled}
