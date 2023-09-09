@@ -12,6 +12,10 @@ function (superbuild_windows_install_python_module destination module search_pat
       # Add it to the search path if it exists.
       set(local_extra_search_arguments
         --search "${search_path}/.libs")
+    elseif (EXISTS "${search_path}/${module}.libs")
+      # Add it to the search path if it exists.
+      set(local_extra_search_arguments
+        --search "${search_path}/${module}.libs")
     else ()
       # But clear it out if there isn't one; we'll use the parent's search
       # paths as well.
