@@ -11,3 +11,6 @@ superbuild_add_project(zlib
     -DINSTALL_MAN_DIR:STRING=share/man
     -DINSTALL_PKGCONFIG_DIR:STRING=lib/pkgconfig
     -DINSTALL_LIB_DIR:STRING=lib)
+
+superbuild_apply_patch(zlib pcfile-rel-prefix
+  "Use pcfiledir for prefix computation")
