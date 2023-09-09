@@ -197,6 +197,7 @@ superbuild_set_revision(pythonfonttools
 
 superbuild_set_revision(matplotlib
   # https://pypi.org/project/matplotlib/#history
+  # NOTE: when updating, update pyparsing as well
   URL "https://www.paraview.org/files/dependencies/matplotlib-3.7.2.tar.gz"
   URL_MD5 64c7053050be5f92eab9131f1d85b71d)
 
@@ -237,8 +238,12 @@ superbuild_set_revision(pythondateutil
 
 superbuild_set_revision(pythonpyparsing
   # https://pypi.org/project/pyparsing/#history
-  URL     "https://www.paraview.org/files/dependencies/pyparsing-3.1.1.tar.gz"
-  URL_MD5 bb8c8c6b8015ca5887ae2c37917ee82e)
+  # 3.1.0+ breaks matplotlib: https://github.com/matplotlib/matplotlib/issues/26152
+  # matplotlib 3.7.3+ fixes it: https://github.com/matplotlib/matplotlib/issues/26152#issuecomment-1691984837
+  #URL     "https://www.paraview.org/files/dependencies/pyparsing-3.1.1.tar.gz"
+  #URL_MD5 bb8c8c6b8015ca5887ae2c37917ee82e)
+  URL     "https://www.paraview.org/files/dependencies/pyparsing-3.0.9.tar.gz"
+  URL_MD5 fadc2f3bf5872bf6310576a86c3566e0)
 
 superbuild_set_revision(pythonbeniget
   # https://pypi.org/project/beniget/#history
