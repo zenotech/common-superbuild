@@ -365,17 +365,23 @@ class Library(object):
         return cls.__cache[path]
 
     @classmethod
-    def from_manifest(cls, path):
+    def from_manifest(cls, path, symlinks=None):
         '''Create a library representation from a cached manifest entry.'''
         if path in cls.__cache:
             raise RuntimeError('There is already a library for %s' % path)
 
+        if symlinks is None:
+            symlinks = []
+
         library = Library(path)
         library._dependencies = {}
-        library._symlinks = []
+        library._symlinks = symlinks
         library._is_cached = True
 
         cls.__cache[path] = library
+        libdir = os.path.dirname(path)
+        for name in library.symlinks:
+            cls.__cache[os.path.join(libdir, name)] = library
         return cls.__cache[path]
 
 
@@ -724,11 +730,22 @@ def _install_binary(binary, is_excluded, bundle_dest, dep_libdir, installed, man
 
 def _update_manifest(manifest, installed, path, libdir):
     '''Update the manifest file with a set of newly installed binaries.'''
-    for input_path in installed.keys():
-        manifest.setdefault(libdir, []).append(input_path)
+    for (input_path, (dep, _)) in installed.items():
+        manifest.setdefault(libdir, []).append({
+            'path': input_path,
+            'symlinks': dep.symlinks,
+        })
 
     for k, v in manifest.items():
-        manifest[k] = list(set(v))
+        manifest[k] = its = list()
+        paths = set()
+        for d in v:
+            if d['path'] not in paths:
+                its.append(d)
+                paths.add(d['path'])
+                libdir = os.path.dirname(d['path'])
+                for name in d['symlinks']:
+                    paths.add(os.path.join(libdir, name))
 
     with open(path, 'w+') as fout:
         json.dump(manifest, fout)
@@ -795,7 +812,7 @@ def main(args):
 
         # Seed the cache with manifest entries.
         for path in manifest.get(opts.libdir, []):
-            Library.from_manifest(path)
+            Library.from_manifest(path['path'], path['symlinks'])
 
     cur_manifest = manifest.setdefault(opts.libdir, [])
 
