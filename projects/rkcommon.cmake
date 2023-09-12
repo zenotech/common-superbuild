@@ -17,6 +17,8 @@ superbuild_add_project(rkcommon
      -DRKCOMMON_NO_SIMD:BOOL=ON
 )
 
-# https://github.com/ospray/rkcommon/pull/10
-superbuild_apply_patch(rkcommon force-no-simd
-  "Force SIMD off even with TBB")
+if (ospray_SOURCE_SELECTION STREQUAL "2.12.0")
+  # https://github.com/ospray/rkcommon/pull/10
+  superbuild_apply_patch(rkcommon force-no-simd
+    "Force SIMD off even with TBB")
+endif ()
