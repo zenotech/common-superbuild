@@ -29,6 +29,12 @@ if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "oldmesa")
   set(_ci_only_projects mesa osmesa)
 endif ()
 
+if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "oldospray")
+  set(ospray_SOURCE_SELECTION "2.7.1" CACHE STRING "")
+  # Only build `ospray`.
+  set(_ci_only_projects ospray)
+endif ()
+
 enable_project(alembic)
 enable_project(boost)
 enable_project(bzip2)
