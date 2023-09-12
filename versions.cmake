@@ -549,35 +549,60 @@ superbuild_set_revision(jsoncpp
   URL     "https://www.paraview.org/files/dependencies/jsoncpp-1.9.5.tar.gz"
   URL_MD5 d6c8c609f2162eff373db62b90a051c7)
 
-if (WIN32)
-  set(ispc_suffix "windows.zip")
-  set(ispc_md5 c3757640921b6b53086dd842b2f36992)
-elseif (APPLE)
-  set(ispc_suffix "macOS.universal.tar.gz")
-  set(ispc_md5 dd91293a5a8db6182df2360ed1c1be24)
-else()
-  set(ispc_suffix "linux.tar.gz")
-  set(ispc_md5 281e7cb034f454553133587b88081aad)
-endif()
-superbuild_set_revision(ispc
-  # https://github.com/ispc/ispc/releases
-  URL     "https://www.paraview.org/files/dependencies/ispc-v1.21.0-${ispc_suffix}"
-  URL_MD5 "${ispc_md5}")
-
-superbuild_set_revision(embree
-  # https://github.com/embree/embree/releases
-  URL     "https://www.paraview.org/files/dependencies/embree-4.2.0.tar.gz"
-  URL_MD5 9e6abbfb230a2ea07e80fa193ed94186)
-
-superbuild_set_revision(openvkl
-  # https://github.com/openvkl/openvkl/releases
-  URL     "https://www.paraview.org/files/dependencies/openvkl-1.3.2.tar.gz"
-  URL_MD5 b9020e3ab6019055db437d9f1cef50e6)
-
-superbuild_set_revision(ospray
+superbuild_set_selectable_source(ospray
   # https://github.com/ospray/ospray/releases
-  URL     "https://www.paraview.org/files/dependencies/ospray-2.12.0.tar.gz"
-  URL_MD5 44445f0d181d52ca1c06bbea3c808761)
+  SELECT 2.7.1
+    URL     "https://www.paraview.org/files/dependencies/ospray-v2.7.1.tar.gz"
+    URL_MD5 e027ca7a5119300a0c94c3f9be38b58d
+  SELECT 2.12.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/ospray-2.12.0.tar.gz"
+    URL_MD5 44445f0d181d52ca1c06bbea3c808761)
+
+# https://github.com/ispc/ispc/releases
+if (WIN32)
+  set(ispc_1.16.1_suffix "windows.zip")
+  set(ispc_1.21.0_suffix "windows.zip")
+  set(ispc_1.16.1_md5 22d1e9fd03427b8e8a9d75ce56cfa495)
+  set(ispc_1.21.0_md5 c3757640921b6b53086dd842b2f36992)
+elseif (APPLE)
+  set(ispc_1.16.1_suffix "macOS.tar.gz")
+  set(ispc_1.21.0_suffix "macOS.universal.tar.gz")
+  set(ispc_1.16.1_md5 0ae980be5d319b38592c6ef5596c305d)
+  set(ispc_1.21.0_md5 dd91293a5a8db6182df2360ed1c1be24)
+else()
+  set(ispc_1.16.1_suffix "linux.tar.gz")
+  set(ispc_1.21.0_suffix "linux.tar.gz")
+  set(ispc_1.16.1_md5 4665c577541003e31c8ce0afd64b6952)
+  set(ispc_1.21.0_md5 281e7cb034f454553133587b88081aad)
+endif()
+superbuild_set_selectable_source(ispc
+  SELECTS_WITH ospray
+  SELECT 2.7.1
+    URL     "https://www.paraview.org/files/dependencies/ispc-v1.16.1-${ispc_1.16.1_suffix}"
+    URL_MD5 "${ispc_1.16.1_md5}"
+  SELECT 2.12.0
+    URL     "https://www.paraview.org/files/dependencies/ispc-v1.21.0-${ispc_1.21.0_suffix}"
+    URL_MD5 "${ispc_1.21.0_md5}")
+
+superbuild_set_selectable_source(embree
+  # https://github.com/embree/embree/releases
+  SELECTS_WITH ospray
+  SELECT 2.7.1
+    URL     "https://www.paraview.org/files/dependencies/embree-v3.13.1.tar.gz"
+    URL_MD5 71453f1e9af48a95090112e493982898
+  SELECT 2.12.0
+    URL     "https://www.paraview.org/files/dependencies/embree-4.2.0.tar.gz"
+    URL_MD5 9e6abbfb230a2ea07e80fa193ed94186)
+
+superbuild_set_selectable_source(openvkl
+  # https://github.com/openvkl/openvkl/releases
+  SELECTS_WITH ospray
+  SELECT 2.7.1
+    URL     "https://www.paraview.org/files/dependencies/openvkl-v1.0.1.tar.gz"
+    URL_MD5 c6a9a222df0e7f21b49ea8081b509171
+  SELECT 2.12.0
+    URL     "https://www.paraview.org/files/dependencies/openvkl-1.3.2.tar.gz"
+    URL_MD5 b9020e3ab6019055db437d9f1cef50e6)
 
 superbuild_set_revision(ospraymaterials
   # https://gitlab.kitware.com/paraview/materials/-/tags
@@ -585,15 +610,25 @@ superbuild_set_revision(ospraymaterials
   URL     "https://www.paraview.org/files/data/OSPRayMaterials-0.3.tar.gz"
   URL_MD5 d256c17f70890d3477e90d35bf814c25)
 
-superbuild_set_revision(openimagedenoise
+superbuild_set_selectable_source(openimagedenoise
   # https://github.com/OpenImageDenoise/oidn/releases
-  URL     "https://www.paraview.org/files/dependencies/oidn-2.0.1.src.tar.gz"
-  URL_MD5 9e13ff3d9eb640e923b699bea1c8d419)
+  SELECTS_WITH ospray
+  SELECT 2.7.1
+    URL     "https://www.paraview.org/files/dependencies/oidn-1.4.1.src.tar.gz"
+    URL_MD5 df4007b0ab93b1c41cdf223b075d01c0
+  SELECT 2.12.0
+    URL     "https://www.paraview.org/files/dependencies/oidn-2.0.1.src.tar.gz"
+    URL_MD5 9e13ff3d9eb640e923b699bea1c8d419)
 
-superbuild_set_revision(rkcommon
+superbuild_set_selectable_source(rkcommon
   # https://github.com/ospray/rkcommon/tags
-  URL     "https://www.paraview.org/files/dependencies/rkcommon-1.11.0.tar.gz"
-  URL_MD5 2a298ad88b2959e44c275a6ff679bf1f)
+  SELECTS_WITH ospray
+  SELECT 2.7.1
+    URL     "https://www.paraview.org/files/dependencies/rkcommon-v1.7.0.tar.gz"
+    URL_MD5 1bd26e5aea9b1c4873fe8b8cec9a1d28
+  SELECT 2.12.0
+    URL     "https://www.paraview.org/files/dependencies/rkcommon-1.11.0.tar.gz"
+    URL_MD5 2a298ad88b2959e44c275a6ff679bf1f)
 
 superbuild_set_revision(snappy
   # https://github.com/google/snappy/releases
