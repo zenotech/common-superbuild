@@ -21,4 +21,7 @@ if (ospray_SOURCE_SELECTION STREQUAL "2.12.0")
   # https://github.com/ospray/rkcommon/pull/10
   superbuild_apply_patch(rkcommon force-no-simd
     "Force SIMD off even with TBB")
+else ()
+  superbuild_apply_patch(rkcommon 1.7.0-force-no-simd
+    "Force SIMD off even with TBB")
 endif ()
