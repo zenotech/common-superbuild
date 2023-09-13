@@ -76,6 +76,14 @@ macos-arm64:build:
         - .macos_arm64_builder_tags
         - .run_manually
 
+macos-arm64-oldospray:build:
+    extends:
+        - .macos_arm64_oldospray
+        - .cmake_build_macos
+        - .cmake_build_artifacts
+        - .macos_arm64_builder_tags
+        - .run_manually
+
 macos-x86_64:build:
     extends:
         - .macos_x86_64

@@ -28,6 +28,11 @@
         {
             "group": "master",
             "site": "gitlab-ci",
+            "buildname": "[macos_arm64_oldospray]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
             "buildname": "[macos_x86_64]"
         },
         {
