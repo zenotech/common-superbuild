@@ -14,9 +14,14 @@ elseif (CMAKE_SYSTEM_PROCESSOR MATCHES "arm64" OR
   # Use NEON2X on macOS as its arm64 support is very new. Other platforms may
   # be targeting older processors.
   if (APPLE)
-    list(APPEND openvkl_isas
-      -DOPENVKL_ISA_NEON:BOOL=OFF
-      -DOPENVKL_ISA_NEON2X:BOOL=ON)
+    if (ospray_SOURCE_SELECTION STREQUAL "2.12.0")
+      list(APPEND openvkl_isas
+        -DOPENVKL_ISA_NEON:BOOL=OFF
+        -DOPENVKL_ISA_NEON2X:BOOL=ON)
+    else ()
+      list(APPEND openvkl_isas
+        -DOPENVKL_ISA_NEON:BOOL=ON)
+    endif ()
   else ()
     list(APPEND openvkl_isas
       -DOPENVKL_ISA_NEON:BOOL=ON
