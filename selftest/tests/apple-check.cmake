@@ -205,6 +205,12 @@ foreach (binary IN LISTS binaries)
     continue ()
   endif ()
 
+  # Ignore the pre-compiled `ispc` for older OSPRay builds.
+  if (ospray_SOURCE_SELECTION STREQUAL "2.7.1" AND
+      binary MATCHES "/ispc$")
+    continue ()
+  endif ()
+
   if (NOT out MATCHES "executable ${arch}")
     message(SEND_ERROR
       "Invalid architecture for ${binary}: ${out}")
