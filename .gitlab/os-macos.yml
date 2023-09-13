@@ -26,6 +26,12 @@
     variables:
         CMAKE_CONFIGURATION: macos_x86_64
 
+.macos_x86_64_oldospray:
+    extends: .macos_core
+
+    variables:
+        CMAKE_CONFIGURATION: macos_x86_64_oldospray
+
 .macos_x86_64_openssl:
     extends: .macos_core
 

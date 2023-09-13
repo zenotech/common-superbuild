@@ -20,6 +20,12 @@
     variables:
         CMAKE_CONFIGURATION: linux_oldmesa
 
+.linux_oldospray:
+    extends: .fedora36
+
+    variables:
+        CMAKE_CONFIGURATION: linux_oldospray
+
 .linux_openssl:
     extends: .fedora36
 

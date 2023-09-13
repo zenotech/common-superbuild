@@ -13,6 +13,11 @@
         {
             "group": "master",
             "site": "gitlab-ci",
+            "buildname": "[linux_oldospray]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
             "buildname": "[linux_openssl]"
         },
         {
@@ -28,7 +33,17 @@
         {
             "group": "master",
             "site": "gitlab-ci",
+            "buildname": "[macos_x86_64_oldospray]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
             "buildname": "[macos_x86_64_openssl]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
+            "buildname": "[windows_oldospray_vs2022]"
         },
         {
             "group": "master",

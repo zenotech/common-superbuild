@@ -10,10 +10,12 @@ file(INSTALL
   DESTINATION "${install_location}/bin"
   USE_SOURCE_PERMISSIONS
   PATTERN "*.dll")
-file(INSTALL
-  "${source_dir}/include/ispcrt"
-  DESTINATION "${install_location}/include"
-  USE_SOURCE_PERMISSIONS)
+if (install_ispcrt)
+  file(INSTALL
+    "${source_dir}/include/ispcrt"
+    DESTINATION "${install_location}/include"
+    USE_SOURCE_PERMISSIONS)
+endif ()
 
 if (fix_lib64)
   file(INSTALL
@@ -43,12 +45,14 @@ if (fix_lib64)
     "${binary_dir}/cmake-fixups/"
     DESTINATION "${install_location}/lib/cmake/${cmake_package_dir}")
 else ()
-  file(INSTALL
-    "${source_dir}/lib/"
-    DESTINATION "${install_location}/lib"
-    USE_SOURCE_PERMISSIONS)
+  if (install_ispcrt)
+    file(INSTALL
+      "${source_dir}/lib/"
+      DESTINATION "${install_location}/lib"
+      USE_SOURCE_PERMISSIONS)
+  endif ()
 
-  if (APPLE)
+  if (APPLE AND fix_library_ids)
     set(libraries
       libispcrt.1.dylib
       libispcrt_device_cpu.1.dylib)
