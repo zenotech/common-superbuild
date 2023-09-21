@@ -17,8 +17,11 @@ function (superbuild_find_projects var)
     osmesa
     png
     python3
+    pythonflitcore
     pythonmako
+    pythonmarkupsafe
     pythonsetuptools
+    pythonwheel
     sqlite
     xz
     zlib)
