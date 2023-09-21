@@ -17,8 +17,11 @@ function (superbuild_find_projects var)
     osmesa
     png
     python3
+    pythonflitcore
     pythonmako
+    pythonmarkupsafe
     pythonsetuptools
+    pythonwheel
     sqlite
     xz
     zlib)
@@ -78,14 +81,22 @@ function (superbuild_add_packaging)
     if (mesa_enabled AND UNIX AND NOT APPLE)
       superbuild_add_extra_package_test(mesa "${generator}"
         TIMEOUT 6400)
+      if (NOT default_target)
+        set(default_target "mesa/${generator}")
+      endif ()
     endif ()
     if (osmesa_enabled AND WIN32)
       superbuild_add_extra_package_test(osmesa "${generator}"
         TIMEOUT 6400)
+      if (NOT default_target)
+        set(default_target "osmesa/${generator}")
+      endif ()
     endif ()
   endforeach ()
 
-  superbuild_enable_install_target("mesa/${default_generator}")
+  if (default_targt)
+    superbuild_enable_install_target("${default_target}")
+  endif ()
 endfunction ()
 
 if (UNIX AND NOT APPLE)
