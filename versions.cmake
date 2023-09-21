@@ -515,8 +515,24 @@ superbuild_set_selectable_source(mesa
   SELECT 21.2.1
     URL     "https://www.paraview.org/files/dependencies/mesa-21.2.1.tar.xz"
     URL_MD5 5d8beb41eccad604296d1e2a6688dd6a)
+# Use the same selection for `osmesa` as `mesa`. However, add `DOWNLOAD_NAME`
+# arguments to rename the local file for `osmesa` to avoid conflicts while
+# downloading the files in parallel.
 get_property(mesa_revision GLOBAL PROPERTY mesa_revision)
-superbuild_set_revision(osmesa ${mesa_revision})
+set(osmesa_args)
+set(next_is_url 0)
+foreach (mesa_arg IN LISTS mesa_revision)
+  list(APPEND osmesa_args "${mesa_arg}")
+  if (next_is_url)
+    get_filename_component(filename "${mesa_arg}" NAME)
+    list(APPEND osmesa_args
+      DOWNLOAD_NAME "os${filename}")
+    set(next_is_url 0)
+  elseif (mesa_arg STREQUAL "URL")
+    set(next_is_url 1)
+  endif ()
+endforeach ()
+superbuild_set_revision(osmesa ${osmesa_args})
 
 superbuild_set_selectable_source(llvm
   # https://github.com/llvm/llvm-project/releases
