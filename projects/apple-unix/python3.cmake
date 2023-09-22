@@ -82,17 +82,19 @@ else ()
     CACHE INTERNAL "")
 endif ()
 
-set(superbuild_python_version "3.9"
+set(superbuild_python_version "${python3_SOURCE_SELECTION}"
   CACHE INTERNAL "")
 
-# Backport parts from:
-# a871f692b4a2e6c7d45579693e787edc0af1a02c
-# 93a0ef76473683aa3ad215e11df18f7839488c4e
-# 3309113d6131e4bbac570c4f54175ecca02d025a
-#
-# Some context was changed in order to apply to 3.9.5.
-superbuild_apply_patch(python3 ssl-fixes
-  "Backport various SSL fixes")
+if (python3_SOURCE_SELECTION STREQUAL "3.9")
+  # Backport parts from:
+  # a871f692b4a2e6c7d45579693e787edc0af1a02c
+  # 93a0ef76473683aa3ad215e11df18f7839488c4e
+  # 3309113d6131e4bbac570c4f54175ecca02d025a
+  #
+  # Some context was changed in order to apply to 3.9.5.
+  superbuild_apply_patch(python3 ssl-fixes
+    "Backport various SSL fixes")
+endif()
 
 superbuild_add_extra_cmake_args(
   -DPython_EXECUTABLE:FILEPATH=<INSTALL_DIR>/bin/python${superbuild_python_version}

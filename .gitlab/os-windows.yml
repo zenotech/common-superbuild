@@ -23,13 +23,13 @@
     variables:
         CMAKE_CONFIGURATION: windows_vs2022
 
-.windows_oldospray_vs2022:
+.windows_oldospraypython_vs2022:
     extends:
         - .windows_core
         - .windows_vs2022_addon
 
     variables:
-        CMAKE_CONFIGURATION: windows_oldospray_vs2022
+        CMAKE_CONFIGURATION: windows_oldospraypython_vs2022
 
 .windows_openssl_vs2022:
     extends:

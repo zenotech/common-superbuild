@@ -62,16 +62,24 @@ superbuild_set_revision(png
   URL_MD5 6c7fe9dbb80c89c3579bedad9722e559)
 
 if (WIN32)
-  superbuild_set_revision(python3
+  superbuild_set_selectable_source(python3
     # See https://www.paraview.org/files/dependencies/python-for-wheels/
     # To make a new one, see `vtk/vtk@.gitlab/ci/wheels/`
-    URL     "https://www.paraview.org/files/dependencies/python-for-wheels/python-3.9.13-windows-x86_64.zip"
-    URL_MD5 fe29035c955c49ace9e2844a505bbc09)
+    SELECT 3.10 DEFAULT
+      URL     "https://www.paraview.org/files/dependencies/python-for-wheels/python-3.10.11-windows-x86_64.zip"
+      URL_MD5 e963090c45b8e696b367de23ac8afe39
+    SELECT 3.9
+      URL     "https://www.paraview.org/files/dependencies/python-for-wheels/python-3.9.13-windows-x86_64.zip"
+      URL_MD5 fe29035c955c49ace9e2844a505bbc09)
 else()
-  superbuild_set_revision(python3
+  superbuild_set_selectable_source(python3
     # https://www.python.org/downloads/source/
-    URL     "https://www.paraview.org/files/dependencies/Python-3.9.13.tar.xz"
-    URL_MD5 5e2411217b0060828d5f923eb422a3b8)
+    SELECT 3.10 DEFAULT
+      URL     "https://www.paraview.org/files/dependencies/Python-3.10.13.tar.xz"
+      URL_MD5 8847dc6458d1431d0ae0f55942deeb89
+    SELECT 3.9
+      URL     "https://www.paraview.org/files/dependencies/Python-3.9.13.tar.xz"
+      URL_MD5 5e2411217b0060828d5f923eb422a3b8)
 endif()
 
 superbuild_set_revision(freetype
@@ -152,9 +160,14 @@ superbuild_set_revision(pythonmesonpython
 # https://pypi.org/project/scipy/#history
 set(scipy_version "1.11.2")
 if (WIN32)
-  superbuild_set_revision(scipy
-    URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp39-cp39-win_amd64.whl"
-    URL_MD5 2e2b1fcf6ea9c311576700daf18ccc19)
+  superbuild_set_selectable_source(scipy
+    SELECTS_WITH python3
+    SELECT 3.10
+      URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp310-cp310-win_amd64.whl"
+      URL_MD5 85c785288036b94826c2c564116b5e6b
+    SELECT 3.9
+      URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp39-cp39-win_amd64.whl"
+      URL_MD5 2e2b1fcf6ea9c311576700daf18ccc19)
 else ()
   superbuild_set_revision(scipy
     URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}.tar.gz"
@@ -201,10 +214,15 @@ superbuild_set_revision(matplotlib
   URL "https://www.paraview.org/files/dependencies/matplotlib-3.7.2.tar.gz"
   URL_MD5 64c7053050be5f92eab9131f1d85b71d)
 
-superbuild_set_revision(pywin32
+superbuild_set_selectable_source(pywin32
   # https://pypi.org/project/pywin32/#history
-  URL "https://www.paraview.org/files/dependencies/pywin32-306-cp39-cp39-win_amd64.whl"
-  URL_MD5 8825c29dd5dc6e8d906d82c666a7081f)
+  SELECTS_WITH python3
+  SELECT 3.10
+    URL "https://www.paraview.org/files/dependencies/pywin32-306-cp310-cp310-win_amd64.whl"
+    URL_MD5 6fffe656f01d4a3377c40d98087de2b2
+  SELECT 3.9
+    URL "https://www.paraview.org/files/dependencies/pywin32-306-cp39-cp39-win_amd64.whl"
+    URL_MD5 8825c29dd5dc6e8d906d82c666a7081f)
 
 superbuild_set_revision(mpi
   # https://github.com/pmodels/mpich/releases
@@ -290,9 +308,14 @@ superbuild_set_revision(pythonwheel
 # https://pypi.org/project/mpi4py/#history
 set(mpi4py_ver "3.1.4")
 if (WIN32)
-  superbuild_set_revision(pythonmpi4py
-    URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp39-cp39-win_amd64.whl"
-    URL_MD5 e8387c642919358a7d5739c8e7128f89)
+  superbuild_set_selectable_source(pythonmpi4py
+    SELECTS_WITH python3
+    SELECT 3.10
+      URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp310-cp310-win_amd64.whl"
+      URL_MD5 22767c198cd8d9b80e8c96071650200e
+    SELECT 3.9
+      URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp39-cp39-win_amd64.whl"
+      URL_MD5 e8387c642919358a7d5739c8e7128f89)
 else ()
   superbuild_set_revision(pythonmpi4py
     URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}.tar.gz"

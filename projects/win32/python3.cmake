@@ -32,19 +32,23 @@ else ()
     CACHE INTERNAL "")
 endif ()
 
-set(superbuild_python_version "3.9"
+set(superbuild_python_version "${python3_SOURCE_SELECTION}"
   CACHE INTERNAL "")
+
+# strip the "." from the version to get a number for the library name
+string(REPLACE "." "" libver "${python3_SOURCE_SELECTION}")
+set(superbuild_python_lib "python${libver}.lib")
 
 superbuild_add_extra_cmake_args(
   -DPython3_EXECUTABLE:FILEPATH=<INSTALL_DIR>/Python/python.exe
   -DPython3_INCLUDE_DIR:PATH=<INSTALL_DIR>/Python/include/
-  -DPython3_LIBRARY:FILEPATH=<INSTALL_DIR>/Python/libs/python39.lib
-  -DPython3_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/Python/libs/python39.lib
+  -DPython3_LIBRARY:FILEPATH=<INSTALL_DIR>/Python/libs/${superbuild_python_lib}
+  -DPython3_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/Python/libs/${superbuild_python_lib}
   -DPython3_FIND_REGISTRY:STRING=NEVER
 
   -DPYTHON_EXECUTABLE:FILEPATH=<INSTALL_DIR>/Python/python.exe
   -DPYTHON_INCLUDE_DIR:PATH=<INSTALL_DIR>/Python/include/
-  -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/Python/libs/python39.lib
-  -DPYTHON_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/Python/libs/python39.lib
+  -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/Python/libs/${superbuild_python_lib}
+  -DPYTHON_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/Python/libs/${superbuild_python_lib}
   -DPYTHON_FIND_REGISTRY:STRING=NEVER
 )
