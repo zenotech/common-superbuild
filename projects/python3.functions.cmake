@@ -246,7 +246,7 @@ function (superbuild_install_superbuild_python3)
     install(
       DIRECTORY "${superbuild_install_location}/Python/DLLs"
       DESTINATION "bin"
-      COMPONENT "superbuild")
+      COMPONENT ${superbuild_bundle_default_component})
 
   elseif (APPLE)
     if (_install_superbuild_python_DESTINATION_SUBDIR)

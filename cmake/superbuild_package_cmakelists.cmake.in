@@ -33,6 +33,10 @@ endforeach ()
 include(SuperbuildInstallMacros)
 include("@name@.bundle")
 
+if (NOT DEFINED superbuild_bundle_default_component)
+  set(superbuild_bundle_default_component "superbuild")
+endif ()
+
 if (NOT DEFINED superbuild_bundle_system_libraries_destination)
   set(superbuild_bundle_system_libraries_destination "bin")
 endif ()
