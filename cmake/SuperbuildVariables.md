@@ -92,6 +92,11 @@ This is a list of paths to files which are included from the
 
 These variables are used in packaging tests (mainly `.bundle.cmake` files).
 
+### `superbuild_bundle_default_component`
+
+If set in a `bundle.cmake` file, it can be used to set the component name
+used for packaging that do not set a component when using install methods.
+
 ### `superbuild_bundle_skip_system_libraries`
 
 If set in a `bundle.cmake` file, it can be used to skip the
