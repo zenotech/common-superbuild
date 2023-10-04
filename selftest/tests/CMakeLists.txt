@@ -132,6 +132,17 @@ function (add_python_script_test package script)
       "${CMAKE_CURRENT_SOURCE_DIR}/${script}.py")
 endfunction ()
 
+if (TARGET hdf5)
+  add_test(
+    NAME hdf5-check
+    COMMAND
+      "${CMAKE_CTEST_COMMAND}"
+        --build-generator "${CMAKE_GENERATOR}"
+        --build-and-test "${CMAKE_CURRENT_SOURCE_DIR}/hdf5-check" "${CMAKE_CURRENT_BINARY_DIR}/hdf5-check"
+        --build-options "-DCMAKE_PREFIX_PATH=${install_dir}" "-Dwith_mpi=$<TARGET_EXISTS:mpi>"
+        --test-command "${CMAKE_CTEST_COMMAND}" --output-on-failure)
+endif ()
+
 if (TARGET mpi)
   add_test(
     NAME mpi-check
