@@ -43,3 +43,6 @@ superbuild_add_extra_cmake_args(
 
 superbuild_apply_patch(hdf5 fix-ext-pkg-find
   "Force proper logic for zlib and szip dependencies")
+
+superbuild_apply_patch(hdf5 szip-library-variables
+  "Link with the variables that szip provides")
