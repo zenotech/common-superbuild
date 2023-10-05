@@ -32,8 +32,9 @@ superbuild_add_project(hdf5
     -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=TRUE
     -DHDF5_ENABLE_SZIP_SUPPORT:BOOL=TRUE
     -DHDF5_ENABLE_SZIP_ENCODING:BOOL=TRUE
-    -DSZIP_USE_EXTERNAL:BOOL=TRUE
-    -DZLIB_USE_EXTERNAL:BOOL=TRUE
+    # The logic for the `_USE_EXTERNAL` flags is 100% backwards.
+    -DSZIP_USE_EXTERNAL:BOOL=0
+    -DZLIB_USE_EXTERNAL:BOOL=0
     -DHDF5_BUILD_HL_LIB:BOOL=TRUE
     -DHDF5_BUILD_WITH_INSTALL_NAME:BOOL=ON)
 
@@ -42,3 +43,6 @@ superbuild_add_extra_cmake_args(
 
 superbuild_apply_patch(hdf5 fix-ext-pkg-find
   "Force proper logic for zlib and szip dependencies")
+
+superbuild_apply_patch(hdf5 szip-library-variables
+  "Link with the variables that szip provides")
