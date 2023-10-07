@@ -17,6 +17,7 @@ set(superbuild_python_version "${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}
 # variables. User can set/override these to change the Python being used.
 superbuild_add_extra_cmake_args(
   -DPYTHON_EXECUTABLE:FILEPATH=${Python3_EXECUTABLE}
+  -DPython_EXECUTABLE:FILEPATH=${Python3_EXECUTABLE}
   -DPython3_EXECUTABLE:FILEPATH=${Python3_EXECUTABLE})
 
 # FindPython3.cmake only set plural variables
@@ -29,6 +30,8 @@ if (python3_FIND_LIBRARIES)
   superbuild_add_extra_cmake_args(
     -DPYTHON_INCLUDE_DIR:PATH=${Python3_INCLUDE_DIR}
     -DPYTHON_LIBRARY:FILEPATH=${Python3_LIBRARY}
+    -DPython_INCLUDE_DIR:PATH=${Python3_INCLUDE_DIR}
+    -DPython_LIBRARY:FILEPATH=${Python3_LIBRARY}
     -DPython3_INCLUDE_DIR:PATH=${Python3_INCLUDE_DIR}
     -DPython3_LIBRARY:FILEPATH=${Python3_LIBRARY})
 endif()

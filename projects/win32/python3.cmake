@@ -46,6 +46,12 @@ superbuild_add_extra_cmake_args(
   -DPython3_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/Python/libs/${superbuild_python_lib}
   -DPython3_FIND_REGISTRY:STRING=NEVER
 
+  -DPython_EXECUTABLE:FILEPATH=<INSTALL_DIR>/Python/python.exe
+  -DPython_INCLUDE_DIR:PATH=<INSTALL_DIR>/Python/include/
+  -DPython_LIBRARY:FILEPATH=<INSTALL_DIR>/Python/libs/${superbuild_python_lib}
+  -DPython_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/Python/libs/${superbuild_python_lib}
+  -DPython_FIND_REGISTRY:STRING=NEVER
+
   -DPYTHON_EXECUTABLE:FILEPATH=<INSTALL_DIR>/Python/python.exe
   -DPYTHON_INCLUDE_DIR:PATH=<INSTALL_DIR>/Python/include/
   -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/Python/libs/${superbuild_python_lib}
