@@ -30,12 +30,12 @@ foreach (project IN LISTS system_projects)
   set("${project}_built_by_superbuild" FALSE)
 endforeach ()
 @superbuild_extra_variables@
-include(SuperbuildInstallMacros)
-include("@name@.bundle")
-
 if (NOT DEFINED superbuild_bundle_default_component)
   set(superbuild_bundle_default_component "superbuild")
 endif ()
+
+include(SuperbuildInstallMacros)
+include("@name@.bundle")
 
 if (NOT DEFINED superbuild_bundle_system_libraries_destination)
   set(superbuild_bundle_system_libraries_destination "bin")

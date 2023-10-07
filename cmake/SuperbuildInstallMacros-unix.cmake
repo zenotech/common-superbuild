@@ -179,7 +179,7 @@ function (_superbuild_unix_install_binary)
   endforeach ()
 
   if (NOT DEFINED _install_binary_COMPONENT)
-    set(_install_binary_COMPONENT ${superbuild_bundle_default_component})
+    set(_install_binary_COMPONENT "${superbuild_bundle_default_component}")
   endif ()
 
   install(CODE
@@ -472,7 +472,7 @@ function (superbuild_unix_install_python)
   endforeach ()
 
   if (NOT DEFINED _install_python_COMPONENT)
-    set(_install_python_COMPONENT ${superbuild_bundle_default_component})
+    set(_install_python_COMPONENT "${superbuild_bundle_default_component}")
   endif ()
 
   get_property(superbuild_install_no_external_dependencies GLOBAL PROPERTY
