@@ -115,7 +115,7 @@ function (superbuild_apple_create_app destination name binary)
   endforeach ()
 
   if (NOT DEFINED _create_app_COMPONENT)
-    set(_create_app_COMPONENT ${superbuild_bundle_default_component})
+    set(_create_app_COMPONENT "${superbuild_bundle_default_component}")
   endif ()
 
   install(CODE
@@ -208,7 +208,7 @@ function (superbuild_apple_install_utility destination name binary)
   endif ()
 
   if (NOT DEFINED _install_utility_COMPONENT)
-    set(_install_utility_COMPONENT ${superbuild_bundle_default_component})
+    set(_install_utility_COMPONENT "${superbuild_bundle_default_component}")
   endif ()
 
   install(CODE
@@ -288,7 +288,7 @@ function (superbuild_apple_install_module destination name binary location)
   endforeach ()
 
   if (NOT DEFINED _install_module_COMPONENT)
-    set(_install_module_COMPONENT ${superbuild_bundle_default_component})
+    set(_install_module_COMPONENT "${superbuild_bundle_default_component}")
   endif ()
 
   install(CODE
@@ -385,7 +385,7 @@ function (superbuild_apple_install_python destination name)
   endforeach ()
 
   if (NOT DEFINED _install_python_COMPONENT)
-    set(_install_python_COMPONENT ${superbuild_bundle_default_component})
+    set(_install_python_COMPONENT "${superbuild_bundle_default_component}")
   endif ()
 
   install(CODE
