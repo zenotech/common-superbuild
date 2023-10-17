@@ -3,7 +3,7 @@ if (BUILD_SHARED_LIBS)
 else ()
   set(ffmpeg_shared_args --disable-shared --enable-static)
 endif ()
-
+#set(CMAKE_OSX_SYSROOT "/Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk")
 set(ffmpeg_c_flags "${superbuild_c_flags}")
 if (APPLE AND CMAKE_OSX_SYSROOT)
   string(APPEND ffmpeg_c_flags " --sysroot=${CMAKE_OSX_SYSROOT}")
