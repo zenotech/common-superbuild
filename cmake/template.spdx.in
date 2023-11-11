@@ -1,0 +1,21 @@
+SPDXVersion: SPDX-2.2
+DataLicense: CC0-1.0
+SPDXID: SPDXRef-DOCUMENT
+DocumentName: @SPDX_PACKAGE_NAME@
+DocumentNamespace: @SPDX_DOCUMENT_NAMESPACE@/@SPDX_PACKAGE_NAME@
+Creator: Tool: CMake
+Created: @spdx_creation_time@
+
+##### Package: @SPDX_PACKAGE_NAME@
+
+PackageName: @SPDX_PACKAGE_NAME@
+SPDXID: SPDXRef-Package-@SPDX_PACKAGE_NAME@
+PackageDownloadLocation: @SPDX_DOWNLOAD_LOCATION@
+FilesAnalyzed: False
+PackageLicenseConcluded: @SPDX_LICENSE@
+PackageLicenseDeclared: @SPDX_LICENSE@
+PackageCopyrightText: <text>
+@SPDX_COPYRIGHT_TEXT@
+</text>
+@spdx_package_custom_license_part@
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-@SPDX_PACKAGE_NAME@
