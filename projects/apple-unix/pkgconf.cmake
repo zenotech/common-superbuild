@@ -2,6 +2,10 @@ superbuild_add_project(pkgconf
   CAN_USE_SYSTEM
   LICENSE_FILES
     COPYING
+  SPDX_LICENSE_IDENTIFIER
+    MIT
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018 pkgconf authors"
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>

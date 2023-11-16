@@ -61,6 +61,10 @@ superbuild_add_project_python_pyproject(numpy
   DEPENDS_OPTIONAL ${numpy_depends_optional}
   LICENSE_FILES
     LICENSE.txt
+  SPDX_LICENSE_IDENTIFIER
+    BSD-3-Clause
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2005-2023, NumPy Developers"
   PROCESS_ENVIRONMENT
     MKL         "None"
     ATLAS       "None"

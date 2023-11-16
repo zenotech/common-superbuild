@@ -9,6 +9,10 @@ superbuild_add_project(sqlite
   CAN_USE_SYSTEM
   LICENSE_FILES
     tea/license.terms # There is no license file in sqlite, only headers.
+  SPDX_LICENSE_IDENTIFIER
+    blessing
+  SPDX_COPYRIGHT_TEXT
+    NONE
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>

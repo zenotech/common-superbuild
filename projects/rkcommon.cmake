@@ -1,6 +1,10 @@
 superbuild_add_project(rkcommon
   LICENSE_FILES
     LICENSE.txt
+  SPDX_LICENSE_IDENTIFIER
+    Apache-2.0
+  SPDX_COPYRIGHT_TEXT
+    "Copyright Intel Corporation"
   DEPENDS cxx11 tbb
   CMAKE_ARGS
      -DBUILD_TESTING:BOOL=OFF

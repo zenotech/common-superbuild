@@ -14,6 +14,10 @@ endif ()
 superbuild_add_project(ffi
   LICENSE_FILES
     LICENSE
+  SPDX_LICENSE_IDENTIFIER
+    MIT
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 1996-2022  Anthony Green, Red Hat, Inc and others"
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>

@@ -6,6 +6,11 @@ endif ()
 superbuild_add_project(libjpegturbo
   LICENSE_FILES
     LICENSE.md
+  SPDX_LICENSE_IDENTIFIER
+    "IJG AND BSD-3-Clause AND Zlib"
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (C)2009-2023 D. R. Commander"
+    "Copyright (C)2015 Viktor Szathmáry"
   CMAKE_ARGS
     -DENABLE_SHARED:BOOL=${BUILD_SHARED_LIBS}
     -DENABLE_STATIC:BOOL=${libjpegturbo_enable_static}

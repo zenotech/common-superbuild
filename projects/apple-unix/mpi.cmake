@@ -52,6 +52,10 @@ superbuild_add_project(mpi
   DEPENDS_OPTIONAL fortran python3
   LICENSE_FILES
     COPYRIGHT
+  SPDX_LICENSE_IDENTIFIER
+    mpich2
+  SPDX_COPYRIGHT_TEXT
+    "1998--2020, Argonne National Laboratory"
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure

@@ -16,6 +16,10 @@ endif ()
 superbuild_add_project(xz
   LICENSE_FILES
     COPYING.LGPLv2.1
+  SPDX_LICENSE_IDENTIFIER
+    LGPL-2.1-or-later
+  SPDX_COPYRIGHT_TEXT
+    NONE
   CONFIGURE_COMMAND ""
   BUILD_COMMAND
     msbuild

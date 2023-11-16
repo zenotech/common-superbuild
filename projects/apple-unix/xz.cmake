@@ -7,6 +7,10 @@ endif ()
 superbuild_add_project(xz
   LICENSE_FILES
     COPYING.LGPLv2.1
+  SPDX_LICENSE_IDENTIFIER
+    LGPL-2.1-or-later
+  SPDX_COPYRIGHT_TEXT
+    NONE # The license intentionaly states there is no copyright claimed
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>

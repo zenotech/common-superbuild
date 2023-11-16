@@ -22,6 +22,10 @@ superbuild_add_project(freetype
   LICENSE_FILES
     LICENSE.TXT
     docs/FTL.TXT
+  SPDX_LICENSE_IDENTIFIER
+    FTL
+  SPDX_COPYRIGHT_TEXT
+    "Copyright 1996-2002, 2006 by David Turner, Robert Wilhelm, and Werner Lemberg"
   CMAKE_ARGS
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DCMAKE_INSTALL_LIBDIR:STRING=lib

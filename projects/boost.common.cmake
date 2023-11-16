@@ -72,9 +72,17 @@ endif ()
 
 superbuild_add_project(boost
   CAN_USE_SYSTEM
-  BUILD_IN_SOURCE 1
-  DEPENDS_OPTIONAL cxx11
-  LICENSE_FILES LICENSE_1_0.txt
+  BUILD_IN_SOURCE
+    1
+  DEPENDS_OPTIONAL
+    cxx11
+  LICENSE_FILES
+    LICENSE_1_0.txt
+  SPDX_LICENSE_IDENTIFIER
+    BSL-1.0
+  SPDX_COPYRIGHT_TEXT
+    "Copyright Beman Dawes, David Abrahams, 1998-2005"
+    "Copyright Rene Rivera 2004-2007"
   "${boost_build_commands}"
   ${boost_extra_arguments})
 
