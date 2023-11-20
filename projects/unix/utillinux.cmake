@@ -4,6 +4,7 @@ superbuild_add_project(utillinux
   LICENSE_FILES
     libuuid/COPYING # This is the license of the code that is installed
     Documentation/licenses/COPYING.BSD-3-Clause
+    AUTHORS
   SPDX_LICENSE_IDENTIFIER
     BSD-3-Clause
   SPDX_COPYRIGHT_TEXT

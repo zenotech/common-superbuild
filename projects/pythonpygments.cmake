@@ -5,6 +5,7 @@ superbuild_add_project_python_pyproject(pythonpygments
     pythonsetuptools
   LICENSE_FILES
     LICENSE
+    AUTHORS
   SPDX_LICENSE_IDENTIFIER
     BSD-2-Clause
   SPDX_COPYRIGHT_TEXT

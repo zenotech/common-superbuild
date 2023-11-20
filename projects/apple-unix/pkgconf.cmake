@@ -2,6 +2,7 @@ superbuild_add_project(pkgconf
   CAN_USE_SYSTEM
   LICENSE_FILES
     COPYING
+    AUTHORS
   SPDX_LICENSE_IDENTIFIER
     MIT
   SPDX_COPYRIGHT_TEXT

@@ -3,6 +3,7 @@ superbuild_add_project(openxrsdk
     jsoncpp
   LICENSE_FILES
     LICENSE
+    README.md
   SPDX_LICENSE_IDENTIFIER
     Apache-2.0
   SPDX_COPYRIGHT_TEXT
