@@ -175,7 +175,7 @@ function (_superbuild_windows_install_binary)
   endforeach ()
 
   if (NOT DEFINED _install_binary_COMPONENT)
-    set(_install_binary_COMPONENT "superbuild")
+    set(_install_binary_COMPONENT "${superbuild_bundle_default_component}")
   endif ()
 
   install(CODE
@@ -362,7 +362,7 @@ function (superbuild_windows_install_python)
   endforeach ()
 
   if (NOT DEFINED _install_python_COMPONENT)
-    set(_install_python_COMPONENT "superbuild")
+    set(_install_python_COMPONENT "${superbuild_bundle_default_component}")
   endif ()
 
   install(CODE

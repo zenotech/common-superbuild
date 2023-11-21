@@ -1,0 +1,18 @@
+diff -u -Nr -U5 scipy-1.11.2/meson.build scipy-1.11.2.use-blas-lapack/meson.build
+--- scipy-1.11.2/meson.build	2023-08-29 17:05:06.782174254 -0400
++++ scipy-1.11.2.use-blas-lapack/meson.build	2023-08-29 17:05:06.782174254 -0400
+@@ -11,12 +11,12 @@
+     'buildtype=debugoptimized',
+     'b_ndebug=if-release',
+     'c_std=c99',
+     'cpp_std=c++14',
+     'fortran_std=legacy',
+-    'blas=openblas',
+-    'lapack=openblas'
++    'blas=blas',
++    'lapack=lapack'
+   ],
+ )
+ 
+ # https://mesonbuild.com/Python-module.html
+ py_mod = import('python')

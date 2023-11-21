@@ -266,3 +266,20 @@ if (python3_enabled)
   include(python3.functions)
   superbuild_python_write_reqs("${CMAKE_BINARY_DIR}/requirements.txt")
 endif ()
+
+get_property(all_packages GLOBAL PROPERTY _superbuild_packages)
+if (all_packages)
+  if (UNIX AND NOT APPLE)
+    # Warn about missing chrpath or patchelf
+    find_program(_superbuild_chrpath chrpath)
+    find_program(_superbuild_patchelf patchelf)
+    mark_as_advanced(_superbuild_chrpath)
+    mark_as_advanced(_superbuild_patchelf)
+    if (NOT _superbuild_chrpath AND NOT _superbuild_patchelf)
+      message(WARNING
+        "Could not find chrpath or patchelf programs. The packaging "
+        "step will not be able to fix rpaths, the resulting package "
+        "may not be usable on other machines.")
+    endif ()
+  endif ()
+endif ()

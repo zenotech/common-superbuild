@@ -40,11 +40,16 @@ if (fortran_enabled)
   set(mpi_fortran_flags)
   set(mpi_environment
     FC ${CMAKE_Fortran_COMPILER})
+  # python is needed to wrap fortran. Use the superbuild version.
+  if (python3_enabled AND superbuild_python_executable)
+    list(APPEND mpi_environment
+      PYTHON ${superbuild_python_executable})
+  endif()
 endif ()
 
 superbuild_add_project(mpi
   CAN_USE_SYSTEM
-  DEPENDS_OPTIONAL fortran
+  DEPENDS_OPTIONAL fortran python3
   LICENSE_FILES
     COPYRIGHT
   BUILD_IN_SOURCE 1

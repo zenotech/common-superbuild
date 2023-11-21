@@ -7,21 +7,29 @@ set(_superbuild_enable_openssl "${SUPERBUILD_ENABLE_OPENSSL}")
 
 function (superbuild_find_projects var)
   set(projects
+    alembic
     boost
     bzip2
     cgns
     cxx11
+    cxx14
+    cxx17
     embree
     exodus
+    flexbison
     fortran
     freetype
     hdf5
     hdf5cpp
+    imath
     ispc
     jsoncpp
     lapack
     libjpegturbo
+    llvm
+    openmp
     matplotlib
+    meson
     mpi
     netcdf
     ninja
@@ -29,34 +37,53 @@ function (superbuild_find_projects var)
     numpy
     openimagedenoise
     openvkl
+    osmesa
     ospray
     ospraymaterials
     ospraymodulempi
+    pkgconf
     png
+    pybind11
     python3
     pythonaiohttp
+    pythonaiosignal
     pythonasynctimeout
     pythonattrs
     pythonbeniget
     pythoncffi
     pythonchardet
+    pythoncharsetnormalizer
+    pythoncontourpy
     pythoncppy
     pythoncryptography
     pythoncycler
     pythoncython
     pythondateutil
+    pythonflitcore
+    pythonfonttools
+    pythonfrozenlist
     pythongast
+    pythonhatchfancypypireadme
+    pythonhatchling
+    pythonhatchvcs
     pythonidna
     pythonkiwisolver
     pythonmako
+    pythonmarkupsafe
+    pythonmesonpython
     pythonmpi4py
     pythonmpmath
     pythonmultidict
+    pythonpackaging
+    pythonpandas
+    pythonpathspec
     pythonpillow
+    pythonpluggy
     pythonply
     pythonpycparser
     pythonpygments
     pythonpyparsing
+    pythonpyprojectmetadata
     pythonpythran
     pythonsemanticversion
     pythonsetuptools
@@ -64,7 +91,11 @@ function (superbuild_find_projects var)
     pythonsetuptoolsscm
     pythonsix
     pythontoml
+    pythontomli
+    pythontroveclassifiers
     pythontypingextensions
+    pythontzdata
+    pythonversioneer
     pythonwheel
     pythonwslinkasync
     pythonyarl
@@ -94,28 +125,24 @@ function (superbuild_find_projects var)
 
   if (NOT WIN32)
     list(APPEND projects
+      expat
       ffi
       ffmpeg
       gperf
-      libxml2
-      pkgconf
-      pybind11)
+      libxml2)
   endif ()
 
   if (NOT APPLE)
     list(APPEND projects
+      mesa
       openxrsdk)
   endif ()
 
   if (UNIX AND NOT APPLE)
     list(APPEND projects
-      expat
+      egl
       fontconfig
       glproto
-      llvm
-      mesa
-      meson
-      osmesa
       utillinux)
   endif ()
 

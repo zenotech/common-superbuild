@@ -22,7 +22,7 @@ if (numpy_enabled)
 endif ()
 
 if (scipy_enabled)
-  file(GLOB scipy_linalg_modules "${install_dir}/lib/python*/site-packages/scipy-*.egg/scipy/*/*.so")
+  file(GLOB scipy_linalg_modules "${install_dir}/lib/python*/site-packages/scipy/*/*.so")
   if (NOT scipy_linalg_modules)
     message(SEND_ERROR
       "Failed to find any SciPy modules?")

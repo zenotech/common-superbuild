@@ -135,8 +135,11 @@ function (_superbuild_ep_wrap_command var target command_name)
   if (command)
     string(TOLOWER "${command_name}" step)
     set(new_command
-      "${CMAKE_COMMAND}" -P
-      "${CMAKE_CURRENT_BINARY_DIR}/${target}-${step}.cmake")
+      #${command_name}_COMMAND
+        "${CMAKE_COMMAND}" -P
+          "${CMAKE_CURRENT_BINARY_DIR}/${target}-${step}.cmake"
+      "${command_name}_DEPENDS"
+        "${CMAKE_CURRENT_BINARY_DIR}/${target}-${step}.cmake")
   else ()
     set(has_command 0)
   endif ()

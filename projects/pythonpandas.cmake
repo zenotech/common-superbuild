@@ -1,11 +1,13 @@
-superbuild_add_project_python(pythonpandas
+superbuild_add_project_python_pyproject(pythonpandas
   PACKAGE pandas
   DEPENDS
     numpy
     pythoncython
     pythondateutil
     pythonsetuptools
-    pythonsix
+    pythontzdata
+    pythonversioneer
+    pythonwheel
     pytz
     zlib
   DEPENDS_OPTIONAL

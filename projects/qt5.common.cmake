@@ -68,6 +68,14 @@ if (NOT qt5_ENABLE_SVG)
     -skip qtsvg)
 endif()
 
+# Add option to build qtmultimedia, on by default
+option(qt5_ENABLE_MULTIMEDIA "Build Qt5 Multimedia library." ON)
+mark_as_advanced(qt5_ENABLE_MULTIMEDIA)
+if (NOT qt5_ENABLE_MULTIMEDIA)
+  list(APPEND qt5_options
+    -skip qtmultimedia)
+endif()
+
 foreach(module IN LISTS qt5_skip_modules)
   list(APPEND qt5_skip_args -skip ${module})
 endforeach()
@@ -100,6 +108,7 @@ superbuild_add_project(qt5
       -nomake tests
 
       -no-dbus
+      -no-icu
 
       -qt-libjpeg
       -qt-pcre
@@ -114,8 +123,3 @@ superbuild_add_project(qt5
 superbuild_add_extra_cmake_args(
   -DPARAVIEW_QT_VERSION:STRING=5
   -DQt5_DIR:PATH=<INSTALL_DIR>/lib/cmake/Qt5)
-
-if (qt5_SOURCE_SELECTION STREQUAL "5.15")
-  superbuild_apply_patch(qt5 missing-includes
-    "Add missing includes for newer GCC versions")
-endif ()

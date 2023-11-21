@@ -14,6 +14,18 @@
     variables:
         CMAKE_CONFIGURATION: linux
 
+.linux_oldmesa:
+    extends: .fedora36
+
+    variables:
+        CMAKE_CONFIGURATION: linux_oldmesa
+
+.linux_oldospraypython:
+    extends: .fedora36
+
+    variables:
+        CMAKE_CONFIGURATION: linux_oldospraypython
+
 .linux_openssl:
     extends: .fedora36
 
@@ -26,7 +38,7 @@
     tags:
         - build
         - docker
-        - linux
+        - linux-x86_64
         - paraview
 
 ## Linux-specific scripts

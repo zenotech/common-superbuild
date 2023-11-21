@@ -20,11 +20,23 @@
     variables:
         CMAKE_CONFIGURATION: macos_arm64
 
+.macos_arm64_oldospraypython:
+    extends: .macos_core
+
+    variables:
+        CMAKE_CONFIGURATION: macos_arm64_oldospraypython
+
 .macos_x86_64:
     extends: .macos_core
 
     variables:
         CMAKE_CONFIGURATION: macos_x86_64
+
+.macos_x86_64_oldospraypython:
+    extends: .macos_core
+
+    variables:
+        CMAKE_CONFIGURATION: macos_x86_64_oldospraypython
 
 .macos_x86_64_openssl:
     extends: .macos_core
@@ -37,7 +49,7 @@
 .macos_builder_tags:
     tags:
         - paraview
-        - macos
+        - macos-x86_64
         - shell
         - xcode-13.3
         - concurrent

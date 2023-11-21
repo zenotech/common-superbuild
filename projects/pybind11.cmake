@@ -9,24 +9,26 @@ superbuild_add_project(pybind11
   LICENSE_FILES
     LICENSE
   CMAKE_ARGS
-    -DPYBIND11_TEST:BOOL=OFF)
+    -DPYBIND11_TEST:BOOL=OFF
+    -Dprefix_for_pc_file:STRING=\\\${pcfiledir}/../..)
 
 if (WIN32)
   set(pybind11_python_args
+    --root=<INSTALL_DIR>
     "--prefix=Python")
 else ()
   set(pybind11_python_args
-    "--single-version-externally-managed"
-    "--install-lib=lib/python${superbuild_python_version}/site-packages"
-    "--prefix=")
+    "--prefix=<INSTALL_DIR>")
 endif ()
 
 superbuild_project_add_step(pybind11-pip-install
-  COMMAND   "${superbuild_python_executable}"
-            setup.py
+  COMMAND   ${superbuild_python_pip}
             install
-            --root=<INSTALL_DIR>
+            --no-index
+            --no-deps
+            --no-build-isolation
             ${pybind11_python_args}
+            <SOURCE_DIR>
   DEPENDEES install
   COMMENT   "Install pybind11 for pip"
   WORKING_DIRECTORY <SOURCE_DIR>)

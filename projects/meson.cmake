@@ -13,3 +13,11 @@ if (UNIX)
     DEPENDS    "${CMAKE_CURRENT_LIST_DIR}/scripts/meson.postinstall.cmake"
     COMMENT   "Make meson safe against long paths")
 endif ()
+
+if (WIN32)
+  set(meson_command
+    "<INSTALL_DIR>/Python/Scripts/meson.exe")
+else ()
+  set(meson_command
+    "<INSTALL_DIR>/bin/meson")
+endif ()

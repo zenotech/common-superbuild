@@ -134,6 +134,12 @@ External Project Definition
       be ignored. Providing an empty string for ``<cmd>`` effectively disables
       the download step.
 
+    ``DOWNLOAD_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the download step. See the ``DEPENDS`` argument
+      to :command:`ExternalProject_Add_Step`.
+
     *URL Download*
       ``URL <url1> [<url2>...]``
         List of paths and/or URL(s) of the external project's source. When more
@@ -417,6 +423,12 @@ External Project Definition
       The command may use
       :manual:`generator expressions <cmake-generator-expressions(7)>`.
 
+    ``UPDATE_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the update step. See the ``DEPENDS`` argument to
+      :command:`ExternalProject_Add_Step`.
+
     ``UPDATE_DISCONNECTED <bool>``
       .. versionadded:: 3.2
 
@@ -451,6 +463,12 @@ External Project Definition
       discard changes from a previous patch, but the patch command will be
       called again after updating to the new tag.
 
+    ``PATCH_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the patch step. See the ``DEPENDS`` argument to
+      :command:`ExternalProject_Add_Step`.
+
   **Configure Step Options:**
     The configure step is run after the download and update steps. By default,
     the external project is assumed to be a CMake project, but this can be
@@ -463,6 +481,12 @@ External Project Definition
       (:manual:`generator expressions <cmake-generator-expressions(7)>` are
       supported). For projects that require no configure step, specify this
       option with an empty string as the command to execute.
+
+    ``CONFIGURE_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the configure step. See the ``DEPENDS`` argument
+      to :command:`ExternalProject_Add_Step`.
 
     ``CMAKE_COMMAND /.../cmake``
       Specify an alternative cmake executable for the configure step (use an
@@ -575,6 +599,12 @@ External Project Definition
       specified with an empty string as the command to make the build step do
       nothing.
 
+    ``BUILD_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the build step. See the ``DEPENDS`` argument to
+      :command:`ExternalProject_Add_Step`.
+
     ``BUILD_IN_SOURCE <bool>``
       When this option is enabled, the build will be done directly within the
       external project's source tree. This should generally be avoided, the use
@@ -621,6 +651,12 @@ External Project Definition
       supported). Passing an empty string as the ``<cmd>`` makes the install
       step do nothing.
 
+    ``INSTALL_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the install step. See the ``DEPENDS`` argument
+      to :command:`ExternalProject_Add_Step`.
+
   **Test Step Options:**
     The test step is only defined if at least one of the following ``TEST_...``
     options are provided.
@@ -635,6 +671,12 @@ External Project Definition
       the other ``TEST_...`` options if providing an empty string as the test
       command, but prefer to omit all ``TEST_...`` options altogether if the
       test step target is not needed.
+
+    ``TEST_DEPENDS <file>...``
+      .. versionadded:: 3.28
+
+      Add file dependencies to the test step. See the ``DEPENDS`` argument to
+      :command:`ExternalProject_Add_Step`.
 
     ``TEST_BEFORE_INSTALL <bool>``
       When this option is enabled, the test step will be executed before the
@@ -2619,6 +2661,13 @@ function(_ep_add_preconfigure_command name step)
     set(uses_terminal FALSE)
   endif()
 
+  set(file_deps)
+  if (step STREQUAL "download")
+    get_property(file_deps TARGET ${name} PROPERTY _EP_DOWNLOAD_DEPENDS)
+  elseif (step STREQUAL "patch")
+    get_property(file_deps TARGET ${name} PROPERTY _EP_PATCH_DEPENDS)
+  endif ()
+
   # Pre-configure steps are expected to set their own work_dir
   ExternalProject_Add_Step(${name} ${step}
     INDEPENDENT        TRUE
@@ -2626,7 +2675,7 @@ function(_ep_add_preconfigure_command name step)
     COMMAND            ${_EPcommand_${STEP}}
     ALWAYS             ${_EPalways_${STEP}}
     EXCLUDE_FROM_MAIN  ${_EPexcludefrommain_${STEP}}
-    DEPENDS            ${_EPdepends_${STEP}}
+    DEPENDS            ${_EPdepends_${STEP}} ${file_deps}
     DEPENDEES          ${_EPdependees_${STEP}}
     USES_TERMINAL      ${uses_terminal}
   )
@@ -3323,7 +3372,7 @@ Update to Mercurial >= 2.1.1.
   set(_EPcommand_UPDATE         "${cmd}"      PARENT_SCOPE)
   set(_EPalways_UPDATE          "${always}"   PARENT_SCOPE)
   set(_EPexcludefrommain_UPDATE "${update_disconnected}" PARENT_SCOPE)
-  set(_EPdepends_UPDATE         ""            PARENT_SCOPE)
+  set(_EPdepends_UPDATE         "${_EP_UPDATE_DEPENDS}" PARENT_SCOPE)
   set(_EPdependees_UPDATE       download      PARENT_SCOPE)
 
 endfunction()
@@ -3534,6 +3583,8 @@ function(_ep_add_configure_command name)
     # Depend on other external projects (file-level)
     _ep_get_file_deps(file_deps ${name})
   endif()
+  get_property(cmd_file_deps TARGET ${name} PROPERTY _EP_CONFIGURE_DEPENDS)
+  list(APPEND file_deps ${cmd_file_deps})
 
   _ep_extract_configure_command(cmd ${name})
 
@@ -3592,6 +3643,8 @@ function(_ep_add_build_command name)
     # Depend on other external projects (file-level)
     _ep_get_file_deps(file_deps ${name})
   endif()
+  get_property(cmd_file_deps TARGET ${name} PROPERTY _EP_BUILD_DEPENDS)
+  list(APPEND file_deps ${cmd_file_deps})
 
   get_property(cmd_set TARGET ${name} PROPERTY _EP_BUILD_COMMAND SET)
   if(cmd_set)
@@ -3669,6 +3722,8 @@ function(_ep_add_install_command name)
     set(uses_terminal "")
   endif()
 
+  get_property(file_deps TARGET ${name} PROPERTY _EP_INSTALL_DEPENDS)
+
   set(__cmdQuoted)
   foreach(__item IN LISTS cmd)
     string(APPEND __cmdQuoted " [==[${__item}]==]")
@@ -3678,6 +3733,7 @@ function(_ep_add_install_command name)
       INDEPENDENT FALSE
       COMMAND ${__cmdQuoted}
       WORKING_DIRECTORY \${binary_dir}
+      DEPENDS \${file_deps}
       DEPENDEES build
       ${log}
       ${uses_terminal}
@@ -3693,6 +3749,7 @@ function(_ep_add_test_command name)
   get_property(after TARGET ${name} PROPERTY _EP_TEST_AFTER_INSTALL)
   get_property(exclude TARGET ${name} PROPERTY _EP_TEST_EXCLUDE_FROM_MAIN)
   get_property(cmd_set TARGET ${name} PROPERTY _EP_TEST_COMMAND SET)
+  get_property(file_deps TARGET ${name} PROPERTY _EP_TEST_DEPENDS)
 
   # Only actually add the test step if one of the test related properties is
   # explicitly set. (i.e. the test step is omitted unless requested...)
@@ -3746,6 +3803,7 @@ function(_ep_add_test_command name)
         INDEPENDENT FALSE
         COMMAND ${__cmdQuoted}
         WORKING_DIRECTORY \${binary_dir}
+        DEPENDS \${file_deps}
         ${dependees_args}
         ${dependers_args}
         ${exclude_args}
@@ -3773,6 +3831,7 @@ macro(_ep_get_add_keywords out_var)
     # Download step options
     #
     DOWNLOAD_COMMAND
+    DOWNLOAD_DEPENDS
     #
     URL
     URL_HASH
@@ -3816,15 +3875,18 @@ macro(_ep_get_add_keywords out_var)
     # Update step options
     #
     UPDATE_COMMAND
+    UPDATE_DEPENDS
     UPDATE_DISCONNECTED
     #
     # Patch step options
     #
     PATCH_COMMAND
+    PATCH_DEPENDS
     #
     # Configure step options
     #
     CONFIGURE_COMMAND
+    CONFIGURE_DEPENDS
     CMAKE_COMMAND
     CMAKE_GENERATOR
     CMAKE_GENERATOR_PLATFORM
@@ -3839,6 +3901,7 @@ macro(_ep_get_add_keywords out_var)
     # Build step options
     #
     BUILD_COMMAND
+    BUILD_DEPENDS
     BUILD_IN_SOURCE
     BUILD_ALWAYS
     BUILD_BYPRODUCTS
@@ -3846,10 +3909,12 @@ macro(_ep_get_add_keywords out_var)
     # Install step options
     #
     INSTALL_COMMAND
+    INSTALL_DEPENDS
     #
     # Test step options
     #
     TEST_COMMAND
+    TEST_DEPENDS
     TEST_BEFORE_INSTALL
     TEST_AFTER_INSTALL
     TEST_EXCLUDE_FROM_MAIN

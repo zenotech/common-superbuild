@@ -1,4 +1,4 @@
-superbuild_add_project_python(pythonattrs
+superbuild_add_project_python_pyproject(pythonattrs
   PACKAGE attrs
-  DEPENDS pythonsetuptools
+  DEPENDS pythonhatchling pythonhatchvcs pythonhatchfancypypireadme
   LICENSE_FILES LICENSE)

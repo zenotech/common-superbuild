@@ -4,6 +4,7 @@ if (WIN32)
     pywin32)
 endif ()
 
-superbuild_add_project_python(pythonsetuptools
-  PACKAGE setuptools ${pythonsetuptools_depends}
+superbuild_add_project_python_pyproject(pythonsetuptools
+  PACKAGE setuptools
+  DEPENDS ${pythonsetuptools_depends}
   LICENSE_FILES LICENSE)

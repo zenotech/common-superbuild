@@ -8,6 +8,16 @@
         {
             "group": "master",
             "site": "gitlab-ci",
+            "buildname": "[linux_oldmesa]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
+            "buildname": "[linux_oldospraypython]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
             "buildname": "[linux_openssl]"
         },
         {
@@ -18,12 +28,27 @@
         {
             "group": "master",
             "site": "gitlab-ci",
+            "buildname": "[macos_arm64_oldospraypython]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
             "buildname": "[macos_x86_64]"
         },
         {
             "group": "master",
             "site": "gitlab-ci",
+            "buildname": "[macos_x86_64_oldospraypython]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
             "buildname": "[macos_x86_64_openssl]"
+        },
+        {
+            "group": "master",
+            "site": "gitlab-ci",
+            "buildname": "[windows_oldospraypython_vs2022]"
         },
         {
             "group": "master",

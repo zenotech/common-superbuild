@@ -12,3 +12,12 @@ superbuild_add_project(pkgconf
   BUILD_IN_SOURCE 1)
 
 set(superbuild_pkgconf "<INSTALL_DIR>/bin/pkgconf")
+
+superbuild_project_add_step(pkg-config-symlink
+  COMMAND   "${CMAKE_COMMAND}"
+            -E create_symlink
+            pkgconf
+            <INSTALL_DIR>/bin/pkg-config
+  DEPENDEES install
+  COMMENT   "Create `pkg-config` symlink"
+  WORKING_DIRECTORY <SOURCE_DIR>)

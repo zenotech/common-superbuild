@@ -1,0 +1,16 @@
+diff -u -Nr -U5 llvm-project-15.0.6.src/llvm/CMakeLists.txt llvm-project-15.0.6.src.no-force-install-name-dir/llvm/CMakeLists.txt
+--- llvm-project-15.0.6.src/llvm/CMakeLists.txt	2022-11-29 05:05:58.000000000 -0500
++++ llvm-project-15.0.6.src.no-force-install-name-dir/llvm/CMakeLists.txt	2023-09-07 14:43:10.962210059 -0400
+@@ -11,11 +11,11 @@
+ # New in CMake 3.20. https://cmake.org/cmake/help/latest/policy/CMP0116.html
+ if(POLICY CMP0116)
+   cmake_policy(SET CMP0116 OLD)
+ endif()
+ 
+-set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
++#set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
+ 
+ if(NOT DEFINED LLVM_VERSION_MAJOR)
+   set(LLVM_VERSION_MAJOR 15)
+ endif()
+ if(NOT DEFINED LLVM_VERSION_MINOR)

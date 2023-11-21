@@ -1,4 +1,4 @@
-superbuild_add_project_python(pythoncppy
+superbuild_add_project_python_pyproject(pythoncppy
   PACKAGE cppy
-  DEPENDS pythonsetuptools
+  DEPENDS pythonsetuptools pythonsetuptoolsscm
   LICENSE_FILES LICENSE)

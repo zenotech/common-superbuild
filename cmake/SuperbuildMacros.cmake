@@ -150,6 +150,9 @@ function (superbuild_add_project name)
     elseif (arg STREQUAL "SELECTABLE")
       set(selectable TRUE)
       set(grab)
+    elseif (arg STREQUAL "BUILD_SHARED_LIBS_INDEPENDENT")
+      set(build_shared_libs_independent TRUE)
+      set(grab)
     elseif (arg STREQUAL "HELP_STRING")
       set(grab help_string)
     elseif (arg STREQUAL "DEPENDS")
@@ -218,12 +221,12 @@ function (superbuild_add_project name)
     # Warn if optional dependencies are unknown.
     if (missing_deps_optional)
       string(REPLACE ";" ", " missing_deps_optional "${missing_deps_optional}")
-      message(AUTHOR_WARNING "Optional dependencies for ${name} not found: ${missing_deps_optional}")
+      message(AUTHOR_WARNING "Optional dependencies for ${name} not found, is it in the list of projects?: ${missing_deps_optional}")
     endif ()
     # Error if required dependencies are unknown.
     if (missing_deps)
       string(REPLACE ";" ", " missing_deps "${missing_deps}")
-      message(FATAL_ERROR "Dependencies for ${name} not found: ${missing_deps}")
+      message(FATAL_ERROR "Dependencies for ${name} not found, is it in the list of projects?: ${missing_deps}")
     endif ()
 
     list(APPEND ep_arguments DEPENDS ${depends})
@@ -413,38 +416,53 @@ endfunction ()
 ### `pyproject.toml`
 
 ```
-superbuild_add_project_python_toml(<NAME> <ARG>...)
+superbuild_add_project_python_pyproject(<NAME> <ARG>...)
 ```
 
-Same as `superbuild_add_project`, but sets build commands to
-work properly out of the box for `pyproject.toml`.
+Same as `superbuild_add_project`, but installs the project using
+`pyproject.toml` patterns.
 #]==]
-macro (superbuild_add_project_python_toml _name)
-  cmake_parse_arguments(_superbuild_python_project
-    ""
+macro (superbuild_add_project_python_pyproject _name)
+  cmake_parse_arguments(_superbuild_add_project_python_pyproject
+    "PYPROJECT_TOML_NO_WHEEL"
     "PACKAGE"
-    ""
+    "LICENSE_FILES;PROCESS_ENVIRONMENT;DEPENDS;DEPENDS_OPTIONAL"
     ${ARGN})
 
-  if (NOT DEFINED _superbuild_python_project_PACKAGE)
+  if (NOT DEFINED _superbuild_add_project_python_pyproject_PACKAGE)
     message(FATAL_ERROR
       "Python requires that projects have a package specified")
   endif ()
 
+  if (superbuild_build_phase AND NOT superbuild_python_pip)
+    message(FATAL_ERROR
+      "No `pip` available?")
+  endif ()
+
   if (SUPERBUILD_SKIP_PYTHON_PROJECTS)
-    superbuild_require_python_package("${_name}" "${_superbuild_python_project_PACKAGE}")
+    superbuild_require_python_package("${_name}" "${_superbuild_add_project_python_pyproject_PACKAGE}")
   else ()
     if (WIN32)
       set(_superbuild_python_args
+        --root=<INSTALL_DIR>
         "--prefix=Python")
     else ()
       set(_superbuild_python_args
-        "--prefix=.")
+        "--prefix=<INSTALL_DIR>")
+    endif ()
+
+    if (NOT _superbuild_add_project_python_pyproject_PYPROJECT_TOML_NO_WHEEL)
+      list(APPEND _superbuild_add_project_python_pyproject_DEPENDS
+        pythonwheel)
     endif ()
 
     superbuild_add_project("${_name}"
       BUILD_IN_SOURCE 1
-      DEPENDS python3 ${_superbuild_python_project_UNPARSED_ARGUMENTS}
+      DEPENDS python3 ${_superbuild_add_project_python_pyproject_DEPENDS}
+      DEPENDS_OPTIONAL ${_superbuild_add_project_python_pyproject_DEPENDS_OPTIONAL}
+      LICENSE_FILES ${_superbuild_add_project_python_pyproject_LICENSE_FILES}
+      PROCESS_ENVIRONMENT ${_superbuild_add_project_python_pyproject_PROCESS_ENVIRONMENT}
+      ${_superbuild_add_project_python_pyproject_UNPARSED_ARGUMENTS}
       CONFIGURE_COMMAND
         ""
       BUILD_COMMAND
@@ -454,10 +472,9 @@ macro (superbuild_add_project_python_toml _name)
           install
           --no-index
           --no-deps
-          --root=<INSTALL_DIR>
+          --no-build-isolation
           ${_superbuild_python_args}
-          ${${_name}_python_install_args}
-          .)
+          "<SOURCE_DIR>")
   endif ()
 endmacro ()
 
@@ -508,7 +525,7 @@ macro (superbuild_add_project_python_wheel _name)
   # license files in wheels are recovered from the install
   set(license_files)
   foreach (license_file IN LISTS _superbuild_add_project_python_wheel_LICENSE_FILES_WHEEL)
-      list(APPEND license_files "${python_module_install_location}/${license_file}")
+    list(APPEND license_files "${python_module_install_location}/${license_file}")
   endforeach ()
 
   superbuild_add_project("${_name}"
@@ -590,6 +607,7 @@ function (superbuild_apply_patch _name _patch _comment)
               --whitespace=fix
               -p1
               "${CMAKE_CURRENT_LIST_DIR}/patches/${_name}-${_patch}.patch"
+    DEPENDS   "${CMAKE_CURRENT_LIST_DIR}/patches/${_name}-${_patch}.patch"
     DEPENDEES patch ${patch-steps}
     DEPENDERS configure
     ${_independent}
@@ -1120,8 +1138,11 @@ function (_superbuild_add_project_internal name)
   set(cmake_params)
   # Pass down C, CXX, and Fortran flags from this project.
   foreach (flag IN ITEMS
+      CMAKE_C_COMPILER
       CMAKE_C_COMPILER_LAUNCHER
+      CMAKE_CXX_COMPILER
       CMAKE_CXX_COMPILER_LAUNCHER
+      CMAKE_Fortran_COMPILER
       CMAKE_Fortran_COMPILER_LAUNCHER
 
       CMAKE_C_FLAGS_DEBUG
@@ -1232,6 +1253,13 @@ function (_superbuild_add_project_internal name)
   set(build_env)
   if (NOT MSVC)
     list(APPEND build_env
+      # These would mirror `-DCMAKE_C_COMPILER=` but, on macOS, `autoconf`
+      # isn't happy for some reason. Just skip it; we've gone long enough
+      # without it. See #67.
+      #CC "${CMAKE_C_COMPILER}"
+      #CXX "${CMAKE_CXX_COMPILER}"
+      #FC "${CMAKE_Fortran_COMPILER}"
+
       LDFLAGS "${project_ld_flags}"
       CPPFLAGS "${project_cpp_flags}"
       CXXFLAGS "${project_cxx_flags}"
@@ -1337,6 +1365,7 @@ function (_superbuild_add_project_internal name)
       -DCMAKE_Fortran_FLAGS:STRING=${project_f_flags}
       -DCMAKE_SHARED_LINKER_FLAGS:STRING=${project_ld_flags}
       -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=${CMAKE_OSX_DEPLOYMENT_TARGET}
+      -DCMAKE_EXPORT_NO_PACKAGE_REGISTRY:BOOL=ON
       ${cmake_params}
 
     LIST_SEPARATOR "${_superbuild_list_separator}")

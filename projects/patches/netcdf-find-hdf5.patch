@@ -1,0 +1,23 @@
+From 1eb5c2f91c11a6903a77febfd1b67fc45e433430 Mon Sep 17 00:00:00 2001
+From: Ben Boeckel <ben.boeckel@kitware.com>
+Date: Wed, 6 Sep 2023 14:43:53 -0400
+Subject: [PATCH] netCDFConfig: find HDF5 if needed
+
+See: #1733
+---
+ netCDFConfig.cmake.in | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/netCDFConfig.cmake.in b/netCDFConfig.cmake.in
+index 9d68eec5a2..f86f597dbb 100644
+--- a/netCDFConfig.cmake.in
++++ b/netCDFConfig.cmake.in
+@@ -40,3 +40,8 @@ set(netCDF_HAS_DAP4 @HAS_DAP4@)
+ set(netCDF_HAS_DISKLESS @HAS_DISKLESS@)
+ set(netCDF_HAS_MMAP @HAS_MMAP@)
+ set(netCDF_HAS_JNA @HAS_JNA@)
++
++if (netCDF_HAS_HDF4 OR netCDF_HAS_HDF5)
++  include(CMakeFindDependencyMacro)
++  find_dependency(HDF5)
++endif ()

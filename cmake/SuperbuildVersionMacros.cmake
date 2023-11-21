@@ -22,7 +22,7 @@ source that is being built. To that end, this module provides functions which
 determine a version number for a source based on its source selection. It uses
 the `<NAME>_SOURCE_DIR` (for a `source` selection) or the build tree location
 (for a `git` selection) to query the version of the checked out code using `git
-describe`.
+describe --tags --match=v*`.
 
 If it turns out that Git is either not available or the source directory is not
 a Git checkout, it reads a file in the source tree if available and if all else
@@ -132,6 +132,7 @@ function (_superbuild_detect_version_git var source_dir default version_file)
         COMMAND         "${GIT_EXECUTABLE}"
                         describe
                         --tags
+                        --match=v*
         RESULT_VARIABLE result
         OUTPUT_VARIABLE output
         WORKING_DIRECTORY "${source_dir}"

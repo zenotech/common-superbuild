@@ -1,4 +1,4 @@
-superbuild_add_project_python(pythonsetuptoolsrust
+superbuild_add_project_python_pyproject(pythonsetuptoolsrust
   PACKAGE setuptools_rust
-  DEPENDS pythonsetuptools pythonsetuptoolsscm pythonwheel pythontoml
+  DEPENDS pythonsetuptools pythonsetuptoolsscm pythontoml pythonsemanticversion
   LICENSE_FILES LICENSE)
