@@ -1,6 +1,9 @@
 set(BUILD_TESTING ON CACHE BOOL "")
 set(GENERATE_SPDX ON CACHE BOOL "")
 
+# Accept inclusion policy behavior.
+cmake_policy(SET CMP0011 NEW)
+
 # Enable the `IN_LIST` operator.
 cmake_policy(SET CMP0057 NEW)
 
