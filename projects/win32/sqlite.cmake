@@ -63,6 +63,10 @@ endif ()
 superbuild_add_project(sqlite
   LICENSE_FILES
     tea/license.terms # There is no license file in sqlite, only headers.
+  SPDX_LICENSE_IDENTIFIER
+    blessing
+  SPDX_COPYRIGHT_TEXT
+    NONE
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
   INSTALL_COMMAND

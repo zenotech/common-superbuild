@@ -13,6 +13,10 @@ superbuild_add_project(openssl
   DEPENDS zlib
   LICENSE_FILES
     LICENSE
+  SPDX_LICENSE_IDENTIFIER
+    OpenSSL
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 1998-2019 The OpenSSL Project"
   CONFIGURE_COMMAND
     "<SOURCE_DIR>/config"
       "--prefix=<INSTALL_DIR>"

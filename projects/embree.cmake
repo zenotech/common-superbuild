@@ -30,6 +30,10 @@ superbuild_add_project(embree
   DEPENDS ispc tbb cxx11
   LICENSE_FILES
     LICENSE.txt
+  SPDX_LICENSE_IDENTIFIER
+    Apache-2.0
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) Intel Corporation"
   CMAKE_ARGS
     ${embree_isas}
     -DBUILD_TESTING:BOOL=OFF

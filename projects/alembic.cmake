@@ -27,6 +27,10 @@ superbuild_add_project(alembic
   BUILD_SHARED_LIBS_INDEPENDENT
   LICENSE_FILES
     LICENSE.txt
+  SPDX_LICENSE_IDENTIFIER
+    "BSD-3-Clause"
+  SPDX_COPYRIGHT_TEXT
+    "Copyright © 2009-2015 Lucasfilm Entertainment Company Ltd. or Lucasfilm Ltd."
   DEPENDS imath
   CMAKE_ARGS
     -DALEMBIC_ILMBASE_LINK_STATIC:BOOL=${alembic_ilmbase_link_static}

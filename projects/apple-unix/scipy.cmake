@@ -8,6 +8,10 @@ superbuild_add_project_python_pyproject(scipy
   DEPENDS fortran numpy lapack pybind11 pythonpythran pythonmesonpython pythonwheel pkgconf
   LICENSE_FILES
     LICENSE.txt
+  SPDX_LICENSE_IDENTIFIER
+    BSD-3-Clause
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2001-2002 Enthought, Inc. 2003-2023, SciPy Developers"
   PROCESS_ENVIRONMENT
     ${scipy_process_environment})
 

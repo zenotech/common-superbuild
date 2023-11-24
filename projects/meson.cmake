@@ -1,7 +1,16 @@
 superbuild_add_project_python(meson
-  PACKAGE meson
-  DEPENDS pythonsetuptools ninja
-  LICENSE_FILES COPYING)
+  PACKAGE
+    meson
+  DEPENDS
+    pythonsetuptools
+    ninja
+  LICENSE_FILES
+    COPYING
+  SPDX_LICENSE_IDENTIFIER
+    Apache-2.0
+  SPDX_COPYRIGHT_TEXT
+    "Copyright 2012-2023 The Meson development team"
+  )
 
 if (UNIX)
   superbuild_project_add_step(meson-postinstall

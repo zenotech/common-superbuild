@@ -103,6 +103,18 @@ following extensions:
     Sets environment variables for the configure, build, and install steps.
     Some are "magic" and are prepended to the current value (namely ``PATH``,
     ``LD_LIBRARY_PATH`` (Linux), and ``DYLD_LIBRARY_PATH`` (macOS)).
+  - `SPDX_LICENSE_IDENTIFIER`: A license identifier that applies to the
+    project and will be used for SPDX file generation. Not used if no
+    `LICENSE_FILES` is set.
+  - `SPDX_COPYRIGHT_TEXT`: A copyright text that applies to the project
+    and will be used for SPDX file generation. Not used if no `LICENSE_FILES`
+    is set.
+  - `SPDX_CUSTOM_LICENSE_FILE`: The file of a custom license that applies
+    to the project and will be included during SPDX file generation.
+    Not used if no `LICENSE_FILES` is set.
+  - `SPDX_CUSTOM_LICENSE_NAME`: The name of the license contained in
+    the custom license file and used in the license identifier.
+    Not used if no `LICENSE_FILES` is set.
 
 Projects which are depended on may declare that they have CMake variables and
 flags which must be set in dependent projects (e.g., a Python project would set
@@ -123,6 +135,10 @@ function (superbuild_add_project name)
   set(optional_depends)
   set(license_files)
   set(process_environment)
+  set(spdx_license_identifier)
+  set(spdx_copyright_text)
+  set(spdx_custom_license_file)
+  set(spdx_custom_license_name)
 
   set(ep_arguments)
   set(grab)
@@ -161,6 +177,14 @@ function (superbuild_add_project name)
       set(grab optional_depends)
     elseif (arg STREQUAL "LICENSE_FILES")
       set(grab license_files)
+    elseif (arg STREQUAL "SPDX_LICENSE_IDENTIFIER")
+      set(grab spdx_license_identifier)
+    elseif (arg STREQUAL "SPDX_COPYRIGHT_TEXT")
+      set(grab spdx_copyright_text)
+    elseif (arg STREQUAL "SPDX_CUSTOM_LICENSE_FILE")
+      set(grab spdx_custom_license_file)
+    elseif (arg STREQUAL "SPDX_CUSTOM_LICENSE_NAME")
+      set(grab spdx_custom_license_name)
     elseif (arg IN_LIST keywords)
       set(grab ep_arguments)
       list(APPEND ep_arguments
@@ -302,6 +326,20 @@ function (superbuild_add_project name)
     set_property(GLOBAL
       PROPERTY
         "${name}_license_files" ${license_files})
+    string(REGEX REPLACE ";" " " spdx_license_identifier "${spdx_license_identifier}")
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_spdx_license_identifier" ${spdx_license_identifier})
+    string(REGEX REPLACE ";" " " spdx_copyright_text "${spdx_copyright_text}")
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_spdx_copyright_text" ${spdx_copyright_text})
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_spdx_custom_license_file" ${spdx_custom_license_file})
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_spdx_custom_license_name" ${spdx_custom_license_name})
   endif ()
 endfunction ()
 
@@ -425,8 +463,8 @@ Same as `superbuild_add_project`, but installs the project using
 macro (superbuild_add_project_python_pyproject _name)
   cmake_parse_arguments(_superbuild_add_project_python_pyproject
     "PYPROJECT_TOML_NO_WHEEL"
-    "PACKAGE"
-    "LICENSE_FILES;PROCESS_ENVIRONMENT;DEPENDS;DEPENDS_OPTIONAL"
+    "PACKAGE;SPDX_CUSTOM_LICENSE_FILE;SPDX_CUSTOM_LICENSE_NAME"
+    "LICENSE_FILES;PROCESS_ENVIRONMENT;DEPENDS;DEPENDS_OPTIONAL;SPDX_LICENSE_IDENTIFIER;SPDX_COPYRIGHT_TEXT"
     ${ARGN})
 
   if (NOT DEFINED _superbuild_add_project_python_pyproject_PACKAGE)
@@ -462,6 +500,10 @@ macro (superbuild_add_project_python_pyproject _name)
       DEPENDS_OPTIONAL ${_superbuild_add_project_python_pyproject_DEPENDS_OPTIONAL}
       LICENSE_FILES ${_superbuild_add_project_python_pyproject_LICENSE_FILES}
       PROCESS_ENVIRONMENT ${_superbuild_add_project_python_pyproject_PROCESS_ENVIRONMENT}
+      SPDX_LICENSE_IDENTIFIER "${_superbuild_add_project_python_pyproject_SPDX_LICENSE_IDENTIFIER}"
+      SPDX_COPYRIGHT_TEXT "${_superbuild_add_project_python_pyproject_SPDX_COPYRIGHT_TEXT}"
+      SPDX_CUSTOM_LICENSE_FILE "${_superbuild_add_project_python_pyproject_SPDX_CUSTOM_LICENSE_FILE}"
+      SPDX_CUSTOM_LICENSE_NAME "${_superbuild_add_project_python_pyproject_SPDX_CUSTOM_LICENSE_NAME}"
       ${_superbuild_add_project_python_pyproject_UNPARSED_ARGUMENTS}
       CONFIGURE_COMMAND
         ""
@@ -496,13 +538,17 @@ that the source for such projects must be a wheel that may be extracted using
     Relative path to license files in the installed wheel, in order to install
     them in under `share/licenses/<project>`. Needed only if the project does not install them
     itself.
+  - `SPDX_LICENSE_IDENTIFIER`: A license identifier for SPDX file generation
+  - `SPDX_COPYRIGHT_TEXT`: A copyright text for SPDX file generation
+  - `SPDX_CUSTOM_LICENSE_FILE`: A file containing a custom license that applies
+  - `SPDX_CUSTOM_LICENSE_NAME`: The name of the custom license
 
 #]==]
 macro (superbuild_add_project_python_wheel _name)
   cmake_parse_arguments(_superbuild_add_project_python_wheel
     ""
-    ""
-    "LICENSE_FILES_WHEEL;DEPENDS"
+    "SPDX_CUSTOM_LICENCE_FILE;SPDX_CUSTOM_LICENCE_NAME"
+    "LICENSE_FILES_WHEEL;DEPENDS;SPDX_LICENSE_IDENTIFIER;SPDX_COPYRIGHT_TEXT"
     ${ARGN})
 
   if (superbuild_build_phase AND NOT superbuild_python_pip)
@@ -533,6 +579,10 @@ macro (superbuild_add_project_python_wheel _name)
     DOWNLOAD_NO_EXTRACT 1
     DEPENDS python3 ${_superbuild_add_project_python_wheel_DEPENDS}
     LICENSE_FILES ${license_files}
+    SPDX_LICENSE_IDENTIFIER "${_superbuild_add_project_python_wheel_SPDX_LICENSE_IDENTIFIER}"
+    SPDX_COPYRIGHT_TEXT "${_superbuild_add_project_python_wheel_SPDX_COPYRIGHT_TEXT}"
+    SPDX_CUSTOM_LICENSE_FILE "${_superbuild_add_project_python_wheel_SPDX_CUSTOM_LICENSE_FILE}"
+    SPDX_CUSTOM_LICENSE_NAME "${_superbuild_add_project_python_wheel_SPDX_CUSTOM_LICENSE_NAME}"
     CONFIGURE_COMMAND
       ""
     BUILD_COMMAND
@@ -1402,6 +1452,65 @@ function (_superbuild_add_project_internal name)
     ExternalProject_add_step("${name}" install-licenses
       ${license_install_command}
       DEPENDEES install)
+  endif ()
+
+  # Generate and install SPDX file
+  if (_superbuild_generate_spdx AND license_files_set)
+
+    # Recover project specific SPDX information
+    get_property(spdx_package_license GLOBAL PROPERTY "${name}_spdx_license_identifier")
+    if (NOT spdx_package_license)
+      message(AUTHOR_WARNING
+        "The ${name} project should have a non-empty `SPDX_LICENSE_IDENTIFIER`. Defaulting to NOASSERTION.")
+      set(spdx_package_license "NOASSERTION")
+    endif ()
+    get_property(spdx_package_copyright_text GLOBAL PROPERTY "${name}_spdx_copyright_text")
+    if (NOT spdx_package_copyright_text)
+      message(AUTHOR_WARNING
+        "The ${name} project should have a non-empty `SPDX_COPYRIGHT_TEXT`. Defaulting to NOASSERTION.")
+      set(spdx_package_copyright_text "NOASSERTION")
+    endif ()
+    set(spdx_package_custom_license_part)
+    get_property(spdx_package_custom_license_file GLOBAL PROPERTY "${name}_spdx_custom_license_file")
+    get_property(spdx_package_custom_license_name GLOBAL PROPERTY "${name}_spdx_custom_license_name")
+
+    # Parse SPDX location from project revision
+    cmake_parse_arguments(spdx
+      ""
+      "URL;GIT_REPOSITORY;GIT_TAG"
+      ""
+      ${${name}_revision})
+    if (spdx_URL)
+      set(spdx_package_download_location ${spdx_URL})
+    elseif (spdx_GIT_REPOSITORY)
+      set(spdx_package_download_location ${spdx_GIT_REPOSITORY}@${spdx_GIT_TAG})
+    endif ()
+
+    # Craft the call to the SuperbuildGenerateSPDX CMake script
+    set(superbuild_spdx_output_dir "${CMAKE_CURRENT_BINARY_DIR}/${project}/tmp")
+    set(superbuild_spdx_script_command COMMAND "${CMAKE_COMMAND}"
+      -DSOURCE_DIR=<SOURCE_DIR>
+      -DOUTPUT_DIR=${superbuild_spdx_output_dir}
+      -DSPDX_PACKAGE_NAME=${project}
+      -DSPDX_DOCUMENT_NAMESPACE=${superbuild_spdx_document_namespace}
+      -DSPDX_LICENSE=${spdx_package_license}
+      -DSPDX_COPYRIGHT_TEXT=${spdx_package_copyright_text}
+      -DSPDX_DOWNLOAD_LOCATION=${spdx_package_download_location})
+    if (spdx_package_custom_license_file)
+      set(superbuild_spdx_script_command ${superbuild_spdx_script_command}
+        -DSPDX_CUSTOM_LICENSE_FILE=${spdx_package_custom_license_file}
+        -DSPDX_CUSTOM_LICENSE_NAME=${spdx_package_custom_license_name})
+    endif ()
+    set(superbuild_spdx_script_command ${superbuild_spdx_script_command}
+        -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/SuperbuildGenerateSPDX.cmake)
+
+    # Add the install-spdx step that generates and install SPDX file
+    set(superbuild_spdx_install_dir "<INSTALL_DIR>/share/doc/${project}/spdx")
+    ExternalProject_add_step("${name}" install-spdx
+      ${superbuild_spdx_script_command}
+      COMMAND "${CMAKE_COMMAND}" -E make_directory "${superbuild_spdx_install_dir}"
+      COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${superbuild_spdx_output_dir}/${project}.spdx" "${superbuild_spdx_install_dir}"
+      DEPENDEES install-licenses)
   endif ()
 
 endfunction ()

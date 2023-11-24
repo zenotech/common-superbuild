@@ -1,4 +1,21 @@
 superbuild_add_project_python(pythonaiohttp
-  PACKAGE aiohttp
-  DEPENDS pythonsetuptools pythonasynctimeout pythonattrs pythonchardet pythoncharsetnormalizer pythonmultidict pythontypingextensions pythonyarl pythonfrozenlist pythonaiosignal
-  LICENSE_FILES LICENSE.txt)
+  PACKAGE
+    aiohttp
+  DEPENDS
+    pythonaiosignal
+    pythonasynctimeout
+    pythonattrs
+    pythonchardet
+    pythoncharsetnormalizer
+    pythonfrozenlist
+    pythonmultidict
+    pythonsetuptools
+    pythontypingextensions
+    pythonyarl
+  LICENSE_FILES
+    LICENSE.txt
+  SPDX_LICENSE_IDENTIFIER
+    Apache-2.0
+  SPDX_COPYRIGHT_TEXT
+    "Copyright aio-libs contributors"
+  )

@@ -113,6 +113,16 @@ if(BUILD_SHARED_LIBS AND CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
 endif()
 superbuild_setup_flags()
 
+# Add options to control SPDX generation
+option(GENERATE_SPDX "Generate SPDX file for each projects (default OFF)" OFF)
+mark_as_advanced(GENERATE_SPDX)
+if (GENERATE_SPDX)
+  set(_superbuild_generate_spdx ON)
+  if (NOT superbuild_spdx_document_namespace)
+    set(superbuild_spdx_document_namespace "https://kitware.com/spdx")
+  endif ()
+endif ()
+
 # merge in default/user-specified CMake flags.
 string(PREPEND superbuild_ld_flags "${CMAKE_SHARED_LINKER_FLAGS} ")
 string(PREPEND superbuild_cpp_flags "${CMAKE_CXX_FLAGS} ")

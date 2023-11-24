@@ -1,4 +1,12 @@
 superbuild_add_project_python(pythonfonttools
-  PACKAGE fonttools
-  DEPENDS pythonsetuptools
-  LICENSE_FILES LICENSE)
+  PACKAGE
+    fonttools
+  DEPENDS
+    pythonsetuptools
+  LICENSE_FILES
+    LICENSE
+  SPDX_LICENSE_IDENTIFIER
+    MIT
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2017 Just van Rossum"
+  )

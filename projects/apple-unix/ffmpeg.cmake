@@ -18,6 +18,10 @@ superbuild_add_project(ffmpeg
   LICENSE_FILES
     LICENSE.md
     COPYING.LGPLv2.1
+  SPDX_LICENSE_IDENTIFIER
+    LGPL-2.1-or-later
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) the FFmpeg developers"
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>

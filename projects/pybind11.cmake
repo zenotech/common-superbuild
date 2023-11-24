@@ -7,6 +7,10 @@ superbuild_add_project(pybind11
   DEPENDS python3 cxx11 pythonsetuptools
   LICENSE_FILES
     LICENSE
+  SPDX_LICENSE_IDENTIFIER
+    BSD-3-Clause
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2016 Wenzel Jakob"
   CMAKE_ARGS
     -DPYBIND11_TEST:BOOL=OFF
     -Dprefix_for_pc_file:STRING=\\\${pcfiledir}/../..)

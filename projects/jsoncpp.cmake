@@ -5,10 +5,16 @@ else()
 endif()
 
 superbuild_add_project(jsoncpp
+  LICENSE_FILES
+    LICENSE
+  SPDX_LICENSE_IDENTIFIER
+    MIT
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2007-2010 Baptiste Lepilleur and The JsonCpp Authors"
   CMAKE_ARGS
     ${jsoncpp_shared}
     -DBUILD_TESTING:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
     -DCMAKE_INSTALL_LIBDIR:STRING=lib
     -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib
-  LICENSE_FILES LICENSE)
+  )

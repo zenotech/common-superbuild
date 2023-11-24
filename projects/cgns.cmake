@@ -3,6 +3,10 @@ superbuild_add_project(cgns
   DEPENDS_OPTIONAL mpi
   LICENSE_FILES
     license.txt
+  SPDX_LICENSE_IDENTIFIER
+    Zlib
+  SPDX_COPYRIGHT_TEXT
+    "© Copyright 1991-2020, CGNS Steering Commmittee"
   CMAKE_ARGS
     -DCMAKE_INSTALL_NAME_DIR:STRING=<INSTALL_DIR>/lib
     -DCGNS_BUILD_CGNSTOOLS:BOOL=OFF

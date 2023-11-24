@@ -8,7 +8,17 @@ if (UNIX)
 endif ()
 
 superbuild_add_project_python(pythoncffi
-  PACKAGE cffi
-  DEPENDS pythonsetuptools ${pythoncffi_depends}
-  LICENSE_FILES LICENSE
-  PROCESS_ENVIRONMENT ${pythoncffi_env})
+  PACKAGE
+    cffi
+  DEPENDS
+    pythonsetuptools
+    ${pythoncffi_depends}
+  LICENSE_FILES
+    LICENSE
+  SPDX_LICENSE_IDENTIFIER
+    MIT
+  SPDX_COPYRIGHT_TEXT
+    "Copyright Armin Rigo, Maciej Fijalkowski"
+  PROCESS_ENVIRONMENT
+    ${pythoncffi_env}
+  )
