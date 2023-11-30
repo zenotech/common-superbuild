@@ -43,7 +43,6 @@ ExtractedText: <text>${spdx_package_custom_license_text}</text>
 endif ()
 
 get_filename_component(superbuild_cmake_directory ${CMAKE_SCRIPT_MODE_FILE} DIRECTORY)
-message(WARNING "${OUTPUT_DIR}/${SPDX_PACKAGE_NAME}.spdx")
 configure_file(
   "${superbuild_cmake_directory}/template.spdx.in"
   "${OUTPUT_DIR}/${SPDX_PACKAGE_NAME}.spdx"
