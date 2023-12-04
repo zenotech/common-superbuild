@@ -481,19 +481,24 @@ class Plugin(Library):
     reference. This may indicate errors in the building of the plugin.
     '''
 
-    def __init__(self, path, fake_exe_path=False, **kwargs):
+    def __init__(self, path, fake_exe_path=False, with_subdir=False, **kwargs):
         super(Plugin, self).__init__(path, None, **kwargs)
+
+        self.with_subdir = with_subdir
 
         if fake_exe_path:
             self._executable_path = os.path.dirname(path)
 
     @property
     def bundle_location(self):
-        return 'Contents/Plugins'
+        path = 'Contents/Plugins'
+        if self.with_subdir:
+            path = os.path.join(path, os.path.splitext(os.path.basename(self.path))[0])
+        return path
 
     @property
     def dependent_reference(self):
-        return '@loader_path/..'
+        return '@loader_path'
 
 
 class Module(Library):
@@ -658,6 +663,8 @@ def _arg_parser():
     parser.add_argument('-p', '--plugin', metavar='PATH', action='append',
                         default=[], dest='plugins',
                         help='list of plugins to install with an executable')
+    parser.add_argument('-P', '--plugin-subdir', action='store_true',
+                        help='use a subdirectory for each plugin named after the basename of the plugin itself')
     parser.add_argument('--library', metavar='PATH', action='append',
                         default=[], dest='libraries',
                         help='list of additional libraries to install with an executable')
@@ -787,7 +794,7 @@ def main(args):
     elif opts.type == 'utility':
         main_exe = Utility(opts.binary, search_paths=opts.search, ignores=ignores)
     elif opts.type == 'plugin':
-        main_exe = Plugin(opts.binary, search_paths=opts.search, ignores=ignores)
+        main_exe = Plugin(opts.binary, search_paths=opts.search, ignores=ignores, with_subdir=opts.plugin_subdir)
     elif opts.type == 'module':
         if opts.location is None:
             raise RuntimeError('Modules require a location')
@@ -847,7 +854,7 @@ def main(args):
     _install_binary(main_exe, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run, library_dest=opts.library_dest, framework_dest=opts.framework_dest)
 
     for plugin in opts.plugins:
-        plugin_bin = Plugin(plugin, fake_exe_path=opts.fake_plugin_paths, search_paths=opts.search, ignores=ignores)
+        plugin_bin = Plugin(plugin, fake_exe_path=opts.fake_plugin_paths, search_paths=opts.search, ignores=ignores, with_subdir=opts.plugin_subdir)
         _install_binary(plugin_bin, is_excluded, bundle_dest, installed, manifest, dry_run=opts.dry_run, library_dest=opts.library_dest, framework_dest=opts.framework_dest)
 
     for library in opts.libraries:
