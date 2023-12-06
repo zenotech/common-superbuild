@@ -19,6 +19,7 @@ superbuild_apple_create_app(<DESTINATION> <NAME> <BINARY>
   [IGNORE_REGEXES <regex>...]
   [SEARCH_DIRECTORIES <library-path>...]
   [PLUGINS <plugin>...]
+  [PLUGIN_SUBDIRS]
   [ADDITIONAL_LIBRARIES <library-path>...]
   [FAKE_PLUGIN_PATHS] [CLEAN]
   [COMPONENT] <component>)
@@ -40,11 +41,12 @@ The `CLEAN` argument starts a new bundle, otherwise the bundle is left as-is
 (and is expected to have been created by this call).
 
 Plugins may be listed under the `PLUGINS` keyword and will be installed to the
-`Plugins/` directory in the bundle. These are full paths to the plugin
-binaries. If `FAKE_PLUGIN_PATHS` is given, the plugin is treated as its own
-`@executable_path` which is useful when packaging plugins which may be used for
-multiple applications and may require additional libraries depending on the
-application.
+`Plugins/` directory in the bundle (or a plugin-specific subdirectory named
+after the plugin itself if `PLUGIN_SUBDIRS` is given). These are full paths to
+the plugin binaries. If `FAKE_PLUGIN_PATHS` is given, the plugin is treated as
+its own `@executable_path` which is useful when packaging plugins which may be
+used for multiple applications and may require additional libraries depending
+on the application.
 
 Additional libraries may be listed under the ``ADDITIONAL_LIBRARIES`` keyword
 and will be installed to the ``Libraries/`` directory in the bundle. These are
@@ -56,7 +58,8 @@ Default to `superbuild`.
 function (superbuild_apple_create_app destination name binary)
   set(options
     CLEAN
-    FAKE_PLUGIN_PATHS)
+    FAKE_PLUGIN_PATHS
+    PLUGIN_SUBDIRS)
   set(values COMPONENT)
   set(multivalues
     INCLUDE_REGEXES
@@ -108,6 +111,11 @@ function (superbuild_apple_create_app destination name binary)
     string(APPEND fixup_bundle_arguments
       " --plugin \"${plugin}\"")
   endforeach ()
+
+  if (_create_app_PLUGIN_SUBDIRS)
+    string(APPEND fixup_bundle_arguments
+      " --plugin-subdir")
+  endif ()
 
   foreach (library IN LISTS _create_app_ADDITIONAL_LIBRARIES)
     string(APPEND fixup_bundle_arguments
