@@ -68,4 +68,20 @@ superbuild_add_project_python_pyproject(numpy
   PROCESS_ENVIRONMENT
     MKL         "None"
     ATLAS       "None"
-    ${numpy_process_environment})
+    ${numpy_process_environment}
+  REMOVE_MODULES
+    numpy.array_api.tests
+    numpy.compat.tests
+    numpy.distutils.tests
+    numpy.f2py.tests
+    numpy.fft.tests
+    numpy.lib.tests
+    numpy.linalg.tests
+    numpy.ma.tests
+    numpy.matrixlib.tests
+    numpy.polynomial.tests
+    numpy.random._examples
+    numpy.random.tests
+    numpy.tests
+    numpy.typing.tests
+  )
