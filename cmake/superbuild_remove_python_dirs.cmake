@@ -1,0 +1,18 @@
+set(python_libdir "lib/python${python_version}")
+if (windows)
+  set(python_libdir "Python/Lib")
+endif ()
+if (NOT main_python_package)
+  string(APPEND python_libdir "/site-packages")
+endif ()
+
+foreach (module IN LISTS modules_to_remove)
+  string(REPLACE "." "/" module_dir "${module}")
+  set(dir "${install_dir}/${python_libdir}/${module_dir}")
+  if (NOT EXISTS "${dir}")
+    message(SEND_ERROR
+      "Module directory '${dir}' for '${module}' does not exist; skipping.")
+    continue ()
+  endif ()
+  file(REMOVE_RECURSE "${dir}")
+endforeach ()
