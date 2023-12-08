@@ -17,5 +17,12 @@ else ()
       BSD-3-Clause
     SPDX_COPYRIGHT_TEXT
       "Copyright (c) 1994-2008, Mark Hammond"
+    REMOVE_MODULE
+      adodbapi.examples
+      adodbapi.test
+      win32.Demos
+      win32.test
+      win32comext.bits.test
+      win32comext.taskscheduler.test
     )
 endif()
