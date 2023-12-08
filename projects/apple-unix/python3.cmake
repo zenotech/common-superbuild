@@ -116,3 +116,11 @@ superbuild_add_extra_cmake_args(
   -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}${CMAKE_SHARED_LIBRARY_SUFFIX}
   -DPYTHON_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}${CMAKE_SHARED_LIBRARY_SUFFIX}
 )
+
+set(modules_to_remove
+  ctypes.test
+  distutils.tests
+  lib2to3.tests
+  unittest.test
+  )
+_superbuild_remove_python_modules("${modules_to_remove}")
