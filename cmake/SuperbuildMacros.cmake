@@ -390,6 +390,8 @@ macro (superbuild_add_project_python _name)
   cmake_parse_arguments(_superbuild_python_project
     ""
     "PACKAGE"
+    # Note that unparsed arguments are passed to `ExternalProject`, so any
+    # keywords with multiple arguments must be at the *end* of the call.
     ""
     ${ARGN})
 
