@@ -114,7 +114,8 @@ function (superbuild_find_projects var)
     szip
     tbb
     xz
-    zlib)
+    zlib
+    zstd)
 
   if (SUPERBUILD_ENABLE_OPENSSL)
     list(APPEND projects

@@ -161,6 +161,7 @@ enable_project(tbb)
 enable_project(utillinux)
 enable_project(xz)
 enable_project(zlib)
+enable_project(zstd)
 
 # OpenXR-SDK-Source does not build on macOS
 if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos")
