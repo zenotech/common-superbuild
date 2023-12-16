@@ -5,7 +5,7 @@ endif ()
 
 superbuild_add_project(netcdf
   CAN_USE_SYSTEM
-  DEPENDS hdf5 zlib
+  DEPENDS hdf5 zlib zstd
   DEPENDS_OPTIONAL mpi
   LICENSE_FILES
     COPYRIGHT
