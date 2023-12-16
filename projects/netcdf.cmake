@@ -48,3 +48,7 @@ superbuild_apply_patch(netcdf parallel-hdf5
 
 superbuild_apply_patch(netcdf find-hdf5
   "Find HDF5 when finding netCDF")
+
+# https://github.com/Unidata/netcdf-c/issues/2828
+superbuild_apply_patch(netcdf fix-szip-library-linking
+  "Fiz SZIP library linking")

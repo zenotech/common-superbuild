@@ -1,0 +1,40 @@
+From e7823b1735866b4f6f09a80846a2f7f7172eb8cd Mon Sep 17 00:00:00 2001
+From: Mathieu Westphal <mathieu.westphal@kitware.com>
+Date: Fri, 15 Dec 2023 09:06:16 +0100
+Subject: [PATCH] Patch
+
+---
+ liblib/CMakeLists.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/liblib/CMakeLists.txt b/liblib/CMakeLists.txt
+index 97d9d88..fa85479 100644
+--- a/liblib/CMakeLists.txt
++++ b/liblib/CMakeLists.txt
+@@ -91,7 +91,7 @@ IF(Bz2_FOUND)
+ SET(TLL_LIBS ${TLL_LIBS} ${Bz2_LIBRARIES})
+ ENDIF()
+ IF(SZIP_FOUND)
+-SET(TLL_LIBS ${TLL_LIBS} ${SZIP_LIBRARIES})
++SET(TLL_LIBS ${TLL_LIBS} ${Szip_RELEASE_LIBRARY})
+ ENDIF()
+ 
+ IF(HAVE_LIBDL)
+@@ -119,13 +119,13 @@ IF(USE_HDF5)
+     # builds:
+     # Make sure that HDF5_C_LIBRARY appears *after*
+     # HDF5_HL_LIBRARY.
+-    SET(TLL_LIBS ${HDF5_HL_LIBRARIES} ${HDF5_C_LIBRARIES} ${HDF5_LIBRARIES} ${TLL_LIBS} ${SZIP_LIBRARY})
++    SET(TLL_LIBS ${HDF5_HL_LIBRARIES} ${HDF5_C_LIBRARIES} ${HDF5_LIBRARIES} ${TLL_LIBS} ${Szip_RELEASE_LIBRARY})
+   ELSE() # Windows CMake defines HDF5_LIBRARIES.
+     set(mpi_libs)
+     if (HDF5_PARALLEL)
+       set(mpi_libs ${MPI_C_LIBRARIES})
+     endif ()
+-    SET(TLL_LIBS ${HDF5_LIBRARIES} ${mpi_libs} ${TLL_LIBS} ${SZIP_LIBRARY})
++    SET(TLL_LIBS ${HDF5_LIBRARIES} ${mpi_libs} ${TLL_LIBS} ${Szip_RELEASE_LIBRARY})
+   ENDIF()
+ ENDIF()
+ 
+-- 
+2.43.0
