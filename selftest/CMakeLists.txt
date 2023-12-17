@@ -8,6 +8,7 @@ set(_superbuild_enable_openssl "${SUPERBUILD_ENABLE_OPENSSL}")
 function (superbuild_find_projects var)
   set(projects
     alembic
+    blosc
     boost
     bzip2
     cgns

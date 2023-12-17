@@ -757,3 +757,8 @@ superbuild_set_revision(imath
   # https://github.com/AcademySoftwareFoundation/Imath/releases
   URL     "https://www.paraview.org/files/dependencies/Imath-3.1.9.tar.gz"
   URL_MD5 97f1cbfb86b88ddfde42b7df1f1494db)
+
+superbuild_set_revision(blosc
+  # https://github.com/Blosc/c-blosc/releases
+  URL     "https://www.paraview.org/files/dependencies/blosc-1.21.5.tar.gz"
+  URL_MD5 "5097ee61dc1f25281811f5a55b91b2e4")

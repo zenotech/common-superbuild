@@ -44,6 +44,7 @@ if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "oldospraypython")
 endif ()
 
 enable_project(alembic)
+enable_project(blosc)
 enable_project(boost)
 enable_project(bzip2)
 enable_project(cgns)
