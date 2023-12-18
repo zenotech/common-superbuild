@@ -1,0 +1,32 @@
+diff -u -Nr -U5 netcdf4-python-1.6.5rel/pyproject.toml netcdf4-python-1.6.5rel.no-certifi/pyproject.toml
+--- netcdf4-python-1.6.5rel/pyproject.toml	2023-10-24 20:42:29.000000000 -0400
++++ netcdf4-python-1.6.5rel.no-certifi/pyproject.toml	2023-12-19 07:14:50.469444152 -0500
+@@ -32,11 +32,11 @@
+     "Topic :: System :: Archiving :: Compression",
+     "Operating System :: OS Independent",
+ ]
+ dependencies = [
+     "cftime",
+-    "certifi",
++    #"certifi",
+     "numpy",
+ ]
+ dynamic = ["version"]
+ 
+ [project.optional-dependencies]
+diff -u -Nr -U5 netcdf4-python-1.6.5rel/src/netCDF4/_netCDF4.pyx netcdf4-python-1.6.5rel.no-certifi/src/netCDF4/_netCDF4.pyx
+--- netcdf4-python-1.6.5rel/src/netCDF4/_netCDF4.pyx	2023-10-24 20:42:29.000000000 -0400
++++ netcdf4-python-1.6.5rel.no-certifi/src/netCDF4/_netCDF4.pyx	2023-12-19 07:14:06.358236188 -0500
+@@ -1257,11 +1257,11 @@
+ ELSE:
+     ctypedef object Comm
+     ctypedef object Info
+ 
+ # set path to SSL certificates (issue #1246)
+-IF HAS_NCRCSET: # available starting in version 4.9.1
++IF HAS_NCRCSET and False: # available starting in version 4.9.1
+     import certifi
+     cdef _set_curl_certpath(certpath):
+         cdef char *cert_path
+         cdef char *key
+         cdef int ierr

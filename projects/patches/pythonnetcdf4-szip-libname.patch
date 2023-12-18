@@ -1,0 +1,20 @@
+diff -u -Nr -U5 netcdf4-python-1.6.5rel/setup.py netcdf4-python-1.6.5rel.szip-libname/setup.py
+--- netcdf4-python-1.6.5rel/setup.py	2023-10-24 20:42:29.000000000 -0400
++++ netcdf4-python-1.6.5rel.szip-libname/setup.py	2023-12-19 08:15:47.372206384 -0500
+@@ -494,11 +494,15 @@
+     if szip_libdir is None and szip_dir is not None:
+         szip_libdir = os.path.join(szip_dir, 'lib')
+     if szip_incdir is None and szip_dir is not None:
+         szip_incdir = os.path.join(szip_dir, 'include')
+     if szip_incdir is not None and szip_libdir is not None:
+-        libs.append('sz')
++        if sys.platform == 'win32':
++            libs.append('szip')
++        else:
++            libs.append('sz')
++
+         lib_dirs.append(szip_libdir)
+         inc_dirs.append(szip_incdir)
+     # add hdf4 to link if desired.
+     if hdf4_libdir is None and hdf4_dir is not None:
+         hdf4_libdir = os.path.join(hdf4_dir, 'lib')

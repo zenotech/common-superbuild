@@ -219,6 +219,7 @@ add_python_import_test(pythonmesonpython mesonpy)
 add_python_import_test(pythonmpi4py mpi4py)
 add_python_import_test(pythonmpmath mpmath)
 add_python_import_test(pythonmultidict multidict)
+add_python_import_test(pythonnetcdf4 netCDF4)
 add_python_import_test(pythonpackaging packaging)
 add_python_import_test(pythonpandas pandas)
 add_python_import_test(pythonpathspec pathspec)
@@ -257,7 +258,10 @@ if (WIN32)
     # its own, so extra work is needed to make this happy.
     "python3-matplotlib-import-matplotlib"
     "python3-matplotlib-script-matplotlib-render"
-    "python3-pythonpillow-import-PIL.Image")
+    "python3-pythonpillow-import-PIL.Image"
+
+    # netCDF4 needs help too.
+    "python3-pythonnetcdf4-import-netCDF4")
   foreach (dll_assisted_test IN LISTS dll_assisted_tests)
     if (TEST "${dll_assisted_test}")
       set_property(TEST "${dll_assisted_test}" APPEND
