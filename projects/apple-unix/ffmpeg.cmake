@@ -12,6 +12,9 @@ set(ffmpeg_ld_flags "${superbuild_ld_flags}")
 if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
   string(APPEND ffmpeg_ld_flags " -isysroot ${CMAKE_OSX_SYSROOT} -mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
 endif ()
+if (UNIX AND NOT APPLE)
+  string(APPEND ffmpeg_ld_flags " -Wl,-rpath,<INSTALL_DIR>/lib")
+endif ()
 
 superbuild_add_project(ffmpeg
   DEPENDS zlib pkgconf
