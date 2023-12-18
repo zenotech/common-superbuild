@@ -25,7 +25,6 @@ function (superbuild_install_superbuild_python3)
 
   set(modules
     __future__
-    __pycache__
     _bootlocale
     _collections_abc
     _compat_pickle

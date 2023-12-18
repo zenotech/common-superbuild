@@ -1,3 +1,9 @@
+set(openxrsdk_options)
+if (UNIX AND NOT APPLE)
+  list(APPEND openxrsdk_options
+    -DCMAKE_INSTALL_RPATH:STRING=<INSTALL_DIR>/lib)
+endif ()
+
 superbuild_add_project(openxrsdk
   DEPENDS
     jsoncpp
@@ -12,4 +18,5 @@ superbuild_add_project(openxrsdk
     -DDYNAMIC_LOADER:BOOL=ON
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
     -DCMAKE_INSTALL_LIBDIR:STRING=lib
+    ${openxrsdk_options}
   )
