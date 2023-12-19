@@ -117,6 +117,11 @@ function (add_python_import_test package module)
     set_property(TEST "python3-${package}-import-${module}"
       PROPERTY
         PASS_REGULAR_EXPRESSION "${install_dir}")
+    if (NOT module STREQUAL "ssl")
+      set_property(TEST "python3-${package}-import-${module}"
+        PROPERTY
+          FAIL_REGULAR_EXPRESSION "ModuleNotFoundError")
+    endif ()
   endif ()
 endfunction ()
 
