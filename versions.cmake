@@ -239,6 +239,11 @@ superbuild_set_revision(netcdf
   URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.9.2.tar.gz"
   URL_MD5 84acd096ab4f3300c20db862eecdf7c7)
 
+superbuild_set_revision(pythoncftime
+  # https://pypi.org/project/cftime/#history
+  URL     "https://www.paraview.org/files/dependencies/cftime-1.6.3.tar.gz"
+  URL_MD5 74e916dcdfe36bbb07c238145de630cd)
+
 superbuild_set_revision(tbb
   # https://github.com/oneapi-src/oneTBB/releases
   URL     "https://www.paraview.org/files/dependencies/tbb-2021.10.0.tar.gz"

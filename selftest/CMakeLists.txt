@@ -51,6 +51,7 @@ function (superbuild_find_projects var)
     pythonattrs
     pythonbeniget
     pythoncffi
+    pythoncftime
     pythonchardet
     pythoncharsetnormalizer
     pythoncontourpy
