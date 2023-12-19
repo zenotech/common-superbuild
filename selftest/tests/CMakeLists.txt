@@ -251,15 +251,15 @@ add_python_import_test(sympy sympy)
 add_python_import_test(xz lzma)
 
 if (WIN32)
-  # Python 3.9 needs help finding dependent DLLs and Pillow doesn't do this on
-  # its own, so extra work is needed to make this happy.
-  set(pil_using_tests
+  set(dll_assisted_tests
+    # Python 3.9 needs help finding dependent DLLs and Pillow doesn't do this on
+    # its own, so extra work is needed to make this happy.
     "python3-matplotlib-import-matplotlib"
     "python3-matplotlib-script-matplotlib-render"
     "python3-pythonpillow-import-PIL.Image")
-  foreach (pil_using_test IN LISTS pil_using_tests)
-    if (TEST "${pil_using_test}")
-      set_property(TEST "${pil_using_test}" APPEND
+  foreach (dll_assisted_test IN LISTS dll_assisted_tests)
+    if (TEST "${dll_assisted_test}")
+      set_property(TEST "${dll_assisted_test}" APPEND
         PROPERTY
           ENVIRONMENT "PYTHON_WINDOWS_DLL_DIRECTORIES=${install_dir}/bin")
     endif ()
