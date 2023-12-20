@@ -49,6 +49,12 @@ Usually these will just be the `$project.cmake` files, patches, and helper
 scripts, but it is not impossible that shadowing for the other files would be
 useful.
 
+When adding a project, be sure to update:
+
+- `.gitlab/ci/configure_common.cmake` to add building it to CI
+- `selftest/CMakeLists.txt` to add it to the CI project
+- `selftest/tests/CMakeLists.txt` for any relevant tests (e.g., loading Python modules)
+
 ## Related files
 
 Some projects might need support files such as patches or small scripts to

@@ -1,0 +1,18 @@
+diff -u -Nr -U5 netcdf4-python-1.6.5rel/include/mpi-compat.h netcdf4-python-1.6.5rel.msmpi-fix/include/mpi-compat.h
+--- netcdf4-python-1.6.5rel/include/mpi-compat.h	2023-10-24 20:42:29.000000000 -0400
++++ netcdf4-python-1.6.5rel.msmpi-fix/include/mpi-compat.h	2023-12-20 10:08:05.194598702 -0500
+@@ -4,10 +4,14 @@
+ #ifndef MPI_COMPAT_H
+ #define MPI_COMPAT_H
+ 
+ #include <mpi.h>
+ 
++#ifdef MSMPI_VER
++#define PyMPI_HAVE_MPI_Message 1
++#endif
++
+ #if (MPI_VERSION < 3) && !defined(PyMPI_HAVE_MPI_Message)
+ typedef void *PyMPI_MPI_Message;
+ #define MPI_Message PyMPI_MPI_Message
+ #endif
+ 
