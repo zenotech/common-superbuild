@@ -28,6 +28,7 @@ function (superbuild_find_projects var)
     lapack
     libjpegturbo
     llvm
+    lz4
     openmp
     matplotlib
     meson
