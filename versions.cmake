@@ -757,3 +757,18 @@ superbuild_set_revision(imath
   # https://github.com/AcademySoftwareFoundation/Imath/releases
   URL     "https://www.paraview.org/files/dependencies/Imath-3.1.9.tar.gz"
   URL_MD5 97f1cbfb86b88ddfde42b7df1f1494db)
+
+superbuild_set_revision(zstd
+  # https://github.com/facebook/zstd/releases
+  URL     "https://www.paraview.org/files/dependencies/zstd-1.5.5.tar.gz"
+  URL_MD5 "63251602329a106220e0a5ad26ba656f")
+
+superbuild_set_revision(lz4
+  # https://github.com/lz4/lz4/releases
+  URL     "https://github.com/lz4/lz4/releases/download/v1.9.4/lz4-1.9.4.tar.gz"
+  URL_MD5 "e9286adb64040071c5e23498bf753261")
+
+superbuild_set_revision(blosc
+  # https://github.com/Blosc/c-blosc/releases
+  URL     "https://www.paraview.org/files/dependencies/blosc-1.21.5.tar.gz"
+  URL_MD5 "5097ee61dc1f25281811f5a55b91b2e4")
