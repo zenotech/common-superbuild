@@ -20,4 +20,6 @@ superbuild_add_project_python_pyproject(pythonpandas
     BSD-3-Clause
   SPDX_COPYRIGHT_TEXT
     "Copyright (c) 2008-2011, AQR Capital Management, LLC, Lambda Foundry, Inc. and PyData Development Team"
+  REMOVE_MODULES
+    pandas.tests
   )

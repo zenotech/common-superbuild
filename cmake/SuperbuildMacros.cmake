@@ -390,7 +390,9 @@ macro (superbuild_add_project_python _name)
   cmake_parse_arguments(_superbuild_python_project
     ""
     "PACKAGE"
-    ""
+    # Note that unparsed arguments are passed to `ExternalProject`, so any
+    # keywords with multiple arguments must be at the *end* of the call.
+    "REMOVE_MODULES"
     ${ARGN})
 
   if (NOT DEFINED _superbuild_python_project_PACKAGE)
@@ -436,8 +438,37 @@ macro (superbuild_add_project_python _name)
           --root=<INSTALL_DIR>
           ${_superbuild_python_args}
           ${${_name}_python_install_args})
+
+    if (_superbuild_python_project_REMOVE_MODULES)
+      _superbuild_remove_python_modules("${_superbuild_python_project_REMOVE_MODULES}")
+    endif ()
   endif ()
 endmacro ()
+
+function (_superbuild_remove_python_modules modules)
+  if (NOT superbuild_build_phase)
+    return ()
+  endif ()
+
+  set(main_python_package 0)
+  if (current_project STREQUAL "python3")
+    set(main_python_package 1)
+  endif ()
+
+  string(REPLACE ";" "${_superbuild_list_separator}" modules_escaped "${modules}")
+
+  superbuild_project_add_step(remove-extra-modules
+    COMMAND   "${CMAKE_COMMAND}"
+              -Dinstall_dir=<INSTALL_DIR>
+              "-Dpython_version=${superbuild_python_version}"
+              "-Dwindows=${WIN32}"
+              "-Dmain_python_package=${main_python_package}"
+              "-Dmodules_to_remove=${modules_escaped}"
+              -P "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/superbuild_remove_python_dirs.cmake"
+    DEPENDEES install
+    COMMENT   "removing extra modules from the ${_name} install"
+    WORKING_DIRECTORY "<INSTALL_DIR>")
+endfunction ()
 
 function (superbuild_require_python_package _name package)
   if (superbuild_build_phase)
@@ -464,7 +495,7 @@ macro (superbuild_add_project_python_pyproject _name)
   cmake_parse_arguments(_superbuild_add_project_python_pyproject
     "PYPROJECT_TOML_NO_WHEEL"
     "PACKAGE;SPDX_CUSTOM_LICENSE_FILE;SPDX_CUSTOM_LICENSE_NAME"
-    "LICENSE_FILES;PROCESS_ENVIRONMENT;DEPENDS;DEPENDS_OPTIONAL;SPDX_LICENSE_IDENTIFIER;SPDX_COPYRIGHT_TEXT"
+    "LICENSE_FILES;PROCESS_ENVIRONMENT;DEPENDS;DEPENDS_OPTIONAL;SPDX_LICENSE_IDENTIFIER;SPDX_COPYRIGHT_TEXT;REMOVE_MODULES"
     ${ARGN})
 
   if (NOT DEFINED _superbuild_add_project_python_pyproject_PACKAGE)
@@ -517,6 +548,10 @@ macro (superbuild_add_project_python_pyproject _name)
           --no-build-isolation
           ${_superbuild_python_args}
           "<SOURCE_DIR>")
+
+    if (_superbuild_add_project_python_pyproject_REMOVE_MODULES)
+      _superbuild_remove_python_modules("${_superbuild_add_project_python_pyproject_REMOVE_MODULES}")
+    endif ()
   endif ()
 endmacro ()
 
@@ -548,7 +583,7 @@ macro (superbuild_add_project_python_wheel _name)
   cmake_parse_arguments(_superbuild_add_project_python_wheel
     ""
     "SPDX_CUSTOM_LICENCE_FILE;SPDX_CUSTOM_LICENCE_NAME"
-    "LICENSE_FILES_WHEEL;DEPENDS;SPDX_LICENSE_IDENTIFIER;SPDX_COPYRIGHT_TEXT"
+    "LICENSE_FILES_WHEEL;DEPENDS;SPDX_LICENSE_IDENTIFIER;SPDX_COPYRIGHT_TEXT;REMOVE_MODULES"
     ${ARGN})
 
   if (superbuild_build_phase AND NOT superbuild_python_pip)
@@ -594,6 +629,10 @@ macro (superbuild_add_project_python_wheel _name)
         --no-deps
         ${_superbuild_python_args}
         "<DOWNLOADED_FILE>")
+
+  if (_superbuild_add_project_python_wheel_REMOVE_MODULES)
+    _superbuild_remove_python_modules("${_superbuild_add_project_python_wheel_REMOVE_MODULES}")
+  endif ()
 endmacro ()
 
 #[==[.md
