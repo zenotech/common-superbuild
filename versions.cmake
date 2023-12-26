@@ -765,7 +765,7 @@ superbuild_set_revision(zstd
 
 superbuild_set_revision(lz4
   # https://github.com/lz4/lz4/releases
-  URL     "https://github.com/lz4/lz4/releases/download/v1.9.4/lz4-1.9.4.tar.gz"
+  URL     "https://www.paraview.org/files/dependencies/lz4-1.9.4.tar.gz"
   URL_MD5 "e9286adb64040071c5e23498bf753261")
 
 superbuild_set_revision(blosc
