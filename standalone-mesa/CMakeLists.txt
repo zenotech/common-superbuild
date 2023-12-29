@@ -94,7 +94,7 @@ function (superbuild_add_packaging)
     endif ()
   endforeach ()
 
-  if (default_targt)
+  if (default_target)
     superbuild_enable_install_target("${default_target}")
   endif ()
 endfunction ()
