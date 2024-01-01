@@ -38,6 +38,8 @@ function (superbuild_install_superbuild_python3)
     _pyio
     _sitebuiltins
     _strptime
+    _sysconfigdata__linux_x86_64-linux-gnu
+    _sysconfigdata__darwin_darwin
     _threading_local
     _weakrefset
     abc
