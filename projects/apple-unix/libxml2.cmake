@@ -16,6 +16,7 @@ superbuild_add_project(libxml2
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
       --without-python
+      --without-icu
       --without-lzma
       --without-zlib
       --without-modules
