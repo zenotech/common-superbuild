@@ -1681,7 +1681,7 @@ function (superbuild_python_version_check name)
     if (_superbuild_python_version_check_on_python_version)
       set(_superbuild_python_version_check_on_python_version 0)
       set(_superbuild_python_version_check_python_version "${_superbuild_python_version_check_arg}")
-      if (NOT _superbuild_python_version_check_minimum_version)
+      if (_superbuild_python_version_check_minimum_version STREQUAL "<unknown>")
         set(_superbuild_python_version_check_minimum_version "${_superbuild_python_version_check_python_version}")
       endif ()
       continue ()
@@ -1722,8 +1722,9 @@ function (superbuild_python_version_check name)
         "accordingly.")
     else ()
       message(FATAL_ERROR
-        "Unsupported Python version detected; ${name} currently only "
-        "supports Python ${_superbuild_python_version_check_minimum_version}+.")
+        "Unsupported Python version detected; ${name} currently does not "
+        "support Python ${_superbuild_python_version_check_minimum_version} or "
+        "older.")
     endif ()
   endif ()
 endfunction ()

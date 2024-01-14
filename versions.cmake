@@ -303,10 +303,19 @@ superbuild_set_revision(pythoncython
   URL     "https://www.paraview.org/files/dependencies/Cython-3.0.0.tar.gz"
   URL_MD5 63c5672e1f58dcee6854aef8b33a922e)
 
-superbuild_set_revision(pythonsetuptools
+superbuild_set_selectable_source(pythonsetuptools
   # https://pypi.org/project/setuptools/#history
-  URL     "https://www.paraview.org/files/dependencies/setuptools-68.1.2.tar.gz"
-  URL_MD5 222b8c1a7432457d8485f947a0e0fde6)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/pythonsetuptools.cmake`'s valid version detection.
+  SELECT 68.1.2 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/setuptools-68.1.2.tar.gz"
+    URL_MD5 222b8c1a7432457d8485f947a0e0fde6
+  SELECT 67.8.0 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/setuptools-67.8.0.tar.gz"
+    URL_MD5 628ab1ae7d14185e5e536740ea31b5ce
+  SELECT 58.5.3 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/setuptools-58.5.3.tar.gz"
+    URL_MD5 04402d15308fb70de2de4a1c537ade1f)
 
 superbuild_set_revision(pythonwheel
   # https://pypi.org/project/wheel/#history
