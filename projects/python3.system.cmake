@@ -50,6 +50,7 @@ else ()
     NAMES "pip-${superbuild_python_version}" "pip${superbuild_python_version}"
           pip-3 pip3
           pip
+    NAMES_PER_DIR
     HINTS "$ENV{VIRTUAL_ENV}/bin"
           "${python3_executable_dir}")
 endif ()
