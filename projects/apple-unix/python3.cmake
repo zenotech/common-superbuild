@@ -79,11 +79,9 @@ if (python3_enabled)
     CACHE INTERNAL "")
   set(superbuild_python_pip "${superbuild_install_location}/bin/pip3"
     CACHE INTERNAL "")
-else ()
-  set(superbuild_python_executable ""
-    CACHE INTERNAL "")
-  set(superbuild_python_pip ""
-    CACHE INTERNAL "")
+elseif (superbuild_build_phase)
+  unset(superbuild_python_executable CACHE)
+  unset(superbuild_python_pip CACHE)
 endif ()
 
 set(superbuild_python_version "${python3_SOURCE_SELECTION}"
