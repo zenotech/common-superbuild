@@ -7,6 +7,8 @@
         reports:
             junit:
                 - build/junit.xml
+            annotations:
+                - build/annotations.json
         paths:
             # The artifacts for debugging
             - build/CMakeCache.txt
@@ -14,3 +16,6 @@
 
             # logs for suppressed outputs
             - build/superbuild/*/stamp/*.log
+
+            # Artifacts for CDash
+            - build/cdash-build-id
