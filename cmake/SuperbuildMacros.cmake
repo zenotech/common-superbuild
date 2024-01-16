@@ -1643,3 +1643,87 @@ function (_superbuild_check_current_project func)
     return ()
   endif ()
 endfunction ()
+
+#[==[.md
+# Python-version dependent source selections
+
+Usage:
+
+```
+superbuild_python_version_check(<NAME>
+  [<python_version> <maximum_source_selection>]...)
+```
+
+Verify that a source selection is valid for a given Python version. Given a
+list of pairs of versions, verify the source selection for the project supports
+the currently active Python version. Python versions should be sorted from
+lowest to highest. A `maximum_source_selection` value of `0` means "not
+supported".
+
+Example:
+
+```
+superbuild_python_version_check(pythonsetuptools
+  "3.5" "0" # Python 3.5 is unsupported
+  "3.6" "58.5.3" # version 58.5.3 is the last to support Python 3.6
+  "3.7" "67.8.0" # version 67.8.0 is the last to support Python 3.7
+  )
+```
+
+#]==]
+function (superbuild_python_version_check name)
+  set(_superbuild_python_version_check_found 0)
+  set(_superbuild_python_version_check_minimum_version "<unknown>")
+  set(_superbuild_python_version_check_on_python_version 1)
+  set(_superbuild_python_version_check_valid_version "")
+  set(_superbuild_python_version_check_python_version "<invalid>")
+  foreach (_superbuild_python_version_check_arg IN LISTS ARGN)
+    if (_superbuild_python_version_check_on_python_version)
+      set(_superbuild_python_version_check_on_python_version 0)
+      set(_superbuild_python_version_check_python_version "${_superbuild_python_version_check_arg}")
+      if (NOT _superbuild_python_version_check_minimum_version)
+        set(_superbuild_python_version_check_minimum_version "${_superbuild_python_version_check_python_version}")
+      endif ()
+      continue ()
+    endif ()
+    set(_superbuild_python_version_check_on_python_version 1)
+
+    if (superbuild_python_version VERSION_LESS_EQUAL _superbuild_python_version_check_python_version)
+      set(_superbuild_python_version_check_valid_version "${_superbuild_python_version_check_arg}")
+      set(_superbuild_python_version_check_found 1)
+      break ()
+    endif ()
+  endforeach ()
+
+  if (NOT _superbuild_python_version_check_on_python_version)
+    message(FATAL_ERROR
+      "Missing package version for Python version "
+      "${_superbuild_python_version_check_python_version}")
+  endif ()
+
+  if (NOT _superbuild_python_version_check_found)
+    unset(_superbuild_python_version_check_valid_version)
+  endif ()
+
+  # Always validate arguments; only check things when actually building the
+  # project.
+  if (NOT superbuild_build_phase)
+    return ()
+  endif ()
+
+  if (DEFINED _superbuild_python_version_check_valid_version AND
+      ${name}_SOURCE_SELECTION VERSION_GREATER _superbuild_python_version_check_valid_version)
+    if (_superbuild_python_version_check_valid_version)
+      message(FATAL_ERROR
+        "Python version ${superbuild_python_version} is only supported up to "
+        "`${name}` version "
+        "`${_superbuild_python_version_check_valid_version}`. "
+        "Please update `${name}_SOURCE_SELECTION` or the Python version "
+        "accordingly.")
+    else ()
+      message(FATAL_ERROR
+        "Unsupported Python version detected; ${name} currently only "
+        "supports Python ${_superbuild_python_version_check_minimum_version}+.")
+    endif ()
+  endif ()
+endfunction ()
