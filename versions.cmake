@@ -491,10 +491,19 @@ superbuild_set_revision(pythonpathspec
   URL     "https://www.paraview.org/files/dependencies/pathspec-0.11.2.tar.gz"
   URL_MD5 92ebd6d735d261952ff99d64083eeff4)
 
-superbuild_set_revision(pythonpluggy
+superbuild_set_selectable_source(pythonpluggy
   # https://pypi.org/project/pluggy/#history
-  URL     "https://www.paraview.org/files/dependencies/pluggy-1.3.0.tar.gz"
-  URL_MD5 f31aad77be2f5af8ed3864159b7fd743)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/pythonpluggy.cmake`'s valid version detection.
+  SELECT 1.3.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/pluggy-1.3.0.tar.gz"
+    URL_MD5 f31aad77be2f5af8ed3864159b7fd743
+  SELECT 1.2.0 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/pluggy-1.2.0.tar.gz"
+    URL_MD5 b6ab532a71304092cb0a309f82e8d8c6
+  SELECT 1.0.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/pluggy-1.0.0.tar.gz"
+    URL_MD5 daa6fddfb6cd364f3c82e52098911e4b)
 
 superbuild_set_revision(pythontroveclassifiers
   # https://pypi.org/project/trove-classifiers/#history
