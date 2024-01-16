@@ -257,6 +257,24 @@ function (superbuild_add_project name)
     set("${name}_arguments"
       "${ep_arguments}"
       PARENT_SCOPE)
+
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_license_files" ${license_files})
+    string(REGEX REPLACE ";" " " spdx_license_identifier "${spdx_license_identifier}")
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_spdx_license_identifier" ${spdx_license_identifier})
+    string(REGEX REPLACE ";" " " spdx_copyright_text "${spdx_copyright_text}")
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_spdx_copyright_text" ${spdx_copyright_text})
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_spdx_custom_license_file" ${spdx_custom_license_file})
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_spdx_custom_license_name" ${spdx_custom_license_name})
   else ()
     # Scanning phase logic. This involves setting up global properties to
     # include the information required in later steps of the superbuild.
@@ -323,23 +341,6 @@ function (superbuild_add_project name)
     set_property(GLOBAL
       PROPERTY
         "${name}_depends_optional" ${optional_depends})
-    set_property(GLOBAL
-      PROPERTY
-        "${name}_license_files" ${license_files})
-    string(REGEX REPLACE ";" " " spdx_license_identifier "${spdx_license_identifier}")
-    set_property(GLOBAL
-      PROPERTY
-        "${name}_spdx_license_identifier" ${spdx_license_identifier})
-    string(REGEX REPLACE ";" " " spdx_copyright_text "${spdx_copyright_text}")
-    set_property(GLOBAL
-      PROPERTY
-        "${name}_spdx_copyright_text" ${spdx_copyright_text})
-    set_property(GLOBAL
-      PROPERTY
-        "${name}_spdx_custom_license_file" ${spdx_custom_license_file})
-    set_property(GLOBAL
-      PROPERTY
-        "${name}_spdx_custom_license_name" ${spdx_custom_license_name})
   endif ()
 endfunction ()
 
