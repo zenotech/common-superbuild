@@ -414,8 +414,8 @@ superbuild_set_revision(pythonidna
 
 superbuild_set_revision(pythonwslinkasync
   # https://pypi.org/project/wslink/#history
-  URL     "https://www.paraview.org/files/dependencies/wslink-1.11.1.tar.gz"
-  URL_MD5 594a72a7dcc9fa805cc9dfda3b681613)
+  URL     "https://www.paraview.org/files/dependencies/wslink-1.12.4.tar.gz"
+  URL_MD5 ab60bd793e4bdf0e876623d34fcbf463)
 
 superbuild_set_revision(pythonsix
   # https://pypi.org/project/six/#history
