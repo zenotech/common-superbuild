@@ -1,9 +1,5 @@
-if (CMAKE_MINIMUM_REQUIRED_VERSION VERSION_LESS "3.18")
-  cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
-endif ()
-
-if (POLICY CMP0114)
-  cmake_policy(SET CMP0114 NEW)
+if (CMAKE_MINIMUM_REQUIRED_VERSION VERSION_LESS "3.25")
+  cmake_minimum_required(VERSION 3.25 FATAL_ERROR)
 endif ()
 
 get_property(is_multiconfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
