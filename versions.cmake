@@ -127,10 +127,22 @@ superbuild_set_selectable_source(qt5
     URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-5.15.10.tar.xz"
     URL_MD5 "fb41d86bea6bc4886030a5092c910b09")
 
-superbuild_set_revision(numpy
+superbuild_set_selectable_source(numpy
   # https://pypi.org/project/numpy/#history
-  URL     "https://www.paraview.org/files/dependencies/numpy-1.25.2.tar.gz"
-  URL_MD5 cee1996a80032d47bdf1d9d17249c34e)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/numpy.cmake`'s valid version detection.
+  SELECT 1.25.2 DEFAULT # Requires Python 3.9+
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.25.2.tar.gz"
+    URL_MD5 cee1996a80032d47bdf1d9d17249c34e
+  SELECT 1.24.4 # Needed for Python 3.8
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.24.4.tar.gz"
+    URL_MD5 3f3995540a17854a29dc79f8eeecd832
+  SELECT 1.21.6 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.21.6.zip"
+    URL_MD5 04aea95dcb1d256d13a45df42173aa1e
+  SELECT 1.19.5 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.19.5.zip"
+    URL_MD5 f6a1b48717c552bbc18f1adc3cc1fe0e)
 
 superbuild_set_revision(pythonpyprojectmetadata
   # https://pypi.org/project/pyproject-metadata/#history
