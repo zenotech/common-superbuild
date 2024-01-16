@@ -219,10 +219,16 @@ superbuild_set_revision(pythonpillow
   URL     "https://www.paraview.org/files/dependencies/Pillow-10.0.0.tar.gz"
   URL_MD5 2a8f327ba2250aad26ed101337c8fa56)
 
-superbuild_set_revision(pythoncontourpy
+superbuild_set_selectable_source(pythoncontourpy
   # https://pypi.org/project/contourpy/#history
-  URL "https://www.paraview.org/files/dependencies/contourpy-1.1.0.tar.gz"
-  URL_MD5 cae5b781ade023c01bc1a8a53312f2ac)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/pythoncontourpy.cmake`'s valid version detection.
+  SELECT 1.1.0 DEFAULT
+    URL "https://www.paraview.org/files/dependencies/contourpy-1.1.0.tar.gz"
+    URL_MD5 cae5b781ade023c01bc1a8a53312f2ac
+  SELECT 1.0.6 # Needed for Python 3.7
+    URL "https://www.paraview.org/files/dependencies/contourpy-1.0.6.tar.gz"
+    URL_MD5 0ed85863802b1323708b400ae7e7bbd7)
 
 superbuild_set_revision(pythonfonttools
   # https://pypi.org/project/fonttools/#history

@@ -4,6 +4,10 @@ if (WIN32)
     PATH <INSTALL_DIR>/Python/Scripts)
 endif ()
 
+superbuild_python_version_check(pythoncontourpy
+  "3.6" "0" # Unsupported
+  "3.7" "1.0.6")
+
 superbuild_add_project_python_pyproject(pythoncontourpy
   PACKAGE
     contourpy
