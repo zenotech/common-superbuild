@@ -99,6 +99,13 @@ if (NOT IS_ABSOLUTE "${superbuild_install_location}")
     "${superbuild_install_location}" ABSOLUTE)
 endif ()
 
+# Mask `lib64` for system Python builds.
+if (UNIX AND NOT APPLE AND USE_SYSTEM_python3)
+  file(MAKE_DIRECTORY "${superbuild_install_location}")
+  file(CREATE_LINK "lib" "${superbuild_install_location}/lib64"
+    SYMBOLIC)
+endif ()
+
 set(superbuild_prefix_path "${superbuild_install_location}")
 set(superbuild_download_location "${CMAKE_BINARY_DIR}/downloads"
   CACHE PATH "Location for downloaded source tarballs")
