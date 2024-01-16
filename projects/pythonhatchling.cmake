@@ -1,3 +1,7 @@
+superbuild_python_version_check(pythonhatchling
+  "3.6" "0" # Unsupported
+  "3.7" "1.17.1")
+
 superbuild_add_project_python_pyproject(pythonhatchling
   PACKAGE
     hatchling

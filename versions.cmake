@@ -510,10 +510,16 @@ superbuild_set_revision(pythontroveclassifiers
   URL     "https://www.paraview.org/files/dependencies/trove-classifiers-2023.8.7.tar.gz"
   URL_MD5 6ae148c8374d131dd18e28c22275d56a)
 
-superbuild_set_revision(pythonhatchling
+superbuild_set_selectable_source(pythonhatchling
   # https://pypi.org/project/hatchling/#history
-  URL     "https://www.paraview.org/files/dependencies/hatchling-1.18.0.tar.gz"
-  URL_MD5 43f7203cacb6c3c178b93149b8a8151d)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/pythonhatchling.cmake`'s valid version detection.
+  SELECT 1.18.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/hatchling-1.18.0.tar.gz"
+    URL_MD5 43f7203cacb6c3c178b93149b8a8151d
+  SELECT 1.17.1 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/hatchling-1.17.1.tar.gz"
+    URL_MD5 456b26de1da49b23e65934ac5a39c7fa)
 
 superbuild_set_revision(pythonhatchvcs
   # https://pypi.org/project/hatch-vcs/#history
