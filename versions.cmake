@@ -392,10 +392,19 @@ superbuild_set_revision(pythonaiosignal
   URL     "https://www.paraview.org/files/dependencies/aiosignal-1.3.1.tar.gz"
   URL_MD5 2a15f4008b899377590cef4773020902)
 
-superbuild_set_revision(pythonfrozenlist
+superbuild_set_selectable_source(pythonfrozenlist
   # https://pypi.org/project/frozenlist/#history
-  URL     "https://www.paraview.org/files/dependencies/frozenlist-1.4.0.tar.gz"
-  URL_MD5 4a14df2fe30853d9e18f73002493a860)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/pythonfrozenlist.cmake`'s valid version detection.
+  SELECT 1.4.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/frozenlist-1.4.0.tar.gz"
+    URL_MD5 4a14df2fe30853d9e18f73002493a860
+  SELECT 1.3.3 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/frozenlist-1.3.3.tar.gz"
+    URL_MD5 14e9ffd849c6a1dfa3c6b1fb1ff77b14
+  SELECT 1.2.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/frozenlist-1.2.0.tar.gz"
+    URL_MD5 8f1851ef871d95a15ebcf20255c12f6d)
 
 superbuild_set_revision(pythonaiohttp
   # https://pypi.org/project/aiohttp/#history
