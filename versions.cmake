@@ -191,10 +191,19 @@ superbuild_set_revision(pythonmpmath
   URL     "https://www.paraview.org/files/dependencies/mpmath-1.3.0.tar.gz"
   URL_MD5 d5d17bbefea73eeb959967351d905306)
 
-superbuild_set_revision(sympy
+superbuild_set_selectable_source(sympy
   # https://pypi.org/project/sympy/#history
-  URL     "https://www.paraview.org/files/dependencies/sympy-1.12.tar.gz"
-  URL_MD5 3e0033109352d7303ea97b9216e16645)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/sympy.cmake`'s valid version detection.
+  SELECT 1.12 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/sympy-1.12.tar.gz"
+    URL_MD5 3e0033109352d7303ea97b9216e16645
+  SELECT 1.10.1 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/sympy-1.10.1.tar.gz"
+    URL_MD5 8c7a956d74a47dc439c2935fec64ac46
+  SELECT 1.9 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/sympy-1.9.tar.gz"
+    URL_MD5 217f8179c3f1f3c888feb9b0fde0994e)
 
 superbuild_set_revision(qhull
   # http://www.qhull.org/download/ ("Download: … for Unix")
