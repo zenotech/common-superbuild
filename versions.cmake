@@ -485,10 +485,14 @@ superbuild_set_revision(pythonmarkupsafe
   URL     "https://www.paraview.org/files/dependencies/MarkupSafe-2.1.3.tar.gz"
   URL_MD5 ca33f119bd0551ce15837f58bb180214)
 
-superbuild_set_revision(pythonmako
+superbuild_set_selectable_source(pythonmako
   # https://pypi.org/project/Mako/#history
-  URL     "https://www.paraview.org/files/dependencies/Mako-1.2.4.tar.gz"
-  URL_MD5 651f365616611fcd4f2702a9002e2195)
+  SELECT 1.2.4 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/Mako-1.2.4.tar.gz"
+    URL_MD5 651f365616611fcd4f2702a9002e2195
+  SELECT 1.1.6 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/Mako-1.1.6.tar.gz"
+    URL_MD5 6d7ccbc372ec6d87113f34d9e8fc65d1)
 
 superbuild_set_revision(pythoncppy
   # https://pypi.org/project/cppy/#history
