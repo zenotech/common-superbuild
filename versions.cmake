@@ -344,12 +344,16 @@ superbuild_set_selectable_source(pythonsetuptools
     URL     "https://www.paraview.org/files/dependencies/setuptools-58.5.3.tar.gz"
     URL_MD5 04402d15308fb70de2de4a1c537ade1f)
 
-superbuild_set_revision(pythonwheel
+superbuild_set_selectable_source(pythonwheel
   # https://pypi.org/project/wheel/#history
   # PyPI source tarball with 'unicode.dist' test excised from it (CMake has
   # issues extracting non-UTF-8 names in tarballs).
-  URL     "https://www.paraview.org/files/dependencies/wheel-0.41.2-nounicodedist.tar.gz"
-  URL_MD5 b5f1f03ec0ad347b8b17c33077513863)
+  SELECT 0.41.2 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/wheel-0.41.2-nounicodedist.tar.gz"
+    URL_MD5 b5f1f03ec0ad347b8b17c33077513863
+  SELECT 0.37.1 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/wheel-0.37.1-nounicodedist.tar.gz"
+    URL_MD5 1acbaf94645d7ae704f24c470ec4ac21)
 
 # https://pypi.org/project/mpi4py/#history
 set(mpi4py_ver "3.1.4")
