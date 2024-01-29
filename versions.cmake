@@ -426,10 +426,14 @@ superbuild_set_revision(pythonasynctimeout
   URL     "https://www.paraview.org/files/dependencies/async-timeout-4.0.3.tar.gz"
   URL_MD5 9bf7b764a7310cb063c1c261c21342e4)
 
-superbuild_set_revision(pythonchardet
+superbuild_set_selectable_source(pythonchardet
   # https://pypi.org/project/chardet/#history
-  URL     "https://www.paraview.org/files/dependencies/chardet-5.2.0.tar.gz"
-  URL_MD5 cc2d8cc9a751641463b4f7cfecad2ffa)
+  SELECT 5.2.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/chardet-5.2.0.tar.gz"
+    URL_MD5 cc2d8cc9a751641463b4f7cfecad2ffa
+  SELECT 5.0.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/chardet-5.0.0.tar.gz"
+    URL_MD5 8013c248c098e165ac53d900e1a1278a)
 
 superbuild_set_revision(pythonmultidict
   # https://pypi.org/project/multidict/#history
