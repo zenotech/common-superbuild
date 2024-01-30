@@ -238,10 +238,17 @@ superbuild_set_selectable_source(pythoncontourpy
     URL "https://www.paraview.org/files/dependencies/contourpy-1.0.6.tar.gz"
     URL_MD5 0ed85863802b1323708b400ae7e7bbd7)
 
-superbuild_set_revision(pythonfonttools
+superbuild_set_selectable_source(pythonfonttools
   # https://pypi.org/project/fonttools/#history
-  URL "https://www.paraview.org/files/dependencies/fonttools-4.42.1.tar.gz"
-  URL_MD5 039956b85e9b84ba53373b0df644f5ad)
+  SELECT 4.42.1 DEFAULT
+    URL "https://www.paraview.org/files/dependencies/fonttools-4.42.1.tar.gz"
+    URL_MD5 039956b85e9b84ba53373b0df644f5ad
+  SELECT 4.38.0 # Needed for Python 3.7
+    URL "https://www.paraview.org/files/dependencies/fonttools-4.38.0.zip"
+    URL_MD5 f4775967d29b0da2f29ba499eed34f88
+  SELECT 4.27.1 # Needed for Python 3.6
+    URL "https://www.paraview.org/files/dependencies/fonttools-4.27.1.zip"
+    URL_MD5 dbb951b7bff5e18442ea13c66b47f4e3)
 
 superbuild_set_revision(matplotlib
   # https://pypi.org/project/matplotlib/#history
