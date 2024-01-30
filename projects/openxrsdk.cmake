@@ -7,6 +7,7 @@ endif ()
 superbuild_add_project(openxrsdk
   DEPENDS
     jsoncpp
+    cxx17
   LICENSE_FILES
     LICENSE
     README.md
