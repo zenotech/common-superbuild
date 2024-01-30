@@ -154,10 +154,14 @@ superbuild_set_revision(pythonflitcore
   URL     "https://www.paraview.org/files/dependencies/flit_core-3.9.0.tar.gz"
   URL_MD5 3bc52f1952b9a78361114147da63c35b)
 
-superbuild_set_revision(pythonpackaging
+superbuild_set_selectable_source(pythonpackaging
   # https://pypi.org/project/packaging/#history
-  URL     "https://www.paraview.org/files/dependencies/packaging-23.1.tar.gz"
-  URL_MD5 f7d5c39c6f92cc2dfa1293ba8f6c097c)
+  SELECT 23.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/packaging-23.1.tar.gz"
+    URL_MD5 f7d5c39c6f92cc2dfa1293ba8f6c097c
+  SELECT 21.3 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/packaging-21.3.tar.gz"
+    URL_MD5 e713c1939f294fd729af4a7be40dd141)
 
 superbuild_set_selectable_source(pythontomli
   # https://pypi.org/project/tomli/#history
