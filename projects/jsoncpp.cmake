@@ -5,6 +5,7 @@ else()
 endif()
 
 superbuild_add_project(jsoncpp
+  DEPENDS cxx11
   LICENSE_FILES
     LICENSE
   SPDX_LICENSE_IDENTIFIER
