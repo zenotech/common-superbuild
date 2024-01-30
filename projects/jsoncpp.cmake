@@ -14,6 +14,7 @@ superbuild_add_project(jsoncpp
     "Copyright (c) 2007-2010 Baptiste Lepilleur and The JsonCpp Authors"
   CMAKE_ARGS
     ${jsoncpp_shared}
+    -DBUILD_OBJECT_LIBS:BOOL=OFF
     -DBUILD_TESTING:BOOL=OFF
     -DJSONCPP_WITH_TESTS:BOOL=OFF
     -DJSONCPP_WITH_POST_BUILD_UNITTEST:BOOL=OFF
