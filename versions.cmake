@@ -405,10 +405,14 @@ superbuild_set_revision(pythoncharsetnormalizer
   URL     "https://www.paraview.org/files/dependencies/charset-normalizer-3.2.0.tar.gz"
   URL_MD5 dbb8c5b745beddbaae67d06dce0b7c29)
 
-superbuild_set_revision(pythonaiosignal
+superbuild_set_selectable_source(pythonaiosignal
   # https://pypi.org/project/aiosignal/#history
-  URL     "https://www.paraview.org/files/dependencies/aiosignal-1.3.1.tar.gz"
-  URL_MD5 2a15f4008b899377590cef4773020902)
+  SELECT 1.3.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/aiosignal-1.3.1.tar.gz"
+    URL_MD5 2a15f4008b899377590cef4773020902
+  SELECT 1.2.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/aiosignal-1.2.0.tar.gz"
+    URL_MD5 011700c3acc576a3a38deade6a4860cb)
 
 superbuild_set_selectable_source(pythonfrozenlist
   # https://pypi.org/project/frozenlist/#history

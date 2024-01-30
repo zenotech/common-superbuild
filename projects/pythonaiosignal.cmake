@@ -1,3 +1,8 @@
+superbuild_python_version_check(pythonaiosignal
+  "3.5" "0" # Unsupported
+  "3.6" "1.2.0"
+  "3.7" "1.3.1")
+
 superbuild_add_project_python_pyproject(pythonaiosignal
   PACKAGE
     aiosignal
