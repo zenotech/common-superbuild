@@ -452,10 +452,14 @@ superbuild_set_revision(pythonmultidict
   URL     "https://www.paraview.org/files/dependencies/multidict-6.0.4.tar.gz"
   URL_MD5 ec06a613d871dadfb66f2be3a1f2f3fa)
 
-superbuild_set_revision(pythontypingextensions
+superbuild_set_selectable_source(pythontypingextensions
   # https://pypi.org/project/typing_extensions/#history
-  URL     "https://www.paraview.org/files/dependencies/typing_extensions-4.7.1.tar.gz"
-  URL_MD5 06e7fff4b1d51f8dc6f49b16e71de54e)
+  SELECT 4.7.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/typing_extensions-4.7.1.tar.gz"
+    URL_MD5 06e7fff4b1d51f8dc6f49b16e71de54e
+  SELECT 4.1.1 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/typing_extensions-4.1.1.tar.gz"
+    URL_MD5 3cd9b7b9a465afbcca8548e11668ca64)
 
 superbuild_set_revision(pythonyarl
   # https://pypi.org/project/yarl/#history
