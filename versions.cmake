@@ -512,10 +512,14 @@ superbuild_set_revision(pythonkiwisolver
   URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.4.5.tar.gz"
   URL_MD5 20dea6992699d6be8a563995d7fe0309)
 
-superbuild_set_revision(pythonpathspec
+superbuild_set_selectable_source(pythonpathspec
   # https://pypi.org/project/pathspec/#history
-  URL     "https://www.paraview.org/files/dependencies/pathspec-0.11.2.tar.gz"
-  URL_MD5 92ebd6d735d261952ff99d64083eeff4)
+  SELECT 0.11.2 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/pathspec-0.11.2.tar.gz"
+    URL_MD5 92ebd6d735d261952ff99d64083eeff4
+  SELECT 0.9.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/pathspec-0.9.0.tar.gz"
+    URL_MD5 9b6b70fa5ffc31e6f5700522880140c0)
 
 superbuild_set_selectable_source(pythonpluggy
   # https://pypi.org/project/pluggy/#history
