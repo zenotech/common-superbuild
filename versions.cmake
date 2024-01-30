@@ -390,10 +390,14 @@ superbuild_set_revision(pythontoml
   URL     "https://www.paraview.org/files/dependencies/toml-0.10.2.tar.gz"
   URL_MD5 59bce5d8d67e858735ec3f399ec90253)
 
-superbuild_set_revision(pythonsetuptoolsscm
+superbuild_set_selectable_source(pythonsetuptoolsscm
   # https://pypi.org/project/setuptools-scm/#history
-  URL     "https://www.paraview.org/files/dependencies/setuptools_scm-7.1.0.tar.gz"
-  URL_MD5 158dc741637fb4fa4b955c62bd2c08be)
+  SELECT 7.1.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/setuptools_scm-7.1.0.tar.gz"
+    URL_MD5 158dc741637fb4fa4b955c62bd2c08be
+  SELECT 6.4.2 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/setuptools_scm-6.4.2.tar.gz"
+    URL_MD5 b4e02bf8e62ed49142ea7b42a68671d7)
 
 superbuild_set_revision(pythonsetuptoolsrust
   # https://pypi.org/project/setuptools-rust/#history
