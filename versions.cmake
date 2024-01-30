@@ -159,10 +159,14 @@ superbuild_set_revision(pythonpackaging
   URL     "https://www.paraview.org/files/dependencies/packaging-23.1.tar.gz"
   URL_MD5 f7d5c39c6f92cc2dfa1293ba8f6c097c)
 
-superbuild_set_revision(pythontomli
+superbuild_set_selectable_source(pythontomli
   # https://pypi.org/project/tomli/#history
-  URL     "https://www.paraview.org/files/dependencies/tomli-2.0.1.tar.gz"
-  URL_MD5 d4341621d423a7ca6822e23d6d52bb9a)
+  SELECT 2.0.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/tomli-2.0.1.tar.gz"
+    URL_MD5 d4341621d423a7ca6822e23d6d52bb9a
+  SELECT 1.2.3 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/tomli-1.2.3.tar.gz"
+    URL_MD5 807cc80e6a2697375f431b757994b7c5)
 
 superbuild_set_revision(pythonmesonpython
   # https://pypi.org/project/meson-python/#history
