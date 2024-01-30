@@ -761,9 +761,14 @@ superbuild_set_revision(snappy
   URL_MD5 70153395ebe6d72febe2cf2e40026a44)
 
 # https://pypi.org/project/cryptography/#history
+set(pythoncryptography_py36_version "40.0.2")
 set(pythoncryptography_version "41.0.3")
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "64")
+    set(pythoncryptography_py36_file
+      "cryptography-${pythoncryptography_py36_version}-cp36-abi3-win_amd64.whl")
+    set(pythoncryptography_py36_md5
+      "9d0a9dac29e2e398484726bcc47ca774")
     set(pythoncryptography_file
       "cryptography-${pythoncryptography_version}-cp37-abi3-win_amd64.whl")
     set(pythoncryptography_md5
@@ -771,11 +776,19 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   endif ()
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
+    set(pythoncryptography_py36_file
+      "cryptography-${pythoncryptography_py36_version}-cp36-abi3-macosx_10_12_x86_64.whl")
+    set(pythoncryptography_py36_md5
+      "07d65f6b2be9fc936511587a4eca1cf4")
     set(pythoncryptography_file
       "cryptography-${pythoncryptography_version}-cp37-abi3-macosx_10_12_x86_64.whl")
     set(pythoncryptography_md5
       "1351baacf6069403c3f916a46cebbad5")
   elseif (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
+    set(pythoncryptography_py36_file
+      "cryptography-${pythoncryptography_py36_version}-cp36-abi3-macosx_10_12_universal2.whl")
+    set(pythoncryptography_py36_md5
+      "847924541e2f1b0143e1c47e35de5c57")
     set(pythoncryptography_file
       "cryptography-${pythoncryptography_version}-cp37-abi3-macosx_10_12_universal2.whl")
     set(pythoncryptography_md5
@@ -783,6 +796,10 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   endif ()
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
   if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
+    set(pythoncryptography_py36_file
+      "cryptography-${pythoncryptography_py36_version}-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl")
+    set(pythoncryptography_py36_md5
+      "d2da9f618988c59a0407c36ca30b4103")
     set(pythoncryptography_file
       "cryptography-${pythoncryptography_version}-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl")
     set(pythoncryptography_md5
@@ -794,6 +811,10 @@ if (NOT pythoncryptography_file)
     "The Python cryptography package is being built from source due to the "
     "lack of a suitable wheel file. This needs a Rust compiler. Please see "
     "https://rustup.rs/ for instructions on obtaining a toolchain.")
+  set(pythoncryptography_py36_file
+    "cryptography-${pythoncryptography_py36_version}.tar.gz")
+  set(pythoncryptography_py36_md5
+    "a5038e911cc5e2f20d1aa424e9c09464")
   set(pythoncryptography_file
     "cryptography-${pythoncryptography_version}.tar.gz")
   set(pythoncryptography_md5
@@ -802,9 +823,13 @@ if (NOT pythoncryptography_file)
     PROPERTY
       pythoncryptography_source 1)
 endif ()
-superbuild_set_revision(pythoncryptography
-  URL     "https://www.paraview.org/files/dependencies/${pythoncryptography_file}"
-  URL_MD5 "${pythoncryptography_md5}")
+superbuild_set_selectable_source(pythoncryptography
+  SELECT 41.0.3 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/${pythoncryptography_file}"
+    URL_MD5 "${pythoncryptography_md5}"
+  SELECT 40.0.2 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/${pythoncryptography_py36_file}"
+    URL_MD5 "${pythoncryptography_py36_md5}")
 
 # https://github.com/openssl/openssl/releases
 set(openssl_version 1.1.1k)
