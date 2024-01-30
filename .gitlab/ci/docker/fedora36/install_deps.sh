@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # Install build requirements.
 dnf install --setopt=install_weak_deps=False -y \
     autoconf automake libtool make
