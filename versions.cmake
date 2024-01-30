@@ -399,10 +399,14 @@ superbuild_set_selectable_source(pythonsetuptoolsscm
     URL     "https://www.paraview.org/files/dependencies/setuptools_scm-6.4.2.tar.gz"
     URL_MD5 b4e02bf8e62ed49142ea7b42a68671d7)
 
-superbuild_set_revision(pythonsetuptoolsrust
+superbuild_set_selectable_source(pythonsetuptoolsrust
   # https://pypi.org/project/setuptools-rust/#history
-  URL     "https://www.paraview.org/files/dependencies/setuptools-rust-1.7.0.tar.gz"
-  URL_MD5 5d8c29528d6f99537ff6c186f977f470)
+  SELECT 1.7.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/setuptools-rust-1.7.0.tar.gz"
+    URL_MD5 5d8c29528d6f99537ff6c186f977f470
+  SELECT 1.1.2 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/setuptools-rust-1.1.2.tar.gz"
+    URL_MD5 479fcd267ff48929bec9a7270e1a96d7)
 
 superbuild_set_revision(pythoncharsetnormalizer
   # https://pypi.org/project/charset-normalizer/#history

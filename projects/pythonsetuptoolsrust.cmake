@@ -1,3 +1,8 @@
+superbuild_python_version_check(pythonsetuptoolsrust
+  "3.5" "0" # Unsupported
+  "3.6" "1.1.2"
+  "3.7" "1.7.0")
+
 superbuild_add_project_python_pyproject(pythonsetuptoolsrust
   PACKAGE
     setuptools_rust
