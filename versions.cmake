@@ -28,8 +28,8 @@ superbuild_set_revision(seacas
 
 superbuild_set_revision(zlib
   # https://github.com/madler/zlib/releases
-  URL     "https://www.paraview.org/files/dependencies/zlib-1.3.tar.xz"
-  URL_MD5 b49e70aacafacfceb1107943497f5545)
+  URL     "https://www.paraview.org/files/dependencies/zlib-1.3.1.tar.xz"
+  URL_MD5 5e6af153311327e516690d300527ec9e)
 
 superbuild_set_revision(xz
   # https://tukaani.org/xz/
@@ -251,8 +251,8 @@ superbuild_set_revision(pythonnetcdf4
 
 superbuild_set_revision(tbb
   # https://github.com/oneapi-src/oneTBB/releases
-  URL     "https://www.paraview.org/files/dependencies/tbb-2021.10.0.tar.gz"
-  URL_MD5 2caf55b3d35b53edccb33ecaf0f23402)
+  URL     "https://www.paraview.org/files/dependencies/oneTBB-2021.11.0.tar.gz"
+  URL_MD5 b301151120b08a17e98dcdda6e4f6011)
 
 superbuild_set_revision(pytz
   # https://pypi.org/project/pytz/#history
@@ -755,8 +755,8 @@ superbuild_set_revision(alembic
 
 superbuild_set_revision(imath
   # https://github.com/AcademySoftwareFoundation/Imath/releases
-  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.9.tar.gz"
-  URL_MD5 97f1cbfb86b88ddfde42b7df1f1494db)
+  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.10.tar.gz"
+  URL_MD5 5b3a8831f75a30ed76cc609a66b93aa6)
 
 superbuild_set_revision(zstd
   # https://github.com/facebook/zstd/releases
