@@ -525,10 +525,14 @@ superbuild_set_selectable_source(pythonmako
     URL     "https://www.paraview.org/files/dependencies/Mako-1.1.6.tar.gz"
     URL_MD5 6d7ccbc372ec6d87113f34d9e8fc65d1)
 
-superbuild_set_revision(pythoncppy
+superbuild_set_selectable_source(pythoncppy
   # https://pypi.org/project/cppy/#history
-  URL     "https://www.paraview.org/files/dependencies/cppy-1.2.1.tar.gz"
-  URL_MD5 7c1f825c43dd66454440932a35b9969c)
+  SELECT 1.2.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/cppy-1.2.1.tar.gz"
+    URL_MD5 7c1f825c43dd66454440932a35b9969c
+  SELECT 1.1.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/cppy-1.1.0.tar.gz"
+    URL_MD5 2110891d75aa12551deebba1603428c6)
 
 superbuild_set_revision(pythonkiwisolver
   # https://pypi.org/project/kiwisolver/#history
