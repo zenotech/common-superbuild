@@ -38,6 +38,10 @@ function (add_license_test package)
     return ()
   endif ()
 
+  if (USE_SYSTEM_${package})
+    return ()
+  endif ()
+
   add_test(
     NAME "license-${package}"
     COMMAND
