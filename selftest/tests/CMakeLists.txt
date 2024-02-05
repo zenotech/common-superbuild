@@ -265,7 +265,10 @@ add_python_import_test(pytz pytz)
 add_python_import_test(pywin32 adodbapi)
 add_python_import_test(scipy scipy)
 add_python_import_test(sympy sympy)
-add_python_import_test(xz lzma)
+# lzma comes with Python stdlib and will always import properly.
+if (NOT USE_SYSTEM_python3)
+  add_python_import_test(xz lzma)
+endif ()
 
 if (WIN32)
   set(dll_assisted_tests
