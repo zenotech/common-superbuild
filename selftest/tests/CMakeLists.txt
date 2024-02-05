@@ -127,6 +127,12 @@ function (add_python_import_test package module)
           FAIL_REGULAR_EXPRESSION "ModuleNotFoundError")
     endif ()
   endif ()
+
+  if (USE_SYSTEM_python3)
+    set_property(TEST "python3-${package}-import-${module}" APPEND
+      PROPERTY
+        ENVIRONMENT_MODIFICATION "PYTHONPATH=path_list_prepend:${install_dir}/lib/python${superbuild_python_version}/site-packages")
+  endif ()
 endfunction ()
 
 function (add_python_script_test package script)
