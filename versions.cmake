@@ -534,10 +534,14 @@ superbuild_set_selectable_source(pythoncppy
     URL     "https://www.paraview.org/files/dependencies/cppy-1.1.0.tar.gz"
     URL_MD5 2110891d75aa12551deebba1603428c6)
 
-superbuild_set_revision(pythonkiwisolver
+superbuild_set_selectable_source(pythonkiwisolver
   # https://pypi.org/project/kiwisolver/#history
-  URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.4.5.tar.gz"
-  URL_MD5 20dea6992699d6be8a563995d7fe0309)
+  SELECT 1.4.5 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.4.5.tar.gz"
+    URL_MD5 20dea6992699d6be8a563995d7fe0309
+  SELECT 1.2.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.2.0.tar.gz"
+    URL_MD5 9f53fabb361c04d76c5afc688652c814)
 
 superbuild_set_selectable_source(pythonpathspec
   # https://pypi.org/project/pathspec/#history
