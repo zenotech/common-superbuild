@@ -506,10 +506,14 @@ superbuild_set_revision(pythonsix
   URL     "https://www.paraview.org/files/dependencies/six-1.16.0.tar.gz"
   URL_MD5 a7c927740e4964dd29b72cebfc1429bb)
 
-superbuild_set_revision(pythonpygments
+superbuild_set_selectable_source(pythonpygments
   # https://pypi.org/project/Pygments/#history
-  URL     "https://www.paraview.org/files/dependencies/Pygments-2.16.1.tar.gz"
-  URL_MD5 20cb967029c23389253326cf515dec8a)
+  SELECT 2.16.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/Pygments-2.16.1.tar.gz"
+    URL_MD5 20cb967029c23389253326cf515dec8a
+  SELECT 2.14.0 # Needed for Python 3.6.
+    URL     "https://www.paraview.org/files/dependencies/Pygments-2.14.0.tar.gz"
+    URL_MD5 447be4afb076c8325a7dc659aff5b931)
 
 superbuild_set_revision(pythonmarkupsafe
   # https://pypi.org/project/MarkupSafe/#history
