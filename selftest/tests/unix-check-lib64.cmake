@@ -2,6 +2,11 @@ if (NOT EXISTS "${install_dir}/lib64")
   return ()
 endif ()
 
+# Ignore it if it is a symlink.
+if (IS_SYMLINK "${install_dir}/lib64")
+  return ()
+endif ()
+
 message("CTEST_FULL_OUTPUT # Avoid truncation")
 
 execute_process(

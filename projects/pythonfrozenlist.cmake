@@ -1,3 +1,8 @@
+superbuild_python_version_check(pythonfrozenlist
+  "3.5" "0" # Unsupported
+  "3.6" "1.2.0"
+  "3.7" "1.3.3")
+
 superbuild_add_project_python_pyproject(pythonfrozenlist
   PACKAGE
     frozenlist

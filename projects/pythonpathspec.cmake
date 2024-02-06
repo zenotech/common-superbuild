@@ -1,3 +1,8 @@
+superbuild_python_version_check(pythonpathspec
+  "3.5" "0" # Unsupported
+  "3.6" "0.9.0"
+  "3.7" "0.11.2")
+
 superbuild_add_project_python_pyproject(pythonpathspec
   PACKAGE
     pathspec

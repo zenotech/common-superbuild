@@ -1,3 +1,8 @@
+superbuild_python_version_check(pythonmako
+  "3.5" "0" # Unsupported
+  "3.6" "1.1.6"
+  "3.7" "1.2.4")
+
 # TODO: mako is a build dep and can't be deferred to requirements.txt
 superbuild_add_project_python_pyproject(pythonmako
   PACKAGE

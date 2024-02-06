@@ -53,23 +53,15 @@ if (NOT WIN32)
     fortran)
 endif()
 
-superbuild_add_project_python_pyproject(numpy
-  PACKAGE numpy
-  CAN_USE_SYSTEM
-  DEPENDS
-    pythoncython ${numpy_depends}
-  DEPENDS_OPTIONAL ${numpy_depends_optional}
-  LICENSE_FILES
-    LICENSE.txt
-  SPDX_LICENSE_IDENTIFIER
-    BSD-3-Clause
-  SPDX_COPYRIGHT_TEXT
-    "Copyright (c) 2005-2023, NumPy Developers"
-  PROCESS_ENVIRONMENT
-    MKL         "None"
-    ATLAS       "None"
-    ${numpy_process_environment}
-  REMOVE_MODULES
+superbuild_python_version_check(numpy
+  "3.5" "0" # Unsupported
+  "3.6" "1.19.5"
+  "3.7" "1.21.6"
+  "3.8" "1.24.4")
+
+set(numpy_remove_modules)
+if (numpy_SOURCE_SELECTION VERSION_GREATER_EQUAL "1.24.4")
+  list(APPEND numpy_remove_modules
     numpy.array_api.tests
     numpy.compat.tests
     numpy.distutils.tests
@@ -85,3 +77,55 @@ superbuild_add_project_python_pyproject(numpy
     numpy.tests
     numpy.typing.tests
   )
+endif ()
+
+set(numpy_license
+  LICENSE_FILES
+    LICENSE.txt
+  SPDX_LICENSE_IDENTIFIER
+    BSD-3-Clause
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2005-2023, NumPy Developers")
+
+if (numpy_SOURCE_SELECTION STREQUAL "1.19.5")
+  superbuild_add_project_python(numpy
+    PACKAGE numpy
+    CAN_USE_SYSTEM
+    DEPENDS
+      pythoncython ${numpy_depends}
+    DEPENDS_OPTIONAL ${numpy_depends_optional}
+    ${numpy_license}
+    PROCESS_ENVIRONMENT
+      MKL         "None"
+      ATLAS       "None"
+      ${numpy_process_environment}
+    REMOVE_MODULES
+      ${numpy_remove_modules})
+else ()
+  superbuild_add_project_python_pyproject(numpy
+    PACKAGE numpy
+    CAN_USE_SYSTEM
+    DEPENDS
+      pythoncython ${numpy_depends}
+    DEPENDS_OPTIONAL ${numpy_depends_optional}
+    ${numpy_license}
+    PROCESS_ENVIRONMENT
+      MKL         "None"
+      ATLAS       "None"
+      ${numpy_process_environment}
+    REMOVE_MODULES
+      ${numpy_remove_modules})
+endif ()
+
+# https://github.com/numpy/numpy/commit/888fd7719965719321f160f79051aa5caf42b9ac
+# https://github.com/numpy/numpy/commit/3e4a6cba2da27bbe2a6e12c163238e503c9f6a07
+if (numpy_SOURCE_SELECTION STREQUAL "1.21.6")
+  superbuild_apply_patch(numpy 1.21.6-cython3
+    "Support Cython3")
+elseif (numpy_SOURCE_SELECTION STREQUAL "1.24.4")
+  superbuild_apply_patch(numpy 1.24.4-cython3
+    "Support Cython3")
+elseif (numpy_SOURCE_SELECTION STREQUAL "1.19.5")
+  superbuild_apply_patch(numpy 1.19.5-cython3
+    "Support Cython3")
+endif ()

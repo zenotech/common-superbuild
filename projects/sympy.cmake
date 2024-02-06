@@ -1,3 +1,15 @@
+superbuild_python_version_check(sympy
+  "3.5" "0" # Unsupported
+  "3.6" "1.9"
+  "3.7" "1.10.1")
+
+set(sympy_test_modules)
+if (sympy_SOURCE_SELECTION VERSION_GREATER_EQUAL "1.10.1")
+  list(APPEND sympy_test_modules
+    sympy.polys.numberfields.tests
+    )
+endif ()
+
 superbuild_add_project_python(sympy
   PACKAGE
     sympy
@@ -57,7 +69,6 @@ superbuild_add_project_python(sympy
     sympy.polys.agca.tests
     sympy.polys.domains.tests
     sympy.polys.matrices.tests
-    sympy.polys.numberfields.tests
     sympy.polys.tests
     sympy.printing.pretty.tests
     sympy.printing.tests

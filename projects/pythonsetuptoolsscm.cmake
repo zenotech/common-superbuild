@@ -1,3 +1,8 @@
+superbuild_python_version_check(pythonsetuptoolsscm
+  "3.5" "0" # Unsupported
+  "3.6" "6.4.2"
+  "3.7" "7.1.0")
+
 superbuild_add_project_python_pyproject(pythonsetuptoolsscm
   PACKAGE
     setuptools_scm
