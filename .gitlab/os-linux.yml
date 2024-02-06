@@ -32,6 +32,22 @@
     variables:
         CMAKE_CONFIGURATION: linux_openssl
 
+.linux_python36:
+    extends: .fedora36
+    image: "kitware/paraview:ci-csb-centos7-20240130"
+
+    variables:
+        CMAKE_CONFIGURATION: linux_python36
+        PYTHON: python3
+
+.linux_python37:
+    extends: .fedora36
+    image: "kitware/paraview:ci-csb-debian10-20240130"
+
+    variables:
+        CMAKE_CONFIGURATION: linux_python37
+        PYTHON: python3.7
+
 ## Tags
 
 .linux_builder_tags:
@@ -50,11 +66,41 @@
     - cmake --version
     - ninja --version
 
+.before_script_linux_venv: &before_script_linux_venv
+    # Build a venv with a new `pip` and required packages.
+    - $PYTHON -m venv venv
+    - . venv/bin/activate
+    - pip install --upgrade pip
+    - pip install importlib_metadata
+
 .cmake_build_linux:
     stage: build
 
     script:
         - *before_script_linux
+        - .gitlab/ci/sccache.sh
+        - export CC=$PWD/.gitlab/shortcuts/gcc
+        - export CXX=$PWD/.gitlab/shortcuts/g++
+        - sccache --start-server
+        - sccache --show-stats
+        - "$LAUNCHER ctest -VV -S .gitlab/ci/ctest_configure.cmake"
+        - "$LAUNCHER ctest -VV -S .gitlab/ci/ctest_build.cmake"
+        - "$LAUNCHER ctest -V --output-on-failure -S .gitlab/ci/ctest_test.cmake"
+        - sccache --show-stats
+
+    cache:
+        key: linux
+        paths:
+            # Cache downloaded tarballs.
+            - build/downloads/
+    interruptible: true
+
+.cmake_build_linux_python:
+    stage: build
+
+    script:
+        - *before_script_linux
+        - *before_script_linux_venv
         - .gitlab/ci/sccache.sh
         - export CC=$PWD/.gitlab/shortcuts/gcc
         - export CXX=$PWD/.gitlab/shortcuts/g++

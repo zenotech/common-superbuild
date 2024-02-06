@@ -30,6 +30,7 @@ list(REMOVE_DUPLICATES seacas_depends_optional)
 
 superbuild_add_project(seacas
   DEPENDS
+    cxx17
     ${seacas_depends}
   DEPENDS_OPTIONAL
     ${seacas_depends_optional}

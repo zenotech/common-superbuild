@@ -53,7 +53,8 @@ endforeach ()
 
 file(GLOB logs
   "${CTEST_BINARY_DIRECTORY}/superbuild/*/stamp/*-build-*.log"
-  "${CTEST_BINARY_DIRECTORY}/superbuild/*/stamp/*-install-*.log")
+  "${CTEST_BINARY_DIRECTORY}/superbuild/*/stamp/*-install-*.log"
+  "${CTEST_BINARY_DIRECTORY}/superbuild/*/src/*/build/meson-logs/meson-log.txt")
 if (logs)
   list(APPEND CTEST_NOTES_FILES ${logs})
   ctest_submit(PARTS Notes)

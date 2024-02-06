@@ -11,6 +11,7 @@ superbuild_add_project_python(pythonpillow
   DEPENDS
     pythonsetuptools
     libjpegturbo
+    zlib
   LICENSE_FILES
     LICENSE
   SPDX_LICENSE_IDENTIFIER
@@ -20,4 +21,5 @@ superbuild_add_project_python(pythonpillow
     "Copyright © 1995-2011 by Fredrik Lundh"
     "Copyright © 2010-2023 by Jeffrey A. Clark (Alex) and contributors"
   PROCESS_ENVIRONMENT
+    ZLIB_ROOT <INSTALL_DIR>
     ${pythonpillow_process_environment})

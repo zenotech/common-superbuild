@@ -119,13 +119,13 @@ endif ()
 
 # https://github.com/numpy/numpy/commit/888fd7719965719321f160f79051aa5caf42b9ac
 # https://github.com/numpy/numpy/commit/3e4a6cba2da27bbe2a6e12c163238e503c9f6a07
-if (numpy_SOURCE_SELECTION STREQUAL "1.21.6")
+if (numpy_SOURCE_SELECTION STREQUAL "1.19.5")
+  superbuild_apply_patch(numpy 1.19.5-cython3
+    "Support Cython3")
+elseif (numpy_SOURCE_SELECTION STREQUAL "1.21.6")
   superbuild_apply_patch(numpy 1.21.6-cython3
     "Support Cython3")
 elseif (numpy_SOURCE_SELECTION STREQUAL "1.24.4")
   superbuild_apply_patch(numpy 1.24.4-cython3
-    "Support Cython3")
-elseif (numpy_SOURCE_SELECTION STREQUAL "1.19.5")
-  superbuild_apply_patch(numpy 1.19.5-cython3
     "Support Cython3")
 endif ()

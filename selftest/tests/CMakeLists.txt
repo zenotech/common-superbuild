@@ -38,6 +38,10 @@ function (add_license_test package)
     return ()
   endif ()
 
+  if (USE_SYSTEM_${package})
+    return ()
+  endif ()
+
   add_test(
     NAME "license-${package}"
     COMMAND
@@ -122,6 +126,12 @@ function (add_python_import_test package module)
         PROPERTY
           FAIL_REGULAR_EXPRESSION "ModuleNotFoundError")
     endif ()
+  endif ()
+
+  if (USE_SYSTEM_python3)
+    set_property(TEST "python3-${package}-import-${module}" APPEND
+      PROPERTY
+        ENVIRONMENT_MODIFICATION "PYTHONPATH=path_list_prepend:${install_dir}/lib/python${superbuild_python_version}/site-packages")
   endif ()
 endfunction ()
 
@@ -224,7 +234,9 @@ add_python_import_test(pythonmesonpython mesonpy)
 add_python_import_test(pythonmpi4py mpi4py)
 add_python_import_test(pythonmpmath mpmath)
 add_python_import_test(pythonmultidict multidict)
-add_python_import_test(pythonnetcdf4 netCDF4)
+if (superbuild_python_version VERSION_GREATER_EQUAL "3.7")
+  add_python_import_test(pythonnetcdf4 netCDF4)
+endif ()
 add_python_import_test(pythonpackaging packaging)
 add_python_import_test(pythonpandas pandas)
 add_python_import_test(pythonpathspec pathspec)
@@ -255,7 +267,10 @@ add_python_import_test(pytz pytz)
 add_python_import_test(pywin32 adodbapi)
 add_python_import_test(scipy scipy)
 add_python_import_test(sympy sympy)
-add_python_import_test(xz lzma)
+# lzma comes with Python stdlib and will always import properly.
+if (NOT USE_SYSTEM_python3)
+  add_python_import_test(xz lzma)
+endif ()
 
 if (WIN32)
   set(dll_assisted_tests
