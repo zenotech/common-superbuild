@@ -7,7 +7,7 @@ if (libjpegturbo_enabled)
   list(APPEND pythonnetcdf4_environment
     JPEG_DIR <INSTALL_DIR>)
 endif ()
-if (mpi_enabled)
+if (mpi_enabled AND MPI_C_INCLUDE_PATH)
   list(APPEND pythonnetcdf4_environment
     MPI_INCDIR "${MPI_C_INCLUDE_PATH}")
 endif ()
