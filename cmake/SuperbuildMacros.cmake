@@ -1228,11 +1228,8 @@ function (_superbuild_add_project_internal name)
   set(cmake_params)
   # Pass down C, CXX, and Fortran flags from this project.
   foreach (flag IN ITEMS
-      CMAKE_C_COMPILER
       CMAKE_C_COMPILER_LAUNCHER
-      CMAKE_CXX_COMPILER
       CMAKE_CXX_COMPILER_LAUNCHER
-      CMAKE_Fortran_COMPILER
       CMAKE_Fortran_COMPILER_LAUNCHER
 
       CMAKE_C_FLAGS_DEBUG
