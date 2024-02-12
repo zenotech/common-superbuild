@@ -30,6 +30,7 @@ list(REMOVE_DUPLICATES seacas_depends_optional)
 
 superbuild_add_project(seacas
   DEPENDS
+    cxx17
     ${seacas_depends}
   DEPENDS_OPTIONAL
     ${seacas_depends_optional}
@@ -37,6 +38,10 @@ superbuild_add_project(seacas
   LICENSE_FILES
     LICENSE
     ${seacas_licenses}
+  SPDX_LICENSE_IDENTIFIER
+    BSD-3-Clause
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) National Technology & Engineering Solutions of Sandia, LLC (NTESS)"
   CMAKE_ARGS
     -DBUILD_TESTING:BOOL=OFF
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}

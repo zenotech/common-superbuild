@@ -12,6 +12,12 @@ superbuild_add_project(lapack
   DEPENDS fortran
   LICENSE_FILES
     LICENSE
+  SPDX_LICENSE_IDENTIFIER
+    BSD-3-Clause
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 1992-2022 The University of Tennessee and The University of Tennessee Research Foundation"
+    "Copyright (c) 2000-2022 The University of California Berkeley"
+    "Copyright (c) 2006-2022 The University of Colorado Denver"
   CMAKE_ARGS
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DBUILD_TESTING:BOOL=OFF

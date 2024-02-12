@@ -3,6 +3,10 @@ superbuild_add_project(nlohmannjson
   DEPENDS cxx11
   LICENSE_FILES
     LICENSE.MIT
+  SPDX_LICENSE_IDENTIFIER
+    MIT
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2013-2021 Niels Lohmann"
   CMAKE_ARGS
     -DENABLE_TESTING:BOOL=OFF
     -DBUILD_TESTING:BOOL=OFF

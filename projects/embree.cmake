@@ -10,7 +10,10 @@ if (CMAKE_SYSTEM_PROCESSOR STREQUAL "amd64" OR
     -DEMBREE_ISA_SSE2:BOOL=ON
     -DEMBREE_ISA_SSE42:BOOL=ON)
   # MSVC does not support avx512
-  if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR
+      # Neither does GCC before 4.9.0.
+      (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND
+       CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.9.0"))
     list(APPEND embree_isas
       -DEMBREE_ISA_AVX512:BOOL=OFF
       -DEMBREE_ISA_AVX512SKX:BOOL=OFF)
@@ -30,6 +33,10 @@ superbuild_add_project(embree
   DEPENDS ispc tbb cxx11
   LICENSE_FILES
     LICENSE.txt
+  SPDX_LICENSE_IDENTIFIER
+    Apache-2.0
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) Intel Corporation"
   CMAKE_ARGS
     ${embree_isas}
     -DBUILD_TESTING:BOOL=OFF

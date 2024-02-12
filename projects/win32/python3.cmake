@@ -10,6 +10,10 @@ superbuild_add_project(python3
   BUILD_IN_SOURCE 1
   LICENSE_FILES
     LICENSE.txt
+  SPDX_LICENSE_IDENTIFIER
+    Python-2.0
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Python Software Foundation"
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
   INSTALL_COMMAND
@@ -58,3 +62,11 @@ superbuild_add_extra_cmake_args(
   -DPYTHON_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/Python/libs/${superbuild_python_lib}
   -DPYTHON_FIND_REGISTRY:STRING=NEVER
 )
+
+set(modules_to_remove
+  ctypes.test
+  distutils.tests
+  lib2to3.tests
+  unittest.test
+  )
+_superbuild_remove_python_modules("${modules_to_remove}")

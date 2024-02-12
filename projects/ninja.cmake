@@ -8,6 +8,10 @@ else ()
     CAN_USE_SYSTEM
     LICENSE_FILES
       COPYING
+    SPDX_LICENSE_IDENTIFIER
+      Apache-2.0
+    SPDX_COPYRIGHT_TEXT
+      "Copyright Google Inc."
     CMAKE_ARGS
       -DBUILD_TESTING:BOOL=OFF)
   if (ninja_enabled)

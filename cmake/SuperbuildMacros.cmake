@@ -103,6 +103,18 @@ following extensions:
     Sets environment variables for the configure, build, and install steps.
     Some are "magic" and are prepended to the current value (namely ``PATH``,
     ``LD_LIBRARY_PATH`` (Linux), and ``DYLD_LIBRARY_PATH`` (macOS)).
+  - `SPDX_LICENSE_IDENTIFIER`: A license identifier that applies to the
+    project and will be used for SPDX file generation. Not used if no
+    `LICENSE_FILES` is set.
+  - `SPDX_COPYRIGHT_TEXT`: A copyright text that applies to the project
+    and will be used for SPDX file generation. Not used if no `LICENSE_FILES`
+    is set.
+  - `SPDX_CUSTOM_LICENSE_FILE`: The file of a custom license that applies
+    to the project and will be included during SPDX file generation.
+    Not used if no `LICENSE_FILES` is set.
+  - `SPDX_CUSTOM_LICENSE_NAME`: The name of the license contained in
+    the custom license file and used in the license identifier.
+    Not used if no `LICENSE_FILES` is set.
 
 Projects which are depended on may declare that they have CMake variables and
 flags which must be set in dependent projects (e.g., a Python project would set
@@ -123,6 +135,10 @@ function (superbuild_add_project name)
   set(optional_depends)
   set(license_files)
   set(process_environment)
+  set(spdx_license_identifier)
+  set(spdx_copyright_text)
+  set(spdx_custom_license_file)
+  set(spdx_custom_license_name)
 
   set(ep_arguments)
   set(grab)
@@ -161,6 +177,14 @@ function (superbuild_add_project name)
       set(grab optional_depends)
     elseif (arg STREQUAL "LICENSE_FILES")
       set(grab license_files)
+    elseif (arg STREQUAL "SPDX_LICENSE_IDENTIFIER")
+      set(grab spdx_license_identifier)
+    elseif (arg STREQUAL "SPDX_COPYRIGHT_TEXT")
+      set(grab spdx_copyright_text)
+    elseif (arg STREQUAL "SPDX_CUSTOM_LICENSE_FILE")
+      set(grab spdx_custom_license_file)
+    elseif (arg STREQUAL "SPDX_CUSTOM_LICENSE_NAME")
+      set(grab spdx_custom_license_name)
     elseif (arg IN_LIST keywords)
       set(grab ep_arguments)
       list(APPEND ep_arguments
@@ -233,6 +257,24 @@ function (superbuild_add_project name)
     set("${name}_arguments"
       "${ep_arguments}"
       PARENT_SCOPE)
+
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_license_files" ${license_files})
+    string(REGEX REPLACE ";" " " spdx_license_identifier "${spdx_license_identifier}")
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_spdx_license_identifier" ${spdx_license_identifier})
+    string(REGEX REPLACE ";" " " spdx_copyright_text "${spdx_copyright_text}")
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_spdx_copyright_text" ${spdx_copyright_text})
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_spdx_custom_license_file" ${spdx_custom_license_file})
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_spdx_custom_license_name" ${spdx_custom_license_name})
   else ()
     # Scanning phase logic. This involves setting up global properties to
     # include the information required in later steps of the superbuild.
@@ -299,9 +341,6 @@ function (superbuild_add_project name)
     set_property(GLOBAL
       PROPERTY
         "${name}_depends_optional" ${optional_depends})
-    set_property(GLOBAL
-      PROPERTY
-        "${name}_license_files" ${license_files})
   endif ()
 endfunction ()
 
@@ -352,7 +391,9 @@ macro (superbuild_add_project_python _name)
   cmake_parse_arguments(_superbuild_python_project
     ""
     "PACKAGE"
-    ""
+    # Note that unparsed arguments are passed to `ExternalProject`, so any
+    # keywords with multiple arguments must be at the *end* of the call.
+    "REMOVE_MODULES"
     ${ARGN})
 
   if (NOT DEFINED _superbuild_python_project_PACKAGE)
@@ -398,8 +439,37 @@ macro (superbuild_add_project_python _name)
           --root=<INSTALL_DIR>
           ${_superbuild_python_args}
           ${${_name}_python_install_args})
+
+    if (_superbuild_python_project_REMOVE_MODULES)
+      _superbuild_remove_python_modules("${_superbuild_python_project_REMOVE_MODULES}")
+    endif ()
   endif ()
 endmacro ()
+
+function (_superbuild_remove_python_modules modules)
+  if (NOT superbuild_build_phase)
+    return ()
+  endif ()
+
+  set(main_python_package 0)
+  if (current_project STREQUAL "python3")
+    set(main_python_package 1)
+  endif ()
+
+  string(REPLACE ";" "${_superbuild_list_separator}" modules_escaped "${modules}")
+
+  superbuild_project_add_step(remove-extra-modules
+    COMMAND   "${CMAKE_COMMAND}"
+              -Dinstall_dir=<INSTALL_DIR>
+              "-Dpython_version=${superbuild_python_version}"
+              "-Dwindows=${WIN32}"
+              "-Dmain_python_package=${main_python_package}"
+              "-Dmodules_to_remove=${modules_escaped}"
+              -P "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/superbuild_remove_python_dirs.cmake"
+    DEPENDEES install
+    COMMENT   "removing extra modules from the ${_name} install"
+    WORKING_DIRECTORY "<INSTALL_DIR>")
+endfunction ()
 
 function (superbuild_require_python_package _name package)
   if (superbuild_build_phase)
@@ -425,8 +495,8 @@ Same as `superbuild_add_project`, but installs the project using
 macro (superbuild_add_project_python_pyproject _name)
   cmake_parse_arguments(_superbuild_add_project_python_pyproject
     "PYPROJECT_TOML_NO_WHEEL"
-    "PACKAGE"
-    "LICENSE_FILES;PROCESS_ENVIRONMENT;DEPENDS;DEPENDS_OPTIONAL"
+    "PACKAGE;SPDX_CUSTOM_LICENSE_FILE;SPDX_CUSTOM_LICENSE_NAME"
+    "LICENSE_FILES;PROCESS_ENVIRONMENT;DEPENDS;DEPENDS_OPTIONAL;SPDX_LICENSE_IDENTIFIER;SPDX_COPYRIGHT_TEXT;REMOVE_MODULES"
     ${ARGN})
 
   if (NOT DEFINED _superbuild_add_project_python_pyproject_PACKAGE)
@@ -462,6 +532,10 @@ macro (superbuild_add_project_python_pyproject _name)
       DEPENDS_OPTIONAL ${_superbuild_add_project_python_pyproject_DEPENDS_OPTIONAL}
       LICENSE_FILES ${_superbuild_add_project_python_pyproject_LICENSE_FILES}
       PROCESS_ENVIRONMENT ${_superbuild_add_project_python_pyproject_PROCESS_ENVIRONMENT}
+      SPDX_LICENSE_IDENTIFIER "${_superbuild_add_project_python_pyproject_SPDX_LICENSE_IDENTIFIER}"
+      SPDX_COPYRIGHT_TEXT "${_superbuild_add_project_python_pyproject_SPDX_COPYRIGHT_TEXT}"
+      SPDX_CUSTOM_LICENSE_FILE "${_superbuild_add_project_python_pyproject_SPDX_CUSTOM_LICENSE_FILE}"
+      SPDX_CUSTOM_LICENSE_NAME "${_superbuild_add_project_python_pyproject_SPDX_CUSTOM_LICENSE_NAME}"
       ${_superbuild_add_project_python_pyproject_UNPARSED_ARGUMENTS}
       CONFIGURE_COMMAND
         ""
@@ -475,6 +549,10 @@ macro (superbuild_add_project_python_pyproject _name)
           --no-build-isolation
           ${_superbuild_python_args}
           "<SOURCE_DIR>")
+
+    if (_superbuild_add_project_python_pyproject_REMOVE_MODULES)
+      _superbuild_remove_python_modules("${_superbuild_add_project_python_pyproject_REMOVE_MODULES}")
+    endif ()
   endif ()
 endmacro ()
 
@@ -496,13 +574,17 @@ that the source for such projects must be a wheel that may be extracted using
     Relative path to license files in the installed wheel, in order to install
     them in under `share/licenses/<project>`. Needed only if the project does not install them
     itself.
+  - `SPDX_LICENSE_IDENTIFIER`: A license identifier for SPDX file generation
+  - `SPDX_COPYRIGHT_TEXT`: A copyright text for SPDX file generation
+  - `SPDX_CUSTOM_LICENSE_FILE`: A file containing a custom license that applies
+  - `SPDX_CUSTOM_LICENSE_NAME`: The name of the custom license
 
 #]==]
 macro (superbuild_add_project_python_wheel _name)
   cmake_parse_arguments(_superbuild_add_project_python_wheel
     ""
-    ""
-    "LICENSE_FILES_WHEEL;DEPENDS"
+    "SPDX_CUSTOM_LICENCE_FILE;SPDX_CUSTOM_LICENCE_NAME"
+    "LICENSE_FILES_WHEEL;DEPENDS;SPDX_LICENSE_IDENTIFIER;SPDX_COPYRIGHT_TEXT;REMOVE_MODULES"
     ${ARGN})
 
   if (superbuild_build_phase AND NOT superbuild_python_pip)
@@ -533,6 +615,10 @@ macro (superbuild_add_project_python_wheel _name)
     DOWNLOAD_NO_EXTRACT 1
     DEPENDS python3 ${_superbuild_add_project_python_wheel_DEPENDS}
     LICENSE_FILES ${license_files}
+    SPDX_LICENSE_IDENTIFIER "${_superbuild_add_project_python_wheel_SPDX_LICENSE_IDENTIFIER}"
+    SPDX_COPYRIGHT_TEXT "${_superbuild_add_project_python_wheel_SPDX_COPYRIGHT_TEXT}"
+    SPDX_CUSTOM_LICENSE_FILE "${_superbuild_add_project_python_wheel_SPDX_CUSTOM_LICENSE_FILE}"
+    SPDX_CUSTOM_LICENSE_NAME "${_superbuild_add_project_python_wheel_SPDX_CUSTOM_LICENSE_NAME}"
     CONFIGURE_COMMAND
       ""
     BUILD_COMMAND
@@ -544,6 +630,10 @@ macro (superbuild_add_project_python_wheel _name)
         --no-deps
         ${_superbuild_python_args}
         "<DOWNLOADED_FILE>")
+
+  if (_superbuild_add_project_python_wheel_REMOVE_MODULES)
+    _superbuild_remove_python_modules("${_superbuild_add_project_python_wheel_REMOVE_MODULES}")
+  endif ()
 endmacro ()
 
 #[==[.md
@@ -1405,6 +1495,65 @@ function (_superbuild_add_project_internal name)
       DEPENDEES install)
   endif ()
 
+  # Generate and install SPDX file
+  if (_superbuild_generate_spdx AND license_files_set)
+
+    # Recover project specific SPDX information
+    get_property(spdx_package_license GLOBAL PROPERTY "${name}_spdx_license_identifier")
+    if (NOT spdx_package_license)
+      message(AUTHOR_WARNING
+        "The ${name} project should have a non-empty `SPDX_LICENSE_IDENTIFIER`. Defaulting to NOASSERTION.")
+      set(spdx_package_license "NOASSERTION")
+    endif ()
+    get_property(spdx_package_copyright_text GLOBAL PROPERTY "${name}_spdx_copyright_text")
+    if (NOT spdx_package_copyright_text)
+      message(AUTHOR_WARNING
+        "The ${name} project should have a non-empty `SPDX_COPYRIGHT_TEXT`. Defaulting to NOASSERTION.")
+      set(spdx_package_copyright_text "NOASSERTION")
+    endif ()
+    set(spdx_package_custom_license_part)
+    get_property(spdx_package_custom_license_file GLOBAL PROPERTY "${name}_spdx_custom_license_file")
+    get_property(spdx_package_custom_license_name GLOBAL PROPERTY "${name}_spdx_custom_license_name")
+
+    # Parse SPDX location from project revision
+    cmake_parse_arguments(spdx
+      ""
+      "URL;GIT_REPOSITORY;GIT_TAG"
+      ""
+      ${${name}_revision})
+    if (spdx_URL)
+      set(spdx_package_download_location ${spdx_URL})
+    elseif (spdx_GIT_REPOSITORY)
+      set(spdx_package_download_location ${spdx_GIT_REPOSITORY}@${spdx_GIT_TAG})
+    endif ()
+
+    # Craft the call to the SuperbuildGenerateSPDX CMake script
+    set(superbuild_spdx_output_dir "${CMAKE_CURRENT_BINARY_DIR}/${project}/tmp")
+    set(superbuild_spdx_script_command COMMAND "${CMAKE_COMMAND}"
+      -DSOURCE_DIR=<SOURCE_DIR>
+      -DOUTPUT_DIR=${superbuild_spdx_output_dir}
+      -DSPDX_PACKAGE_NAME=${project}
+      -DSPDX_DOCUMENT_NAMESPACE=${superbuild_spdx_document_namespace}
+      -DSPDX_LICENSE=${spdx_package_license}
+      -DSPDX_COPYRIGHT_TEXT=${spdx_package_copyright_text}
+      -DSPDX_DOWNLOAD_LOCATION=${spdx_package_download_location})
+    if (spdx_package_custom_license_file)
+      set(superbuild_spdx_script_command ${superbuild_spdx_script_command}
+        -DSPDX_CUSTOM_LICENSE_FILE=${spdx_package_custom_license_file}
+        -DSPDX_CUSTOM_LICENSE_NAME=${spdx_package_custom_license_name})
+    endif ()
+    set(superbuild_spdx_script_command ${superbuild_spdx_script_command}
+        -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/SuperbuildGenerateSPDX.cmake)
+
+    # Add the install-spdx step that generates and install SPDX file
+    set(superbuild_spdx_install_dir "<INSTALL_DIR>/share/doc/${project}/spdx")
+    ExternalProject_add_step("${name}" install-spdx
+      ${superbuild_spdx_script_command}
+      COMMAND "${CMAKE_COMMAND}" -E make_directory "${superbuild_spdx_install_dir}"
+      COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${superbuild_spdx_output_dir}/${project}.spdx" "${superbuild_spdx_install_dir}"
+      DEPENDEES install-licenses)
+  endif ()
+
 endfunction ()
 
 # Wrapper around ExternalProject's internal calls to gather the CMake flags
@@ -1494,5 +1643,90 @@ function (_superbuild_check_current_project func)
   if (NOT current_project)
     message(AUTHOR_WARNING "${func} called at an incorrect stage.")
     return ()
+  endif ()
+endfunction ()
+
+#[==[.md
+# Python-version dependent source selections
+
+Usage:
+
+```
+superbuild_python_version_check(<NAME>
+  [<python_version> <maximum_source_selection>]...)
+```
+
+Verify that a source selection is valid for a given Python version. Given a
+list of pairs of versions, verify the source selection for the project supports
+the currently active Python version. Python versions should be sorted from
+lowest to highest. A `maximum_source_selection` value of `0` means "not
+supported".
+
+Example:
+
+```
+superbuild_python_version_check(pythonsetuptools
+  "3.5" "0" # Python 3.5 is unsupported
+  "3.6" "58.5.3" # version 58.5.3 is the last to support Python 3.6
+  "3.7" "67.8.0" # version 67.8.0 is the last to support Python 3.7
+  )
+```
+
+#]==]
+function (superbuild_python_version_check name)
+  set(_superbuild_python_version_check_found 0)
+  set(_superbuild_python_version_check_minimum_version "<unknown>")
+  set(_superbuild_python_version_check_on_python_version 1)
+  set(_superbuild_python_version_check_valid_version "")
+  set(_superbuild_python_version_check_python_version "<invalid>")
+  foreach (_superbuild_python_version_check_arg IN LISTS ARGN)
+    if (_superbuild_python_version_check_on_python_version)
+      set(_superbuild_python_version_check_on_python_version 0)
+      set(_superbuild_python_version_check_python_version "${_superbuild_python_version_check_arg}")
+      if (_superbuild_python_version_check_minimum_version STREQUAL "<unknown>")
+        set(_superbuild_python_version_check_minimum_version "${_superbuild_python_version_check_python_version}")
+      endif ()
+      continue ()
+    endif ()
+    set(_superbuild_python_version_check_on_python_version 1)
+
+    if (superbuild_python_version VERSION_LESS_EQUAL _superbuild_python_version_check_python_version)
+      set(_superbuild_python_version_check_valid_version "${_superbuild_python_version_check_arg}")
+      set(_superbuild_python_version_check_found 1)
+      break ()
+    endif ()
+  endforeach ()
+
+  if (NOT _superbuild_python_version_check_on_python_version)
+    message(FATAL_ERROR
+      "Missing package version for Python version "
+      "${_superbuild_python_version_check_python_version}")
+  endif ()
+
+  if (NOT _superbuild_python_version_check_found)
+    unset(_superbuild_python_version_check_valid_version)
+  endif ()
+
+  # Always validate arguments; only check things when actually building the
+  # project.
+  if (NOT superbuild_build_phase)
+    return ()
+  endif ()
+
+  if (DEFINED _superbuild_python_version_check_valid_version AND
+      ${name}_SOURCE_SELECTION VERSION_GREATER _superbuild_python_version_check_valid_version)
+    if (_superbuild_python_version_check_valid_version)
+      message(FATAL_ERROR
+        "Python version ${superbuild_python_version} is only supported up to "
+        "`${name}` version "
+        "`${_superbuild_python_version_check_valid_version}`. "
+        "Please update `${name}_SOURCE_SELECTION` or the Python version "
+        "accordingly.")
+    else ()
+      message(FATAL_ERROR
+        "Unsupported Python version detected; ${name} currently does not "
+        "support Python ${_superbuild_python_version_check_minimum_version} or "
+        "older.")
+    endif ()
   endif ()
 endfunction ()

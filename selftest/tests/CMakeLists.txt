@@ -38,6 +38,10 @@ function (add_license_test package)
     return ()
   endif ()
 
+  if (USE_SYSTEM_${package})
+    return ()
+  endif ()
+
   add_test(
     NAME "license-${package}"
     COMMAND
@@ -117,6 +121,17 @@ function (add_python_import_test package module)
     set_property(TEST "python3-${package}-import-${module}"
       PROPERTY
         PASS_REGULAR_EXPRESSION "${install_dir}")
+    if (NOT module STREQUAL "ssl")
+      set_property(TEST "python3-${package}-import-${module}"
+        PROPERTY
+          FAIL_REGULAR_EXPRESSION "ModuleNotFoundError")
+    endif ()
+  endif ()
+
+  if (USE_SYSTEM_python3)
+    set_property(TEST "python3-${package}-import-${module}" APPEND
+      PROPERTY
+        ENVIRONMENT_MODIFICATION "PYTHONPATH=path_list_prepend:${install_dir}/lib/python${superbuild_python_version}/site-packages")
   endif ()
 endfunction ()
 
@@ -196,6 +211,7 @@ add_python_import_test(pythonasynctimeout async_timeout)
 add_python_import_test(pythonattrs attr)
 add_python_import_test(pythonbeniget beniget)
 add_python_import_test(pythoncffi cffi)
+add_python_import_test(pythoncftime cftime)
 add_python_import_test(pythonchardet chardet)
 add_python_import_test(pythoncharsetnormalizer charset_normalizer)
 add_python_import_test(pythoncontourpy contourpy)
@@ -218,6 +234,9 @@ add_python_import_test(pythonmesonpython mesonpy)
 add_python_import_test(pythonmpi4py mpi4py)
 add_python_import_test(pythonmpmath mpmath)
 add_python_import_test(pythonmultidict multidict)
+if (superbuild_python_version VERSION_GREATER_EQUAL "3.7")
+  add_python_import_test(pythonnetcdf4 netCDF4)
+endif ()
 add_python_import_test(pythonpackaging packaging)
 add_python_import_test(pythonpandas pandas)
 add_python_import_test(pythonpathspec pathspec)
@@ -248,18 +267,24 @@ add_python_import_test(pytz pytz)
 add_python_import_test(pywin32 adodbapi)
 add_python_import_test(scipy scipy)
 add_python_import_test(sympy sympy)
-add_python_import_test(xz lzma)
+# lzma comes with Python stdlib and will always import properly.
+if (NOT USE_SYSTEM_python3)
+  add_python_import_test(xz lzma)
+endif ()
 
 if (WIN32)
-  # Python 3.9 needs help finding dependent DLLs and Pillow doesn't do this on
-  # its own, so extra work is needed to make this happy.
-  set(pil_using_tests
+  set(dll_assisted_tests
+    # Python 3.9 needs help finding dependent DLLs and Pillow doesn't do this on
+    # its own, so extra work is needed to make this happy.
     "python3-matplotlib-import-matplotlib"
     "python3-matplotlib-script-matplotlib-render"
-    "python3-pythonpillow-import-PIL.Image")
-  foreach (pil_using_test IN LISTS pil_using_tests)
-    if (TEST "${pil_using_test}")
-      set_property(TEST "${pil_using_test}" APPEND
+    "python3-pythonpillow-import-PIL.Image"
+
+    # netCDF4 needs help too.
+    "python3-pythonnetcdf4-import-netCDF4")
+  foreach (dll_assisted_test IN LISTS dll_assisted_tests)
+    if (TEST "${dll_assisted_test}")
+      set_property(TEST "${dll_assisted_test}" APPEND
         PROPERTY
           ENVIRONMENT "PYTHON_WINDOWS_DLL_DIRECTORIES=${install_dir}/bin")
     endif ()

@@ -1,0 +1,22 @@
+set(lz4_static_libs ON)
+if (BUILD_SHARED_LIBS)
+  set(lz4_static_libs OFF)
+endif ()
+
+superbuild_add_project(lz4
+  CAN_USE_SYSTEM
+  LICENSE_FILES
+    LICENSE
+  SPDX_LICENSE_IDENTIFIER
+    "BSD-2-Clause"
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (C) 2013-2020, Yann Collet"
+  SOURCE_SUBDIR build/cmake
+  CMAKE_ARGS
+    -DBUILD_STATIC_LIBS:BOOL=${lz4_static_libs}
+    -DBUILD_TESTING:BOOL=OFF
+    -DCMAKE_INSTALL_LIBDIR:PATH=lib
+    -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib
+    -DCMAKE_MACOSX_RPATH:BOOL=FALSE
+    -DLZ4_BUILD_CLI:BOOL=OFF
+    -DLZ4_BUILD_LEGACY_LZ4C:BOOL=OFF)

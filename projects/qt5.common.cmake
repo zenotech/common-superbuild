@@ -91,6 +91,10 @@ superbuild_add_project(qt5
   DEPENDS_OPTIONAL ${qt5_optional_depends}
   LICENSE_FILES
     LICENSE.LGPLv3 # Qt is distributed under many licenses, this one can be chosen for the enabled components
+  SPDX_LICENSE_IDENTIFIER
+    LGPL-3.0-or-later
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (C) 2015 The Qt Company Ltd"
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure${qt5_configure_ext}
       -opensource
@@ -123,3 +127,8 @@ superbuild_add_project(qt5
 superbuild_add_extra_cmake_args(
   -DPARAVIEW_QT_VERSION:STRING=5
   -DQt5_DIR:PATH=<INSTALL_DIR>/lib/cmake/Qt5)
+
+if (NOT qt5_SOURCE_SELECTION VERSION_LESS "5.15")
+  # reimplemented from https://invent.kde.org/qt/qt/qtbase/-/commit/8af35d27e8f02bbb99aef4ac495ed406e50e3cca
+  superbuild_apply_patch(qt5 fix-xcb-header "Fix qxcb header for recent xcb")
+endif ()

@@ -56,3 +56,170 @@ function (superbuild_add_extract_test name glob_prefix generator output)
 endfunction ()
 
 # TODO: Add support for extracting a specific CPack's output.
+
+#[==[.md
+Create a test which loads all modules within a directory as being standalone
+loadable.
+
+```
+superbuild_add_extra_package_test(<package> <generator> <directory>
+  [EXCLUDES <exclude>...])
+```
+
+For a package named `<package>`, find all loadable libraries under
+`<directory>` and make sure they are loadable.
+
+If `EXCLUDES` are given, paths matching the exclusion are not tested.
+#]==]
+
+function (superbuild_test_loadable_modules package generator dir)
+  cmake_parse_arguments(PARSE_ARGV 3 _test_loadable "" "" "EXCLUDES")
+
+  if (_test_loadable_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR
+      "Unparsed arguments to `superbuild_test_loadable_modules`: "
+      "${_test_loadable_UNPARSED_ARGUMENTS}")
+  endif ()
+
+  if (WIN32)
+    return ()
+  endif ()
+
+  find_program(FILE_COMMAND
+    NAMES file
+    REQUIRED)
+
+  add_test(
+    NAME  "test-package-${package}-${generator}-ldd-resolutions"
+    COMMAND
+      "${CMAKE_COMMAND}"
+        "-Ddirectory=${dir}"
+        "-Dexcludes=${_test_loadable_EXCLUDES}"
+        "-Dfile_command=${FILE_COMMAND}"
+        -D_run_superbuild_test_loadable_modules=ON
+        -P "${CMAKE_CURRENT_FUNCTION_LIST_FILE}")
+  set_tests_properties("test-package-${package}-${generator}-ldd-resolutions"
+    PROPERTIES
+      DEPENDS "extract-${package}-${generator}")
+endfunction ()
+
+if (_run_superbuild_test_loadable_modules)
+  # Keep the full output on CDash for future inspection.
+  message("CTEST_FULL_OUTPUT")
+
+  if (NOT file_command)
+    message(FATAL_ERROR
+      "Missing `file` command to detect filetypes.")
+  endif ()
+
+  function (_superbuild_test_file_type module type)
+    execute_process(
+      COMMAND "${file_command}" "${module}"
+      RESULT_VARIABLE res
+      OUTPUT_VARIABLE out
+      ERROR_VARIABLE err
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      ERROR_STRIP_TRAILING_WHITESPACE)
+    if (res)
+      message(SEND_ERROR
+        "Failed to run `file` to detect type of '${module}': ${err}")
+      return ()
+    endif ()
+
+    set(filetype "")
+    if (out MATCHES ": ELF")
+      set(filetype "ELF")
+    elseif (out MATCHES ": Mach-O")
+      set(filetype "Mach-O")
+    endif ()
+
+    if (filetype)
+      set("${type}" "${filetype}" PARENT_SCOPE)
+    else ()
+      set("${type}" "" PARENT_SCOPE)
+    endif ()
+  endfunction ()
+
+  function (_superbuild_test_loadable_module module format)
+    if (format STREQUAL "ELF")
+      set(command "ldd")
+      set(ignore_regex "^$")
+      set(missing_regex " => not found$")
+      set(libname_regex "^\t(.*) => not found$")
+    else ()
+      message(FATAL_ERROR
+        "Unrecognized binary format: ${format}")
+    endif ()
+
+    execute_process(
+      COMMAND ${command} "${module}"
+      RESULT_VARIABLE res
+      OUTPUT_VARIABLE out
+      ERROR_VARIABLE err
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      ERROR_STRIP_TRAILING_WHITESPACE)
+    if (res)
+      message(SEND_ERROR
+        "Failed to run `${command}` on '${module}': ${err}")
+    endif ()
+
+    string(REPLACE "\n" ";" lines "${out}")
+
+    foreach (line IN LISTS lines)
+      if (line MATCHES "${ignore_regex}")
+        continue ()
+      endif ()
+
+      if (line MATCHES "${missing_regex}")
+        string(REGEX REPLACE "${libname_regex}" "\\1" libname "${line}")
+        message(SEND_ERROR
+          "'${module}' cannot find library ${libname}")
+      endif ()
+    endforeach ()
+  endfunction ()
+
+  file(GLOB binaries "${directory}/bin/*")
+  file(GLOB macos_binaries "${directory}/MacOS/*")
+  file(GLOB_RECURSE so_libraries "${directory}/*.so*")
+  file(GLOB_RECURSE dylib_libraries "${directory}/*.dylib*")
+
+  set(expected_format)
+  if (APPLE)
+    set(expected_format "Mach-O")
+  elseif (UNIX)
+    set(expected_format "ELF")
+  endif ()
+
+  if (NOT expected_format)
+    message(FATAL_ERROR
+      "No expected format; nothing to test.")
+  endif ()
+
+  foreach (module IN LISTS binaries macos_binaries so_libraries dylib_libraries)
+    # Skip symlinks.
+    if (IS_SYMLINK "${module}")
+      continue ()
+    endif ()
+
+    set(exclude_path 0)
+    foreach (exclude IN LISTS excludes)
+      if (module MATCHES "${exclude}")
+        set(exclude_path 1)
+        break ()
+      endif ()
+    endforeach ()
+    if (exclude_path)
+      continue ()
+    endif ()
+
+    # Skip files not in the expected format.
+    _superbuild_test_file_type("${module}" module_format)
+    if (NOT module_format STREQUAL expected_format)
+      continue ()
+    endif ()
+
+    message(STATUS "Testing ${module}")
+
+    _superbuild_test_loadable_module("${module}" "${module_format}")
+  endforeach ()
+endif ()

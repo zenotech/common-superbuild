@@ -64,6 +64,22 @@ linux-openssl:build:
         - .linux_builder_tags
         - .run_manually
 
+linux-python36:build:
+    extends:
+        - .linux_python36
+        - .cmake_build_linux_python
+        - .cmake_build_artifacts
+        - .linux_builder_tags
+        - .run_manually
+
+linux-python37:build:
+    extends:
+        - .linux_python37
+        - .cmake_build_linux_python
+        - .cmake_build_artifacts
+        - .linux_builder_tags
+        - .run_manually
+
 # macOS
 
 ## Normal build

@@ -2,6 +2,10 @@ superbuild_add_project(imath
   BUILD_SHARED_LIBS_INDEPENDENT
   LICENSE_FILES
     LICENSE.md
+  SPDX_LICENSE_IDENTIFIER
+    BSD-3-Clause
+  SPDX_COPYRIGHT_TEXT
+    "Copyright Contributors to the OpenEXR Project"
   CMAKE_ARGS
     -DBUILD_TESTING:BOOL=OFF
     -DCMAKE_MACOSX_RPATH:BOOL=OFF

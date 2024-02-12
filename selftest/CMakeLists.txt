@@ -8,6 +8,7 @@ set(_superbuild_enable_openssl "${SUPERBUILD_ENABLE_OPENSSL}")
 function (superbuild_find_projects var)
   set(projects
     alembic
+    blosc
     boost
     bzip2
     cgns
@@ -27,6 +28,7 @@ function (superbuild_find_projects var)
     lapack
     libjpegturbo
     llvm
+    lz4
     openmp
     matplotlib
     meson
@@ -51,6 +53,7 @@ function (superbuild_find_projects var)
     pythonattrs
     pythonbeniget
     pythoncffi
+    pythoncftime
     pythonchardet
     pythoncharsetnormalizer
     pythoncontourpy
@@ -74,6 +77,7 @@ function (superbuild_find_projects var)
     pythonmpi4py
     pythonmpmath
     pythonmultidict
+    pythonnetcdf4
     pythonpackaging
     pythonpandas
     pythonpathspec
@@ -111,7 +115,8 @@ function (superbuild_find_projects var)
     szip
     tbb
     xz
-    zlib)
+    zlib
+    zstd)
 
   if (SUPERBUILD_ENABLE_OPENSSL)
     list(APPEND projects

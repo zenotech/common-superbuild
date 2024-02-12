@@ -19,6 +19,12 @@ superbuild_add_project(hdf5
   LICENSE_FILES
     COPYING
     COPYING_LBNL_HDF5
+    SPDX_LICENSE_IDENTIFIER
+      BSD-3-Clause
+    SPDX_COPYRIGHT_TEXT
+      "Copyright 2006 by The HDF Group."
+      "Copyright 1998-2006 by The Board of Trustees of the University of Illinois."
+      "Copyright (c) 2016, The Regents of the University of California, through Lawrence Berkeley National Laboratory (subject to receipt of any required approvals from the U.S. Dept. of Energy)."
   CMAKE_ARGS
     -DBUILD_TESTING:BOOL=OFF
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}

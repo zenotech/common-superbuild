@@ -12,12 +12,19 @@ set(ffmpeg_ld_flags "${superbuild_ld_flags}")
 if (APPLE AND CMAKE_OSX_DEPLOYMENT_TARGET)
   string(APPEND ffmpeg_ld_flags " -isysroot ${CMAKE_OSX_SYSROOT} -mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
 endif ()
+if (UNIX AND NOT APPLE)
+  string(APPEND ffmpeg_ld_flags " -Wl,-rpath,<INSTALL_DIR>/lib")
+endif ()
 
 superbuild_add_project(ffmpeg
   DEPENDS zlib pkgconf
   LICENSE_FILES
     LICENSE.md
     COPYING.LGPLv2.1
+  SPDX_LICENSE_IDENTIFIER
+    LGPL-2.1-or-later
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) the FFmpeg developers"
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>

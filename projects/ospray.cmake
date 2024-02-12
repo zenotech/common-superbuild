@@ -15,6 +15,10 @@ superbuild_add_project(ospray
   DEPENDS_OPTIONAL ospraymodulempi snappy mpi
   LICENSE_FILES
     LICENSE.txt
+  SPDX_LICENSE_IDENTIFIER
+    Apache-2.0
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) Intel Corporation"
   CMAKE_ARGS
     -DOSPRAY_ISPC_DIRECTORY:PATH=<INSTALL_DIR>/bin
     -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib

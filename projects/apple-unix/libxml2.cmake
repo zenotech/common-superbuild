@@ -14,10 +14,15 @@ superbuild_add_project(libxml2
   CAN_USE_SYSTEM
   LICENSE_FILES
     Copyright
+  SPDX_LICENSE_IDENTIFIER
+    MIT
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (C) 1998-2012 Daniel Veillard"
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
       --without-python
+      --without-icu
       --without-lzma
       --without-zlib
       --without-modules

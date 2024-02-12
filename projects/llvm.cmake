@@ -102,9 +102,18 @@ set(llvm_configure_args ${llvm_configure_args_${llvm_version}})
 
 superbuild_add_project(llvm
   CAN_USE_SYSTEM
-  DEPENDS python3 ${llvm_depends}
+  DEPENDS
+    python3
+    ${llvm_depends}
   LICENSE_FILES
     ${llvm_licenses}
+  SPDX_LICENSE_IDENTIFIER
+    "Spencer-94 AND BSD-3-Clause AND MIT"
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2003-2019 University of Illinois at Urbana-Champaig"
+    "Copyright 1992, 1993, 1994 Henry Spencer"
+    "Copyright (c) 1994 The Regents of the University of California"
+    "Copyright (c) 2006 Kirill Simonov"
   ${llvm_source_args}
   CMAKE_ARGS
     # Handle rpath settings
@@ -118,6 +127,7 @@ superbuild_add_project(llvm
     -DLLVM_INSTALL_UTILS:BOOL=ON
     -DLLVM_ENABLE_LIBXML2:BOOL=OFF
     -DLLVM_ENABLE_BINDINGS:BOOL=OFF
+    -DLLVM_ENABLE_ZSTD:BOOL=OFF # Fails to build on Windows because of an IMPLIB issue with zstd
     -DLLVM_INCLUDE_BENCHMARKS:BOOL=OFF
     -DLLVM_INCLUDE_EXAMPLES:BOOL=OFF
     -DLLVM_INCLUDE_RUNTIMES:BOOL=OFF

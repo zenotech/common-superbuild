@@ -1,9 +1,5 @@
-if (CMAKE_MINIMUM_REQUIRED_VERSION VERSION_LESS "3.18")
-  cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
-endif ()
-
-if (POLICY CMP0114)
-  cmake_policy(SET CMP0114 NEW)
+if (CMAKE_MINIMUM_REQUIRED_VERSION VERSION_LESS "3.25")
+  cmake_minimum_required(VERSION 3.25 FATAL_ERROR)
 endif ()
 
 get_property(is_multiconfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
@@ -103,6 +99,13 @@ if (NOT IS_ABSOLUTE "${superbuild_install_location}")
     "${superbuild_install_location}" ABSOLUTE)
 endif ()
 
+# Mask `lib64` for system Python builds.
+if (UNIX AND NOT APPLE AND USE_SYSTEM_python3)
+  file(MAKE_DIRECTORY "${superbuild_install_location}")
+  file(CREATE_LINK "lib" "${superbuild_install_location}/lib64"
+    SYMBOLIC)
+endif ()
+
 set(superbuild_prefix_path "${superbuild_install_location}")
 set(superbuild_download_location "${CMAKE_BINARY_DIR}/downloads"
   CACHE PATH "Location for downloaded source tarballs")
@@ -112,6 +115,16 @@ if(BUILD_SHARED_LIBS AND CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
   string(APPEND superbuild_ld_flags " -shared-intel")
 endif()
 superbuild_setup_flags()
+
+# Add options to control SPDX generation
+option(GENERATE_SPDX "Generate SPDX file for each projects (default OFF)" OFF)
+mark_as_advanced(GENERATE_SPDX)
+if (GENERATE_SPDX)
+  set(_superbuild_generate_spdx ON)
+  if (NOT superbuild_spdx_document_namespace)
+    set(superbuild_spdx_document_namespace "https://kitware.com/spdx")
+  endif ()
+endif ()
 
 # merge in default/user-specified CMake flags.
 string(PREPEND superbuild_ld_flags "${CMAKE_SHARED_LINKER_FLAGS} ")

@@ -32,6 +32,10 @@ superbuild_add_project(python3
   DEPENDS_OPTIONAL ${python3_optional_depends}
   LICENSE_FILES
     LICENSE
+  SPDX_LICENSE_IDENTIFIER
+    Python-2.0
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Python Software Foundation"
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>
@@ -75,11 +79,9 @@ if (python3_enabled)
     CACHE INTERNAL "")
   set(superbuild_python_pip "${superbuild_install_location}/bin/pip3"
     CACHE INTERNAL "")
-else ()
-  set(superbuild_python_executable ""
-    CACHE INTERNAL "")
-  set(superbuild_python_pip ""
-    CACHE INTERNAL "")
+elseif (superbuild_build_phase)
+  unset(superbuild_python_executable CACHE)
+  unset(superbuild_python_pip CACHE)
 endif ()
 
 set(superbuild_python_version "${python3_SOURCE_SELECTION}"
@@ -112,3 +114,11 @@ superbuild_add_extra_cmake_args(
   -DPYTHON_LIBRARY:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}${CMAKE_SHARED_LIBRARY_SUFFIX}
   -DPYTHON_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}${CMAKE_SHARED_LIBRARY_SUFFIX}
 )
+
+set(modules_to_remove
+  ctypes.test
+  distutils.tests
+  lib2to3.tests
+  unittest.test
+  )
+_superbuild_remove_python_modules("${modules_to_remove}")

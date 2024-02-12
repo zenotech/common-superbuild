@@ -114,10 +114,21 @@ endif ()
 
 superbuild_add_project(${project}
   CAN_USE_SYSTEM
-  DEPENDS llvm zlib ${mesa_type_deps} ${mesa_platform_deps} pythonmako meson python3
-          flexbison
+  DEPENDS
+    llvm
+    zlib
+    ${mesa_type_deps}
+    ${mesa_platform_deps}
+    pythonmako
+    meson
+    python3
+    flexbison
   LICENSE_FILES
     docs/license.rst
+  SPDX_LICENSE_IDENTIFIER
+    MIT
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (C) 1999-2007  Brian Paul"
   CONFIGURE_COMMAND
     ${meson_command}
       ${mesa_common_config_args}

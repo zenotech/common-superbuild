@@ -29,8 +29,18 @@ superbuild_add_project_python_pyproject(matplotlib
     # There are many licenses in matplotlib but it looks like only this file
     # applies to the installed files
     LICENSE/LICENSE
+  SPDX_LICENSE_IDENTIFIER
+    PSF-2.0
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2012- Matplotlib Development Team"
   PROCESS_ENVIRONMENT
-    ${matplotlib_process_environment})
+    ${matplotlib_process_environment}
+  REMOVE_MODULES
+    matplotlib.tests
+    mpl_toolkits.axes_grid1.tests
+    mpl_toolkits.axisartist.tests
+    mpl_toolkits.mplot3d.tests
+  )
 
 superbuild_append_flags(cpp_flags
   "-I<INSTALL_DIR>/include"

@@ -25,6 +25,16 @@ superbuild_add_project(fontconfig
   DEPENDS freetype libxml2 png gperf python3 ${fontconfig_depends}
   LICENSE_FILES
     COPYING
+  SPDX_LICENSE_IDENTIFIER
+    MIT
+  SPDX_COPYRIGHT_TEXT
+    "Copyright © 2000,2001,2002,2003,2004,2006,2007 Keith Packard"
+    "Copyright © 2005 Patrick Lam"
+    "Copyright © 2007 Dwayne Bailey and Translate.org.za"
+    "Copyright © 2009 Roozbeh Pournader"
+    "Copyright © 2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020 Red Hat, Inc."
+    "Copyright © 2008 Danilo Šegan"
+    "Copyright © 2012 Google, Inc."
   BUILD_IN_SOURCE 1
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure

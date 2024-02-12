@@ -13,6 +13,12 @@ archive in [this spot](https://www.paraview.org/files/dependencies). Ask
 for someone who has permissions to push an updated archive, then update
 `versions.cmake`. `md5sum` can calculate the hash for you.
 
+When updating a project please make sure to:
+
+ - Consult the project .cmake file for any relevant comments
+ - Check for any change in the CMake options in the release notes
+ - Check for any licensing and copyright changes
+
 # Defining projects
 
 Projects are defined under the `projects/` hierarchy. Under this hierarchy,
@@ -42,6 +48,12 @@ subdirectories:
 Usually these will just be the `$project.cmake` files, patches, and helper
 scripts, but it is not impossible that shadowing for the other files would be
 useful.
+
+When adding a project, be sure to update:
+
+- `.gitlab/ci/configure_common.cmake` to add building it to CI
+- `selftest/CMakeLists.txt` to add it to the CI project
+- `selftest/tests/CMakeLists.txt` for any relevant tests (e.g., loading Python modules)
 
 ## Related files
 
@@ -293,7 +305,7 @@ ignored.
 This variable is a path where all of the projects will install themselves. If
 it is not set, the default value is `${CMAKE_BINARY_DIR}/install`.
 
-### `mpi_ENABLE_UCX` (variable)
+### `mpi_ENABLE_UCX` (option)
 
 This variable is useful for taking advantage of infiniband devices utilizing the
 channel for ucx. This variable will typically be used in combination with the
@@ -301,6 +313,15 @@ channel for ucx. This variable will typically be used in combination with the
 during the MPI build. By default this is disabled as most machines won't have
 this high bandwidth option available and will just use regular ethernet for MPI
 communication.
+
+### `GENERATE_SPDX` (option)
+
+When this variable is turned on, the superbuild will generate a SPDX file for each
+project and install it in `<INSTALL_DIR>/share/doc/${project}/spdx`. Warnings will
+be outputed if any built project miss mandatory SPDX information. The SPDX document
+namespace can be set using `superbuild_spdx_document_namespace` cmake variable and
+default to `https://kitware.com/spdx`.
+These files could then be ultimely packaged as needed.
 
 ### Flags
 

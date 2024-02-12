@@ -1,6 +1,15 @@
 superbuild_add_project(szip
   LICENSE_FILES
     COPYING
+  SPDX_LICENSE_IDENTIFIER
+    LicenseRef-SZIP
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (C) 2001 Science & Technology Corporation @ UNM"
+    "Copyright (C) 2003 Lowell H. Miles and Jack A. Venbrux"
+  SPDX_CUSTOM_LICENSE_FILE
+    COPYING
+  SPDX_CUSTOM_LICENSE_NAME
+    LicenseRef-SZIP
   CMAKE_ARGS
     -DCMAKE_INSTALL_NAME_DIR:STRING=<INSTALL_DIR>/lib
     -DSZIP_ENABLE_ENCODING:BOOL=OFF # This option should not be changed as we do not distribute the encoding/compression license

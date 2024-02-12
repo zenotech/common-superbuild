@@ -3,11 +3,19 @@ if (fortran_enabled)
     FC ${CMAKE_Fortran_COMPILER})
 endif ()
 
+superbuild_python_version_check(scipy
+  "3.8" "0" # Unsupported
+  "3.9" "1.11.2")
+
 superbuild_add_project_python_pyproject(scipy
   PACKAGE scipy
   DEPENDS fortran numpy lapack pybind11 pythonpythran pythonmesonpython pythonwheel pkgconf
   LICENSE_FILES
     LICENSE.txt
+  SPDX_LICENSE_IDENTIFIER
+    BSD-3-Clause
+  SPDX_COPYRIGHT_TEXT
+    "Copyright (c) 2001-2002 Enthought, Inc. 2003-2023, SciPy Developers"
   PROCESS_ENVIRONMENT
     ${scipy_process_environment})
 

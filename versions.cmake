@@ -28,8 +28,8 @@ superbuild_set_revision(seacas
 
 superbuild_set_revision(zlib
   # https://github.com/madler/zlib/releases
-  URL     "https://www.paraview.org/files/dependencies/zlib-1.3.tar.xz"
-  URL_MD5 b49e70aacafacfceb1107943497f5545)
+  URL     "https://www.paraview.org/files/dependencies/zlib-1.3.1.tar.xz"
+  URL_MD5 5e6af153311327e516690d300527ec9e)
 
 superbuild_set_revision(xz
   # https://tukaani.org/xz/
@@ -127,10 +127,22 @@ superbuild_set_selectable_source(qt5
     URL     "https://www.paraview.org/files/dependencies/qt-everywhere-opensource-src-5.15.10.tar.xz"
     URL_MD5 "fb41d86bea6bc4886030a5092c910b09")
 
-superbuild_set_revision(numpy
+superbuild_set_selectable_source(numpy
   # https://pypi.org/project/numpy/#history
-  URL     "https://www.paraview.org/files/dependencies/numpy-1.25.2.tar.gz"
-  URL_MD5 cee1996a80032d47bdf1d9d17249c34e)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/numpy.cmake`'s valid version detection.
+  SELECT 1.25.2 DEFAULT # Requires Python 3.9+
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.25.2.tar.gz"
+    URL_MD5 cee1996a80032d47bdf1d9d17249c34e
+  SELECT 1.24.4 # Needed for Python 3.8
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.24.4.tar.gz"
+    URL_MD5 3f3995540a17854a29dc79f8eeecd832
+  SELECT 1.21.6 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.21.6.zip"
+    URL_MD5 04aea95dcb1d256d13a45df42173aa1e
+  SELECT 1.19.5 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.19.5.zip"
+    URL_MD5 f6a1b48717c552bbc18f1adc3cc1fe0e)
 
 superbuild_set_revision(pythonpyprojectmetadata
   # https://pypi.org/project/pyproject-metadata/#history
@@ -142,15 +154,23 @@ superbuild_set_revision(pythonflitcore
   URL     "https://www.paraview.org/files/dependencies/flit_core-3.9.0.tar.gz"
   URL_MD5 3bc52f1952b9a78361114147da63c35b)
 
-superbuild_set_revision(pythonpackaging
+superbuild_set_selectable_source(pythonpackaging
   # https://pypi.org/project/packaging/#history
-  URL     "https://www.paraview.org/files/dependencies/packaging-23.1.tar.gz"
-  URL_MD5 f7d5c39c6f92cc2dfa1293ba8f6c097c)
+  SELECT 23.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/packaging-23.1.tar.gz"
+    URL_MD5 f7d5c39c6f92cc2dfa1293ba8f6c097c
+  SELECT 21.3 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/packaging-21.3.tar.gz"
+    URL_MD5 e713c1939f294fd729af4a7be40dd141)
 
-superbuild_set_revision(pythontomli
+superbuild_set_selectable_source(pythontomli
   # https://pypi.org/project/tomli/#history
-  URL     "https://www.paraview.org/files/dependencies/tomli-2.0.1.tar.gz"
-  URL_MD5 d4341621d423a7ca6822e23d6d52bb9a)
+  SELECT 2.0.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/tomli-2.0.1.tar.gz"
+    URL_MD5 d4341621d423a7ca6822e23d6d52bb9a
+  SELECT 1.2.3 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/tomli-1.2.3.tar.gz"
+    URL_MD5 807cc80e6a2697375f431b757994b7c5)
 
 superbuild_set_revision(pythonmesonpython
   # https://pypi.org/project/meson-python/#history
@@ -179,10 +199,19 @@ superbuild_set_revision(pythonmpmath
   URL     "https://www.paraview.org/files/dependencies/mpmath-1.3.0.tar.gz"
   URL_MD5 d5d17bbefea73eeb959967351d905306)
 
-superbuild_set_revision(sympy
+superbuild_set_selectable_source(sympy
   # https://pypi.org/project/sympy/#history
-  URL     "https://www.paraview.org/files/dependencies/sympy-1.12.tar.gz"
-  URL_MD5 3e0033109352d7303ea97b9216e16645)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/sympy.cmake`'s valid version detection.
+  SELECT 1.12 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/sympy-1.12.tar.gz"
+    URL_MD5 3e0033109352d7303ea97b9216e16645
+  SELECT 1.10.1 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/sympy-1.10.1.tar.gz"
+    URL_MD5 8c7a956d74a47dc439c2935fec64ac46
+  SELECT 1.9 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/sympy-1.9.tar.gz"
+    URL_MD5 217f8179c3f1f3c888feb9b0fde0994e)
 
 superbuild_set_revision(qhull
   # http://www.qhull.org/download/ ("Download: … for Unix")
@@ -198,15 +227,28 @@ superbuild_set_revision(pythonpillow
   URL     "https://www.paraview.org/files/dependencies/Pillow-10.0.0.tar.gz"
   URL_MD5 2a8f327ba2250aad26ed101337c8fa56)
 
-superbuild_set_revision(pythoncontourpy
+superbuild_set_selectable_source(pythoncontourpy
   # https://pypi.org/project/contourpy/#history
-  URL "https://www.paraview.org/files/dependencies/contourpy-1.1.0.tar.gz"
-  URL_MD5 cae5b781ade023c01bc1a8a53312f2ac)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/pythoncontourpy.cmake`'s valid version detection.
+  SELECT 1.1.0 DEFAULT
+    URL "https://www.paraview.org/files/dependencies/contourpy-1.1.0.tar.gz"
+    URL_MD5 cae5b781ade023c01bc1a8a53312f2ac
+  SELECT 1.0.6 # Needed for Python 3.7
+    URL "https://www.paraview.org/files/dependencies/contourpy-1.0.6.tar.gz"
+    URL_MD5 0ed85863802b1323708b400ae7e7bbd7)
 
-superbuild_set_revision(pythonfonttools
+superbuild_set_selectable_source(pythonfonttools
   # https://pypi.org/project/fonttools/#history
-  URL "https://www.paraview.org/files/dependencies/fonttools-4.42.1.tar.gz"
-  URL_MD5 039956b85e9b84ba53373b0df644f5ad)
+  SELECT 4.42.1 DEFAULT
+    URL "https://www.paraview.org/files/dependencies/fonttools-4.42.1.tar.gz"
+    URL_MD5 039956b85e9b84ba53373b0df644f5ad
+  SELECT 4.38.0 # Needed for Python 3.7
+    URL "https://www.paraview.org/files/dependencies/fonttools-4.38.0.zip"
+    URL_MD5 f4775967d29b0da2f29ba499eed34f88
+  SELECT 4.27.1 # Needed for Python 3.6
+    URL "https://www.paraview.org/files/dependencies/fonttools-4.27.1.zip"
+    URL_MD5 dbb951b7bff5e18442ea13c66b47f4e3)
 
 superbuild_set_revision(matplotlib
   # https://pypi.org/project/matplotlib/#history
@@ -239,10 +281,20 @@ superbuild_set_revision(netcdf
   URL     "https://www.paraview.org/files/dependencies/netcdf-c-4.9.2.tar.gz"
   URL_MD5 84acd096ab4f3300c20db862eecdf7c7)
 
+superbuild_set_revision(pythoncftime
+  # https://pypi.org/project/cftime/#history
+  URL     "https://www.paraview.org/files/dependencies/cftime-1.6.3.tar.gz"
+  URL_MD5 74e916dcdfe36bbb07c238145de630cd)
+
+superbuild_set_revision(pythonnetcdf4
+  # https://github.com/Unidata/netcdf4-python/releases
+  URL     "https://www.paraview.org/files/dependencies/netcdf4-python-1.6.5.tar.gz"
+  URL_MD5 c3ebdf74ae184f2bd9ecbbc3f16801fe)
+
 superbuild_set_revision(tbb
   # https://github.com/oneapi-src/oneTBB/releases
-  URL     "https://www.paraview.org/files/dependencies/tbb-2021.10.0.tar.gz"
-  URL_MD5 2caf55b3d35b53edccb33ecaf0f23402)
+  URL     "https://www.paraview.org/files/dependencies/oneTBB-2021.11.0.tar.gz"
+  URL_MD5 b301151120b08a17e98dcdda6e4f6011)
 
 superbuild_set_revision(pytz
   # https://pypi.org/project/pytz/#history
@@ -293,17 +345,30 @@ superbuild_set_revision(pythoncython
   URL     "https://www.paraview.org/files/dependencies/Cython-3.0.0.tar.gz"
   URL_MD5 63c5672e1f58dcee6854aef8b33a922e)
 
-superbuild_set_revision(pythonsetuptools
+superbuild_set_selectable_source(pythonsetuptools
   # https://pypi.org/project/setuptools/#history
-  URL     "https://www.paraview.org/files/dependencies/setuptools-68.1.2.tar.gz"
-  URL_MD5 222b8c1a7432457d8485f947a0e0fde6)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/pythonsetuptools.cmake`'s valid version detection.
+  SELECT 68.1.2 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/setuptools-68.1.2.tar.gz"
+    URL_MD5 222b8c1a7432457d8485f947a0e0fde6
+  SELECT 67.8.0 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/setuptools-67.8.0.tar.gz"
+    URL_MD5 628ab1ae7d14185e5e536740ea31b5ce
+  SELECT 58.5.3 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/setuptools-58.5.3.tar.gz"
+    URL_MD5 04402d15308fb70de2de4a1c537ade1f)
 
-superbuild_set_revision(pythonwheel
+superbuild_set_selectable_source(pythonwheel
   # https://pypi.org/project/wheel/#history
   # PyPI source tarball with 'unicode.dist' test excised from it (CMake has
   # issues extracting non-UTF-8 names in tarballs).
-  URL     "https://www.paraview.org/files/dependencies/wheel-0.41.2-nounicodedist.tar.gz"
-  URL_MD5 b5f1f03ec0ad347b8b17c33077513863)
+  SELECT 0.41.2 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/wheel-0.41.2-nounicodedist.tar.gz"
+    URL_MD5 b5f1f03ec0ad347b8b17c33077513863
+  SELECT 0.37.1 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/wheel-0.37.1-nounicodedist.tar.gz"
+    URL_MD5 1acbaf94645d7ae704f24c470ec4ac21)
 
 # https://pypi.org/project/mpi4py/#history
 set(mpi4py_ver "3.1.4")
@@ -332,30 +397,51 @@ superbuild_set_revision(pythontoml
   URL     "https://www.paraview.org/files/dependencies/toml-0.10.2.tar.gz"
   URL_MD5 59bce5d8d67e858735ec3f399ec90253)
 
-superbuild_set_revision(pythonsetuptoolsscm
+superbuild_set_selectable_source(pythonsetuptoolsscm
   # https://pypi.org/project/setuptools-scm/#history
-  URL     "https://www.paraview.org/files/dependencies/setuptools_scm-7.1.0.tar.gz"
-  URL_MD5 158dc741637fb4fa4b955c62bd2c08be)
+  SELECT 7.1.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/setuptools_scm-7.1.0.tar.gz"
+    URL_MD5 158dc741637fb4fa4b955c62bd2c08be
+  SELECT 6.4.2 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/setuptools_scm-6.4.2.tar.gz"
+    URL_MD5 b4e02bf8e62ed49142ea7b42a68671d7)
 
-superbuild_set_revision(pythonsetuptoolsrust
+superbuild_set_selectable_source(pythonsetuptoolsrust
   # https://pypi.org/project/setuptools-rust/#history
-  URL     "https://www.paraview.org/files/dependencies/setuptools-rust-1.7.0.tar.gz"
-  URL_MD5 5d8c29528d6f99537ff6c186f977f470)
+  SELECT 1.7.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/setuptools-rust-1.7.0.tar.gz"
+    URL_MD5 5d8c29528d6f99537ff6c186f977f470
+  SELECT 1.1.2 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/setuptools-rust-1.1.2.tar.gz"
+    URL_MD5 479fcd267ff48929bec9a7270e1a96d7)
 
 superbuild_set_revision(pythoncharsetnormalizer
   # https://pypi.org/project/charset-normalizer/#history
   URL     "https://www.paraview.org/files/dependencies/charset-normalizer-3.2.0.tar.gz"
   URL_MD5 dbb8c5b745beddbaae67d06dce0b7c29)
 
-superbuild_set_revision(pythonaiosignal
+superbuild_set_selectable_source(pythonaiosignal
   # https://pypi.org/project/aiosignal/#history
-  URL     "https://www.paraview.org/files/dependencies/aiosignal-1.3.1.tar.gz"
-  URL_MD5 2a15f4008b899377590cef4773020902)
+  SELECT 1.3.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/aiosignal-1.3.1.tar.gz"
+    URL_MD5 2a15f4008b899377590cef4773020902
+  SELECT 1.2.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/aiosignal-1.2.0.tar.gz"
+    URL_MD5 011700c3acc576a3a38deade6a4860cb)
 
-superbuild_set_revision(pythonfrozenlist
+superbuild_set_selectable_source(pythonfrozenlist
   # https://pypi.org/project/frozenlist/#history
-  URL     "https://www.paraview.org/files/dependencies/frozenlist-1.4.0.tar.gz"
-  URL_MD5 4a14df2fe30853d9e18f73002493a860)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/pythonfrozenlist.cmake`'s valid version detection.
+  SELECT 1.4.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/frozenlist-1.4.0.tar.gz"
+    URL_MD5 4a14df2fe30853d9e18f73002493a860
+  SELECT 1.3.3 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/frozenlist-1.3.3.tar.gz"
+    URL_MD5 14e9ffd849c6a1dfa3c6b1fb1ff77b14
+  SELECT 1.2.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/frozenlist-1.2.0.tar.gz"
+    URL_MD5 8f1851ef871d95a15ebcf20255c12f6d)
 
 superbuild_set_revision(pythonaiohttp
   # https://pypi.org/project/aiohttp/#history
@@ -367,20 +453,28 @@ superbuild_set_revision(pythonasynctimeout
   URL     "https://www.paraview.org/files/dependencies/async-timeout-4.0.3.tar.gz"
   URL_MD5 9bf7b764a7310cb063c1c261c21342e4)
 
-superbuild_set_revision(pythonchardet
+superbuild_set_selectable_source(pythonchardet
   # https://pypi.org/project/chardet/#history
-  URL     "https://www.paraview.org/files/dependencies/chardet-5.2.0.tar.gz"
-  URL_MD5 cc2d8cc9a751641463b4f7cfecad2ffa)
+  SELECT 5.2.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/chardet-5.2.0.tar.gz"
+    URL_MD5 cc2d8cc9a751641463b4f7cfecad2ffa
+  SELECT 5.0.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/chardet-5.0.0.tar.gz"
+    URL_MD5 8013c248c098e165ac53d900e1a1278a)
 
 superbuild_set_revision(pythonmultidict
   # https://pypi.org/project/multidict/#history
   URL     "https://www.paraview.org/files/dependencies/multidict-6.0.4.tar.gz"
   URL_MD5 ec06a613d871dadfb66f2be3a1f2f3fa)
 
-superbuild_set_revision(pythontypingextensions
+superbuild_set_selectable_source(pythontypingextensions
   # https://pypi.org/project/typing_extensions/#history
-  URL     "https://www.paraview.org/files/dependencies/typing_extensions-4.7.1.tar.gz"
-  URL_MD5 06e7fff4b1d51f8dc6f49b16e71de54e)
+  SELECT 4.7.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/typing_extensions-4.7.1.tar.gz"
+    URL_MD5 06e7fff4b1d51f8dc6f49b16e71de54e
+  SELECT 4.1.1 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/typing_extensions-4.1.1.tar.gz"
+    URL_MD5 3cd9b7b9a465afbcca8548e11668ca64)
 
 superbuild_set_revision(pythonyarl
   # https://pypi.org/project/yarl/#history
@@ -404,58 +498,93 @@ superbuild_set_revision(pythonidna
 
 superbuild_set_revision(pythonwslinkasync
   # https://pypi.org/project/wslink/#history
-  URL     "https://www.paraview.org/files/dependencies/wslink-1.11.1.tar.gz"
-  URL_MD5 594a72a7dcc9fa805cc9dfda3b681613)
+  URL     "https://www.paraview.org/files/dependencies/wslink-1.12.4.tar.gz"
+  URL_MD5 ab60bd793e4bdf0e876623d34fcbf463)
 
 superbuild_set_revision(pythonsix
   # https://pypi.org/project/six/#history
   URL     "https://www.paraview.org/files/dependencies/six-1.16.0.tar.gz"
   URL_MD5 a7c927740e4964dd29b72cebfc1429bb)
 
-superbuild_set_revision(pythonpygments
+superbuild_set_selectable_source(pythonpygments
   # https://pypi.org/project/Pygments/#history
-  URL     "https://www.paraview.org/files/dependencies/Pygments-2.16.1.tar.gz"
-  URL_MD5 20cb967029c23389253326cf515dec8a)
+  SELECT 2.16.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/Pygments-2.16.1.tar.gz"
+    URL_MD5 20cb967029c23389253326cf515dec8a
+  SELECT 2.14.0 # Needed for Python 3.6.
+    URL     "https://www.paraview.org/files/dependencies/Pygments-2.14.0.tar.gz"
+    URL_MD5 447be4afb076c8325a7dc659aff5b931)
 
 superbuild_set_revision(pythonmarkupsafe
   # https://pypi.org/project/MarkupSafe/#history
   URL     "https://www.paraview.org/files/dependencies/MarkupSafe-2.1.3.tar.gz"
   URL_MD5 ca33f119bd0551ce15837f58bb180214)
 
-superbuild_set_revision(pythonmako
+superbuild_set_selectable_source(pythonmako
   # https://pypi.org/project/Mako/#history
-  URL     "https://www.paraview.org/files/dependencies/Mako-1.2.4.tar.gz"
-  URL_MD5 651f365616611fcd4f2702a9002e2195)
+  SELECT 1.2.4 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/Mako-1.2.4.tar.gz"
+    URL_MD5 651f365616611fcd4f2702a9002e2195
+  SELECT 1.1.6 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/Mako-1.1.6.tar.gz"
+    URL_MD5 6d7ccbc372ec6d87113f34d9e8fc65d1)
 
-superbuild_set_revision(pythoncppy
+superbuild_set_selectable_source(pythoncppy
   # https://pypi.org/project/cppy/#history
-  URL     "https://www.paraview.org/files/dependencies/cppy-1.2.1.tar.gz"
-  URL_MD5 7c1f825c43dd66454440932a35b9969c)
+  SELECT 1.2.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/cppy-1.2.1.tar.gz"
+    URL_MD5 7c1f825c43dd66454440932a35b9969c
+  SELECT 1.1.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/cppy-1.1.0.tar.gz"
+    URL_MD5 2110891d75aa12551deebba1603428c6)
 
-superbuild_set_revision(pythonkiwisolver
+superbuild_set_selectable_source(pythonkiwisolver
   # https://pypi.org/project/kiwisolver/#history
-  URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.4.5.tar.gz"
-  URL_MD5 20dea6992699d6be8a563995d7fe0309)
+  SELECT 1.4.5 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.4.5.tar.gz"
+    URL_MD5 20dea6992699d6be8a563995d7fe0309
+  SELECT 1.2.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/kiwisolver-1.2.0.tar.gz"
+    URL_MD5 9f53fabb361c04d76c5afc688652c814)
 
-superbuild_set_revision(pythonpathspec
+superbuild_set_selectable_source(pythonpathspec
   # https://pypi.org/project/pathspec/#history
-  URL     "https://www.paraview.org/files/dependencies/pathspec-0.11.2.tar.gz"
-  URL_MD5 92ebd6d735d261952ff99d64083eeff4)
+  SELECT 0.11.2 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/pathspec-0.11.2.tar.gz"
+    URL_MD5 92ebd6d735d261952ff99d64083eeff4
+  SELECT 0.9.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/pathspec-0.9.0.tar.gz"
+    URL_MD5 9b6b70fa5ffc31e6f5700522880140c0)
 
-superbuild_set_revision(pythonpluggy
+superbuild_set_selectable_source(pythonpluggy
   # https://pypi.org/project/pluggy/#history
-  URL     "https://www.paraview.org/files/dependencies/pluggy-1.3.0.tar.gz"
-  URL_MD5 f31aad77be2f5af8ed3864159b7fd743)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/pythonpluggy.cmake`'s valid version detection.
+  SELECT 1.3.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/pluggy-1.3.0.tar.gz"
+    URL_MD5 f31aad77be2f5af8ed3864159b7fd743
+  SELECT 1.2.0 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/pluggy-1.2.0.tar.gz"
+    URL_MD5 b6ab532a71304092cb0a309f82e8d8c6
+  SELECT 1.0.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/pluggy-1.0.0.tar.gz"
+    URL_MD5 daa6fddfb6cd364f3c82e52098911e4b)
 
 superbuild_set_revision(pythontroveclassifiers
   # https://pypi.org/project/trove-classifiers/#history
   URL     "https://www.paraview.org/files/dependencies/trove-classifiers-2023.8.7.tar.gz"
   URL_MD5 6ae148c8374d131dd18e28c22275d56a)
 
-superbuild_set_revision(pythonhatchling
+superbuild_set_selectable_source(pythonhatchling
   # https://pypi.org/project/hatchling/#history
-  URL     "https://www.paraview.org/files/dependencies/hatchling-1.18.0.tar.gz"
-  URL_MD5 43f7203cacb6c3c178b93149b8a8151d)
+  # When updating to a version that drops support for a Python version, also
+  # update `projects/pythonhatchling.cmake`'s valid version detection.
+  SELECT 1.18.0 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/hatchling-1.18.0.tar.gz"
+    URL_MD5 43f7203cacb6c3c178b93149b8a8151d
+  SELECT 1.17.1 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/hatchling-1.17.1.tar.gz"
+    URL_MD5 456b26de1da49b23e65934ac5a39c7fa)
 
 superbuild_set_revision(pythonhatchvcs
   # https://pypi.org/project/hatch-vcs/#history
@@ -522,10 +651,14 @@ superbuild_set_revision(glproto
   URL     "https://www.paraview.org/files/dependencies/glproto-1.4.17.tar.bz2"
   URL_MD5 5565f1b0facf4a59c2778229c1f70d10)
 
-superbuild_set_revision(meson
+superbuild_set_selectable_source(meson
   # https://github.com/mesonbuild/meson/releases
-  URL     "https://www.paraview.org/files/dependencies/meson-1.2.1.tar.gz"
-  URL_MD5 e3cc846536189aacd7d01858a45ca9af)
+  SELECT 1.2.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/meson-1.2.1.tar.gz"
+    URL_MD5 e3cc846536189aacd7d01858a45ca9af
+  SELECT 0.61.5 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/meson-0.61.5.tar.gz"
+    URL_MD5 6c55d6d9b9cd1727f0936d6ff29d6d3c)
 
 superbuild_set_selectable_source(mesa
   # https://gitlab.freedesktop.org/mesa/mesa/-/tags
@@ -675,9 +808,14 @@ superbuild_set_revision(snappy
   URL_MD5 70153395ebe6d72febe2cf2e40026a44)
 
 # https://pypi.org/project/cryptography/#history
+set(pythoncryptography_py36_version "40.0.2")
 set(pythoncryptography_version "41.0.3")
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "64")
+    set(pythoncryptography_py36_file
+      "cryptography-${pythoncryptography_py36_version}-cp36-abi3-win_amd64.whl")
+    set(pythoncryptography_py36_md5
+      "9d0a9dac29e2e398484726bcc47ca774")
     set(pythoncryptography_file
       "cryptography-${pythoncryptography_version}-cp37-abi3-win_amd64.whl")
     set(pythoncryptography_md5
@@ -685,11 +823,19 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
   endif ()
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
+    set(pythoncryptography_py36_file
+      "cryptography-${pythoncryptography_py36_version}-cp36-abi3-macosx_10_12_x86_64.whl")
+    set(pythoncryptography_py36_md5
+      "07d65f6b2be9fc936511587a4eca1cf4")
     set(pythoncryptography_file
       "cryptography-${pythoncryptography_version}-cp37-abi3-macosx_10_12_x86_64.whl")
     set(pythoncryptography_md5
       "1351baacf6069403c3f916a46cebbad5")
   elseif (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64")
+    set(pythoncryptography_py36_file
+      "cryptography-${pythoncryptography_py36_version}-cp36-abi3-macosx_10_12_universal2.whl")
+    set(pythoncryptography_py36_md5
+      "847924541e2f1b0143e1c47e35de5c57")
     set(pythoncryptography_file
       "cryptography-${pythoncryptography_version}-cp37-abi3-macosx_10_12_universal2.whl")
     set(pythoncryptography_md5
@@ -697,6 +843,10 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   endif ()
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
   if (CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "x86_64")
+    set(pythoncryptography_py36_file
+      "cryptography-${pythoncryptography_py36_version}-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl")
+    set(pythoncryptography_py36_md5
+      "d2da9f618988c59a0407c36ca30b4103")
     set(pythoncryptography_file
       "cryptography-${pythoncryptography_version}-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl")
     set(pythoncryptography_md5
@@ -708,6 +858,10 @@ if (NOT pythoncryptography_file)
     "The Python cryptography package is being built from source due to the "
     "lack of a suitable wheel file. This needs a Rust compiler. Please see "
     "https://rustup.rs/ for instructions on obtaining a toolchain.")
+  set(pythoncryptography_py36_file
+    "cryptography-${pythoncryptography_py36_version}.tar.gz")
+  set(pythoncryptography_py36_md5
+    "a5038e911cc5e2f20d1aa424e9c09464")
   set(pythoncryptography_file
     "cryptography-${pythoncryptography_version}.tar.gz")
   set(pythoncryptography_md5
@@ -716,9 +870,13 @@ if (NOT pythoncryptography_file)
     PROPERTY
       pythoncryptography_source 1)
 endif ()
-superbuild_set_revision(pythoncryptography
-  URL     "https://www.paraview.org/files/dependencies/${pythoncryptography_file}"
-  URL_MD5 "${pythoncryptography_md5}")
+superbuild_set_selectable_source(pythoncryptography
+  SELECT 41.0.3 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/${pythoncryptography_file}"
+    URL_MD5 "${pythoncryptography_md5}"
+  SELECT 40.0.2 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/${pythoncryptography_py36_file}"
+    URL_MD5 "${pythoncryptography_py36_md5}")
 
 # https://github.com/openssl/openssl/releases
 set(openssl_version 1.1.1k)
@@ -745,5 +903,20 @@ superbuild_set_revision(alembic
 
 superbuild_set_revision(imath
   # https://github.com/AcademySoftwareFoundation/Imath/releases
-  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.9.tar.gz"
-  URL_MD5 97f1cbfb86b88ddfde42b7df1f1494db)
+  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.10.tar.gz"
+  URL_MD5 5b3a8831f75a30ed76cc609a66b93aa6)
+
+superbuild_set_revision(zstd
+  # https://github.com/facebook/zstd/releases
+  URL     "https://www.paraview.org/files/dependencies/zstd-1.5.5.tar.gz"
+  URL_MD5 "63251602329a106220e0a5ad26ba656f")
+
+superbuild_set_revision(lz4
+  # https://github.com/lz4/lz4/releases
+  URL     "https://www.paraview.org/files/dependencies/lz4-1.9.4.tar.gz"
+  URL_MD5 "e9286adb64040071c5e23498bf753261")
+
+superbuild_set_revision(blosc
+  # https://github.com/Blosc/c-blosc/releases
+  URL     "https://www.paraview.org/files/dependencies/blosc-1.21.5.tar.gz"
+  URL_MD5 "5097ee61dc1f25281811f5a55b91b2e4")
