@@ -12,3 +12,8 @@ superbuild_add_project(imath
     -DCMAKE_INSTALL_LIBDIR:STRING=lib
     -DCMAKE_INSTALL_NAME_DIR:PATH=<INSTALL_DIR>/lib
 )
+
+# Mostly from:
+# https://github.com/AcademySoftwareFoundation/Imath/issues/367
+superbuild_apply_patch(imath gcc-4.8
+  "Add missing std:: on isfinite usage")

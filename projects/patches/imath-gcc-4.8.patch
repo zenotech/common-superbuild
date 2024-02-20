@@ -1,0 +1,36 @@
+diff -u -Nr -U5 Imath-3.1.10/src/Imath/ImathFun.cpp Imath-3.1.10.gcc-4.8/src/Imath/ImathFun.cpp
+--- Imath-3.1.10/src/Imath/ImathFun.cpp	2024-01-24 17:14:50.000000000 -0500
++++ Imath-3.1.10.gcc-4.8/src/Imath/ImathFun.cpp	2024-02-19 07:15:19.934653741 -0500
+@@ -8,28 +8,28 @@
+ 
+ IMATH_INTERNAL_NAMESPACE_SOURCE_ENTER
+ 
+ float succf(float f) IMATH_NOEXCEPT
+ {
+-    return isfinite(f) ?
++    return std::isfinite(f) ?
+             std::nextafter(f, std::numeric_limits<float>::infinity()) : f;
+ }
+ 
+ float predf(float f) IMATH_NOEXCEPT
+ {
+-    return isfinite(f) ?
++    return std::isfinite(f) ?
+             std::nextafter(f, -std::numeric_limits<float>::infinity()) : f;
+ }
+ 
+ double succd(double d) IMATH_NOEXCEPT
+ {
+-    return isfinite(d) ?
++    return std::isfinite(d) ?
+             std::nextafter(d, std::numeric_limits<double>::infinity()) : d;
+ }
+ 
+ double predd(double d) IMATH_NOEXCEPT
+ {
+-    return isfinite(d) ?
++    return std::isfinite(d) ?
+             std::nextafter(d, -std::numeric_limits<double>::infinity()) : d;
+ }
+ 
+ IMATH_INTERNAL_NAMESPACE_SOURCE_EXIT
