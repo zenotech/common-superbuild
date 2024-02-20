@@ -164,12 +164,10 @@ set(qt5_skip_modules
   qtconnectivity
   qtgamepad
   qtlocation
-  qtmultimedia
   qtsensors
   qtserialport
   qtwayland
   qtwebchannel
-  qtwebengine
   qtwebsockets)
 
 get_filename_component(sb_dir "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)

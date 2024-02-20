@@ -76,6 +76,14 @@ if (NOT qt5_ENABLE_MULTIMEDIA)
     -skip qtmultimedia)
 endif()
 
+# Add option to build qtwebengine, off by default
+option(qt5_ENABLE_WEBENGINE "Build Qt5 Webengine library." OFF)
+mark_as_advanced(qt5_ENABLE_WEBENGINE)
+if (NOT qt5_ENABLE_WEBENGINE)
+  list(APPEND qt5_options
+    -skip qtwebengine)
+endif()
+
 foreach(module IN LISTS qt5_skip_modules)
   list(APPEND qt5_skip_args -skip ${module})
 endforeach()
