@@ -27,6 +27,7 @@ set(ENABLE_cxx17 OFF CACHE BOOL "")
 set(ENABLE_openxrsdk OFF CACHE BOOL "")
 set(ENABLE_openimagedenoise OFF CACHE BOOL "") # doesn't support GCC 4.8.5
 set(ENABLE_seacas OFF CACHE BOOL "")
+set(ENABLE_tbb OFF CACHE BOOL "") # doesn't support GCC 4.8.5
 set(ENABLE_utillinux OFF CACHE BOOL "") # doesn't support GCC 4.8.5
 
 # Not supported by Python 3.6.
