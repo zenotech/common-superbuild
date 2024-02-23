@@ -37,15 +37,18 @@ set(ENABLE_pythonpandas OFF CACHE BOOL "")
 set(ENABLE_pythonpyprojectmetadata OFF CACHE BOOL "")
 set(ENABLE_scipy OFF CACHE BOOL "")
 
+set(ENABLE_embree OFF CACHE BOOL "") # Requires tbb
 set(ENABLE_fontconfig OFF CACHE BOOL "") # Requires utillinux
 set(ENABLE_matplotlib OFF CACHE BOOL "") # Requires pythoncontourpy
-set(ENABLE_ospray OFF CACHE BOOL "") # Requires openimagedenoise
+set(ENABLE_openvkl OFF CACHE BOOL "") # Requires tbb
+set(ENABLE_ospray OFF CACHE BOOL "") # Requires openimagedenoise, embree, openvkl, rkcommon
 set(ENABLE_pythonaiohttp OFF CACHE BOOL "") # Requires pythonattrs
 set(ENABLE_pythonattrs OFF CACHE BOOL "") # Requires pythonhatchling
 set(ENABLE_pythonhatchfancypypireadme OFF CACHE BOOL "") # Requires pythonhatchling
 set(ENABLE_pythonhatchvcs OFF CACHE BOOL "") # Requires pythonhatchling
 set(ENABLE_pythonmesonpython OFF CACHE BOOL "") # Requires pythonpyprojectmetadata
 set(ENABLE_pythonwslinkasync OFF CACHE BOOL "") # Requires pythonaiohttp
+set(ENABLE_rkcommon OFF CACHE BOOL "") # Requires tbb
 
 # Not interested in testing here.
 set(ENABLE_llvm OFF CACHE BOOL "")
