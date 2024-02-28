@@ -183,6 +183,9 @@ set(qt5_SOURCE_SELECTION            "5.15" CACHE STRING "")
 # disabling
 set(qt5_EXTRA_CONFIGURATION_OPTIONS "-no-use-gold-linker" CACHE STRING "")
 
+# Enable webengine as it is off by default
+set(qt5_ENABLE_WEBENGINE "ON" CACHE STRING "")
+
 # Default to Release builds.
 if ("$ENV{CMAKE_BUILD_TYPE}" STREQUAL "")
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "")
