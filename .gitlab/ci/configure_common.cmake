@@ -183,6 +183,9 @@ set(qt5_SOURCE_SELECTION            "5.15" CACHE STRING "")
 # disabling
 set(qt5_EXTRA_CONFIGURATION_OPTIONS "-no-use-gold-linker" CACHE STRING "")
 
+# Enable many Boost libraries
+set(boost_libraries "atomic;chrono;date_time;filesystem;iostreams;log;program_options;regex;serialization;system;thread;timer" CACHE STRING "")
+
 # Enable webengine as it is off by default
 set(qt5_ENABLE_WEBENGINE "ON" CACHE STRING "")
 

@@ -201,6 +201,15 @@ if (TARGET openssl)
         --test-command "${CMAKE_CTEST_COMMAND}")
 endif ()
 
+if (TARGET boost AND APPLE)
+  add_test(
+    NAME boost-check-rpath
+    COMMAND
+      "${CMAKE_COMMAND}"
+      "-Dinstall_dir=${install_dir}"
+      -P "${CMAKE_CURRENT_SOURCE_DIR}/boost-check-rpath.cmake")
+endif ()
+
 add_python_import_test(python3 this)
 add_python_import_test(matplotlib matplotlib)
 add_python_script_test(matplotlib matplotlib-render)
