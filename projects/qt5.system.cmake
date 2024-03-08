@@ -1,5 +1,15 @@
+include(qt5.options)
+
 if (qt5_ENABLE_SVG)
   list(APPEND qt5_components Svg)
+endif ()
+
+if (qt5_ENABLE_MULTIMEDIA)
+  list(APPEND qt5_components Multimedia)
+endif ()
+
+if (qt5_ENABLE_WEBENGINE)
+  list(APPEND qt5_components WebEngine)
 endif ()
 
 find_package(Qt5 REQUIRED

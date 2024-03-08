@@ -1,3 +1,5 @@
+include(qt5.options)
+
 if (WIN32)
   list(APPEND qt5_options
     -qt-zlib)
@@ -60,25 +62,16 @@ else ()
   list(APPEND qt5_options "-no-openssl")
 endif ()
 
-# Add option to build qtsvg, on by default for svg icon support
-option(qt5_ENABLE_SVG "Build Qt5 SVG library." ON)
-mark_as_advanced(qt5_ENABLE_SVG)
 if (NOT qt5_ENABLE_SVG)
   list(APPEND qt5_options
     -skip qtsvg)
 endif()
 
-# Add option to build qtmultimedia, on by default
-option(qt5_ENABLE_MULTIMEDIA "Build Qt5 Multimedia library." ON)
-mark_as_advanced(qt5_ENABLE_MULTIMEDIA)
 if (NOT qt5_ENABLE_MULTIMEDIA)
   list(APPEND qt5_options
     -skip qtmultimedia)
 endif()
 
-# Add option to build qtwebengine, off by default
-option(qt5_ENABLE_WEBENGINE "Build Qt5 Webengine library." OFF)
-mark_as_advanced(qt5_ENABLE_WEBENGINE)
 if (NOT qt5_ENABLE_WEBENGINE)
   list(APPEND qt5_options
     -skip qtwebengine)
