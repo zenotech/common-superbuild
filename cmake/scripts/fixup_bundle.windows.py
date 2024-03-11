@@ -157,10 +157,11 @@ class Library(object):
                 self._dependencies = {}
                 return self._dependencies
             collection = {}
-            msvc_runtimes = re.compile('MSVC[A-Z][0-9]*\\.dll')
-            vc_runtimes = re.compile('VC[A-Z][0-9]*\\.dll')
+            msvc_runtimes = re.compile('MSVCP?[A-Z]*[0-9]*(_.*)?\\.dll')
+            vc_runtimes = re.compile('VC[A-Z]*[0-9]*(_.*)?\\.dll')
             win_core_runtimes = re.compile('api-ms-win-core-.*\\.dll')
             win_rt_runtimes = re.compile('api-ms-win-crt-.*\\.dll')
+            win_security_runtimes = re.compile('api-ms-win-security-.*\\.dll')
             for dep in self._get_dependencies():
                 if msvc_runtimes.match(dep):
                     continue
@@ -169,6 +170,8 @@ class Library(object):
                 if win_core_runtimes.match(dep):
                     continue
                 if win_rt_runtimes.match(dep):
+                    continue
+                if win_security_runtimes.match(dep):
                     continue
                 if dep in self._ignore:
                     continue
