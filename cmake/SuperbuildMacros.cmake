@@ -73,8 +73,8 @@ following extensions:
   - `DEFAULT_ON` If present, the project will default to be built. May be set
     externally using the `_superbuild_default_${NAME}` variable.
   - `DEVELOPER_MODE` If present, the project will offer an option to build it
-    in "developer" mode. Developer mode enables and builds all dependent
-    projects, but skips the project itself. Instead, a file named
+    in "developer" mode. Developer mode enables and builds all dependencies,
+    but skips the project itself. Instead, a file named
     `${NAME}-developer-config.cmake` is written to the build directory which
     may be passed to a standalone instance of the project using the `-C` option
     of CMake to initialize the cache to use the dependencies built as part of
