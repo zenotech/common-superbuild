@@ -112,8 +112,16 @@ if (WIN32)
     PATH <INSTALL_DIR>/bin)
 endif ()
 
+set(mesa_depends_optional)
+if (UNIX AND NOT APPLE)
+  list(APPEND mesa_depends_optional
+    mesatoolchainoverride)
+endif ()
+
 superbuild_add_project(${project}
   CAN_USE_SYSTEM
+  DEPENDS_OPTIONAL
+    ${mesa_depends_optional}
   DEPENDS
     llvm
     zlib
