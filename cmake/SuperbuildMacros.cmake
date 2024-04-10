@@ -365,6 +365,79 @@ function (superbuild_add_dummy_project _name)
       "${_name}_is_dummy" TRUE)
 endfunction ()
 
+#[==[.md
+Some projects may require the ability to override their toolchain in order to
+compile when the target toolchain is not supported. This function is provided
+for these cases to create toolchain overrides.
+
+```
+superbuild_add_toolchain_override_project(<NAME> [ARGS...])
+```
+
+The only project keyword arguments which do anything for toolchain override projects
+are the ``DEPENDS`` and ``DEPENDS_OPTIONAL`` keywords which are used to enforce build
+order.
+
+The toolchain override project also takes the optional argument ``LANGUAGES`` which is a
+list of languages to override in the toolchain. By default, LANGUAGES is set to "C;CXX".
+#]==]
+function (superbuild_add_toolchain_override_project _name)
+  superbuild_add_dummy_project(${_name} "${ARGN}")
+
+  cmake_parse_arguments(_superbuild_toolchain_override
+    ""
+    ""
+    "LANGUAGES"
+    ${ARGN}
+  )
+
+  set(_superbuild_toolchain_overrided_supported_languages "C;CXX;Fortran")
+  if (NOT _superbuild_toolchain_override_LANGUAGES)
+    # By default override C and CXX
+    set(_superbuild_toolchain_override_LANGUAGES "C;CXX")
+  endif ()
+
+  set(check_language_list ${_superbuild_toolchain_override_LANGUAGES})
+  list(REMOVE_ITEM check_language_list ${_superbuild_toolchain_overrided_supported_languages})
+  if (NOT check_language_list STREQUAL "")
+    string(REPLACE ";" ", " unsupported_langs "${check_language_list}")
+    message(FATAL_ERROR "${_name} toolchain override has unsupported language(s): ${unsupported_langs}")
+  endif ()
+
+  if (${_name}_enabled)
+    foreach (lang IN LISTS _superbuild_toolchain_override_LANGUAGES)
+      set("${_name}_${lang}_COMPILER" "${CMAKE_${lang}_COMPILER}"
+        CACHE FILEPATH "${lang} compiler executable used to compile dependant project.")
+      if (NOT EXISTS "${${_name}_${lang}_COMPILER}")
+        message(FATAL_ERROR
+          "Failed to find a custom ${lang} compiler for ${_name}")
+      endif ()
+    endforeach ()
+
+    if (WIN32)
+      message(FATAL_ERROR "${_name} can not be enabled on Windows")
+    endif ()
+  endif ()
+
+  # TODO: (ryan.krattiger1) Find a better place to define these
+  set(TC_VAR_C "CC")
+  set(TC_VAR_CXX "CXX")
+  set(TC_VAR_Fortan "FC;F77")
+
+  foreach (lang IN LISTS _superbuild_toolchain_override_LANGUAGES)
+    # Overrides for CMake projects
+    superbuild_add_extra_cmake_args(
+      "-DCMAKE_${lang}_COMPILER:FILEPATH=${${_name}_${lang}_COMPILER}")
+
+    # Overrides for non-cmake projects (meson/autotools)
+    foreach (tc_var IN LISTS TC_VAR_${lang})
+      superbuild_add_environment(
+        "${tc_var}" "${${_name}_${lang}_COMPILER}"
+      )
+    endforeach ()
+  endforeach ()
+endfunction ()
+
 option(SUPERBUILD_SKIP_PYTHON_PROJECTS
   "When ON, Python projects will not be built but only result in generation of a requirements.txt file" OFF)
 mark_as_advanced(SUPERBUILD_SKIP_PYTHON_PROJECTS)
@@ -734,6 +807,35 @@ function (superbuild_project_add_step name)
   set_property(GLOBAL
     PROPERTY
       "${current_project}_step_${name}" ${ARGN})
+endfunction ()
+
+#[==[.md
+# Usage requirements
+
+Projects may have "usage requirements" by passing build system or compiler flags to
+dependent projects. Note that these flags are only offered to projects which
+directly depend on a project: they are not transitive.
+#]==]
+
+#[==[.md
+## Configure/Build environment configuration
+
+Usage:
+
+```
+superbuild_add_environment([VARIABLE=VALUE]...)
+```
+#]==]
+function (superbuild_add_environment)
+  if (NOT superbuild_build_phase)
+    return ()
+  endif ()
+
+  _superbuild_check_current_project("superbuild_add_environment")
+
+  set_property(GLOBAL APPEND
+    PROPERTY
+      "${current_project}_build_env" ${ARGN})
 endfunction ()
 
 #[==[.md
@@ -1340,7 +1442,9 @@ function (_superbuild_add_project_internal name)
     message(FATAL_ERROR "Missing revision information for ${name}.")
   endif ()
 
-  set(build_env)
+  _superbuild_fetch_build_env("${name}" build_dep_env)
+
+  set(build_env ${build_dep_env})
   if (NOT MSVC)
     list(APPEND build_env
       # These would mirror `-DCMAKE_C_COMPILER=` but, on macOS, `autoconf`
@@ -1624,6 +1728,23 @@ function (_superbuild_fetch_cmake_args name var)
 
   set("${var}"
     ${cmake_params}
+    PARENT_SCOPE)
+endfunction ()
+
+# Queries dependencies for build environment they declare.
+function (_superbuild_fetch_build_env name var)
+  # Get extra build env variables from every dependent project, if any.
+  _superbuild_get_project_depends("${name}" arg)
+  set(build_env)
+  foreach (dep IN LISTS arg_depends)
+    get_property(cmake_args GLOBAL
+      PROPERTY "${dep}_build_env")
+    list(APPEND build_env
+      ${cmake_args})
+  endforeach ()
+
+  set("${var}"
+    ${build_env}
     PARENT_SCOPE)
 endfunction ()
 
