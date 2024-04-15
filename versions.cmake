@@ -293,8 +293,8 @@ superbuild_set_revision(pythonnetcdf4
 
 superbuild_set_revision(tbb
   # https://github.com/oneapi-src/oneTBB/releases
-  URL     "https://www.paraview.org/files/dependencies/oneTBB-2021.11.0.tar.gz"
-  URL_MD5 b301151120b08a17e98dcdda6e4f6011)
+  URL     "https://www.paraview.org/files/dependencies/oneTBB-2021.12.0.tar.gz"
+  URL_MD5 558a40c7c3da965a5cfc3fbe0566b5ae)
 
 superbuild_set_revision(pytz
   # https://pypi.org/project/pytz/#history
@@ -633,8 +633,8 @@ superbuild_set_revision(pkgconf
 
 superbuild_set_revision(pybind11
   # https://github.com/pybind/pybind11/releases
-  URL     "https://www.paraview.org/files/dependencies/pybind11-2.11.1.tar.gz"
-  URL_MD5 49e92f92244021912a56935918c927d0)
+  URL     "https://www.paraview.org/files/dependencies/pybind11-2.12.0.tar.gz"
+  URL_MD5 891fb7337c45134f18a3eb4d7f6eca25)
 
 superbuild_set_revision(sqlite
   # https://sqlite.org/download.html
@@ -903,8 +903,8 @@ superbuild_set_revision(alembic
 
 superbuild_set_revision(imath
   # https://github.com/AcademySoftwareFoundation/Imath/releases
-  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.10.tar.gz"
-  URL_MD5 5b3a8831f75a30ed76cc609a66b93aa6)
+  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.11.tar.gz"
+  URL_MD5 28c0e9971a8e6720112a8037837ff8e4)
 
 superbuild_set_revision(zstd
   # https://github.com/facebook/zstd/releases
