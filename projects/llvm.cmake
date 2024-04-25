@@ -100,8 +100,16 @@ endif ()
 set(llvm_source_args ${llvm_source_args_${llvm_version}})
 set(llvm_configure_args ${llvm_configure_args_${llvm_version}})
 
+set(llvm_depends_optional)
+if (UNIX AND NOT APPLE)
+  list(APPEND llvm_depends_optional
+    mesatoolchainoverride)
+endif ()
+
 superbuild_add_project(llvm
   CAN_USE_SYSTEM
+  DEPENDS_OPTIONAL
+    ${llvm_depends_optional}
   DEPENDS
     python3
     ${llvm_depends}

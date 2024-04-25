@@ -148,6 +148,7 @@ function (superbuild_find_projects var)
       egl
       fontconfig
       glproto
+      mesatoolchainoverride
       utillinux)
   endif ()
 
