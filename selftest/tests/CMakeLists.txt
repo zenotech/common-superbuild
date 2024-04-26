@@ -66,6 +66,7 @@ list(REMOVE_ITEM license_projects
   # Dummy projects
   exodus
   hdf5cpp
+  mesatoolchainoverride
   ospraymodulempi
 
   # USE_SYSTEM projects
