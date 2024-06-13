@@ -17,7 +17,7 @@ elseif (NOT MSVC_VERSION VERSION_GREATER 1919)
   set(msvc_ver 14.1)
 elseif (NOT MSVC_VERSION VERSION_GREATER 1930)
   set(msvc_ver 14.2)
-elseif (NOT MSVC_VERSION VERSION_GREATER 1939)
+elseif (NOT MSVC_VERSION VERSION_GREATER 1949)
   set(msvc_ver 14.3)
 else ()
   message(FATAL_ERROR "Unrecognized MSVC version: ${MSVC_VERSION}")
@@ -26,6 +26,10 @@ endif ()
 list(APPEND boost_platform_options
   "--toolset=msvc-${msvc_ver}"
   address-model=64)
+
+# https://github.com/boostorg/boost/issues/914
+superbuild_apply_patch(boost msvc-144-support
+  "Add support for msvc 14.4")
 
 include(boost.common)
 
