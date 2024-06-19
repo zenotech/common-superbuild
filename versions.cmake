@@ -618,8 +618,8 @@ superbuild_set_revision(pythonpandas
 
 superbuild_set_revision(ffi
   # https://github.com/libffi/libffi/releases
-  URL     "https://www.paraview.org/files/dependencies/libffi-3.4.4.tar.gz"
-  URL_MD5 0da1a5ed7786ac12dcbaf0d499d8a049)
+  URL     "https://www.paraview.org/files/dependencies/libffi-3.4.6.tar.gz"
+  URL_MD5 b9cac6c5997dca2b3787a59ede34e0eb)
 
 superbuild_set_revision(utillinux
   # https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/
