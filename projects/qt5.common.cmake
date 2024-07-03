@@ -133,3 +133,7 @@ if (qt5_SOURCE_SELECTION VERSION_GREATER_EQUAL "5.15")
   # reimplemented from https://invent.kde.org/qt/qt/qtbase/-/commit/8af35d27e8f02bbb99aef4ac495ed406e50e3cca
   superbuild_apply_patch(qt5 fix-xcb-header "Fix qxcb header for recent xcb")
 endif ()
+
+if (qt5_SOURCE_SELECTION STREQUAL "5.12")
+  superbuild_apply_patch(qt5 5.12-include-limits "Add missing '#include <limits>' to files")
+endif ()
