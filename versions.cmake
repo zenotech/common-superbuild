@@ -131,9 +131,9 @@ superbuild_set_selectable_source(numpy
   # https://pypi.org/project/numpy/#history
   # When updating to a version that drops support for a Python version, also
   # update `projects/numpy.cmake`'s valid version detection.
-  SELECT 1.25.2 DEFAULT # Requires Python 3.9+
-    URL     "https://www.paraview.org/files/dependencies/numpy-1.25.2.tar.gz"
-    URL_MD5 cee1996a80032d47bdf1d9d17249c34e
+  SELECT 1.26.4 DEFAULT # Requires Python 3.9+
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.26.4.tar.gz"
+    URL_MD5 19550cbe7bedd96a928da9d4ad69509d
   SELECT 1.24.4 # Needed for Python 3.8
     URL     "https://www.paraview.org/files/dependencies/numpy-1.24.4.tar.gz"
     URL_MD5 3f3995540a17854a29dc79f8eeecd832
