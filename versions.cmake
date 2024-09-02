@@ -180,20 +180,20 @@ superbuild_set_revision(pythonmesonpython
   URL_MD5 347d785fa9bee3dff13a51d8c1053992)
 
 # https://pypi.org/project/scipy/#history
-set(scipy_version "1.11.2")
+set(scipy_version "1.13.1")
 if (WIN32)
   superbuild_set_selectable_source(scipy
     SELECTS_WITH python3
     SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp310-cp310-win_amd64.whl"
-      URL_MD5 85c785288036b94826c2c564116b5e6b
+      URL_MD5 e3e3fb9a9e418659d03f8f97d543dd8a
     SELECT 3.9
       URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp39-cp39-win_amd64.whl"
-      URL_MD5 2e2b1fcf6ea9c311576700daf18ccc19)
+      URL_MD5 5583212c66c8c8c47fdfa9b7746dcc54)
 else ()
   superbuild_set_revision(scipy
     URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}.tar.gz"
-    URL_MD5 27baf613b6cf3f9600a05161f132151c)
+    URL_MD5 f9d133bf0da7aade287b775bf1081acb)
 endif ()
 
 superbuild_set_revision(pythonmpmath
