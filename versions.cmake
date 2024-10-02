@@ -716,6 +716,11 @@ superbuild_set_revision(openxrsdk
   URL     "https://www.paraview.org/files/dependencies/OpenXR-SDK-release-1.0.28.tar.gz"
   URL_MD5 c1d4caa3c1b7a7e7b972202f55cc8d2b)
 
+superbuild_set_revision(openxrmodels
+  URL      https://www.paraview.org/files/data/OpenXRControllerModels-0.1.tgz
+  URL_HASH MD5=bc5f1ec0bfb7776f44e981b2656821d1
+)
+
 superbuild_set_revision(jsoncpp
   # https://github.com/open-source-parsers/jsoncpp/releases
   URL     "https://www.paraview.org/files/dependencies/jsoncpp-1.9.5.tar.gz"

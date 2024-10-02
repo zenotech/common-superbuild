@@ -167,6 +167,7 @@ enable_project(zstd)
 
 # OpenXR-SDK-Source does not build on macOS
 if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos")
+  enable_project(openxrmodels)
   enable_project(openxrsdk)
   # fortran can't use openmp because it's not installed, so disable on Mac
   enable_project(openmp)

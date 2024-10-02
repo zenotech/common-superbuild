@@ -140,6 +140,7 @@ function (superbuild_find_projects var)
   if (NOT APPLE)
     list(APPEND projects
       mesa
+      openxrmodels
       openxrsdk)
   endif ()
 

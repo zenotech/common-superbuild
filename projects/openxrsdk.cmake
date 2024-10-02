@@ -8,6 +8,7 @@ superbuild_add_project(openxrsdk
   DEPENDS
     jsoncpp
     cxx17
+    openxrmodels
   LICENSE_FILES
     LICENSE
     README.md
