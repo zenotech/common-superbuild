@@ -332,10 +332,14 @@ superbuild_set_revision(pythonply
   URL     "https://www.paraview.org/files/dependencies/ply-3.11.tar.gz"
   URL_MD5 6465f602e656455affcd7c5734c638f8)
 
-superbuild_set_revision(pythonpythran
+superbuild_set_selectable_source(pythonpythran
   # https://pypi.org/project/pythran/#history
-  URL     "https://www.paraview.org/files/dependencies/pythran-0.13.1.tar.gz"
-  URL_MD5 3090288af50566af75cb058d1878aaad)
+  SELECT 0.16.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/pythran-0.16.1.tar.gz"
+    URL_MD5 106497787546f3538db7bb1a9e48d88a
+  SELECT 0.13.1 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/pythran-0.13.1.tar.gz"
+    URL_MD5 3090288af50566af75cb058d1878aaad)
 
 superbuild_set_revision(pythoncycler
   # https://pypi.org/project/cycler/#history

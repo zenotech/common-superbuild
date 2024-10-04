@@ -1,4 +1,8 @@
-superbuild_add_project_python(pythonpythran
+superbuild_python_version_check(pythonpythran
+  "3.5" "0" # Unsupported
+  "3.6" "0.13.1")
+
+superbuild_add_project_python_pyproject(pythonpythran
   PACKAGE
     pythran
   DEPENDS
