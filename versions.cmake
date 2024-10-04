@@ -174,8 +174,10 @@ superbuild_set_selectable_source(pythontomli
 
 superbuild_set_revision(pythonmesonpython
   # https://pypi.org/project/meson-python/#history
-  URL     "https://www.paraview.org/files/dependencies/meson_python-0.13.2.tar.gz"
-  URL_MD5 0db4483e30df43dbd465254be9c7db8a)
+  # PyPI source tarball with 'tests/' subdirectory excised from it (CMake has
+  # issues extracting non-UTF-8 names in tarballs).
+  URL     "https://www.paraview.org/files/dependencies/meson_python-0.16.0-notests.tar.gz"
+  URL_MD5 347d785fa9bee3dff13a51d8c1053992)
 
 # https://pypi.org/project/scipy/#history
 set(scipy_version "1.11.2")
