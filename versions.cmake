@@ -659,9 +659,9 @@ superbuild_set_revision(glproto
 
 superbuild_set_selectable_source(meson
   # https://github.com/mesonbuild/meson/releases
-  SELECT 1.2.1 DEFAULT
-    URL     "https://www.paraview.org/files/dependencies/meson-1.2.1.tar.gz"
-    URL_MD5 e3cc846536189aacd7d01858a45ca9af
+  SELECT 1.5.2 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/meson-1.5.2.tar.gz"
+    URL_MD5 682f75ef96c2e7542b0148e70068ea09
   SELECT 0.61.5 # Needed for Python 3.6
     URL     "https://www.paraview.org/files/dependencies/meson-0.61.5.tar.gz"
     URL_MD5 6c55d6d9b9cd1727f0936d6ff29d6d3c)

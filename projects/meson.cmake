@@ -1,7 +1,7 @@
 superbuild_python_version_check(meson
   "3.5" "0" # Unsupported
   "3.6" "0.61.5"
-  "3.7" "1.2.1")
+  "3.7" "1.5.2")
 
 superbuild_add_project_python(meson
   PACKAGE
