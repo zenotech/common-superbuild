@@ -5,7 +5,7 @@ endif ()
 
 superbuild_python_version_check(scipy
   "3.8" "0" # Unsupported
-  "3.9" "1.11.2")
+  "3.9" "1.13.1")
 
 superbuild_add_project_python_pyproject(scipy
   PACKAGE scipy

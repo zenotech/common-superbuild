@@ -131,9 +131,9 @@ superbuild_set_selectable_source(numpy
   # https://pypi.org/project/numpy/#history
   # When updating to a version that drops support for a Python version, also
   # update `projects/numpy.cmake`'s valid version detection.
-  SELECT 1.25.2 DEFAULT # Requires Python 3.9+
-    URL     "https://www.paraview.org/files/dependencies/numpy-1.25.2.tar.gz"
-    URL_MD5 cee1996a80032d47bdf1d9d17249c34e
+  SELECT 1.26.4 DEFAULT # Requires Python 3.9+
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.26.4.tar.gz"
+    URL_MD5 19550cbe7bedd96a928da9d4ad69509d
   SELECT 1.24.4 # Needed for Python 3.8
     URL     "https://www.paraview.org/files/dependencies/numpy-1.24.4.tar.gz"
     URL_MD5 3f3995540a17854a29dc79f8eeecd832
@@ -174,24 +174,26 @@ superbuild_set_selectable_source(pythontomli
 
 superbuild_set_revision(pythonmesonpython
   # https://pypi.org/project/meson-python/#history
-  URL     "https://www.paraview.org/files/dependencies/meson_python-0.13.2.tar.gz"
-  URL_MD5 0db4483e30df43dbd465254be9c7db8a)
+  # PyPI source tarball with 'tests/' subdirectory excised from it (CMake has
+  # issues extracting non-UTF-8 names in tarballs).
+  URL     "https://www.paraview.org/files/dependencies/meson_python-0.16.0-notests.tar.gz"
+  URL_MD5 347d785fa9bee3dff13a51d8c1053992)
 
 # https://pypi.org/project/scipy/#history
-set(scipy_version "1.11.2")
+set(scipy_version "1.13.1")
 if (WIN32)
   superbuild_set_selectable_source(scipy
     SELECTS_WITH python3
     SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp310-cp310-win_amd64.whl"
-      URL_MD5 85c785288036b94826c2c564116b5e6b
+      URL_MD5 e3e3fb9a9e418659d03f8f97d543dd8a
     SELECT 3.9
       URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp39-cp39-win_amd64.whl"
-      URL_MD5 2e2b1fcf6ea9c311576700daf18ccc19)
+      URL_MD5 5583212c66c8c8c47fdfa9b7746dcc54)
 else ()
   superbuild_set_revision(scipy
     URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}.tar.gz"
-    URL_MD5 27baf613b6cf3f9600a05161f132151c)
+    URL_MD5 f9d133bf0da7aade287b775bf1081acb)
 endif ()
 
 superbuild_set_revision(pythonmpmath
@@ -330,10 +332,14 @@ superbuild_set_revision(pythonply
   URL     "https://www.paraview.org/files/dependencies/ply-3.11.tar.gz"
   URL_MD5 6465f602e656455affcd7c5734c638f8)
 
-superbuild_set_revision(pythonpythran
+superbuild_set_selectable_source(pythonpythran
   # https://pypi.org/project/pythran/#history
-  URL     "https://www.paraview.org/files/dependencies/pythran-0.13.1.tar.gz"
-  URL_MD5 3090288af50566af75cb058d1878aaad)
+  SELECT 0.16.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/pythran-0.16.1.tar.gz"
+    URL_MD5 106497787546f3538db7bb1a9e48d88a
+  SELECT 0.13.1 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/pythran-0.13.1.tar.gz"
+    URL_MD5 3090288af50566af75cb058d1878aaad)
 
 superbuild_set_revision(pythoncycler
   # https://pypi.org/project/cycler/#history
@@ -342,8 +348,8 @@ superbuild_set_revision(pythoncycler
 
 superbuild_set_revision(pythoncython
   # https://pypi.org/project/Cython/#history
-  URL     "https://www.paraview.org/files/dependencies/Cython-3.0.0.tar.gz"
-  URL_MD5 63c5672e1f58dcee6854aef8b33a922e)
+  URL     "https://www.paraview.org/files/dependencies/cython-3.0.11.tar.gz"
+  URL_MD5 388b85b7c23f501320d19d991b169f5d)
 
 superbuild_set_selectable_source(pythonsetuptools
   # https://pypi.org/project/setuptools/#history
@@ -653,9 +659,9 @@ superbuild_set_revision(glproto
 
 superbuild_set_selectable_source(meson
   # https://github.com/mesonbuild/meson/releases
-  SELECT 1.2.1 DEFAULT
-    URL     "https://www.paraview.org/files/dependencies/meson-1.2.1.tar.gz"
-    URL_MD5 e3cc846536189aacd7d01858a45ca9af
+  SELECT 1.5.2 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/meson-1.5.2.tar.gz"
+    URL_MD5 682f75ef96c2e7542b0148e70068ea09
   SELECT 0.61.5 # Needed for Python 3.6
     URL     "https://www.paraview.org/files/dependencies/meson-0.61.5.tar.gz"
     URL_MD5 6c55d6d9b9cd1727f0936d6ff29d6d3c)
