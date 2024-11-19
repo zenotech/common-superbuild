@@ -15,6 +15,7 @@ endif ()
 
 superbuild_add_project(xz
   LICENSE_FILES
+    COPYING.GPLv2
     COPYING.LGPLv2.1
   SPDX_LICENSE_IDENTIFIER
     LGPL-2.1-or-later
