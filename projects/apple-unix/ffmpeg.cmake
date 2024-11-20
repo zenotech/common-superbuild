@@ -20,6 +20,7 @@ superbuild_add_project(ffmpeg
   DEPENDS zlib pkgconf
   LICENSE_FILES
     LICENSE.md
+    COPYING.GPLv2
     COPYING.LGPLv2.1
   SPDX_LICENSE_IDENTIFIER
     LGPL-2.1-or-later
