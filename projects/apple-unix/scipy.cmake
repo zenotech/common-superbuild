@@ -5,7 +5,8 @@ endif ()
 
 superbuild_python_version_check(scipy
   "3.8" "0" # Unsupported
-  "3.9" "1.13.1")
+  "3.9" "1.13.1"
+  "3.10" "1.15.0")
 
 superbuild_add_project_python_pyproject(scipy
   PACKAGE scipy
@@ -27,9 +28,17 @@ if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" AND
     PROJECT_ONLY)
 endif ()
 
+if (scipy_SOURCE_SELECTION STREQUAL "1.15.0")
+  # https://github.com/scipy/scipy/pull/22270
+  superbuild_apply_patch(scipy 1.15.0-build-order-fixes
+    "Fix missing build dependencies")
+endif ()
+
 superbuild_apply_patch(scipy use-blas-lapack
   "Use blas/lapack")
 
-# https://github.com/scipy/scipy/pull/19168
-superbuild_apply_patch(scipy meson-dependencies
-  "Fix dependencies in Cython generation")
+if (scipy_SOURCE_SELECTION VERSION_LESS "1.15.0")
+  # https://github.com/scipy/scipy/pull/19168
+  superbuild_apply_patch(scipy meson-dependencies
+    "Fix dependencies in Cython generation")
+endif ()

@@ -186,23 +186,28 @@ superbuild_set_revision(pythonmesonpython
   URL_MD5 347d785fa9bee3dff13a51d8c1053992)
 
 # https://pypi.org/project/scipy/#history
-set(scipy_version "1.13.1")
+set(scipy_version "1.15.0")
+set(old_scipy_version "1.13.1")
 if (WIN32)
   superbuild_set_selectable_source(scipy
     SELECTS_WITH python3
     SELECT 3.12
       URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp312-cp312-win_amd64.whl"
-      URL_MD5 fa15b04f9f4249a9917b97a760de8f70
+      URL_MD5 83502b397a474682d63eef4dc23da4b5
     SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp310-cp310-win_amd64.whl"
-      URL_MD5 e3e3fb9a9e418659d03f8f97d543dd8a
+      URL_MD5 884e5ce911b383c97cd3ac9c9be2c933
     SELECT 3.9
-      URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp39-cp39-win_amd64.whl"
+      URL     "https://www.paraview.org/files/dependencies/scipy-${old_scipy_version}-cp39-cp39-win_amd64.whl"
       URL_MD5 5583212c66c8c8c47fdfa9b7746dcc54)
 else ()
-  superbuild_set_revision(scipy
-    URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}.tar.gz"
-    URL_MD5 f9d133bf0da7aade287b775bf1081acb)
+  superbuild_set_selectable_source(scipy
+    SELECT 1.15.0 DEFAULT
+      URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}.tar.gz"
+      URL_MD5 edfd6460db376fcba9e917e1feb8445e
+    SELECT 1.13.1 # For Python 3.9
+      URL     "https://www.paraview.org/files/dependencies/scipy-${old_scipy_version}.tar.gz"
+      URL_MD5 f9d133bf0da7aade287b775bf1081acb)
 endif ()
 
 superbuild_set_revision(pythonmpmath
