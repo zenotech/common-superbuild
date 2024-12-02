@@ -35,3 +35,9 @@ else ()
   set(meson_command
     "<INSTALL_DIR>/bin/meson")
 endif ()
+
+if (meson_SOURCE_SELECTION STREQUAL "1.5.2")
+  # https://github.com/mesonbuild/meson/issues/13906
+  superbuild_apply_patch(meson llvm-prefer-config
+    "Prefer llvm-config to search for LLVM")
+endif ()
