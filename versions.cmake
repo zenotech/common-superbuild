@@ -190,6 +190,9 @@ set(scipy_version "1.13.1")
 if (WIN32)
   superbuild_set_selectable_source(scipy
     SELECTS_WITH python3
+    SELECT 3.12
+      URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp312-cp312-win_amd64.whl"
+      URL_MD5 fa15b04f9f4249a9917b97a760de8f70
     SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp310-cp310-win_amd64.whl"
       URL_MD5 e3e3fb9a9e418659d03f8f97d543dd8a
