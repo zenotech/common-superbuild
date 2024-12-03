@@ -389,20 +389,23 @@ superbuild_set_selectable_source(pythonwheel
     URL_MD5 1acbaf94645d7ae704f24c470ec4ac21)
 
 # https://pypi.org/project/mpi4py/#history
-set(mpi4py_ver "3.1.4")
+set(mpi4py_ver "4.0.1")
 if (WIN32)
   superbuild_set_selectable_source(pythonmpi4py
     SELECTS_WITH python3
+    SELECT 3.12
+      URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp312-cp312-win_amd64.whl"
+      URL_MD5 8d2935380026dfa351f10b86699b8d99
     SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp310-cp310-win_amd64.whl"
-      URL_MD5 22767c198cd8d9b80e8c96071650200e
+      URL_MD5 47da58e4de1810154a162180d0b5efeb
     SELECT 3.9
       URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp39-cp39-win_amd64.whl"
-      URL_MD5 e8387c642919358a7d5739c8e7128f89)
+      URL_MD5 83314e646dd5888793dd1e88471ded51)
 else ()
   superbuild_set_revision(pythonmpi4py
     URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}.tar.gz"
-    URL_MD5 09e20c0128207303a3d0462eb6b0c0e3)
+    URL_MD5 443fd126aab32130d49eb80702abf561)
 endif ()
 
 superbuild_set_revision(pythonpycparser
