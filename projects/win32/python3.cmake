@@ -63,10 +63,13 @@ superbuild_add_extra_cmake_args(
   -DPYTHON_FIND_REGISTRY:STRING=NEVER
 )
 
-set(modules_to_remove
-  ctypes.test
-  distutils.tests
-  lib2to3.tests
-  unittest.test
-  )
-_superbuild_remove_python_modules("${modules_to_remove}")
+set(python3_modules_to_remove)
+if (python3_SOURCE_SELECTION VERSION_LESS "3.12")
+  list(APPEND python3_modules_to_remove
+    ctypes.test
+    distutils.tests
+    lib2to3.tests
+    unittest.test
+    )
+endif ()
+_superbuild_remove_python_modules("${python3_modules_to_remove}")

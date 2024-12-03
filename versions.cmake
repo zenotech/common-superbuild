@@ -65,7 +65,10 @@ if (WIN32)
   superbuild_set_selectable_source(python3
     # See https://www.paraview.org/files/dependencies/python-for-wheels/
     # To make a new one, see `vtk/vtk@.gitlab/ci/wheels/`
-    SELECT 3.10 DEFAULT
+    SELECT 3.12 DEFAULT
+      URL     "https://www.paraview.org/files/dependencies/python-for-wheels/python-3.12.7-windows-x86_64.zip"
+      URL_MD5 c93c7fc61cb037dd2e333cce076985bc
+    SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/python-for-wheels/python-3.10.11-windows-x86_64.zip"
       URL_MD5 e963090c45b8e696b367de23ac8afe39
     SELECT 3.9
@@ -74,7 +77,10 @@ if (WIN32)
 else()
   superbuild_set_selectable_source(python3
     # https://www.python.org/downloads/source/
-    SELECT 3.10 DEFAULT
+    SELECT 3.12 DEFAULT
+      URL     "https://www.paraview.org/files/dependencies/Python-3.12.7.tar.xz"
+      URL_MD5 c6c933c1a0db52597cb45a7910490f93
+    SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/Python-3.10.13.tar.xz"
       URL_MD5 8847dc6458d1431d0ae0f55942deeb89
     SELECT 3.9
