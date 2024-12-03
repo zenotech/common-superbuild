@@ -270,6 +270,9 @@ superbuild_set_revision(matplotlib
 superbuild_set_selectable_source(pywin32
   # https://pypi.org/project/pywin32/#history
   SELECTS_WITH python3
+  SELECT 3.12
+    URL "https://www.paraview.org/files/dependencies/pywin32-308-cp312-cp312-win_amd64.whl"
+    URL_MD5 2c85ba0f451d12a902909d745e397639
   SELECT 3.10
     URL "https://www.paraview.org/files/dependencies/pywin32-306-cp310-cp310-win_amd64.whl"
     URL_MD5 6fffe656f01d4a3377c40d98087de2b2
