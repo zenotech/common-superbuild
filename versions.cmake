@@ -485,8 +485,8 @@ superbuild_set_selectable_source(pythonchardet
 
 superbuild_set_revision(pythonmultidict
   # https://pypi.org/project/multidict/#history
-  URL     "https://www.paraview.org/files/dependencies/multidict-6.0.4.tar.gz"
-  URL_MD5 ec06a613d871dadfb66f2be3a1f2f3fa)
+  URL     "https://www.paraview.org/files/dependencies/multidict-6.0.5.tar.gz"
+  URL_MD5 abcf9bf19365d06aa784de07da02115d)
 
 superbuild_set_selectable_source(pythontypingextensions
   # https://pypi.org/project/typing_extensions/#history
