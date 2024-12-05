@@ -464,10 +464,14 @@ superbuild_set_selectable_source(pythonfrozenlist
     URL     "https://www.paraview.org/files/dependencies/frozenlist-1.2.0.tar.gz"
     URL_MD5 8f1851ef871d95a15ebcf20255c12f6d)
 
-superbuild_set_revision(pythonaiohttp
+superbuild_set_selectable_source(pythonaiohttp
   # https://pypi.org/project/aiohttp/#history
-  URL     "https://www.paraview.org/files/dependencies/aiohttp-3.8.5.tar.gz"
-  URL_MD5 4bb59a17563df9a692c64418224ade12)
+  SELECT 3.9.5 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/aiohttp-3.9.5.tar.gz"
+    URL_MD5 14829a5ea507c8219e3f679fceeb5585
+  SELECT 3.8.5 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/aiohttp-3.8.5.tar.gz"
+    URL_MD5 4bb59a17563df9a692c64418224ade12)
 
 superbuild_set_revision(pythonasynctimeout
   # https://pypi.org/project/async-timeout/#history

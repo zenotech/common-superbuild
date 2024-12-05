@@ -1,6 +1,7 @@
 set(USE_SYSTEM_python3 ON CACHE BOOL "")
 
 set(numpy_SOURCE_SELECTION "1.19.5" CACHE STRING "") # 1.21.6 available; broken?
+set(pythonaiohttp_SOURCE_SELECTION "3.8.5" CACHE STRING "")
 set(pythoncontourpy_SOURCE_SELECTION "1.0.6" CACHE STRING "")
 set(pythonfonttools_SOURCE_SELECTION "4.38.0" CACHE STRING "")
 set(pythonfrozenlist_SOURCE_SELECTION "1.3.3" CACHE STRING "")
