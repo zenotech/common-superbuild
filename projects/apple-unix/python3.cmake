@@ -30,7 +30,6 @@ set(python3_depends)
 if (python3_SOURCE_SELECTION VERSION_GREATER_EQUAL "3.12")
   if (NOT APPLE)
     list(APPEND python3_depends
-      pkgconf
       utillinux)
   endif ()
   list(APPEND python3_environment
@@ -43,7 +42,7 @@ endif ()
 
 superbuild_add_project(python3
   CAN_USE_SYSTEM
-  DEPENDS bzip2 zlib png ffi sqlite xz ${python3_depends}
+  DEPENDS bzip2 zlib png ffi sqlite xz pkgconf ${python3_depends}
   DEPENDS_OPTIONAL ${python3_optional_depends}
   LICENSE_FILES
     LICENSE
