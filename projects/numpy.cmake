@@ -66,7 +66,8 @@ superbuild_python_version_check(numpy
   "3.8" "1.24.4")
 
 set(numpy_remove_modules)
-if (numpy_SOURCE_SELECTION VERSION_GREATER_EQUAL "1.24.4")
+if (numpy_SOURCE_SELECTION VERSION_GREATER_EQUAL "1.24.4" AND
+    python3_SOURCE_SELECTION VERSION_LESS "3.12")
   list(APPEND numpy_remove_modules
     numpy.array_api.tests
     numpy.compat.tests

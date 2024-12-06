@@ -65,7 +65,10 @@ if (WIN32)
   superbuild_set_selectable_source(python3
     # See https://www.paraview.org/files/dependencies/python-for-wheels/
     # To make a new one, see `vtk/vtk@.gitlab/ci/wheels/`
-    SELECT 3.10 DEFAULT
+    SELECT 3.12 DEFAULT
+      URL     "https://www.paraview.org/files/dependencies/python-for-wheels/python-3.12.7-windows-x86_64.zip"
+      URL_MD5 c93c7fc61cb037dd2e333cce076985bc
+    SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/python-for-wheels/python-3.10.11-windows-x86_64.zip"
       URL_MD5 e963090c45b8e696b367de23ac8afe39
     SELECT 3.9
@@ -74,7 +77,10 @@ if (WIN32)
 else()
   superbuild_set_selectable_source(python3
     # https://www.python.org/downloads/source/
-    SELECT 3.10 DEFAULT
+    SELECT 3.12 DEFAULT
+      URL     "https://www.paraview.org/files/dependencies/Python-3.12.7.tar.xz"
+      URL_MD5 c6c933c1a0db52597cb45a7910490f93
+    SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/Python-3.10.13.tar.xz"
       URL_MD5 8847dc6458d1431d0ae0f55942deeb89
     SELECT 3.9
@@ -184,6 +190,9 @@ set(scipy_version "1.13.1")
 if (WIN32)
   superbuild_set_selectable_source(scipy
     SELECTS_WITH python3
+    SELECT 3.12
+      URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp312-cp312-win_amd64.whl"
+      URL_MD5 fa15b04f9f4249a9917b97a760de8f70
     SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp310-cp310-win_amd64.whl"
       URL_MD5 e3e3fb9a9e418659d03f8f97d543dd8a
@@ -261,6 +270,9 @@ superbuild_set_revision(matplotlib
 superbuild_set_selectable_source(pywin32
   # https://pypi.org/project/pywin32/#history
   SELECTS_WITH python3
+  SELECT 3.12
+    URL "https://www.paraview.org/files/dependencies/pywin32-308-cp312-cp312-win_amd64.whl"
+    URL_MD5 2c85ba0f451d12a902909d745e397639
   SELECT 3.10
     URL "https://www.paraview.org/files/dependencies/pywin32-306-cp310-cp310-win_amd64.whl"
     URL_MD5 6fffe656f01d4a3377c40d98087de2b2
@@ -377,20 +389,23 @@ superbuild_set_selectable_source(pythonwheel
     URL_MD5 1acbaf94645d7ae704f24c470ec4ac21)
 
 # https://pypi.org/project/mpi4py/#history
-set(mpi4py_ver "3.1.4")
+set(mpi4py_ver "4.0.1")
 if (WIN32)
   superbuild_set_selectable_source(pythonmpi4py
     SELECTS_WITH python3
+    SELECT 3.12
+      URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp312-cp312-win_amd64.whl"
+      URL_MD5 8d2935380026dfa351f10b86699b8d99
     SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp310-cp310-win_amd64.whl"
-      URL_MD5 22767c198cd8d9b80e8c96071650200e
+      URL_MD5 47da58e4de1810154a162180d0b5efeb
     SELECT 3.9
       URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp39-cp39-win_amd64.whl"
-      URL_MD5 e8387c642919358a7d5739c8e7128f89)
+      URL_MD5 83314e646dd5888793dd1e88471ded51)
 else ()
   superbuild_set_revision(pythonmpi4py
     URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}.tar.gz"
-    URL_MD5 09e20c0128207303a3d0462eb6b0c0e3)
+    URL_MD5 443fd126aab32130d49eb80702abf561)
 endif ()
 
 superbuild_set_revision(pythonpycparser
@@ -449,10 +464,14 @@ superbuild_set_selectable_source(pythonfrozenlist
     URL     "https://www.paraview.org/files/dependencies/frozenlist-1.2.0.tar.gz"
     URL_MD5 8f1851ef871d95a15ebcf20255c12f6d)
 
-superbuild_set_revision(pythonaiohttp
+superbuild_set_selectable_source(pythonaiohttp
   # https://pypi.org/project/aiohttp/#history
-  URL     "https://www.paraview.org/files/dependencies/aiohttp-3.8.5.tar.gz"
-  URL_MD5 4bb59a17563df9a692c64418224ade12)
+  SELECT 3.9.5 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/aiohttp-3.9.5.tar.gz"
+    URL_MD5 14829a5ea507c8219e3f679fceeb5585
+  SELECT 3.8.5 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/aiohttp-3.8.5.tar.gz"
+    URL_MD5 4bb59a17563df9a692c64418224ade12)
 
 superbuild_set_revision(pythonasynctimeout
   # https://pypi.org/project/async-timeout/#history
@@ -470,8 +489,8 @@ superbuild_set_selectable_source(pythonchardet
 
 superbuild_set_revision(pythonmultidict
   # https://pypi.org/project/multidict/#history
-  URL     "https://www.paraview.org/files/dependencies/multidict-6.0.4.tar.gz"
-  URL_MD5 ec06a613d871dadfb66f2be3a1f2f3fa)
+  URL     "https://www.paraview.org/files/dependencies/multidict-6.0.5.tar.gz"
+  URL_MD5 abcf9bf19365d06aa784de07da02115d)
 
 superbuild_set_selectable_source(pythontypingextensions
   # https://pypi.org/project/typing_extensions/#history
