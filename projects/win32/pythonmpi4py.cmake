@@ -8,3 +8,12 @@ superbuild_add_project_python_wheel(pythonmpi4py
   SPDX_COPYRIGHT_TEXT
     "Copyright (c) 2021, Lisandro Dalcin"
   )
+
+superbuild_project_add_step(pythonmpi4py-remove-impi-module
+  COMMAND
+    "${CMAKE_COMMAND}"
+      -Dinstall_location=${superbuild_install_location}
+      -P "${CMAKE_CURRENT_LIST_DIR}/scripts/pythonmpi4py.remove-impi-module.cmake"
+  DEPENDEES install
+  COMMENT "Removing Intel MPI implementation module"
+  WORKING_DIRECTORY <SOURCE_DIR>)
