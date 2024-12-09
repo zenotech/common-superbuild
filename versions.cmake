@@ -285,10 +285,24 @@ superbuild_set_revision(mpi
   URL     "https://www.paraview.org/files/dependencies/mpich-4.1.2.tar.gz"
   URL_MD5 66185dc9d911ab2b27cb42bec8e8e1a7)
 
-superbuild_set_revision(lapack
-  # https://github.com/Reference-LAPACK/lapack/releases
-  URL     "https://www.paraview.org/files/dependencies/lapack-3.11.0.tar.gz"
-  URL_MD5 595b064fd448b161cd711fe346f498a7)
+if (WIN32)
+  superbuild_set_revision(lapack
+    # Download offline Windows installer from https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl-download.html
+    # .\intel-onemkl-2025.0.1.15_offline.exe -s -a --action install --eula accept --install-dir C:\intelmkl
+    # Wait for feedback in the terminal, it can take a while and it runs asynchronously
+    # Create a .zip archive of C:\intelmkl\mkl\2025.0 names intelmkl-2025.0.1.15.zip
+    # .\intel-onemkl-2025.0.1.15_offline.exe -s -a --action remove --eula accept --install-dir C:\intelmkl
+    # Wait for feedback in the terminal, it can take a while and it runs asynchronously
+    # Delete every folder created in the folder you run the installer from
+    # Upload archive to paraview.org
+    URL     "https://www.paraview.org/files/dependencies/intelmkl-2025.0.1.15.zip"
+    URL_MD5 078122e2d44c804cc2ad3d714f77ac73)
+else ()
+  superbuild_set_revision(lapack
+    # https://github.com/Reference-LAPACK/lapack/releases
+    URL     "https://www.paraview.org/files/dependencies/lapack-3.11.0.tar.gz"
+    URL_MD5 595b064fd448b161cd711fe346f498a7)
+endif ()
 
 superbuild_set_revision(netcdf
   # https://github.com/Unidata/netcdf-c/releases
