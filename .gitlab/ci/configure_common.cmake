@@ -69,6 +69,7 @@ enable_project(hdf5)
 enable_project(imath)
 enable_project(ispc)
 enable_project(jsoncpp)
+enable_project(lapack)
 enable_project(libjpegturbo)
 enable_project(libxml2)
 enable_project(llvm)
@@ -176,7 +177,6 @@ endif ()
 # Fortran doesn't work on Windows right now.
 if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "windows")
   enable_project(fortran)
-  enable_project(lapack)
 endif ()
 
 # qt5 things
