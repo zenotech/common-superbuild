@@ -2,6 +2,7 @@ superbuild_add_project_python(pythonmpi4py
   PACKAGE
     mpi4py
   DEPENDS
+    pythoncython
     pythonsetuptools
     mpi
   LICENSE_FILES
