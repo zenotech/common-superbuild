@@ -236,7 +236,7 @@ function (superbuild_add_project name)
       endif ()
     endforeach ()
     foreach (dep IN LISTS optional_depends)
-      if (NOT dep IN_LIST all_projects)
+      if (NOT dep IN_LIST all_projects AND NOT dep IN_LIST _superbuild_ignored_optional_depends)
         list(APPEND missing_deps_optional
           "${dep}")
       endif ()
