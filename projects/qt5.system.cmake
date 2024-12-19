@@ -8,8 +8,16 @@ if (qt5_ENABLE_MULTIMEDIA)
   list(APPEND qt5_components Multimedia)
 endif ()
 
+if (qt5_ENABLE_WEBCHANNEL)
+  list(APPEND qt5_components WebChannel)
+endif ()
+
 if (qt5_ENABLE_WEBENGINE)
   list(APPEND qt5_components WebEngine)
+endif ()
+
+if (qt5_ENABLE_WEBSOCKETS)
+  list(APPEND qt5_components WebSockets)
 endif ()
 
 find_package(Qt5 REQUIRED

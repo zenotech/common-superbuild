@@ -72,9 +72,19 @@ if (NOT qt5_ENABLE_MULTIMEDIA)
     -skip qtmultimedia)
 endif()
 
+if (NOT qt5_ENABLE_WEBCHANNEL)
+  list(APPEND qt5_options
+    -skip qtwebchannel)
+endif()
+
 if (NOT qt5_ENABLE_WEBENGINE)
   list(APPEND qt5_options
     -skip qtwebengine)
+endif()
+
+if (NOT qt5_ENABLE_WEBSOCKETS)
+  list(APPEND qt5_options
+    -skip qtwebsockets)
 endif()
 
 foreach(module IN LISTS qt5_skip_modules)
