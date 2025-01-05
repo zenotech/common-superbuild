@@ -670,10 +670,14 @@ superbuild_set_revision(pkgconf
   URL     "https://www.paraview.org/files/dependencies/pkgconf-2.0.2.tar.xz"
   URL_MD5 9bc6eee9dc86e96f855ce70a39a12bd3)
 
-superbuild_set_revision(pybind11
+superbuild_set_selectable_source(pybind11
   # https://github.com/pybind/pybind11/releases
-  URL     "https://www.paraview.org/files/dependencies/pybind11-2.12.0.tar.gz"
-  URL_MD5 891fb7337c45134f18a3eb4d7f6eca25)
+  SELECT 2.13.6 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/pybind11-2.13.6.tar.gz"
+    URL_MD5 a04dead9c83edae6d84e2e343da7feeb
+  SELECT 2.12.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/pybind11-2.12.0.tar.gz"
+    URL_MD5 891fb7337c45134f18a3eb4d7f6eca25)
 
 superbuild_set_revision(sqlite
   # https://sqlite.org/download.html

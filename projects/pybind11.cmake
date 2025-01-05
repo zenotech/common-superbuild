@@ -3,6 +3,11 @@ if (MSVC AND (MSVC_VERSION LESS 1900) AND pybind11_enabled)
     "Visual Studio 2015 or later is required to use pybind11.")
 endif ()
 
+superbuild_python_version_check(pybind11
+  "3.5" "0" # Unsupported
+  "3.6" "2.12.0"
+  "3.7" "2.13.6")
+
 superbuild_add_project(pybind11
   DEPENDS python3 cxx11 pythonsetuptools
   LICENSE_FILES
