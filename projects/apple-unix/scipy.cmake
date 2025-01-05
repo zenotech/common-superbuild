@@ -8,6 +8,13 @@ superbuild_python_version_check(scipy
   "3.9" "1.13.1"
   "3.10" "1.15.0")
 
+set(scipy_python_args)
+if (scipy_SOURCE_SELECTION VERSION_GREATER_EQUAL "1.15.0")
+  list(APPEND scipy_python_args
+    -Csetup-args=-Dblas=blas
+    -Csetup-args=-Dlapack=lapack)
+endif ()
+
 superbuild_add_project_python_pyproject(scipy
   PACKAGE scipy
   DEPENDS fortran numpy lapack pybind11 pythonpythran pythonmesonpython pythonwheel pkgconf
@@ -17,6 +24,8 @@ superbuild_add_project_python_pyproject(scipy
     BSD-3-Clause
   SPDX_COPYRIGHT_TEXT
     "Copyright (c) 2001-2002 Enthought, Inc. 2003-2023, SciPy Developers"
+  PYTHON_ARGS
+    ${scipy_python_args}
   PROCESS_ENVIRONMENT
     ${scipy_process_environment})
 
@@ -34,10 +43,10 @@ if (scipy_SOURCE_SELECTION STREQUAL "1.15.0")
     "Fix missing build dependencies")
 endif ()
 
-superbuild_apply_patch(scipy use-blas-lapack
-  "Use blas/lapack")
-
 if (scipy_SOURCE_SELECTION VERSION_LESS "1.15.0")
+  superbuild_apply_patch(scipy use-blas-lapack
+    "Use blas/lapack")
+
   # https://github.com/scipy/scipy/pull/19168
   superbuild_apply_patch(scipy meson-dependencies
     "Fix dependencies in Cython generation")
