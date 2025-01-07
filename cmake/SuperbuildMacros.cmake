@@ -569,7 +569,7 @@ macro (superbuild_add_project_python_pyproject _name)
   cmake_parse_arguments(_superbuild_add_project_python_pyproject
     "PYPROJECT_TOML_NO_WHEEL"
     "PACKAGE;SPDX_CUSTOM_LICENSE_FILE;SPDX_CUSTOM_LICENSE_NAME"
-    "LICENSE_FILES;PROCESS_ENVIRONMENT;DEPENDS;DEPENDS_OPTIONAL;SPDX_LICENSE_IDENTIFIER;SPDX_COPYRIGHT_TEXT;REMOVE_MODULES"
+    "LICENSE_FILES;PROCESS_ENVIRONMENT;DEPENDS;DEPENDS_OPTIONAL;SPDX_LICENSE_IDENTIFIER;SPDX_COPYRIGHT_TEXT;REMOVE_MODULES;PYTHON_ARGS"
     ${ARGN})
 
   if (NOT DEFINED _superbuild_add_project_python_pyproject_PACKAGE)
@@ -621,6 +621,7 @@ macro (superbuild_add_project_python_pyproject _name)
           --no-deps
           --no-build-isolation
           ${_superbuild_python_args}
+          ${_superbuild_add_project_python_pyproject_PYTHON_ARGS}
           "<SOURCE_DIR>")
 
     if (_superbuild_add_project_python_pyproject_REMOVE_MODULES)

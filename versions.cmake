@@ -186,23 +186,28 @@ superbuild_set_revision(pythonmesonpython
   URL_MD5 347d785fa9bee3dff13a51d8c1053992)
 
 # https://pypi.org/project/scipy/#history
-set(scipy_version "1.13.1")
+set(scipy_version "1.15.0")
+set(old_scipy_version "1.13.1")
 if (WIN32)
   superbuild_set_selectable_source(scipy
     SELECTS_WITH python3
     SELECT 3.12
       URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp312-cp312-win_amd64.whl"
-      URL_MD5 fa15b04f9f4249a9917b97a760de8f70
+      URL_MD5 83502b397a474682d63eef4dc23da4b5
     SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp310-cp310-win_amd64.whl"
-      URL_MD5 e3e3fb9a9e418659d03f8f97d543dd8a
+      URL_MD5 884e5ce911b383c97cd3ac9c9be2c933
     SELECT 3.9
-      URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp39-cp39-win_amd64.whl"
+      URL     "https://www.paraview.org/files/dependencies/scipy-${old_scipy_version}-cp39-cp39-win_amd64.whl"
       URL_MD5 5583212c66c8c8c47fdfa9b7746dcc54)
 else ()
-  superbuild_set_revision(scipy
-    URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}.tar.gz"
-    URL_MD5 f9d133bf0da7aade287b775bf1081acb)
+  superbuild_set_selectable_source(scipy
+    SELECT 1.15.0 DEFAULT
+      URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}.tar.gz"
+      URL_MD5 edfd6460db376fcba9e917e1feb8445e
+    SELECT 1.13.1 # For Python 3.9
+      URL     "https://www.paraview.org/files/dependencies/scipy-${old_scipy_version}.tar.gz"
+      URL_MD5 f9d133bf0da7aade287b775bf1081acb)
 endif ()
 
 superbuild_set_revision(pythonmpmath
@@ -670,10 +675,14 @@ superbuild_set_revision(pkgconf
   URL     "https://www.paraview.org/files/dependencies/pkgconf-2.0.2.tar.xz"
   URL_MD5 9bc6eee9dc86e96f855ce70a39a12bd3)
 
-superbuild_set_revision(pybind11
+superbuild_set_selectable_source(pybind11
   # https://github.com/pybind/pybind11/releases
-  URL     "https://www.paraview.org/files/dependencies/pybind11-2.12.0.tar.gz"
-  URL_MD5 891fb7337c45134f18a3eb4d7f6eca25)
+  SELECT 2.13.6 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/pybind11-2.13.6.tar.gz"
+    URL_MD5 a04dead9c83edae6d84e2e343da7feeb
+  SELECT 2.12.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/pybind11-2.12.0.tar.gz"
+    URL_MD5 891fb7337c45134f18a3eb4d7f6eca25)
 
 superbuild_set_revision(sqlite
   # https://sqlite.org/download.html
