@@ -109,6 +109,11 @@ superbuild_set_revision(libxml2
   URL     "https://www.paraview.org/files/dependencies/libxml2-2.11.5.tar.xz"
   URL_MD5 b2e7332289f5784087448a0717f45ac3)
 
+superbuild_set_revision(libxslt
+  # https://download.gnome.org/sources/libxslt/
+  URL     "https://www.paraview.org/files/dependencies/libxslt-1.1.42.tar.xz"
+  URL_MD5 56bc5d89aa39d62002961c150fec08a0)
+
 superbuild_set_revision(nlohmannjson
   # https://github.com/nlohmann/json/releases
   # Be sure to grab the full source code, not one of the subdirectory archives.

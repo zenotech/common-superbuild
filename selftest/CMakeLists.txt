@@ -28,6 +28,7 @@ function (superbuild_find_projects var)
     lapack
     libjpegturbo
     libxml2
+    libxslt
     llvm
     lz4
     openmp
