@@ -27,6 +27,8 @@ function (superbuild_find_projects var)
     jsoncpp
     lapack
     libjpegturbo
+    libxml2
+    libxslt
     llvm
     lz4
     openmp
@@ -133,8 +135,7 @@ function (superbuild_find_projects var)
       expat
       ffi
       ffmpeg
-      gperf
-      libxml2)
+      gperf)
   endif ()
 
   if (NOT APPLE)
