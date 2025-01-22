@@ -71,6 +71,7 @@ list(REMOVE_ITEM license_projects
 
   # USE_SYSTEM projects
   openmp
+  qt6
   )
 
 # Apple USE_SYSTEM projects
