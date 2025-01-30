@@ -75,7 +75,8 @@
     - gfortran --version
     # Download Qt
     - cmake -P .gitlab/ci/download_qt.cmake
-    - export CMAKE_PREFIX_PATH=$PWD/.gitlab/qt
+    - cmake -P .gitlab/ci/download_qt6.cmake
+    - export CMAKE_PREFIX_PATH=$PWD/.gitlab/qt:$PWD/.gitlab/qt6
 
 .cmake_build_macos:
     stage: build

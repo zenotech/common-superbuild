@@ -65,6 +65,9 @@
     - export PATH=$PWD/.gitlab:$PWD/.gitlab/cmake/bin:$PATH
     - cmake --version
     - ninja --version
+    # Download Qt
+    - cmake -P .gitlab/ci/download_qt6.cmake
+    - export CMAKE_PREFIX_PATH=$PWD/.gitlab/qt6
 
 .before_script_linux_venv: &before_script_linux_venv
     # Build a venv with a new `pip` and required packages.
