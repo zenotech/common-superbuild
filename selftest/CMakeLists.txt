@@ -107,6 +107,7 @@ function (superbuild_find_projects var)
     pythonyarl
     pytz
     qhull
+    qt
     qt5
     qt6
     rkcommon
