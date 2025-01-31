@@ -71,6 +71,7 @@ list(REMOVE_ITEM license_projects
 
   # USE_SYSTEM projects
   openmp
+  qt6
   )
 
 # Apple USE_SYSTEM projects
@@ -209,6 +210,22 @@ if (TARGET boost AND APPLE)
       "${CMAKE_COMMAND}"
       "-Dinstall_dir=${install_dir}"
       -P "${CMAKE_CURRENT_SOURCE_DIR}/boost-check-rpath.cmake")
+endif ()
+
+if (TARGET qt6)
+  add_test(
+    NAME qt6-check
+    COMMAND
+      "${CMAKE_CTEST_COMMAND}"
+        --build-generator "${CMAKE_GENERATOR}"
+        --build-and-test "${CMAKE_CURRENT_SOURCE_DIR}/qt6-check" "${CMAKE_CURRENT_BINARY_DIR}/qt6-check"
+        --build-options "-DCMAKE_PREFIX_PATH=${install_dir}"
+          -Dqt6_ENABLE_SVG=${qt6_ENABLE_SVG}
+          -Dqt6_ENABLE_MULTIMEDIA=${qt6_ENABLE_MULTIMEDIA}
+          -Dqt6_ENABLE_WEBCHANNEL=${qt6_ENABLE_WEBCHANNEL}
+          -Dqt6_ENABLE_WEBENGINE=${qt6_ENABLE_WEBENGINE}
+          -Dqt6_ENABLE_WEBSOCKETS=${qt6_ENABLE_WEBSOCKETS}
+        --test-command "${CMAKE_CTEST_COMMAND}" --output-on-failure)
 endif ()
 
 add_python_import_test(python3 this)

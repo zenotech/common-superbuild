@@ -108,6 +108,7 @@ function (superbuild_find_projects var)
     pytz
     qhull
     qt5
+    qt6
     rkcommon
     scipy
     seacas
