@@ -68,6 +68,7 @@ list(REMOVE_ITEM license_projects
   hdf5cpp
   mesatoolchainoverride
   ospraymodulempi
+  qt
 
   # USE_SYSTEM projects
   openmp
