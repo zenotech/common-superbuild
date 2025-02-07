@@ -34,7 +34,7 @@ foreach (qt6_component IN LISTS qt6_components)
     -DQt6${qt6_component}_DIR:PATH=${Qt6_DIR}/../Qt6${qt6_component})
 endforeach ()
 
-if (APPLE)
+if (UNIX)
   get_filename_component(qt6_rpath "${Qt6_DIR}/../.." REALPATH)
 endif ()
 
