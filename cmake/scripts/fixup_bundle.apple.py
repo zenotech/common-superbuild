@@ -746,6 +746,7 @@ def _fix_installed_binaries(installed, dry_run=False):
     # Go through all of the binaries installed and fix up references to other things.
     for binary_info in installed.values():
         binary, installed_path = binary_info
+
         print('Fixing binary references in %s' % binary.path)
 
         if not dry_run and binary.installed_id:
@@ -771,6 +772,15 @@ def _fix_installed_binaries(installed, dry_run=False):
                     installed_path,
                 ])
             install_name_tool()
+
+        print('Removing signatures from %s' % binary.path)
+        if not dry_run:
+            codesign = Pipeline([
+                    'codesign',
+                    '--remove-signature',
+                    installed_path,
+                ])
+            codesign()
 
 
 def _update_manifest(manifest, installed, path):
