@@ -160,6 +160,7 @@ class Library(object):
             msvc_runtimes = re.compile('MSVCP?[A-Z]*[0-9]*(_.*)?\\.dll')
             vc_runtimes = re.compile('VC[A-Z]*[0-9]*(_.*)?\\.dll')
             win_core_runtimes = re.compile('api-ms-win-core-.*\\.dll')
+            win_shcore_runtimes = re.compile('api-ms-win-shcore-.*\\.dll')
             win_rt_runtimes = re.compile('api-ms-win-crt-.*\\.dll')
             win_security_runtimes = re.compile('api-ms-win-security-.*\\.dll')
             win_downlevel_runtimes = re.compile('api-ms-win-downlevel-.*\\.dll')
@@ -169,6 +170,8 @@ class Library(object):
                 if vc_runtimes.match(dep):
                     continue
                 if win_core_runtimes.match(dep):
+                    continue
+                if win_shcore_runtimes.match(dep):
                     continue
                 if win_rt_runtimes.match(dep):
                     continue
