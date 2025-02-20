@@ -581,7 +581,7 @@ def copy_library(destination, library, dry_run=False, library_dest='Libraries', 
             if os.path.exists(destination):
                 shutil.rmtree(destination)
             _os_makedirs(app_dest)
-            shutil.copytree(os.path.join(library.framework_path, library.framework_name), destination, symlinks=True)
+            shutil.copytree(os.path.join(library.framework_path, library.framework_name), destination, ignore=shutil.ignore_patterns('_CodeSignature'), symlinks=True)
 
             # We need to make sure the copied libraries are writable.
             chmod = Pipeline([
