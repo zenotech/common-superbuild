@@ -8,8 +8,8 @@ _superbuild_get_qt5_plugin_install_context(<OUT:ContextPath> <OUT:ContextExtensi
 
 Returns the absolute path containing all Qt5 plugin directories,
 as well as the extension for these plugins. Because path and
-extensions can change according to the current plateform and whether
-or not we use Qt system, this function ease the work for us.
+extensions can change according to the current platform and whether
+or not we use Qt system, this function eases the work for us.
 #]==]
 function (_superbuild_get_qt5_plugin_install_context out_path out_ext)
   if (USE_SYSTEM_qt5 AND UNIX)
@@ -113,8 +113,9 @@ superbuild_get_qt5_plugin_optional_module_install_paths(<OUT:PathList> <IN:Modul
 ```
 
 Returns a list of absolute path of Qt5 plugins to install from a list of
-required plugin directory. This function will not fail if a directory does not
-exist, and will install every plugin it will find under the given directories.
+required plugin directories. This function will not fail if a directory does
+not exist, and will install every plugin it will find under the given
+directories.
 
 Also see: superbuild_get_qt5_plugin_install_paths
 
