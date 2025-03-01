@@ -747,6 +747,11 @@ def _fix_installed_binaries(installed, dry_run=False):
     for binary_info in installed.values():
         binary, installed_path = binary_info
 
+        # Do not try to manipulate symlink files. Except frameworks because the
+        # binaries are symlinks into `Versions/…`
+        if os.path.islink(binary.path) and not binary.is_framework:
+            continue
+
         print('Fixing binary references in %s' % binary.path)
 
         if not dry_run and binary.installed_id:
