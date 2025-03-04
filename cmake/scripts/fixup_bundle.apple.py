@@ -773,14 +773,27 @@ def _fix_installed_binaries(installed, dry_run=False):
                 ])
             install_name_tool()
 
-        print('Removing signatures from %s' % binary.path)
         if not dry_run:
-            codesign = Pipeline([
+            codesign_check = Pipeline([
                     'codesign',
-                    '--remove-signature',
+                    '-v',
                     installed_path,
                 ])
-            codesign()
+            is_valid = True
+            try:
+                codesign_check()
+            except RuntimeError:
+                is_valid = False
+            if not is_valid:
+                print('Using an adhoc signature for %s' % binary.path)
+                codesign = Pipeline([
+                        'codesign',
+                        '--force',
+                        '--sign',
+                        '-', # adhoc signature identity
+                        installed_path,
+                    ])
+                codesign()
 
 
 def _update_manifest(manifest, installed, path):
