@@ -747,6 +747,11 @@ def _fix_installed_binaries(installed, dry_run=False):
     for binary_info in installed.values():
         binary, installed_path = binary_info
 
+        # Do not try to manipulate symlink files. Except frameworks because the
+        # binaries are symlinks into `Versions/…`
+        if os.path.islink(binary.path) and not binary.is_framework:
+            continue
+
         print('Fixing binary references in %s' % binary.path)
 
         if not dry_run and binary.installed_id:
@@ -773,14 +778,27 @@ def _fix_installed_binaries(installed, dry_run=False):
                 ])
             install_name_tool()
 
-        print('Removing signatures from %s' % binary.path)
         if not dry_run:
-            codesign = Pipeline([
+            codesign_check = Pipeline([
                     'codesign',
-                    '--remove-signature',
+                    '-v',
                     installed_path,
                 ])
-            codesign()
+            is_valid = True
+            try:
+                codesign_check()
+            except RuntimeError:
+                is_valid = False
+            if not is_valid:
+                print('Using an adhoc signature for %s' % binary.path)
+                codesign = Pipeline([
+                        'codesign',
+                        '--force',
+                        '--sign',
+                        '-', # adhoc signature identity
+                        installed_path,
+                    ])
+                codesign()
 
 
 def _update_manifest(manifest, installed, path):
