@@ -951,8 +951,9 @@ endif ()
 
 superbuild_set_revision(flexbison
   # https://github.com/lexxmark/winflexbison/releases
-  URL     "https://www.paraview.org/files/dependencies/win_flex_bison-2.5.25.zip"
-  URL_MD5 "720226b1befe7033fb3ecc98f5ffd425")
+  # https://gitlab.kitware.com/utils/ci-utilities/-/packages?orderBy=created_at&sort=desc&search[]=winflexbison
+  URL     "https://www.paraview.org/files/dependencies/winflexbison-2.5.25.g300f48b-concurrent-builds-windows-x86_64.zip"
+  URL_MD5 "c5855455889cf9ec629624255ff9b453")
 
 superbuild_set_revision(alembic
   # https://github.com/alembic/alembic/releases
