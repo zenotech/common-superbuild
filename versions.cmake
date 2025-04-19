@@ -117,8 +117,8 @@ superbuild_set_revision(libxslt
 superbuild_set_revision(nlohmannjson
   # https://github.com/nlohmann/json/releases
   # Be sure to grab the full source code, not one of the subdirectory archives.
-  URL     "https://www.paraview.org/files/dependencies/nlohmannjson-3.11.2.tar.gz"
-  URL_MD5 e8d56bc54621037842ee9f0aeae27746)
+  URL     "https://www.paraview.org/files/dependencies/json-3.12.0.tar.gz"
+  URL_MD5 c2528c3e04faccaaee44f1f8f3d30d99)
 
 # https://download.qt.io/official_releases/qt/
 superbuild_set_selectable_source(qt5
@@ -957,13 +957,13 @@ superbuild_set_revision(flexbison
 
 superbuild_set_revision(alembic
   # https://github.com/alembic/alembic/releases
-  URL     "https://www.paraview.org/files/dependencies/alembic-1.8.5.tar.gz"
-  URL_MD5 fcd5b5492a005057e11b601b60ac9a49)
+  URL     "https://www.paraview.org/files/dependencies/alembic-1.8.8.tar.gz"
+  URL_MD5 bb01cb191eaed796c49f75f11e1bd690)
 
 superbuild_set_revision(imath
   # https://github.com/AcademySoftwareFoundation/Imath/releases
-  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.11.tar.gz"
-  URL_MD5 28c0e9971a8e6720112a8037837ff8e4)
+  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.12.tar.gz"
+  URL_MD5 2262c2f1f2915695eb38523e632c31ea)
 
 superbuild_set_revision(zstd
   # https://github.com/facebook/zstd/releases
@@ -977,5 +977,5 @@ superbuild_set_revision(lz4
 
 superbuild_set_revision(blosc
   # https://github.com/Blosc/c-blosc/releases
-  URL     "https://www.paraview.org/files/dependencies/blosc-1.21.5.tar.gz"
-  URL_MD5 "5097ee61dc1f25281811f5a55b91b2e4")
+  URL     "https://www.paraview.org/files/dependencies/c-blosc-1.21.6.tar.gz"
+  URL_MD5 "414d8317c2dd7f3629aad34b6962b6d1")
