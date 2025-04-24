@@ -17,6 +17,7 @@ function (superbuild_find_projects var)
     cxx17
     embree
     exodus
+    expat
     flexbison
     fortran
     freetype
@@ -134,7 +135,6 @@ function (superbuild_find_projects var)
 
   if (NOT WIN32)
     list(APPEND projects
-      expat
       ffi
       ffmpeg
       gperf)
