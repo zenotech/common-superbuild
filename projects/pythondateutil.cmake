@@ -4,6 +4,7 @@ superbuild_add_project_python(pythondateutil
   DEPENDS
     pythonsetuptools
     pythonsetuptoolsscm
+    pythonsix
   LICENSE_FILES
     LICENSE
   SPDX_LICENSE_IDENTIFIER

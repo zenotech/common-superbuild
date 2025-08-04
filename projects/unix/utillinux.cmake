@@ -39,8 +39,5 @@ superbuild_add_project(utillinux
     make install
   BUILD_IN_SOURCE 1)
 
-superbuild_apply_patch(utillinux uuid-incdir
-  "Fix uuid include dir for fontconfig")
-
 superbuild_apply_patch(utillinux remove-terminal-colors
   "Remove terminal colors from installation as it is a GPL licensed file which we do net need at all")

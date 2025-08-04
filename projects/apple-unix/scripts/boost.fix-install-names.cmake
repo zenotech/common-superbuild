@@ -25,12 +25,12 @@ foreach (boost_library IN LISTS boost_libraries)
   endif ()
 
   # Extract out the Boost libraries.
-  string(REGEX MATCHALL "\tlibboost_[^.]*\\.dylib" linked_libraries "${out}")
-  string(REPLACE "\t" "" linked_libraries "${linked_libraries}")
+  string(REGEX MATCHALL "@rpath/libboost_[^.]*\\.dylib" linked_libraries "${out}")
   set(args)
   foreach (linked_library IN LISTS linked_libraries)
+    string(REPLACE "@rpath/" "" linked_library_filename "${linked_library}")
     list(APPEND args
-      -change "${linked_library}" "${libdir}/${linked_library}")
+      -change "${linked_library}" "${libdir}/${linked_library_filename}")
   endforeach ()
 
   # If there are any libraries to change, do so.

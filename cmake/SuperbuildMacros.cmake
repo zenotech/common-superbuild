@@ -73,8 +73,8 @@ following extensions:
   - `DEFAULT_ON` If present, the project will default to be built. May be set
     externally using the `_superbuild_default_${NAME}` variable.
   - `DEVELOPER_MODE` If present, the project will offer an option to build it
-    in "developer" mode. Developer mode enables and builds all dependent
-    projects, but skips the project itself. Instead, a file named
+    in "developer" mode. Developer mode enables and builds all dependencies,
+    but skips the project itself. Instead, a file named
     `${NAME}-developer-config.cmake` is written to the build directory which
     may be passed to a standalone instance of the project using the `-C` option
     of CMake to initialize the cache to use the dependencies built as part of
@@ -94,6 +94,8 @@ following extensions:
   - `DEPENDS_OPTIONAL <project>...`
     Projects which this one can use if it is enabled, but is not required for
     use.
+  - `DEPENDS_ORDERED <project>...`
+    Projects which need to be ordered before this project if enabled.
   - `LICENSE_FILES <files>...`
     Path to license files (relative to `<SOURCE_DIR>` if not absolute), in
     order to install them in under `share/licenses/<project>`. Needed only if
@@ -133,6 +135,7 @@ function (superbuild_add_project name)
   set(help_string)
   set(depends)
   set(optional_depends)
+  set(ordered_depends)
   set(license_files)
   set(process_environment)
   set(spdx_license_identifier)
@@ -175,6 +178,8 @@ function (superbuild_add_project name)
       set(grab depends)
     elseif (arg STREQUAL "DEPENDS_OPTIONAL")
       set(grab optional_depends)
+    elseif (arg STREQUAL "DEPENDS_ORDERED")
+      set(grab ordered_depends)
     elseif (arg STREQUAL "LICENSE_FILES")
       set(grab license_files)
     elseif (arg STREQUAL "SPDX_LICENSE_IDENTIFIER")
@@ -218,7 +223,7 @@ function (superbuild_add_project name)
     # optional dependencies and adds them as real dependencies if they are
     # enabled.
 
-    foreach (op_dep IN LISTS optional_depends)
+    foreach (op_dep IN LISTS optional_depends ordered_depends)
       if (${op_dep}_enabled)
         list(APPEND ep_arguments
           DEPENDS "${op_dep}")
@@ -236,7 +241,7 @@ function (superbuild_add_project name)
       endif ()
     endforeach ()
     foreach (dep IN LISTS optional_depends)
-      if (NOT dep IN_LIST all_projects)
+      if (NOT dep IN_LIST all_projects AND NOT dep IN_LIST _superbuild_ignored_optional_depends)
         list(APPEND missing_deps_optional
           "${dep}")
       endif ()
@@ -341,6 +346,9 @@ function (superbuild_add_project name)
     set_property(GLOBAL
       PROPERTY
         "${name}_depends_optional" ${optional_depends})
+    set_property(GLOBAL
+      PROPERTY
+        "${name}_depends_ordered" ${ordered_depends})
   endif ()
 endfunction ()
 
@@ -354,8 +362,8 @@ superbuild_add_dummy_project(<NAME> [ARGS...])
 ```
 
 The only keyword arguments which do anything for dummy projects are the
-``DEPENDS`` and ``DEPENDS_OPTIONAL`` keywords which are used to enforce build
-order.
+``DEPENDS``, ``DEPENDS_OPTIONAL``, and ``DEPENDS_ORDERED`` keywords which are
+used to enforce build order.
 #]==]
 function (superbuild_add_dummy_project _name)
   superbuild_add_project(${_name} "${ARGN}")
@@ -375,8 +383,8 @@ superbuild_add_toolchain_override_project(<NAME> [ARGS...])
 ```
 
 The only project keyword arguments which do anything for toolchain override projects
-are the ``DEPENDS`` and ``DEPENDS_OPTIONAL`` keywords which are used to enforce build
-order.
+are the ``DEPENDS``, ``DEPENDS_OPTIONAL``, and ``DEPENDS_ORDERED`` keywords
+which are used to enforce build order.
 
 The toolchain override project also takes the optional argument ``LANGUAGES`` which is a
 list of languages to override in the toolchain. By default, LANGUAGES is set to "C;CXX".
@@ -569,7 +577,7 @@ macro (superbuild_add_project_python_pyproject _name)
   cmake_parse_arguments(_superbuild_add_project_python_pyproject
     "PYPROJECT_TOML_NO_WHEEL"
     "PACKAGE;SPDX_CUSTOM_LICENSE_FILE;SPDX_CUSTOM_LICENSE_NAME"
-    "LICENSE_FILES;PROCESS_ENVIRONMENT;DEPENDS;DEPENDS_OPTIONAL;SPDX_LICENSE_IDENTIFIER;SPDX_COPYRIGHT_TEXT;REMOVE_MODULES"
+    "LICENSE_FILES;PROCESS_ENVIRONMENT;DEPENDS;DEPENDS_OPTIONAL;DEPENDS_ORDERED;SPDX_LICENSE_IDENTIFIER;SPDX_COPYRIGHT_TEXT;REMOVE_MODULES;PYTHON_ARGS"
     ${ARGN})
 
   if (NOT DEFINED _superbuild_add_project_python_pyproject_PACKAGE)
@@ -603,6 +611,7 @@ macro (superbuild_add_project_python_pyproject _name)
       BUILD_IN_SOURCE 1
       DEPENDS python3 ${_superbuild_add_project_python_pyproject_DEPENDS}
       DEPENDS_OPTIONAL ${_superbuild_add_project_python_pyproject_DEPENDS_OPTIONAL}
+      DEPENDS_ORDERED ${_superbuild_add_project_python_pyproject_DEPENDS_ORDERED}
       LICENSE_FILES ${_superbuild_add_project_python_pyproject_LICENSE_FILES}
       PROCESS_ENVIRONMENT ${_superbuild_add_project_python_pyproject_PROCESS_ENVIRONMENT}
       SPDX_LICENSE_IDENTIFIER "${_superbuild_add_project_python_pyproject_SPDX_LICENSE_IDENTIFIER}"
@@ -621,6 +630,7 @@ macro (superbuild_add_project_python_pyproject _name)
           --no-deps
           --no-build-isolation
           ${_superbuild_python_args}
+          ${_superbuild_add_project_python_pyproject_PYTHON_ARGS}
           "<SOURCE_DIR>")
 
     if (_superbuild_add_project_python_pyproject_REMOVE_MODULES)
@@ -974,7 +984,7 @@ endfunction ()
 Get a list of the dependencies this project has.
 
 ```
-_superbuild_get_project_depends(<NAME> <PREFIX>)
+_superbuild_get_project_depends(<NAME> <PREFIX> [WITH_ORDERED])
 ```
 
 Returns a list of projects depended on by `<NAME>` in the `${PREFIX}_depends`
@@ -999,8 +1009,13 @@ function (_superbuild_get_project_depends name prefix)
     endif ()
   endforeach ()
 
-  # Get enabled optional dependencies.
-  foreach (dep IN LISTS "${name}_depends_optional")
+  # Get enabled optional and ordered dependencies.
+  set(ordered)
+  if (ARGV2 STREQUAL "WITH_ORDERED")
+    list(APPEND ordered
+      ${${name}_depends_ordered})
+  endif ()
+  foreach (dep IN LISTS "${name}_depends_optional" ${ordered})
     if (${dep}_enabled AND NOT ${prefix}_${dep}_done)
       list(APPEND "${prefix}_depends"
         "${dep}")
@@ -1060,11 +1075,14 @@ function (superbuild_process_dependencies)
       PROPERTY "${project}_depends")
     get_property("${project}_depends_optional" GLOBAL
       PROPERTY "${project}_depends_optional")
+    get_property("${project}_depends_ordered" GLOBAL
+      PROPERTY "${project}_depends_ordered")
     get_property(selectable GLOBAL
       PROPERTY "${project}_selectable")
     set("${project}_depends_all"
       ${${project}_depends}
-      ${${project}_depends_optional})
+      ${${project}_depends_optional}
+      ${${project}_depends_ordered})
 
     if (has_selectable AND NOT selectable)
       set(advanced TRUE)
@@ -1310,7 +1328,7 @@ endfunction ()
 
 # Implementation of building a dummy project.
 function (_superbuild_add_dummy_project_internal name)
-  _superbuild_get_project_depends("${name}" arg)
+  _superbuild_get_project_depends("${name}" arg WITH_ORDERED)
 
   ExternalProject_add("${name}"
     DEPENDS           ${arg_depends}

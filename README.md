@@ -35,8 +35,9 @@ project. Other files which have precedence include `$project.common.cmake`,
     be defined in a separate file so that they may be available during
     packaging and testing as well.
   * `$project.system.cmake`: projects may represent software packages which
-    are available as a system-wide copy; this file is used to find the system
-    copy and import it into the superbuild infrastructure.
+    are available as a system-wide copy (the `USE_SYSTEM` keyword); this file
+    is used to find the system copy and import it into the superbuild
+    infrastructure.
 
 Different platforms can shadow these files by using the following
 subdirectories:
@@ -51,9 +52,21 @@ useful.
 
 When adding a project, be sure to update:
 
-- `.gitlab/ci/configure_common.cmake` to add building it to CI
-- `selftest/CMakeLists.txt` to add it to the CI project
-- `selftest/tests/CMakeLists.txt` for any relevant tests (e.g., loading Python modules)
+- `.gitlab/ci/configure_common.cmake`: enable (preferred) or suppress the
+  project's output
+- `selftest/CMakeLists.txt`: add the project to the list of projects
+- `selftest/tests/`: consider adding a test for the project (e.g., loading
+  Python modules)
+- `versions.cmake`: where to get the project's source
+
+### Dummy projects
+
+Dummy projects exist to offer as a mechanism for users to access features. For
+example, the `hdf5cpp` dummy project exists to request the C++ bindings of the
+`hdf5` project. Others exist to indicate a feature capability that may be
+required such as `cxx11` or `fortran`. At their core, dummy projects don't
+build anything but can instead modify behaviors of other projects by being
+enabled or disabled.
 
 ## Related files
 

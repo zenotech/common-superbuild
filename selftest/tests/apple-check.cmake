@@ -144,6 +144,10 @@ function (check_binary_library_id path)
         # Wheel libraries don't get linked to.
         if (path MATCHES "lib/python3.*.abi3.so$")
           return ()
+        elseif (path MATCHES "scipy/special/libsf_error_state\\.dylib$")
+          # This library is internal to scipy; packaging observed to handle it
+          # correctly.
+          return ()
         endif ()
 
         message(SEND_ERROR

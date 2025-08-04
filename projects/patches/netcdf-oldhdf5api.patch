@@ -1,0 +1,199 @@
+diff -u -Nr -U5 netcdf-c-4.9.2/include/ncdimscale.h netcdf-c-4.9.2-oldhdf5api/include/ncdimscale.h
+--- netcdf-c-4.9.2/include/ncdimscale.h	2023-03-14 16:34:25.000000000 -0400
++++ netcdf-c-4.9.2-oldhdf5api/include/ncdimscale.h	2024-07-09 16:57:41.238779455 -0400
+@@ -12,15 +12,21 @@
+ #define _NCDIMSCALE_H_
+ 
+ #ifdef USE_HDF5
+ #include <hdf5.h>
+ 
++#if defined(H5Literate_vers) && H5Literate_vers == 2
++#define nc_hdf5_use_new_statbuf 1
++#else
++#define nc_hdf5_use_new_statbuf 0
++#endif
++
+ /* This is used to uniquely identify datasets, so we can keep track of
+  * dimscales. */
+ typedef struct hdf5_objid
+ {
+-#if H5_VERSION_GE(1,12,0)
++#if nc_hdf5_use_new_statbuf
+     unsigned long fileno; /* file number */
+     H5O_token_t token; /* token */
+ #else
+     unsigned long fileno[2]; /* file number */
+     haddr_t objno[2]; /* object number */
+diff -u -Nr -U5 netcdf-c-4.9.2/libhdf5/hdf5open.c netcdf-c-4.9.2-oldhdf5api/libhdf5/hdf5open.c
+--- netcdf-c-4.9.2/libhdf5/hdf5open.c	2023-03-14 16:34:25.000000000 -0400
++++ netcdf-c-4.9.2-oldhdf5api/libhdf5/hdf5open.c	2024-07-09 16:58:12.718826634 -0400
+@@ -62,23 +62,25 @@
+ extern int NC4_open_image_file(NC_FILE_INFO_T* h5);
+ 
+ /* Defined later in this file. */
+ static int rec_read_metadata(NC_GRP_INFO_T *grp);
+ 
++#if defined(H5Literate_vers) && H5Literate_vers == 2
++typedef H5O_info2_t hdf5_statbuf_t;
++#else
++typedef H5G_stat_t hdf5_statbuf_t;
++#endif
++
+ /**
+  * @internal Struct to track HDF5 object info, for
+  * rec_read_metadata(). We get this info for every object in the
+  * HDF5 file when we H5Literate() over the file. */
+ typedef struct hdf5_obj_info
+ {
+     hid_t oid;                          /* HDF5 object ID */
+     char oname[NC_MAX_NAME + 1];        /* Name of object */
+-#if H5_VERSION_GE(1,12,0)
+-    H5O_info2_t statbuf;
+-#else
+-    H5G_stat_t statbuf;                /* Information about the object */
+-#endif
++    hdf5_statbuf_t statbuf;
+     struct hdf5_obj_info *next; /* Pointer to next node in list */
+ } hdf5_obj_info_t;
+ 
+ /**
+  * @internal User data struct for call to H5Literate() in
+@@ -353,11 +355,11 @@
+ {
+ 
+     LOG((4, "%s", __func__));
+ 
+     /* Get more info on the dimscale object.*/
+-#if H5_VERSION_GE(1,12,0)
++#if nc_hdf5_use_new_statbuf
+     H5O_info2_t statbuf;
+ 
+     if (H5Oget_info3(dsid, &statbuf, H5O_INFO_BASIC) < 0)
+         return -1;
+ 
+@@ -591,11 +593,11 @@
+                             assert(dim && dim->format_dim_info);
+                             hdf5_dim = (NC_HDF5_DIM_INFO_T *)dim->format_dim_info;
+ 
+                             /* Check for exact match of fileno/objid arrays
+                              * to find identical objects in HDF5 file. */
+-#if H5_VERSION_GE(1,12,0)
++#if nc_hdf5_use_new_statbuf
+                             int token_cmp;
+                             if (H5Otoken_cmp(hdf5_var->hdf_datasetid,
+                                              &hdf5_var->dimscale_hdf5_objids[d].token,
+                                              &hdf5_dim->hdf5_objid.token, &token_cmp) < 0)
+                                 return NC_EHDFERR;
+@@ -2467,15 +2469,11 @@
+  * @author Ed Hartnett
+  * [Candidate for libsrc4]
+  */
+ static int
+ read_scale(NC_GRP_INFO_T *grp, hid_t datasetid, const char *obj_name,
+-#if H5_VERSION_GE(1,12,0)
+-           const H5O_info2_t *statbuf,
+-#else
+-           const H5G_stat_t *statbuf,
+-#endif
++           const hdf5_statbuf_t *statbuf,
+            hsize_t scale_size,
+            hsize_t max_scale_size, NC_DIM_INFO_T **dim)
+ {
+     NC_DIM_INFO_T *new_dim; /* Dimension added to group */
+     NC_HDF5_DIM_INFO_T *new_hdf5_dim; /* HDF5-specific dim info. */
+@@ -2531,11 +2529,11 @@
+ 
+     dimscale_created++;
+ 
+     /* Remember these 4 (or 2 for HDF5 1.12) values to uniquely identify this dataset in the
+      * HDF5 file. */
+-#if H5_VERSION_GE(1,12,0)
++#if nc_hdf5_use_new_statbuf
+     new_hdf5_dim->hdf5_objid.fileno = statbuf->fileno;
+     new_hdf5_dim->hdf5_objid.token = statbuf->token;
+ #else
+     new_hdf5_dim->hdf5_objid.fileno[0] = statbuf->fileno[0];
+     new_hdf5_dim->hdf5_objid.fileno[1] = statbuf->fileno[1];
+@@ -2610,16 +2608,11 @@
+  * @return ::NC_EHDFERR HDF5 returned error.
+  * @author Ed Hartnett
+  */
+ static int
+ read_dataset(NC_GRP_INFO_T *grp, hid_t datasetid, const char *obj_name,
+-#if H5_VERSION_GE(1,12,0)
+-             const H5O_info2_t *statbuf
+-#else
+-             const H5G_stat_t *statbuf
+-#endif
+-)
++             const hdf5_statbuf_t *statbuf)
+ {
+     NC_DIM_INFO_T *dim = NULL;   /* Dimension created for scales */
+     NC_HDF5_DIM_INFO_T *hdf5_dim;
+     hid_t spaceid = 0;
+     int ndims;
+@@ -2715,15 +2708,11 @@
+  * @return H5_ITER_ERROR HDF5 error, stop iteration.
+  * @author Ed Hartnett
+  */
+ static int
+ read_hdf5_obj(hid_t grpid, const char *name,
+-#if H5_VERSION_GE(1,12,0)
+-	      const H5L_info2_t *info,
+-#else
+ 	      const H5L_info_t *info,
+-#endif
+               void *_op_data)
+ {
+     /* Pointer to user data for callback */
+     user_data_t *udata = (user_data_t *)_op_data;
+     hdf5_obj_info_t oinfo;    /* Pointer to info for object */
+@@ -2732,11 +2721,11 @@
+     /* Open this critter. */
+     if ((oinfo.oid = H5Oopen(grpid, name, H5P_DEFAULT)) < 0)
+         BAIL(H5_ITER_ERROR);
+ 
+     /* Get info about the object.*/
+-#if H5_VERSION_GE(1,12,0)
++#if nc_hdf5_use_new_statbuf
+     if (H5Oget_info3(oinfo.oid, &oinfo.statbuf, H5O_INFO_BASIC) < 0)
+         BAIL(H5_ITER_ERROR);
+ #else
+     if (H5Gget_objinfo(oinfo.oid, ".", 1, &oinfo.statbuf) < 0)
+         BAIL(H5_ITER_ERROR);
+@@ -2896,12 +2885,17 @@
+     /* Iterate over links in this group, building lists for the types,
+      * datasets and groups encountered. A pointer to udata will be
+      * passed as a parameter to the callback function
+      * read_hdf5_obj(). (I have also tried H5Oiterate(), but it is much
+      * slower iterating over the same file - Ed.) */
+-    if (H5Literate(hdf5_grp->hdf_grpid, iter_index, H5_ITER_INC, &idx,
+-                   read_hdf5_obj, (void *)&udata) < 0)
++#if nc_hdf5_use_new_statbuf
++    if (H5Literate2(hdf5_grp->hdf_grpid, iter_index, H5_ITER_INC, &idx,
++                    read_hdf5_obj, (void *)&udata) < 0)
++#else
++    if (H5Literate1(hdf5_grp->hdf_grpid, iter_index, H5_ITER_INC, &idx,
++                    read_hdf5_obj, (void *)&udata) < 0)
++#endif
+         BAIL(NC_EHDFERR);
+ 
+     /* Process the child groups found. (Deferred until now, so that the
+      * types in the current group get processed and are available for
+      * vars in the child group(s).) */
+diff -u -Nr -U5 netcdf-c-4.9.2/libhdf5/nc4hdf.c netcdf-c-4.9.2-oldhdf5api/libhdf5/nc4hdf.c
+--- netcdf-c-4.9.2/libhdf5/nc4hdf.c	2023-03-14 16:34:25.000000000 -0400
++++ netcdf-c-4.9.2-oldhdf5api/libhdf5/nc4hdf.c	2024-07-09 16:57:53.838798339 -0400
+@@ -2175,11 +2175,11 @@
+                             assert(dim && dim->format_dim_info);
+                             hdf5_dim = (NC_HDF5_DIM_INFO_T *)dim->format_dim_info;
+ 
+                             /* Check for exact match of fileno/objid arrays
+                              * to find identical objects in HDF5 file. */
+-#if H5_VERSION_GE(1,12,0)
++#if nc_hdf5_use_new_statbuf
+                             int token_cmp;
+                             if (H5Otoken_cmp(hdf5_var->hdf_datasetid, &hdf5_var->dimscale_hdf5_objids[d].token, &hdf5_dim->hdf5_objid.token, &token_cmp) < 0)
+                                 return NC_EHDFERR;
+ 
+                             if (hdf5_var->dimscale_hdf5_objids[d].fileno == hdf5_dim->hdf5_objid.fileno &&

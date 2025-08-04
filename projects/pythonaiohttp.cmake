@@ -1,3 +1,7 @@
+superbuild_python_version_check(pythonaiohttp
+  "3.6" "0" # Unsupported
+  "3.7" "3.8.5")
+
 superbuild_add_project_python(pythonaiohttp
   PACKAGE
     aiohttp

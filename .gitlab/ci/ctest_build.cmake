@@ -65,6 +65,7 @@ if (DEFINED build_id)
   ctest_annotation_report("${CTEST_BINARY_DIRECTORY}/annotations.json"
     "Build Errors (${num_errors})" "https://open.cdash.org/viewBuildError.php?buildid=${build_id}"
     "Build Warnings (${num_warnings})" "https://open.cdash.org/viewBuildError.php?type=1&buildid=${build_id}"
+    "Build Notes" "https://open.cdash.org/builds/${build_id}/notes"
   )
 endif ()
 

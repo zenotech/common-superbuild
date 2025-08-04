@@ -1,11 +1,11 @@
-diff -u -Nr -U5 scipy-1.11.2/meson.build scipy-1.11.2.use-blas-lapack/meson.build
---- scipy-1.11.2/meson.build	2023-08-29 17:05:06.782174254 -0400
-+++ scipy-1.11.2.use-blas-lapack/meson.build	2023-08-29 17:05:06.782174254 -0400
+diff -u -Nr -U5 scipy-1.13.1/meson.build scipy-1.13.1.use-blas-lapack/meson.build
+--- scipy-1.13.1/meson.build	2023-08-29 17:05:06.782174254 -0400
++++ scipy-1.13.1.use-blas-lapack/meson.build	2023-08-29 17:05:06.782174254 -0400
 @@ -11,12 +11,12 @@
      'buildtype=debugoptimized',
      'b_ndebug=if-release',
      'c_std=c99',
-     'cpp_std=c++14',
+     'cpp_std=c++17',
      'fortran_std=legacy',
 -    'blas=openblas',
 -    'lapack=openblas'
@@ -14,5 +14,5 @@ diff -u -Nr -U5 scipy-1.11.2/meson.build scipy-1.11.2.use-blas-lapack/meson.buil
    ],
  )
  
- # https://mesonbuild.com/Python-module.html
- py_mod = import('python')
+ py3 = import('python').find_installation(pure: false)
+ py3_dep = py3.dependency()

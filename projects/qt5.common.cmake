@@ -1,3 +1,5 @@
+include(qt5.options)
+
 if (WIN32)
   list(APPEND qt5_options
     -qt-zlib)
@@ -60,20 +62,29 @@ else ()
   list(APPEND qt5_options "-no-openssl")
 endif ()
 
-# Add option to build qtsvg, on by default for svg icon support
-option(qt5_ENABLE_SVG "Build Qt5 SVG library." ON)
-mark_as_advanced(qt5_ENABLE_SVG)
 if (NOT qt5_ENABLE_SVG)
   list(APPEND qt5_options
     -skip qtsvg)
 endif()
 
-# Add option to build qtmultimedia, on by default
-option(qt5_ENABLE_MULTIMEDIA "Build Qt5 Multimedia library." ON)
-mark_as_advanced(qt5_ENABLE_MULTIMEDIA)
 if (NOT qt5_ENABLE_MULTIMEDIA)
   list(APPEND qt5_options
     -skip qtmultimedia)
+endif()
+
+if (NOT qt5_ENABLE_WEBCHANNEL)
+  list(APPEND qt5_options
+    -skip qtwebchannel)
+endif()
+
+if (NOT qt5_ENABLE_WEBENGINE)
+  list(APPEND qt5_options
+    -skip qtwebengine)
+endif()
+
+if (NOT qt5_ENABLE_WEBSOCKETS)
+  list(APPEND qt5_options
+    -skip qtwebsockets)
 endif()
 
 foreach(module IN LISTS qt5_skip_modules)
@@ -90,9 +101,10 @@ superbuild_add_project(qt5
   DEPENDS ${qt5_depends} ${qt5_extra_depends} cxx11
   DEPENDS_OPTIONAL ${qt5_optional_depends}
   LICENSE_FILES
-    LICENSE.LGPLv3 # Qt is distributed under many licenses, this one can be chosen for the enabled components
+    LICENSE.GPLv3
+    LICENSE.LGPLv3
   SPDX_LICENSE_IDENTIFIER
-    LGPL-3.0-or-later
+    LGPL-3.0-or-later # Qt is distributed under many licenses, this one can be chosen for the enabled components
   SPDX_COPYRIGHT_TEXT
     "Copyright (C) 2015 The Qt Company Ltd"
   CONFIGURE_COMMAND
@@ -128,7 +140,11 @@ superbuild_add_extra_cmake_args(
   -DPARAVIEW_QT_VERSION:STRING=5
   -DQt5_DIR:PATH=<INSTALL_DIR>/lib/cmake/Qt5)
 
-if (NOT qt5_SOURCE_SELECTION VERSION_LESS "5.15")
+if (qt5_SOURCE_SELECTION VERSION_GREATER_EQUAL "5.15")
   # reimplemented from https://invent.kde.org/qt/qt/qtbase/-/commit/8af35d27e8f02bbb99aef4ac495ed406e50e3cca
   superbuild_apply_patch(qt5 fix-xcb-header "Fix qxcb header for recent xcb")
+endif ()
+
+if (qt5_SOURCE_SELECTION STREQUAL "5.12")
+  superbuild_apply_patch(qt5 5.12-include-limits "Add missing '#include <limits>' to files")
 endif ()

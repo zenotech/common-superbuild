@@ -8,7 +8,7 @@
         GIT_CLONE_PATH: "$CI_BUILDS_DIR/paraview-ci-ext/$CI_CONCURRENT_ID"
         # TODO: Factor this out so that each job selects the Xcode version to
         # use so that different versions can be tested in a single pipeline.
-        DEVELOPER_DIR: "/Applications/Xcode-13.3.app/Contents/Developer"
+        DEVELOPER_DIR: "/Applications/Xcode-16.1.app/Contents/Developer"
         # Avoid conflicting with other projects running on the same machine.
         SCCACHE_SERVER_PORT: 4234
 
@@ -51,7 +51,7 @@
         - paraview
         - macos-x86_64
         - shell
-        - xcode-13.3
+        - xcode-16.1
         - concurrent
 
 .macos_arm64_builder_tags:
@@ -59,7 +59,7 @@
         - paraview
         - macos-arm64
         - shell
-        - xcode-13.3
+        - xcode-16.1
         - concurrent
 
 ## macOS-specific scripts
@@ -75,7 +75,8 @@
     - gfortran --version
     # Download Qt
     - cmake -P .gitlab/ci/download_qt.cmake
-    - export CMAKE_PREFIX_PATH=$PWD/.gitlab/qt
+    - cmake -P .gitlab/ci/download_qt6.cmake
+    - export CMAKE_PREFIX_PATH=$PWD/.gitlab/qt:$PWD/.gitlab/qt6
 
 .cmake_build_macos:
     stage: build
