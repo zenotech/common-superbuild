@@ -13,3 +13,7 @@ superbuild_add_project(gperf
   INSTALL_COMMAND
     $(MAKE) install
 )
+
+# https://git.savannah.gnu.org/gitweb/?p=gperf.git;a=commit;h=a63b830554920476881837eeacd4a6b507632b19
+superbuild_apply_patch(gperf cpp17-support
+  "Support C++17")

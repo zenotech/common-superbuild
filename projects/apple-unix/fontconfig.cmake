@@ -20,7 +20,6 @@ if (APPLE OR UNIX)
   endif ()
 endif ()
 
-
 superbuild_add_project(fontconfig
   DEPENDS freetype libxml2 png gperf python3 ${fontconfig_depends}
   LICENSE_FILES

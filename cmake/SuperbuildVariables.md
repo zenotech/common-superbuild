@@ -59,6 +59,11 @@ overriden from the top-level by specifying the selection with this variable.
 If defined, this is used as the default value for the
 `SUPPRESS_<PROJECT>_OUTPUT` variable for the given project.
 
+### `_superbuild_ignored_optional_depends`
+
+List of optional depends that should be ignored and not warn at configuration time
+that they are missing.
+
 ### Language flags
 
 The following variables contain (as a string, not a list), the flags to pass to

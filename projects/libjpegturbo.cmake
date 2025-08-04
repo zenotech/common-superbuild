@@ -6,6 +6,7 @@ endif ()
 superbuild_add_project(libjpegturbo
   LICENSE_FILES
     LICENSE.md
+    README.ijg
   SPDX_LICENSE_IDENTIFIER
     "IJG AND BSD-3-Clause AND Zlib"
   SPDX_COPYRIGHT_TEXT

@@ -1,7 +1,7 @@
 superbuild_python_version_check(meson
   "3.5" "0" # Unsupported
   "3.6" "0.61.5"
-  "3.7" "1.2.1")
+  "3.7" "1.5.2")
 
 superbuild_add_project_python(meson
   PACKAGE
@@ -34,4 +34,10 @@ if (WIN32)
 else ()
   set(meson_command
     "<INSTALL_DIR>/bin/meson")
+endif ()
+
+if (meson_SOURCE_SELECTION STREQUAL "1.5.2")
+  # https://github.com/mesonbuild/meson/issues/13906
+  superbuild_apply_patch(meson llvm-prefer-config
+    "Prefer llvm-config to search for LLVM")
 endif ()

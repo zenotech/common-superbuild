@@ -581,7 +581,7 @@ def copy_library(destination, library, dry_run=False, library_dest='Libraries', 
             if os.path.exists(destination):
                 shutil.rmtree(destination)
             _os_makedirs(app_dest)
-            shutil.copytree(os.path.join(library.framework_path, library.framework_name), destination, symlinks=True)
+            shutil.copytree(os.path.join(library.framework_path, library.framework_name), destination, ignore=shutil.ignore_patterns('_CodeSignature'), symlinks=True)
 
             # We need to make sure the copied libraries are writable.
             chmod = Pipeline([
@@ -746,6 +746,12 @@ def _fix_installed_binaries(installed, dry_run=False):
     # Go through all of the binaries installed and fix up references to other things.
     for binary_info in installed.values():
         binary, installed_path = binary_info
+
+        # Do not try to manipulate symlink files. Except frameworks because the
+        # binaries are symlinks into `Versions/…`
+        if os.path.islink(binary.path) and not binary.is_framework:
+            continue
+
         print('Fixing binary references in %s' % binary.path)
 
         if not dry_run and binary.installed_id:
@@ -771,6 +777,28 @@ def _fix_installed_binaries(installed, dry_run=False):
                     installed_path,
                 ])
             install_name_tool()
+
+        if not dry_run:
+            codesign_check = Pipeline([
+                    'codesign',
+                    '-v',
+                    installed_path,
+                ])
+            is_valid = True
+            try:
+                codesign_check()
+            except RuntimeError:
+                is_valid = False
+            if not is_valid:
+                print('Using an adhoc signature for %s' % binary.path)
+                codesign = Pipeline([
+                        'codesign',
+                        '--force',
+                        '--sign',
+                        '-', # adhoc signature identity
+                        installed_path,
+                    ])
+                codesign()
 
 
 def _update_manifest(manifest, installed, path):

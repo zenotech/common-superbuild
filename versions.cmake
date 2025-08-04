@@ -65,7 +65,10 @@ if (WIN32)
   superbuild_set_selectable_source(python3
     # See https://www.paraview.org/files/dependencies/python-for-wheels/
     # To make a new one, see `vtk/vtk@.gitlab/ci/wheels/`
-    SELECT 3.10 DEFAULT
+    SELECT 3.12 DEFAULT
+      URL     "https://www.paraview.org/files/dependencies/python-for-wheels/python-3.12.7-windows-x86_64.zip"
+      URL_MD5 c93c7fc61cb037dd2e333cce076985bc
+    SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/python-for-wheels/python-3.10.11-windows-x86_64.zip"
       URL_MD5 e963090c45b8e696b367de23ac8afe39
     SELECT 3.9
@@ -74,7 +77,10 @@ if (WIN32)
 else()
   superbuild_set_selectable_source(python3
     # https://www.python.org/downloads/source/
-    SELECT 3.10 DEFAULT
+    SELECT 3.12 DEFAULT
+      URL     "https://www.paraview.org/files/dependencies/Python-3.12.7.tar.xz"
+      URL_MD5 c6c933c1a0db52597cb45a7910490f93
+    SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/Python-3.10.13.tar.xz"
       URL_MD5 8847dc6458d1431d0ae0f55942deeb89
     SELECT 3.9
@@ -103,11 +109,16 @@ superbuild_set_revision(libxml2
   URL     "https://www.paraview.org/files/dependencies/libxml2-2.11.5.tar.xz"
   URL_MD5 b2e7332289f5784087448a0717f45ac3)
 
+superbuild_set_revision(libxslt
+  # https://download.gnome.org/sources/libxslt/
+  URL     "https://www.paraview.org/files/dependencies/libxslt-1.1.42.tar.xz"
+  URL_MD5 56bc5d89aa39d62002961c150fec08a0)
+
 superbuild_set_revision(nlohmannjson
   # https://github.com/nlohmann/json/releases
   # Be sure to grab the full source code, not one of the subdirectory archives.
-  URL     "https://www.paraview.org/files/dependencies/nlohmannjson-3.11.2.tar.gz"
-  URL_MD5 e8d56bc54621037842ee9f0aeae27746)
+  URL     "https://www.paraview.org/files/dependencies/json-3.12.0.tar.gz"
+  URL_MD5 c2528c3e04faccaaee44f1f8f3d30d99)
 
 # https://download.qt.io/official_releases/qt/
 superbuild_set_selectable_source(qt5
@@ -131,9 +142,9 @@ superbuild_set_selectable_source(numpy
   # https://pypi.org/project/numpy/#history
   # When updating to a version that drops support for a Python version, also
   # update `projects/numpy.cmake`'s valid version detection.
-  SELECT 1.25.2 DEFAULT # Requires Python 3.9+
-    URL     "https://www.paraview.org/files/dependencies/numpy-1.25.2.tar.gz"
-    URL_MD5 cee1996a80032d47bdf1d9d17249c34e
+  SELECT 1.26.4 DEFAULT # Requires Python 3.9+
+    URL     "https://www.paraview.org/files/dependencies/numpy-1.26.4.tar.gz"
+    URL_MD5 19550cbe7bedd96a928da9d4ad69509d
   SELECT 1.24.4 # Needed for Python 3.8
     URL     "https://www.paraview.org/files/dependencies/numpy-1.24.4.tar.gz"
     URL_MD5 3f3995540a17854a29dc79f8eeecd832
@@ -174,24 +185,34 @@ superbuild_set_selectable_source(pythontomli
 
 superbuild_set_revision(pythonmesonpython
   # https://pypi.org/project/meson-python/#history
-  URL     "https://www.paraview.org/files/dependencies/meson_python-0.13.2.tar.gz"
-  URL_MD5 0db4483e30df43dbd465254be9c7db8a)
+  # PyPI source tarball with 'tests/' subdirectory excised from it (CMake has
+  # issues extracting non-UTF-8 names in tarballs).
+  URL     "https://www.paraview.org/files/dependencies/meson_python-0.16.0-notests.tar.gz"
+  URL_MD5 347d785fa9bee3dff13a51d8c1053992)
 
 # https://pypi.org/project/scipy/#history
-set(scipy_version "1.11.2")
+set(scipy_version "1.15.0")
+set(old_scipy_version "1.13.1")
 if (WIN32)
   superbuild_set_selectable_source(scipy
     SELECTS_WITH python3
+    SELECT 3.12
+      URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp312-cp312-win_amd64.whl"
+      URL_MD5 83502b397a474682d63eef4dc23da4b5
     SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp310-cp310-win_amd64.whl"
-      URL_MD5 85c785288036b94826c2c564116b5e6b
+      URL_MD5 884e5ce911b383c97cd3ac9c9be2c933
     SELECT 3.9
-      URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}-cp39-cp39-win_amd64.whl"
-      URL_MD5 2e2b1fcf6ea9c311576700daf18ccc19)
+      URL     "https://www.paraview.org/files/dependencies/scipy-${old_scipy_version}-cp39-cp39-win_amd64.whl"
+      URL_MD5 5583212c66c8c8c47fdfa9b7746dcc54)
 else ()
-  superbuild_set_revision(scipy
-    URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}.tar.gz"
-    URL_MD5 27baf613b6cf3f9600a05161f132151c)
+  superbuild_set_selectable_source(scipy
+    SELECT 1.15.0 DEFAULT
+      URL     "https://www.paraview.org/files/dependencies/scipy-${scipy_version}.tar.gz"
+      URL_MD5 edfd6460db376fcba9e917e1feb8445e
+    SELECT 1.13.1 # For Python 3.9
+      URL     "https://www.paraview.org/files/dependencies/scipy-${old_scipy_version}.tar.gz"
+      URL_MD5 f9d133bf0da7aade287b775bf1081acb)
 endif ()
 
 superbuild_set_revision(pythonmpmath
@@ -259,6 +280,9 @@ superbuild_set_revision(matplotlib
 superbuild_set_selectable_source(pywin32
   # https://pypi.org/project/pywin32/#history
   SELECTS_WITH python3
+  SELECT 3.12
+    URL "https://www.paraview.org/files/dependencies/pywin32-308-cp312-cp312-win_amd64.whl"
+    URL_MD5 2c85ba0f451d12a902909d745e397639
   SELECT 3.10
     URL "https://www.paraview.org/files/dependencies/pywin32-306-cp310-cp310-win_amd64.whl"
     URL_MD5 6fffe656f01d4a3377c40d98087de2b2
@@ -271,10 +295,24 @@ superbuild_set_revision(mpi
   URL     "https://www.paraview.org/files/dependencies/mpich-4.1.2.tar.gz"
   URL_MD5 66185dc9d911ab2b27cb42bec8e8e1a7)
 
-superbuild_set_revision(lapack
-  # https://github.com/Reference-LAPACK/lapack/releases
-  URL     "https://www.paraview.org/files/dependencies/lapack-3.11.0.tar.gz"
-  URL_MD5 595b064fd448b161cd711fe346f498a7)
+if (WIN32)
+  superbuild_set_revision(lapack
+    # Download offline Windows installer from https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl-download.html
+    # .\intel-onemkl-2025.0.1.15_offline.exe -s -a --action install --eula accept --install-dir C:\intelmkl
+    # Wait for feedback in the terminal, it can take a while and it runs asynchronously
+    # Create a .zip archive of C:\intelmkl\mkl\2025.0 names intelmkl-2025.0.1.15.zip
+    # .\intel-onemkl-2025.0.1.15_offline.exe -s -a --action remove --eula accept --install-dir C:\intelmkl
+    # Wait for feedback in the terminal, it can take a while and it runs asynchronously
+    # Delete every folder created in the folder you run the installer from
+    # Upload archive to paraview.org
+    URL     "https://www.paraview.org/files/dependencies/intelmkl-2025.0.1.15.zip"
+    URL_MD5 078122e2d44c804cc2ad3d714f77ac73)
+else ()
+  superbuild_set_revision(lapack
+    # https://github.com/Reference-LAPACK/lapack/releases
+    URL     "https://www.paraview.org/files/dependencies/lapack-3.11.0.tar.gz"
+    URL_MD5 595b064fd448b161cd711fe346f498a7)
+endif ()
 
 superbuild_set_revision(netcdf
   # https://github.com/Unidata/netcdf-c/releases
@@ -293,8 +331,8 @@ superbuild_set_revision(pythonnetcdf4
 
 superbuild_set_revision(tbb
   # https://github.com/oneapi-src/oneTBB/releases
-  URL     "https://www.paraview.org/files/dependencies/oneTBB-2021.11.0.tar.gz"
-  URL_MD5 b301151120b08a17e98dcdda6e4f6011)
+  URL     "https://www.paraview.org/files/dependencies/oneTBB-2021.12.0.tar.gz"
+  URL_MD5 558a40c7c3da965a5cfc3fbe0566b5ae)
 
 superbuild_set_revision(pytz
   # https://pypi.org/project/pytz/#history
@@ -330,10 +368,14 @@ superbuild_set_revision(pythonply
   URL     "https://www.paraview.org/files/dependencies/ply-3.11.tar.gz"
   URL_MD5 6465f602e656455affcd7c5734c638f8)
 
-superbuild_set_revision(pythonpythran
+superbuild_set_selectable_source(pythonpythran
   # https://pypi.org/project/pythran/#history
-  URL     "https://www.paraview.org/files/dependencies/pythran-0.13.1.tar.gz"
-  URL_MD5 3090288af50566af75cb058d1878aaad)
+  SELECT 0.16.1 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/pythran-0.16.1.tar.gz"
+    URL_MD5 106497787546f3538db7bb1a9e48d88a
+  SELECT 0.13.1 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/pythran-0.13.1.tar.gz"
+    URL_MD5 3090288af50566af75cb058d1878aaad)
 
 superbuild_set_revision(pythoncycler
   # https://pypi.org/project/cycler/#history
@@ -342,8 +384,8 @@ superbuild_set_revision(pythoncycler
 
 superbuild_set_revision(pythoncython
   # https://pypi.org/project/Cython/#history
-  URL     "https://www.paraview.org/files/dependencies/Cython-3.0.0.tar.gz"
-  URL_MD5 63c5672e1f58dcee6854aef8b33a922e)
+  URL     "https://www.paraview.org/files/dependencies/cython-3.0.11.tar.gz"
+  URL_MD5 388b85b7c23f501320d19d991b169f5d)
 
 superbuild_set_selectable_source(pythonsetuptools
   # https://pypi.org/project/setuptools/#history
@@ -371,20 +413,23 @@ superbuild_set_selectable_source(pythonwheel
     URL_MD5 1acbaf94645d7ae704f24c470ec4ac21)
 
 # https://pypi.org/project/mpi4py/#history
-set(mpi4py_ver "3.1.4")
+set(mpi4py_ver "4.0.1")
 if (WIN32)
   superbuild_set_selectable_source(pythonmpi4py
     SELECTS_WITH python3
+    SELECT 3.12
+      URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp312-cp312-win_amd64.whl"
+      URL_MD5 8d2935380026dfa351f10b86699b8d99
     SELECT 3.10
       URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp310-cp310-win_amd64.whl"
-      URL_MD5 22767c198cd8d9b80e8c96071650200e
+      URL_MD5 47da58e4de1810154a162180d0b5efeb
     SELECT 3.9
       URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}-cp39-cp39-win_amd64.whl"
-      URL_MD5 e8387c642919358a7d5739c8e7128f89)
+      URL_MD5 83314e646dd5888793dd1e88471ded51)
 else ()
   superbuild_set_revision(pythonmpi4py
     URL     "https://www.paraview.org/files/dependencies/mpi4py-${mpi4py_ver}.tar.gz"
-    URL_MD5 09e20c0128207303a3d0462eb6b0c0e3)
+    URL_MD5 443fd126aab32130d49eb80702abf561)
 endif ()
 
 superbuild_set_revision(pythonpycparser
@@ -443,10 +488,14 @@ superbuild_set_selectable_source(pythonfrozenlist
     URL     "https://www.paraview.org/files/dependencies/frozenlist-1.2.0.tar.gz"
     URL_MD5 8f1851ef871d95a15ebcf20255c12f6d)
 
-superbuild_set_revision(pythonaiohttp
+superbuild_set_selectable_source(pythonaiohttp
   # https://pypi.org/project/aiohttp/#history
-  URL     "https://www.paraview.org/files/dependencies/aiohttp-3.8.5.tar.gz"
-  URL_MD5 4bb59a17563df9a692c64418224ade12)
+  SELECT 3.9.5 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/aiohttp-3.9.5.tar.gz"
+    URL_MD5 14829a5ea507c8219e3f679fceeb5585
+  SELECT 3.8.5 # Needed for Python 3.7
+    URL     "https://www.paraview.org/files/dependencies/aiohttp-3.8.5.tar.gz"
+    URL_MD5 4bb59a17563df9a692c64418224ade12)
 
 superbuild_set_revision(pythonasynctimeout
   # https://pypi.org/project/async-timeout/#history
@@ -464,8 +513,8 @@ superbuild_set_selectable_source(pythonchardet
 
 superbuild_set_revision(pythonmultidict
   # https://pypi.org/project/multidict/#history
-  URL     "https://www.paraview.org/files/dependencies/multidict-6.0.4.tar.gz"
-  URL_MD5 ec06a613d871dadfb66f2be3a1f2f3fa)
+  URL     "https://www.paraview.org/files/dependencies/multidict-6.0.5.tar.gz"
+  URL_MD5 abcf9bf19365d06aa784de07da02115d)
 
 superbuild_set_selectable_source(pythontypingextensions
   # https://pypi.org/project/typing_extensions/#history
@@ -618,8 +667,8 @@ superbuild_set_revision(pythonpandas
 
 superbuild_set_revision(ffi
   # https://github.com/libffi/libffi/releases
-  URL     "https://www.paraview.org/files/dependencies/libffi-3.4.4.tar.gz"
-  URL_MD5 0da1a5ed7786ac12dcbaf0d499d8a049)
+  URL     "https://www.paraview.org/files/dependencies/libffi-3.4.6.tar.gz"
+  URL_MD5 b9cac6c5997dca2b3787a59ede34e0eb)
 
 superbuild_set_revision(utillinux
   # https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/
@@ -631,10 +680,14 @@ superbuild_set_revision(pkgconf
   URL     "https://www.paraview.org/files/dependencies/pkgconf-2.0.2.tar.xz"
   URL_MD5 9bc6eee9dc86e96f855ce70a39a12bd3)
 
-superbuild_set_revision(pybind11
+superbuild_set_selectable_source(pybind11
   # https://github.com/pybind/pybind11/releases
-  URL     "https://www.paraview.org/files/dependencies/pybind11-2.11.1.tar.gz"
-  URL_MD5 49e92f92244021912a56935918c927d0)
+  SELECT 2.13.6 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/pybind11-2.13.6.tar.gz"
+    URL_MD5 a04dead9c83edae6d84e2e343da7feeb
+  SELECT 2.12.0 # Needed for Python 3.6
+    URL     "https://www.paraview.org/files/dependencies/pybind11-2.12.0.tar.gz"
+    URL_MD5 891fb7337c45134f18a3eb4d7f6eca25)
 
 superbuild_set_revision(sqlite
   # https://sqlite.org/download.html
@@ -643,8 +696,8 @@ superbuild_set_revision(sqlite
 
 superbuild_set_revision(expat
   # https://github.com/libexpat/libexpat/releases
-  URL     "https://www.paraview.org/files/dependencies/expat-2.5.0.tar.xz"
-  URL_MD5 ac6677b6d1b95d209ab697ce8b688704)
+  URL     "https://www.paraview.org/files/dependencies/expat-2.7.0.tar.xz"
+  URL_MD5 974e9de880e731c00112ca069062343a)
 
 superbuild_set_revision(glproto
   # Deprecated; no new releases.
@@ -653,9 +706,9 @@ superbuild_set_revision(glproto
 
 superbuild_set_selectable_source(meson
   # https://github.com/mesonbuild/meson/releases
-  SELECT 1.2.1 DEFAULT
-    URL     "https://www.paraview.org/files/dependencies/meson-1.2.1.tar.gz"
-    URL_MD5 e3cc846536189aacd7d01858a45ca9af
+  SELECT 1.5.2 DEFAULT
+    URL     "https://www.paraview.org/files/dependencies/meson-1.5.2.tar.gz"
+    URL_MD5 682f75ef96c2e7542b0148e70068ea09
   SELECT 0.61.5 # Needed for Python 3.6
     URL     "https://www.paraview.org/files/dependencies/meson-0.61.5.tar.gz"
     URL_MD5 6c55d6d9b9cd1727f0936d6ff29d6d3c)
@@ -713,8 +766,13 @@ superbuild_set_revision(ninja
 
 superbuild_set_revision(openxrsdk
   # https://github.com/KhronosGroup/OpenXR-SDK/releases
-  URL     "https://www.paraview.org/files/dependencies/OpenXR-SDK-release-1.0.28.tar.gz"
-  URL_MD5 c1d4caa3c1b7a7e7b972202f55cc8d2b)
+  URL     "https://www.paraview.org/files/dependencies/OpenXR-SDK-release-1.1.46.tar.gz"
+  URL_MD5 585fd518ee226687a143af566130bb6a)
+
+superbuild_set_revision(openxrmodels
+  URL      https://www.paraview.org/files/data/OpenXRControllerModels-0.1.tgz
+  URL_HASH MD5=bc5f1ec0bfb7776f44e981b2656821d1
+)
 
 superbuild_set_revision(jsoncpp
   # https://github.com/open-source-parsers/jsoncpp/releases
@@ -893,18 +951,19 @@ endif ()
 
 superbuild_set_revision(flexbison
   # https://github.com/lexxmark/winflexbison/releases
-  URL     "https://www.paraview.org/files/dependencies/win_flex_bison-2.5.25.zip"
-  URL_MD5 "720226b1befe7033fb3ecc98f5ffd425")
+  # https://gitlab.kitware.com/utils/ci-utilities/-/packages?orderBy=created_at&sort=desc&search[]=winflexbison
+  URL     "https://www.paraview.org/files/dependencies/winflexbison-2.5.25.g300f48b-concurrent-builds-windows-x86_64.zip"
+  URL_MD5 "c5855455889cf9ec629624255ff9b453")
 
 superbuild_set_revision(alembic
   # https://github.com/alembic/alembic/releases
-  URL     "https://www.paraview.org/files/dependencies/alembic-1.8.5.tar.gz"
-  URL_MD5 fcd5b5492a005057e11b601b60ac9a49)
+  URL     "https://www.paraview.org/files/dependencies/alembic-1.8.8.tar.gz"
+  URL_MD5 bb01cb191eaed796c49f75f11e1bd690)
 
 superbuild_set_revision(imath
   # https://github.com/AcademySoftwareFoundation/Imath/releases
-  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.10.tar.gz"
-  URL_MD5 5b3a8831f75a30ed76cc609a66b93aa6)
+  URL     "https://www.paraview.org/files/dependencies/Imath-3.1.12.tar.gz"
+  URL_MD5 2262c2f1f2915695eb38523e632c31ea)
 
 superbuild_set_revision(zstd
   # https://github.com/facebook/zstd/releases
@@ -918,5 +977,5 @@ superbuild_set_revision(lz4
 
 superbuild_set_revision(blosc
   # https://github.com/Blosc/c-blosc/releases
-  URL     "https://www.paraview.org/files/dependencies/blosc-1.21.5.tar.gz"
-  URL_MD5 "5097ee61dc1f25281811f5a55b91b2e4")
+  URL     "https://www.paraview.org/files/dependencies/c-blosc-1.21.6.tar.gz"
+  URL_MD5 "414d8317c2dd7f3629aad34b6962b6d1")

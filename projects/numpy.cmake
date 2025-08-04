@@ -18,10 +18,16 @@ if (lapack_enabled)
     LAPACK  "<INSTALL_DIR>"
     NPY_BLAS_ORDER blas
     NPY_LAPACK_ORDER lapack)
-else()
+else ()
   list(APPEND numpy_process_environment
     BLAS    "None"
     LAPACK  "None")
+endif ()
+
+# Add `cython` to `PATH` on Windows.
+if (WIN32)
+  list(APPEND numpy_process_environment
+    PATH "<INSTALL_DIR>/Python/Scripts")
 endif ()
 
 if (fortran_enabled)
@@ -60,7 +66,8 @@ superbuild_python_version_check(numpy
   "3.8" "1.24.4")
 
 set(numpy_remove_modules)
-if (numpy_SOURCE_SELECTION VERSION_GREATER_EQUAL "1.24.4")
+if (numpy_SOURCE_SELECTION VERSION_GREATER_EQUAL "1.24.4" AND
+    python3_SOURCE_SELECTION VERSION_LESS "3.12")
   list(APPEND numpy_remove_modules
     numpy.array_api.tests
     numpy.compat.tests
@@ -77,6 +84,12 @@ if (numpy_SOURCE_SELECTION VERSION_GREATER_EQUAL "1.24.4")
     numpy.tests
     numpy.typing.tests
   )
+endif ()
+
+if (numpy_SOURCE_SELECTION VERSION_GREATER_EQUAL "1.26.4")
+  list(APPEND numpy_depends
+    meson
+    pythonmesonpython)
 endif ()
 
 set(numpy_license
@@ -128,4 +141,14 @@ elseif (numpy_SOURCE_SELECTION STREQUAL "1.21.6")
 elseif (numpy_SOURCE_SELECTION STREQUAL "1.24.4")
   superbuild_apply_patch(numpy 1.24.4-cython3
     "Support Cython3")
+endif ()
+
+if (lapack_enabled AND
+    numpy_SOURCE_SELECTION STREQUAL "1.26.4")
+  # This is needed because our minimum `pip` doesn't yet support passing
+  # configuration settings that are array values. See:
+  # https://meson-python.readthedocs.io/en/latest/how-to-guides/config-settings.html
+  # https://github.com/pypa/pip/issues/11681
+  superbuild_apply_patch(numpy 1.26.4-meson-use-blaslapack
+    "Tell `meson` to use blas/lapack")
 endif ()

@@ -1,0 +1,12 @@
+diff -u -Nr -U5 numpy-1.26.4/pyproject.toml numpy-1.26.4.meson-blaslapack/pyproject.toml
+--- numpy-1.26.4/pyproject.toml	2024-02-05 16:17:48.000000000 -0500
++++ numpy-1.26.4.meson-blaslapack/pyproject.toml	2024-10-06 08:52:59.441443317 -0400
+@@ -207,5 +207,8 @@
+   ".spin/cmds.py:changelog",
+   ".spin/cmds.py:notes",
+ ]
+ 
+ "Metrics" = [".spin/cmds.py:bench"]
++
++[tool.meson-python.args]
++setup = ['-Dblas=blas', '-Dlapack=lapack']

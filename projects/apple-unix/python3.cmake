@@ -26,9 +26,23 @@ if (_superbuild_enable_openssl)
   endif ()
 endif ()
 
+set(python3_depends)
+if (python3_SOURCE_SELECTION VERSION_GREATER_EQUAL "3.12")
+  if (NOT APPLE)
+    list(APPEND python3_depends
+      utillinux)
+  endif ()
+  list(APPEND python3_environment
+    # Keep the "system" `-I` flag from `pkgconf` for `lzma` on macOS.
+    PKG_CONFIG_ALLOW_SYSTEM_CFLAGS 1
+    # Keep the "system" `-L` flag from `pkgconf` when looking up `uuid` link
+    # flags.
+    PKG_CONFIG_ALLOW_SYSTEM_LIBS 1)
+endif ()
+
 superbuild_add_project(python3
   CAN_USE_SYSTEM
-  DEPENDS bzip2 zlib png ffi sqlite xz
+  DEPENDS bzip2 zlib png ffi sqlite xz pkgconf ${python3_depends}
   DEPENDS_OPTIONAL ${python3_optional_depends}
   LICENSE_FILES
     LICENSE
@@ -115,10 +129,12 @@ superbuild_add_extra_cmake_args(
   -DPYTHON_LIBRARY_RELEASE:FILEPATH=<INSTALL_DIR>/lib/libpython${superbuild_python_version}${CMAKE_SHARED_LIBRARY_SUFFIX}
 )
 
-set(modules_to_remove
-  ctypes.test
-  distutils.tests
-  lib2to3.tests
-  unittest.test
-  )
-_superbuild_remove_python_modules("${modules_to_remove}")
+set(python3_modules_to_remove)
+if (python3_SOURCE_SELECTION VERSION_LESS "3.12")
+  list(APPEND python3_modules_to_remove
+    ctypes.test
+    distutils.tests
+    lib2to3.tests
+    unittest.test)
+endif ()
+_superbuild_remove_python_modules("${python3_modules_to_remove}")

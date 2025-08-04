@@ -6,10 +6,15 @@ if (superbuild_build_phase AND
     "${superbuild_python_version} is in use.")
 endif ()
 
+set(scipy_wheel_version "${scipy_version}")
+if (python3_SOURCE_SELECTION VERSION_LESS "3.10")
+  set(scipy_wheel_version "${old_scipy_version}")
+endif ()
+
 superbuild_add_project_python_wheel(scipy
   DEPENDS pythonsetuptools python3 numpy
   LICENSE_FILES_WHEEL
-    scipy-${scipy_version}.dist-info/LICENSE.txt
+    "scipy-${scipy_wheel_version}.dist-info/LICENSE.txt"
     scipy/_lib/_uarray/LICENSE
     scipy/fft/_pocketfft/LICENSE.md
   SPDX_LICENSE_IDENTIFIER

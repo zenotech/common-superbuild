@@ -17,6 +17,7 @@ function (superbuild_find_projects var)
     cxx17
     embree
     exodus
+    expat
     flexbison
     fortran
     freetype
@@ -27,6 +28,8 @@ function (superbuild_find_projects var)
     jsoncpp
     lapack
     libjpegturbo
+    libxml2
+    libxslt
     llvm
     lz4
     openmp
@@ -105,7 +108,9 @@ function (superbuild_find_projects var)
     pythonyarl
     pytz
     qhull
+    qt
     qt5
+    qt6
     rkcommon
     scipy
     seacas
@@ -130,16 +135,15 @@ function (superbuild_find_projects var)
 
   if (NOT WIN32)
     list(APPEND projects
-      expat
       ffi
       ffmpeg
-      gperf
-      libxml2)
+      gperf)
   endif ()
 
   if (NOT APPLE)
     list(APPEND projects
       mesa
+      openxrmodels
       openxrsdk)
   endif ()
 
@@ -165,12 +169,10 @@ set(qt5_skip_modules
   qtconnectivity
   qtgamepad
   qtlocation
-  qtmultimedia
   qtsensors
   qtserialport
   qtwayland
   qtwebchannel
-  qtwebengine
   qtwebsockets)
 
 get_filename_component(sb_dir "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)

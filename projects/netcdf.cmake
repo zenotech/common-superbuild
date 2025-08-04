@@ -55,3 +55,6 @@ superbuild_apply_patch(netcdf find-hdf5
 # https://github.com/Unidata/netcdf-c/issues/2828
 superbuild_apply_patch(netcdf fix-szip-library-linking
   "Fiz SZIP library linking")
+
+superbuild_apply_patch(netcdf oldhdf5api
+  "Support older default HDF5 API")

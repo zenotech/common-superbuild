@@ -33,8 +33,8 @@ endif ()
 include(boost.common)
 
 if (APPLE)
-  superbuild_apply_patch(boost osx-rpath
-    "Remove @rpath from the install name of Boost's libraries")
+  superbuild_apply_patch(boost osx-headerpad_max_install_names
+    "Make sure there's room for library id editing")
 
   superbuild_project_add_step(fix-install-names
     COMMAND   "${CMAKE_COMMAND}"

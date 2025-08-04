@@ -1,0 +1,47 @@
+diff -u -Nr -U5 qt-everywhere-src-5.12.9/qtbase/src/corelib/global/qendian.h qt-everywhere-src-5.12.9.include-limits/qtbase/src/corelib/global/qendian.h
+--- qt-everywhere-src-5.12.9/qtbase/src/corelib/global/qendian.h	2020-06-03 06:51:20.000000000 -0400
++++ qt-everywhere-src-5.12.9.include-limits/qtbase/src/corelib/global/qendian.h	2024-07-03 06:11:58.780176754 -0400
+@@ -42,10 +42,12 @@
+ #define QENDIAN_H
+ 
+ #include <QtCore/qfloat16.h>
+ #include <QtCore/qglobal.h>
+ 
++#include <limits>
++
+ // include stdlib.h and hope that it defines __GLIBC__ for glibc-based systems
+ #include <stdlib.h>
+ #include <string.h>
+ 
+ #ifdef min // MSVC
+diff -u -Nr -U5 qt-everywhere-src-5.12.9/qtbase/src/corelib/tools/qbytearraymatcher.h qt-everywhere-src-5.12.9.include-limits/qtbase/src/corelib/tools/qbytearraymatcher.h
+--- qt-everywhere-src-5.12.9/qtbase/src/corelib/tools/qbytearraymatcher.h	2020-06-03 06:51:20.000000000 -0400
++++ qt-everywhere-src-5.12.9.include-limits/qtbase/src/corelib/tools/qbytearraymatcher.h	2024-07-03 06:12:13.418189970 -0400
+@@ -40,10 +40,12 @@
+ #ifndef QBYTEARRAYMATCHER_H
+ #define QBYTEARRAYMATCHER_H
+ 
+ #include <QtCore/qbytearray.h>
+ 
++#include <limits>
++
+ QT_BEGIN_NAMESPACE
+ 
+ 
+ class QByteArrayMatcherPrivate;
+ 
+diff -u -Nr -U5 qt-everywhere-src-5.12.9/qtdeclarative/src/qmldebug/qqmlprofilerevent_p.h qt-everywhere-src-5.12.9.include-limits/qtdeclarative/src/qmldebug/qqmlprofilerevent_p.h
+--- qt-everywhere-src-5.12.9/qtdeclarative/src/qmldebug/qqmlprofilerevent_p.h	2020-06-08 05:52:21.000000000 -0400
++++ qt-everywhere-src-5.12.9.include-limits/qtdeclarative/src/qmldebug/qqmlprofilerevent_p.h	2024-07-03 06:12:26.655201922 -0400
+@@ -46,10 +46,11 @@
+ #include <QtCore/qbytearray.h>
+ #include <QtCore/qvarlengtharray.h>
+ #include <QtCore/qmetatype.h>
+ 
+ #include <initializer_list>
++#include <limits>
+ #include <type_traits>
+ 
+ //
+ //  W A R N I N G
+ //  -------------

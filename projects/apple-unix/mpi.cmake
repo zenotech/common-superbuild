@@ -47,6 +47,18 @@ if (fortran_enabled)
   endif()
 endif ()
 
+set(mpi_log_configure_args)
+if (NOT "$ENV{CI}" STREQUAL "")
+  # MPI's configure step can have "error-like" output and make CTest think
+  # there is an issue; always log it to a file when in CI.
+  #
+  # Note that the observed instance is a failure to process a `matplotlib`
+  # `.pth` file and that `matplotlib`'s `install` step overlapped with the
+  # `configure` step here.
+  list(APPEND mpi_log_configure_args
+    LOG_CONFIGURE 1)
+endif ()
+
 superbuild_add_project(mpi
   CAN_USE_SYSTEM
   DEPENDS_OPTIONAL fortran python3
@@ -57,6 +69,7 @@ superbuild_add_project(mpi
   SPDX_COPYRIGHT_TEXT
     "1998--2020, Argonne National Laboratory"
   BUILD_IN_SOURCE 1
+  ${mpi_log_configure_args}
   CONFIGURE_COMMAND
     <SOURCE_DIR>/configure
       --prefix=<INSTALL_DIR>

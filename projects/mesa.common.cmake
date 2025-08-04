@@ -105,7 +105,8 @@ if (NOT WIN32)
     expat)
 endif ()
 
-set(mesa_environment)
+set(mesa_environment
+  LLVM_CONFIG "${llvm_dir}/bin/llvm-config")
 if (WIN32)
   list(APPEND mesa_environment
     PATH <INSTALL_DIR>/Python

@@ -1,0 +1,58 @@
+From 417c12ec696ca0f26ddb872c0991598c6d02b73b Mon Sep 17 00:00:00 2001
+From: Ralf Gommers <ralf.gommers@gmail.com>
+Date: Tue, 7 Jan 2025 08:05:18 +0100
+Subject: [PATCH] BLD: fix some issues with undeclared internal build
+ dependencies
+
+This is a follow-up to gh-21983, and fixes some more issues reported
+on gh-18909. It's possible to run into these when building with
+a high level of parallelism, or trying to build just a single
+target like `spatial/_qhull.so` with Ninja.
+---
+ scipy/linalg/meson.build  | 5 +++--
+ scipy/spatial/meson.build | 2 +-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/scipy/linalg/meson.build b/scipy/linalg/meson.build
+index 2b870ab1afad..95925a791cbc 100644
+--- a/scipy/linalg/meson.build
++++ b/scipy/linalg/meson.build
+@@ -28,6 +28,7 @@ cython_linalg = custom_target('cython_linalg',
+   install_tag: 'devel'
+ )
+ cython_blas_pxd = cython_linalg[2]
++cython_lapack_pxd = cython_linalg[3]
+ 
+ # pyx -> c, pyx -> cpp generators, depending on __init__.py here.
+ linalg_init_cython_gen = generator(cython,
+@@ -39,7 +40,7 @@ linalg_init_cython_gen = generator(cython,
+ linalg_init_utils_cython_gen = generator(cython,
+   arguments : cython_args,
+   output : '@BASENAME@.c',
+-  depends : [_cython_tree, __init__py, _cy_array_utils_pxd])
++  depends : [_cython_tree, __init__py, _cy_array_utils_pxd, cython_lapack_pxd])
+ 
+ # pyx -> c, pyx -> cpp generators, depending on copied pxd files and init
+ linalg_cython_gen = generator(cython,
+@@ -104,7 +105,7 @@ py3.extension_module('_flapack',
+ 
+ # _decomp_interpolative
+ py3.extension_module('_decomp_interpolative',
+-  linalg_init_cython_gen.process('_decomp_interpolative.pyx'),
++  linalg_cython_gen.process('_decomp_interpolative.pyx'),
+   c_args: cython_c_args,
+   dependencies: np_dep,
+   link_args: version_link_args,
+diff --git a/scipy/spatial/meson.build b/scipy/spatial/meson.build
+index 0adb32040595..1f46d1c7c53d 100644
+--- a/scipy/spatial/meson.build
++++ b/scipy/spatial/meson.build
+@@ -8,7 +8,7 @@ _spatial_pxd = [
+ spt_cython_gen = generator(cython,
+   arguments : cython_args,
+   output : '@BASENAME@.c',
+-  depends : [_cython_tree, _spatial_pxd, _lib_pxd])
++  depends : [_cython_tree, _spatial_pxd, _lib_pxd, cython_lapack_pxd])
+ 
+ qhull_src = [
+   'qhull_src/src/geom2_r.c',

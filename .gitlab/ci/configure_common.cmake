@@ -69,8 +69,10 @@ enable_project(hdf5)
 enable_project(imath)
 enable_project(ispc)
 enable_project(jsoncpp)
+enable_project(lapack)
 enable_project(libjpegturbo)
 enable_project(libxml2)
+enable_project(libxslt)
 enable_project(llvm)
 enable_project(lz4)
 enable_project(matplotlib)
@@ -151,7 +153,9 @@ enable_project(pythonyarl)
 enable_project(pytz)
 enable_project(pywin32)
 enable_project(qhull)
+enable_project(qt)
 enable_project(qt5)
+enable_project(qt6)
 enable_project(rkcommon)
 enable_project(scipy)
 enable_project(seacas)
@@ -167,6 +171,7 @@ enable_project(zstd)
 
 # OpenXR-SDK-Source does not build on macOS
 if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "macos")
+  enable_project(openxrmodels)
   enable_project(openxrsdk)
   # fortran can't use openmp because it's not installed, so disable on Mac
   enable_project(openmp)
@@ -175,7 +180,6 @@ endif ()
 # Fortran doesn't work on Windows right now.
 if (NOT "$ENV{CMAKE_CONFIGURATION}" MATCHES "windows")
   enable_project(fortran)
-  enable_project(lapack)
 endif ()
 
 # qt5 things
@@ -183,6 +187,12 @@ set(qt5_SOURCE_SELECTION            "5.15" CACHE STRING "")
 # the gold linker seems to fail with internal error on centos7 builds
 # disabling
 set(qt5_EXTRA_CONFIGURATION_OPTIONS "-no-use-gold-linker" CACHE STRING "")
+
+# Enable many Boost libraries
+set(boost_libraries "atomic;chrono;date_time;filesystem;iostreams;log;program_options;regex;serialization;system;thread;timer" CACHE STRING "")
+
+# Enable webengine as it is off by default
+set(qt5_ENABLE_WEBENGINE "ON" CACHE STRING "")
 
 # Default to Release builds.
 if ("$ENV{CMAKE_BUILD_TYPE}" STREQUAL "")

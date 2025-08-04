@@ -67,6 +67,8 @@ set(llvm_depends_7.0.0
   cxx11)
 set(llvm_depends_15.0.6
   cxx17)
+set(llvm_depends_16.0.6
+  cxx17)
 
 set(llvm_licenses_7.0.0
   LICENSE.TXT
@@ -77,15 +79,24 @@ set(llvm_licenses_15.0.6
   llvm/LICENSE.TXT
   llvm/lib/Support/COPYRIGHT.regex
   llvm/test/YAMLParser/LICENSE.txt)
+set(llvm_licenses_16.0.6
+  llvm/LICENSE.TXT
+  llvm/lib/Support/COPYRIGHT.regex
+  llvm/test/YAMLParser/LICENSE.txt)
 
 set(llvm_source_args_7.0.0)
 set(llvm_source_args_15.0.6
+  SOURCE_SUBDIR llvm)
+set(llvm_source_args_16.0.6
   SOURCE_SUBDIR llvm)
 
 set(llvm_configure_args_7.0.0
   -DPYTHON_EXECUTABLE:FILEPATH=${superbuild_python_executable}
   -DLLVM_INCLUDE_UTILS:BOOL=ON)
 set(llvm_configure_args_15.0.6
+  -DLLVM_INCLUDE_TESTS:BOOL=OFF
+  -DLLVM_INCLUDE_UTILS:BOOL=OFF)
+set(llvm_configure_args_16.0.6
   -DLLVM_INCLUDE_TESTS:BOOL=OFF
   -DLLVM_INCLUDE_UTILS:BOOL=OFF)
 
@@ -131,6 +142,7 @@ superbuild_add_project(llvm
     ${llvm_cmake_shared_flags}
     -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
     -DCMAKE_INSTALL_NAME_DIR:STRING=<INSTALL_DIR>/lib
+    -DCMAKE_INSTALL_RPATH:STRING=<INSTALL_DIR>/lib
     -DLLVM_ENABLE_RTTI:BOOL=ON
     -DLLVM_INSTALL_UTILS:BOOL=ON
     -DLLVM_ENABLE_LIBXML2:BOOL=OFF
